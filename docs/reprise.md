@@ -1,6 +1,18 @@
 # Reprise — état au 21/09/2026
 
-Le site de Maxime tourne en **v0.2.3**, et la mise à jour automatique depuis les releases GitHub **est validée de bout en bout** : une version publiée apparaît dans Extensions et s'installe en un clic, sans zip.
+## Où on s'est arrêté
+La **v0.4.0** (les 13 familles, les territoires Metal et Punk) est **commitée et poussée sur la branche `claude/funny-johnson-he2qd2`**. Elle n'est ni fusionnée dans `main`, ni publiée en release, ni importée sur le site de Maxime. Le banc de test passe ses 15 vérifications sur cette branche.
+
+Les quatre étapes qui restent, dans l'ordre, et qui sont toutes du ressort de Maxime :
+1. Fusionner la branche dans `main` sur GitHub.
+2. Onglet Actions → Release → « Run workflow » (depuis une session Claude le push d'un tag est refusé, 403).
+3. Sur le site, Extensions : installer la mise à jour 0.4.0.
+4. Genres → Import CSV : déposer `data/genre-import.csv`. **Surtout pas** `genre-electronic-import.csv`, qui remettrait la répartition de la v0.3.0.
+
+La décision suivante, non tranchée : que faire des 481 genres reconnus qui restent hors de l'atlas (funk, ska, gospel, K-pop, Afrobeat…). Les déclarer familles, ou leur écrire une table de rattachement dans `data/wikidata-build.py`. Recommandation : la table de rattachement, une vingtaine de lignes, mais ce sont des choix musicaux.
+
+## Le socle
+Avant cette session le site tournait en **v0.2.3**, et la mise à jour automatique depuis les releases GitHub **est validée de bout en bout** : une version publiée apparaît dans Extensions et s'installe en un clic, sans zip.
 
 ## Ce qui a été fait
 - Le dépôt a été remis à plat : le dépôt manuel depuis le Finder avait tout placé dans `genre-atlas-depot-complet_1/`, où la fabrication du zip ne trouvait pas `genre-atlas/`.
