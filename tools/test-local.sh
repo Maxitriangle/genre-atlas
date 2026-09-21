@@ -127,7 +127,7 @@ if ( is_wp_error( \$r ) ) { fwrite( STDERR, \$r->get_error_message() . \"\n\" );
 echo 'extension ' . GENRE_ATLAS_VERSION . \" activee\n\";
 global \$wp_rewrite;
 \$wp_rewrite->set_permalink_structure( '/%postname%/' );
-\$stats = Genre_Atlas_Importer::import( '$REPO/data/genre-electronic-import.csv' );
+\$stats = Genre_Atlas_Importer::import( '$REPO/data/genre-import.csv' );
 if ( is_wp_error( \$stats ) ) { fwrite( STDERR, \$stats->get_error_message() . \"\n\" ); exit( 1 ); }
 foreach ( \$stats as \$k => \$v ) { echo str_pad( \$k, 20 ) . \$v . \"\n\"; }
 "

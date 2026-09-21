@@ -27,7 +27,31 @@ Les groupes sont une couche d'affichage, pas de la taxonomie : chaque nœud gard
 ## Suite
 Reste au cadrage (`docs/cadrage-mvp.md`, « Reste à faire ») : saisie des BPM et des descriptions, autres familles, réglages de forme et couleur par famille.
 
-Deux blocages connus pour les autres familles.
+Les deux blocages qui tenaient les autres familles sont levés : la chaîne Wikidata est rejouable, et la question Metal / Punk est tranchée. Les 13 familles sont en place en v0.4.0 (voir ci-dessous).
 
-1. **Les CSV sources manquent.** `data/wikidata-build-electronic.py` ne va pas chercher Wikidata : il lit cinq fichiers extraits à la main par des requêtes SPARQL séparées (`a_labels.csv`, `b_parents.csv`, `c_inception.csv`, `d_country.csv`, `e_mb.csv`, voir « Test d'import Wikidata » dans le cadrage). Aucun n'est dans le dépôt, seul le résultat `genre-electronic-import.csv` y est. Il faut donc les refaire, et `query.wikidata.org` est hors de la politique réseau des sessions Claude par défaut. Maxime peut l'ouvrir : environnement → Network access « Custom » → `query.wikidata.org` dans « Allowed domains », en cochant « Also include default list of common package managers » sans quoi npm tombe et le banc de test ne s'installe plus. **Quand ces CSV seront régénérés, les commiter dans `data/`** pour que la chaîne soit rejouable.
-2. **La question ouverte du cadrage n'est pas tranchée** : Metal et Punk, familles de niveau 1 ou enfants de Rock ? Elle détermine la forme de l'accueil.
+## Chaîne Wikidata rejouable (21/09/2026)
+Les cinq extraits SPARQL que lit `wikidata-build-electronic.py` sont maintenant dans `data/` (`a_labels`, `b_parents`, `c_inception`, `d_country`, `e_mb`, 1,4 Mo), avec `data/wikidata-fetch.sh` qui les régénère. Rejouée de bout en bout, la chaîne ressort un `genre-electronic-import.csv` **identique octet pour octet** au fichier versionné : 406 lignes, 368 parents uniques, 35 arbitrages automatiques, 2 corrigés.
+
+L'accès réseau : `query.wikidata.org` n'est pas dans la politique par défaut des sessions Claude. Maxime l'ouvre dans les réglages de l'environnement → Network access « Custom » → `query.wikidata.org` dans « Allowed domains », **en cochant « Also include default list of common package managers »** sans quoi npm tombe et le banc de test ne s'installe plus.
+
+Trois pièges de l'endpoint Wikidata, tous traités par le script :
+1. **Une requête qui dépasse le délai renvoie quand même 200.** Le serveur streame les lignes déjà calculées, puis colle une trace Java Blazegraph à la fin du même corps. Le fichier a l'air valide et la construction casse plus loin sur une ligne à un seul champ. Le script n'accepte donc une réponse qu'après l'avoir relue en CSV avec le bon nombre de colonnes.
+2. **502 et 429 sont fréquents** aux heures chargées, `a_labels` en particulier. Cinq tentatives avec des pauses qui doublent.
+3. **`wikipedia_links` compte tous les liens Wikimedia**, pas seulement Wikipédia (`wikibase:sitelinks`, pas un `COUNT` sur `wikiGroup "wikipedia"`). Compter Wikipédia seul donne des valeurs plus basses sur 44 genres et ne reproduit plus le fichier d'origine. Cette colonne ne sert que d'ultime critère entre deux parents candidats.
+
+Le script de construction a aussi été rendu déterministe : ses arbitrages passaient par l'itération d'ensembles Python, dont l'ordre change à chaque exécution, donc deux exécutions pouvaient se départager différemment. Départage final sur l'identifiant Wikidata ; vérifié sur trois graines de hachage. Il lit ses extraits à côté de lui et non dans le dossier courant, et écrit son résultat dans `data/` (il visait `/mnt/user-data/outputs/`, un reliquat de l'ancienne session).
+
+## Les 13 familles et les territoires (v0.4.0, 21/09/2026)
+L'atlas est passé d'une famille à treize, et de 406 à **1 630 genres**. Fichier d'import : `data/genre-import.csv`, construit par `data/wikidata-build.py`. Le banc de test passe ses 15 vérifications, sans erreur PHP.
+
+**La décision de fond.** Metal et Punk restent des enfants de Rock dans l'arbre et ont quand même leur tuile sur l'accueil. Le code confondait les deux : une famille, c'était un genre sans parent, un point c'est tout. C'est pour ça que la question paraissait insoluble. Elle est désormais séparée en deux, comme l'avaient été le parent réel et le parent d'affichage pour les groupes éditoriaux.
+
+Concrètement : un champ `ga_featured` porte le rang de la tuile, et la forme comme la couleur d'une branche remontent jusqu'à la tuile plutôt que jusqu'à la racine. Metal porte donc ses propres couleurs sans cesser d'être sous Rock, et sa tuile affiche « IN ROCK MUSIC » plutôt que de se déclarer famille. Le banc de test tient ce point : il trouve un territoire dans les données, vérifie que ses sous-genres affichent toujours la famille dont ils descendent, et que sa couleur diffère de celle de sa racine.
+
+**La construction est globale, et c'est ce qui change le plus.** L'ancien script partait d'une racine et ramassait tout autour ; il ne connaissait qu'une famille, donc des genres limites étaient aspirés dans Electronic faute de mieux. Le nouveau construit l'arbre entier d'un coup puis le découpe, donc chaque genre n'a qu'une seule maison. Conséquence : **Electronic passe de 405 à 363 genres**, 42 partent ailleurs (Italo disco et Hi-NRG vers Pop, brega funk et digital cumbia vers Latin). Ce n'est pas un progrès garanti genre par genre, c'est la même heuristique appliquée à un choix plus large. Le moment était le bon : rien n'était encore curé, donc aucun travail éditorial n'a été perdu.
+
+**Deux pièges rencontrés, à ne pas réapprendre.**
+1. `art music` est l'ombrelle (classique occidental, indien, japonais, d'Asie du Sud-Est) et `classical music` est sa branche occidentale, avec 46 sous-genres. Renommer l'ombrelle « Classical music » crée deux genres du même nom, l'un dans l'autre, et WordPress fabrique une adresse en `classical-music-2`. Le libellé Wikidata est gardé.
+2. La tuile affichait le nombre de groupes au lieu du nombre de sous-genres pour les familles larges (Rock annonçait 7 au lieu de 50). `parent.grouped` garde le vrai compte avant regroupement.
+
+**Ce qui reste dehors : 481 genres reconnus (23 %)**, faute d'un parent que Wikidata leur donne — 248 isolés, 233 sous 54 racines. Parmi eux funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. `wikidata-build.py` les liste à chaque exécution. C'est la prochaine décision : les déclarer familles, ou leur écrire une table de rattachement sur le modèle de la table des inversions connues.

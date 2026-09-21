@@ -10,7 +10,7 @@ Projet personnel et non commercial de Maxime : un atlas des genres musicaux (sit
 
 ## Le dépôt
 - `genre-atlas/` : l'extension WordPress. PHP sans dépendance, JavaScript sans dépendance (`assets/atlas.js`), police embarquée.
-- `data/` : script Wikidata et fichier d'import de la famille Electronic (406 genres).
+- `data/` : chaîne Wikidata rejouable — `wikidata-fetch.sh` récupère les cinq extraits SPARQL, `wikidata-build.py` en construit `genre-import.csv` (13 familles, 15 tuiles, 1 630 genres). Voir `data/README.md`.
 - `docs/` : cadrage, note de reprise.
 - `tools/` : banc de test local (`test-local.sh` monte le site, `smoke.mjs` le parcourt au navigateur).
 
@@ -21,4 +21,4 @@ Projet personnel et non commercial de Maxime : un atlas des genres musicaux (sit
 4. Le site de Maxime (o2switch) lit la dernière release via `includes/updater.php` et propose la mise à jour dans Extensions. L'updater attend un fichier joint nommé exactement `genre-atlas.zip` contenant le dossier `genre-atlas/`.
 
 ## Règles de design à respecter
-Arbre strict (un parent par genre), influences non affichées. Carte : recentrage au clic, deux niveaux visibles au plus, lignée à gauche. Largeur : anneau fixe jusqu'à 12 enfants (9 à 10 sous une famille), cadran rotatif trié par époque jusqu'à 40, regroupement éditorial au-delà. Mobile (< 900 px) : un seul arbre vertical. Le nom du genre est toujours lisible ; les micro-textes portent de vraies métadonnées.
+Arbre strict (un parent par genre), influences non affichées. Avoir une tuile sur l'accueil et n'avoir pas de parent sont deux choses distinctes : Metal et Punk sont des enfants de Rock et ont leur tuile (champ `ga_featured`) ; forme et couleur remontent jusqu'à la tuile, pas jusqu'à la racine. Carte : recentrage au clic, deux niveaux visibles au plus, lignée à gauche. Largeur : anneau fixe jusqu'à 12 enfants (9 à 10 sous une famille), cadran rotatif trié par époque jusqu'à 40, regroupement éditorial au-delà. Mobile (< 900 px) : un seul arbre vertical. Le nom du genre est toujours lisible ; les micro-textes portent de vraies métadonnées.
