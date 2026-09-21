@@ -19,5 +19,12 @@ Le contournement qui rend ça possible : `wordpress.org` est bloqué depuis les 
 
 Deux détails à ne pas réapprendre : les règles de réécriture doivent être reconstruites dans une requête PHP séparée de celle qui change la structure des permaliens, sinon `/genre/` renvoie 404 ; et le serveur PHP intégré n'a pas de réécriture d'URL, d'où `router.php`.
 
+## Regroupement des branches larges (v0.3.0)
+Fait. Au-delà de 40 sous-genres la carte montre des groupes, pas des genres : le label `ga_group` du genre s'il est renseigné, sa décennie sinon. Le repli par décennie rend la branche lisible avant tout travail éditorial. Écran de saisie : Genres → Groups.
+
+Les groupes sont une couche d'affichage, pas de la taxonomie : chaque nœud garde un parent réel (pour son permalien) et un parent d'affichage (pour la lignée), donc un genre atteint par un groupe garde son adresse. Ils sont exclus de la recherche et du compte de genres.
+
 ## Suite
-Les versions 0.2.1 à 0.2.3 ne changent rien au plugin : elles ne servaient qu'à éprouver la chaîne. La prochaine version doit porter du vrai travail (voir `docs/cadrage-mvp.md`, section « Questions ouvertes »).
+Reste au cadrage (`docs/cadrage-mvp.md`, « Reste à faire ») : saisie des BPM et des descriptions, autres familles, réglages de forme et couleur par famille.
+
+Deux blocages connus pour les autres familles : `query.wikidata.org` est injoignable depuis les sessions Claude (même politique réseau que `wordpress.org`), donc les fichiers d'import ne peuvent pas être fabriqués ici ; et la question ouverte du cadrage n'est pas tranchée (Metal et Punk, familles ou enfants de Rock ?).
