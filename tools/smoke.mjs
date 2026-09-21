@@ -42,8 +42,9 @@ function pick( min, max ) {
 	return hit ? { node: hit, count: kids.get( hit.id ) } : null;
 }
 
-const ring = pick( 4, 12 );   // fixed ring
-const dialCase = pick( 13, 40 ); // rotating dial
+const ring = pick( 4, 12 );        // fixed ring
+const dialCase = pick( 13, 40 );   // rotating dial
+const wide = pick( 41, Infinity ); // editorial grouping
 
 const browser = await chromium.launch( BIN ? { executablePath: BIN } : {} );
 
@@ -106,23 +107,45 @@ try {
 		await page.screenshot( { path: `${ SHOTS }/04-cadran.png`, fullPage: true } );
 	}
 
-	// 5. List view.
+	// 5. A branch too wide to show one genre at a time is shown as groups.
+	if ( wide ) {
+		await centre( page, wide.node );
+		const groups = await page.locator( '.ga-map .ga-node:not(.centre):not(.anc)' ).count();
+		check( `groupes : « ${ wide.node.name } » (${ wide.count } enfants) est regroupe`,
+			groups >= 2 && groups <= 12 && await page.locator( '.ga-dial' ).count() === 0,
+			`${ groups } groupe(s), cadran ${ await page.locator( '.ga-dial' ).count() ? 'present' : 'absent' }` );
+		await page.screenshot( { path: `${ SHOTS }/05-groupes.png`, fullPage: true } );
+
+		// A group opens onto its genres, and those keep their own address.
+		await page.locator( '.ga-map .ga-node:not(.centre):not(.anc)' ).first().click();
+		await page.waitForTimeout( 500 );
+		check( 'groupes : un groupe s ouvre sur ses genres', await page.locator( '.ga-leaf' ).count() > 0 );
+		const leaf = page.locator( '.ga-leaf:not(.more)' ).first();
+		if ( await leaf.count() ) {
+			await leaf.click();
+			await page.waitForTimeout( 500 );
+			const url = page.url();
+			check( 'groupes : le genre garde son adresse reelle', /\/genre\/[a-z0-9-]+(\/[a-z0-9-]+)*\/$/.test( url ) && ! /\d{4}s/i.test( url ), url.replace( BASE, '' ) );
+		}
+	}
+
+	// 6. List view.
 	await page.locator( '[data-view="list"]' ).first().click();
 	await page.waitForTimeout( 400 );
 	const rows = await page.locator( '.ga-lrow' ).count();
 	check( 'liste : l arbre en liste s affiche', await page.locator( '.ga-list' ).count() === 1 && rows > 0, `${ rows } ligne(s)` );
-	await page.screenshot( { path: `${ SHOTS }/05-liste.png`, fullPage: true } );
+	await page.screenshot( { path: `${ SHOTS }/06-liste.png`, fullPage: true } );
 	await page.close();
 
-	// 6. Mobile: a single vertical tree, no radial map.
+	// 7. Mobile: a single vertical tree, no radial map.
 	const phone = await newPage( 390, 844 );
 	await centre( phone, dialCase ? dialCase.node : byId.get( tree.nodes[ 0 ].id ) );
 	const vertical = await phone.locator( '.ga-mobile, .ga-mtree' ).count() > 0;
 	check( 'mobile : arbre vertical, carte radiale absente', vertical && await phone.locator( '.ga-map' ).count() === 0 );
-	await phone.screenshot( { path: `${ SHOTS }/06-mobile.png`, fullPage: true } );
+	await phone.screenshot( { path: `${ SHOTS }/07-mobile.png`, fullPage: true } );
 	await phone.close();
 
-	// 7. Import screen, behind the login.
+	// 8. Import screen, behind the login.
 	const admin = await newPage( 1440, 900 );
 	await admin.goto( `${ BASE }/wp-login.php`, { waitUntil: 'networkidle' } );
 	await admin.fill( '#user_login', 'admin' );
@@ -137,7 +160,7 @@ try {
 	}
 	const fileInput = await admin.locator( 'input[type="file"]' ).count();
 	check( 'import : l ecran d import repond', fileInput > 0, fileInput ? '' : 'pas de champ fichier' );
-	await admin.screenshot( { path: `${ SHOTS }/07-import.png`, fullPage: true } );
+	await admin.screenshot( { path: `${ SHOTS }/08-import.png`, fullPage: true } );
 	await admin.close();
 } finally {
 	await browser.close();

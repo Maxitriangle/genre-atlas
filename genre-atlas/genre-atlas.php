@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.2.3
+ * Version: 0.3.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.2.3' );
+define( 'GENRE_ATLAS_VERSION', '0.3.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v1' );
@@ -37,6 +37,7 @@ function genre_atlas_meta_fields() {
 		'ga_bpm_max'              => array( 'type' => 'integer', 'label' => 'BPM max' ),
 		'ga_family_shape'         => array( 'type' => 'string', 'label' => 'Family shape (top-level genres only)' ),
 		'ga_family_hue'           => array( 'type' => 'integer', 'label' => 'Family colour hue 0–360 (top-level genres only)' ),
+		'ga_group'                => array( 'type' => 'string', 'label' => 'Editorial group (used when the parent has more than 40 subgenres)' ),
 		'ga_status'               => array( 'type' => 'string', 'label' => 'Status' ),
 		'ga_wikidata_id'          => array( 'type' => 'string', 'label' => 'Wikidata ID' ),
 		'ga_musicbrainz_id'       => array( 'type' => 'string', 'label' => 'MusicBrainz ID' ),
@@ -152,6 +153,10 @@ function genre_atlas_tree() {
 		$origin = get_post_meta( $p->ID, 'ga_origin', true );
 		if ( $origin ) {
 			$node['o'] = $origin;
+		}
+		$group = get_post_meta( $p->ID, 'ga_group', true );
+		if ( $group ) {
+			$node['g'] = $group;
 		}
 		$bmin = (int) get_post_meta( $p->ID, 'ga_bpm_min', true );
 		$bmax = (int) get_post_meta( $p->ID, 'ga_bpm_max', true );

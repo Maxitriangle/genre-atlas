@@ -10,8 +10,9 @@
   var POLY = { tri_up: [3, -90, 1.18], tri_down: [3, 90, 1.18], square: [4, 45, 1.1], diamond: [4, 0, 1.05], pent: [5, -90, 1.04], hex: [6, 0, 1], hex_r: [6, 30, 1], oct: [8, 22.5, 1] };
   var INK = '#E4DFF5';
 
-  var N = {};            // id -> node
+  var N = {};            // id -> node, genres and editorial groups alike
   var ROOTS = [];        // families
+  var COUNT = 0;         // genres only: a group is a display device, not a genre
   var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false };
 
   /* ---------- helpers ---------- */
@@ -21,9 +22,15 @@
   function f2(x) { return x.toFixed(2); }
   function byEpoch(a, b) { var ya = a.y || 9999, yb = b.y || 9999; return ya - yb || a.name.localeCompare(b.name); }
   function family(n) { while (n.p && N[n.p]) n = N[n.p]; return n; }
-  function path(n) { var p = [n]; while (p[0].p && N[p[0].p]) p.unshift(N[p[0].p]); return p; }
+  // Two lineages: the real one, which the permalinks are built from, and the
+  // displayed one, which goes through the editorial group of a wide branch.
+  function realPath(n) { var p = [n]; while (p[0].p && N[p[0].p]) p.unshift(N[p[0].p]); return p; }
+  function path(n) { var p = [n]; while (p[0].dp && N[p[0].dp]) p.unshift(N[p[0].dp]); return p; }
   function depth(n) { return path(n).length - 1; }
-  function url(n) { return CFG.base + path(n).map(function (x) { return x.slug; }).join('/') + '/'; }
+  // A group has no page of its own: its link points at the genre it stands under.
+  function url(n) { return n.grp ? url(N[n.p]) : CFG.base + realPath(n).map(function (x) { return x.slug; }).join('/') + '/'; }
+  function decade(n) { return n.y ? Math.floor(n.y / 10) * 10 + 'S' : 'UNDATED'; }
+  function years(list) { return list.map(function (k) { return k.y; }).filter(Boolean); }
   function bpmText(n) { return n.b ? (n.b[0] === n.b[1] ? n.b[0] : n.b[0] + '–' + n.b[1]) + ' BPM' : '—'; }
   function color(n) { return 'oklch(0.80 0.105 ' + family(n).hue + ')'; }
 
@@ -40,7 +47,7 @@
     var kids = o.children != null ? o.children : n.kids.length, d = o.depth != null ? o.depth : depth(n);
     var year = o.year !== undefined ? o.year : n.y, bpm = o.bpm !== undefined ? o.bpm : n.b;
     var s = '<svg class="ga-glyph" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">';
-    s += '<circle cx="' + c + '" cy="' + c + '" r="' + f2(R) + '" fill="none" stroke="' + col + '" stroke-opacity="0.22" stroke-width="' + f2(sw * 0.8) + '"/>';
+    s += '<circle cx="' + c + '" cy="' + c + '" r="' + f2(R) + '" fill="none" stroke="' + col + '" stroke-opacity="0.22"' + (n.grp ? ' stroke-dasharray="3 5"' : '') + ' stroke-width="' + f2(sw * 0.8) + '"/>';
     if (year) {
       var sweep = Math.max(8, Math.min(352, (year - 1850) / 180 * 360)), a0 = rad(-90), a1 = rad(-90 + sweep);
       s += '<path d="M' + f2(c + R * Math.cos(a0)) + ' ' + f2(c + R * Math.sin(a0)) + ' A' + f2(R) + ' ' + f2(R) + ' 0 ' + (sweep > 180 ? 1 : 0) + ' 1 ' + f2(c + R * Math.cos(a1)) + ' ' + f2(c + R * Math.sin(a1)) + '" fill="none" stroke="' + col + '" stroke-width="' + f2(sw * 2.2) + '"/>';
@@ -61,7 +68,8 @@
 
   /* ---------- data ---------- */
   function build(tree) {
-    tree.nodes.forEach(function (n) { n.kids = []; N[n.id] = n; });
+    COUNT = tree.nodes.length;
+    tree.nodes.forEach(function (n) { n.kids = []; n.dp = n.p; N[n.id] = n; });
     tree.nodes.forEach(function (n) { if (n.p && N[n.p]) N[n.p].kids.push(n); else { n.p = 0; ROOTS.push(n); } });
     tree.nodes.forEach(function (n) { n.kids.sort(byEpoch); });
     ROOTS.forEach(function (r, i) {
@@ -70,6 +78,43 @@
       if (r.hue == null) r.hue = (295 + 157.5 * (i + 1)) % 360;
     });
     (function count(list) { list.forEach(function (n) { count(n.kids); n.total = n.kids.reduce(function (t, k) { return t + 1 + k.total; }, 0); }); })(ROOTS);
+    regroup();
+  }
+
+  /* ---------- editorial grouping of the wide branches ----------
+   * Past GROUP_LIMIT children the ring is unreadable, so it shows groups
+   * instead of genres. A genre's own label wins; anything left unlabelled
+   * falls back to its decade, so a branch is never unreadable while the
+   * editorial work is still under way. */
+  function regroup() {
+    Object.keys(N).forEach(function (id) {
+      var parent = N[id];
+      if (parent.grp || parent.kids.length <= GROUP_LIMIT) return;
+      var order = [], buckets = {};
+      parent.kids.forEach(function (k) {
+        var label = String(k.g || '').trim().toUpperCase() || decade(k);
+        if (!buckets[label]) { buckets[label] = []; order.push(label); }
+        buckets[label].push(k);
+      });
+      // One bucket, or one per genre, would not make the branch any narrower.
+      if (order.length < 2 || order.length >= parent.kids.length) return;
+      var groups = order.map(function (label, i) {
+        var members = buckets[label], ys = years(members);
+        var g = {
+          id: 'g' + parent.id + '-' + i, grp: true, p: parent.id, dp: parent.id,
+          name: label, slug: parent.slug, kids: members,
+          y: ys.length ? Math.min.apply(null, ys) : 0,
+          last: ys.length ? Math.max.apply(null, ys) : 0,
+          total: members.reduce(function (t, m) { return t + 1 + m.total; }, 0)
+        };
+        members.forEach(function (m) { m.dp = g.id; });
+        N[g.id] = g;
+        return g;
+      });
+      groups.sort(byEpoch);
+      parent.grouped = parent.kids.length;
+      parent.kids = groups;
+    });
   }
 
   /* ---------- state / routing ---------- */
@@ -77,7 +122,7 @@
     S.legend = false;
     if (!n) { S.centre = 0; S.open = 0; }
     else if (centreOnIt || !n.p) { S.centre = n.id; S.open = 0; }
-    else { S.centre = n.p; S.open = n.id; }
+    else { S.centre = n.dp; S.open = n.id; }
     S.dial = 0;
     if (S.open) { // bring the opened child inside the dial window
       var i = N[S.centre].kids.indexOf(N[S.open]);
@@ -98,7 +143,7 @@
   function header() {
     return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (ROOTS[0] ? glyph(ROOTS[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
       '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a></nav>' +
-      '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(Object.keys(N).length, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
+      '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
   function subbar(sel) {
     var crumbs = '<a href="' + esc(CFG.base) + '" data-go="0">INDEX</a>';
@@ -115,18 +160,20 @@
         '<div class="ga-tile-body">' + glyph(r, 104) + '<div><h2>' + esc(r.name) + '</h2><p>' + esc(micro(r) || 'ORIGIN: —') + '</p><p>' + pad(r.kids.length) + ' DIRECT SUBGENRES</p></div></div></a>';
     }).join('');
     return '<main class="ga-index"><div class="ga-hero"><div><p class="ga-micro">[INDEX] MUSIC GENRE ATLAS</p><h1>Every genre.<br>Every lineage.</h1></div>' +
-      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(ROOTS.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(Object.keys(N).length, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div></main>';
+      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(ROOTS.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div></main>';
   }
 
   /* ---------- detail panel ---------- */
   function panel(n) {
     var lineage = path(n).slice(0, -1).map(function (a) { return a.name; }).join(' / ');
-    var rows = [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['TEMPO', bpmText(n)], ['SUBGENRES', pad(n.kids.length) + ' DIRECT · ' + pad(n.total) + ' TOTAL']]
+    var rows = (n.grp
+      ? [['GENRES', pad(n.kids.length) + ' DIRECT · ' + pad(n.total) + ' TOTAL'], ['EPOCH', n.y ? n.y + (n.last && n.last !== n.y ? ' → ' + n.last : '') : '—']]
+      : [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['TEMPO', bpmText(n)], ['SUBGENRES', pad(n.kids.length) + ' DIRECT · ' + pad(n.total) + ' TOTAL']])
       .map(function (r) { return '<div class="ga-row"><span>' + r[0] + '</span><span>' + esc(r[1]) + '</span></div>'; }).join('');
     var kids = n.kids.slice(0, 6).map(function (k) { return '<a class="ga-kid" href="' + esc(url(k)) + '" data-go="' + k.id + '">' + glyph(k, 28) + '<span>' + esc(k.name) + '</span><em>' + (k.y || '') + '</em></a>'; }).join('');
     var isCentre = S.centre === n.id;
-    return '<aside class="ga-panel" aria-label="Selected genre" style="--fam:' + color(n) + '"><div class="ga-panel-top"><span>LEVEL ' + pad(depth(n)) + '</span><span class="fam">[SELECTED]</span></div>' +
-      '<div class="ga-panel-head">' + glyph(n, 120) + '<div><h1>' + esc(n.name) + '</h1>' + (lineage ? '<p class="fam">↳ ' + esc(lineage) + '</p>' : '<p class="fam">FAMILY</p>') + '</div></div>' +
+    return '<aside class="ga-panel" aria-label="Selected genre" style="--fam:' + color(n) + '"><div class="ga-panel-top"><span>LEVEL ' + pad(depth(n)) + '</span><span class="fam">' + (n.grp ? '[GROUP]' : '[SELECTED]') + '</span></div>' +
+      '<div class="ga-panel-head">' + glyph(n, 120) + '<div><h1>' + esc(n.name) + '</h1>' + (lineage ? '<p class="fam">↳ ' + esc(lineage) + '</p>' : '<p class="fam">FAMILY</p>') + (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : '') + '</div></div>' +
       (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') + '<div>' + rows + '</div>' +
       (n.kids.length && !isCentre ? '<a class="ga-cta" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>CENTRE ON ' + esc(n.name) + '</span><span>⊕</span></a>' : '') +
       (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — BY EPOCH</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + '</aside>';
@@ -180,6 +227,9 @@
       html += '<a class="ga-leaf" href="' + esc(url(k)) + '" data-go="' + k.id + '" style="left:' + f2(p[0]) + 'px;top:' + f2(p[1]) + 'px">' + glyph(k, 40) + '<span><b>' + esc(k.name) + '</b><i>' + esc(micro(k)) + (k.total ? ' · +' + pad(k.total) + ' SUB' : '') + '</i></span></a>';
     });
     var info = '<div class="ga-mapinfo"><p class="ga-micro">MAP NODE — ' + esc(centre.name) + '</p><p class="ga-micro">LEVELS ' + pad(anc.length + 1) + ' → ' + pad(anc.length + 2) + ' · CLICK TO OPEN · CLICK AGAIN TO CENTRE</p>';
+    if (centre.grouped) {
+      info += '<p class="ga-micro">' + pad(centre.grouped) + ' SUBGENRES GROUPED INTO ' + pad(all.length) + ' — TOO WIDE TO SHOW ONE BY ONE</p>';
+    }
     if (dial) {
       var ys = all.filter(function (k) { return k.y; }), first = ring[0], last = ring[Math.min(ring.length, win) - 1], lo2 = S.dial / all.length * 100, wd = win / all.length * 100;
       info += '<div class="ga-dial"><button data-dial="-1" aria-label="Earlier subgenres"' + (S.dial <= 0 ? ' disabled' : '') + '>◀</button><div class="ga-dial-track"><span style="left:' + f2(lo2) + '%;width:' + f2(wd) + '%"></span></div><button data-dial="1" aria-label="Later subgenres"' + (S.dial + win >= all.length ? ' disabled' : '') + '>▶</button></div>' +
@@ -255,7 +305,7 @@
   function results() {
     var box = document.getElementById('ga-results'), q = S.q.trim().toLowerCase(); if (!box) return;
     if (q.length < 2) { box.innerHTML = ''; return; }
-    var hits = Object.keys(N).map(function (id) { return N[id]; }).filter(function (n) { return n.name.toLowerCase().indexOf(q) >= 0; })
+    var hits = Object.keys(N).map(function (id) { return N[id]; }).filter(function (n) { return !n.grp && n.name.toLowerCase().indexOf(q) >= 0; })
       .sort(function (a, b) { return a.name.toLowerCase().indexOf(q) - b.name.toLowerCase().indexOf(q) || b.total - a.total; }).slice(0, 8);
     box.innerHTML = hits.length ? hits.map(function (n) { return '<a href="' + esc(url(n)) + '" data-go="' + n.id + '" style="--fam:' + color(n) + '">' + glyph(n, 28) + '<span><b>' + esc(n.name) + '</b><i>' + esc(path(n).slice(0, -1).map(function (a) { return a.name; }).join(' / ')) + '</i></span></a>'; }).join('') : '<p class="ga-micro">NO MATCH</p>';
   }

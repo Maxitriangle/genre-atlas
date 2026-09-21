@@ -90,7 +90,8 @@ function genre_atlas_column( $column, $post_id ) {
 		case 'ga_children':
 			$n = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = 'genre' AND post_status = 'publish'", $post_id ) );
 			if ( $n > 40 ) {
-				echo '<strong style="color:#b32d2e">' . (int) $n . ' — group needed</strong>';
+				$groups = genre_atlas_group_count( $post_id );
+				echo (int) $n . ' → <a href="' . esc_url( admin_url( 'edit.php?post_type=genre&page=genre-atlas-groups&branch=' . $post_id ) ) . '">' . (int) $groups . ' groups</a>';
 			} elseif ( $n > 12 ) {
 				echo (int) $n . ' (dial)';
 			} else {
@@ -158,5 +159,165 @@ function genre_atlas_settings_page() {
 	echo '<p><label><input type="checkbox" name="genre_atlas_home" value="1"' . checked( $on, '1', false ) . '> Show the atlas on the home page of the site</label></p>';
 	echo '<p class="description">When ticked, the home page of the site is the atlas index, whatever the theme. The atlas is always available at <code>' . esc_html( get_post_type_archive_link( 'genre' ) ) . '</code>.</p>';
 	submit_button( 'Save' );
+	echo '</form></div>';
+}
+
+/* ---- Wide branches: Genres → Groups -------------------------------------
+ * Past 40 subgenres the map cannot show a branch one genre at a time, so it
+ * shows editorial groups instead. Unlabelled genres fall back to their decade;
+ * this screen is where that fallback is replaced by real scenes.
+ * ---------------------------------------------------------------------- */
+
+add_action( 'admin_menu', 'genre_atlas_groups_menu' );
+function genre_atlas_groups_menu() {
+	add_submenu_page( 'edit.php?post_type=genre', 'Group wide branches', 'Groups', 'manage_options', 'genre-atlas-groups', 'genre_atlas_groups_page' );
+}
+
+/**
+ * Genres with more subgenres than the map can show one by one.
+ *
+ * @return array Post ID => number of children.
+ */
+function genre_atlas_wide_branches() {
+	global $wpdb;
+	$rows = $wpdb->get_results(
+		"SELECT post_parent AS id, COUNT(*) AS n FROM {$wpdb->posts}
+		 WHERE post_type = 'genre' AND post_status = 'publish' AND post_parent > 0
+		 GROUP BY post_parent HAVING n > 40 ORDER BY n DESC"
+	);
+	$wide = array();
+	foreach ( $rows as $row ) {
+		$wide[ (int) $row->id ] = (int) $row->n;
+	}
+	return $wide;
+}
+
+/**
+ * How many groups the atlas draws for a branch, manual labels and decade
+ * fallback taken together.
+ */
+function genre_atlas_group_count( $parent_id ) {
+	$children = get_posts(
+		array(
+			'post_type'   => 'genre',
+			'post_status' => 'publish',
+			'post_parent' => $parent_id,
+			'numberposts' => -1,
+			'fields'      => 'ids',
+		)
+	);
+	$labels = array();
+	foreach ( $children as $child_id ) {
+		$label = trim( (string) get_post_meta( $child_id, 'ga_group', true ) );
+		$labels[ mb_strtoupper( '' !== $label ? $label : genre_atlas_decade_of( $child_id ) ) ] = true;
+	}
+	return count( $labels );
+}
+
+function genre_atlas_decade_of( $post_id ) {
+	$year = (int) get_post_meta( $post_id, 'ga_epoch_year', true );
+	return $year ? ( (int) floor( $year / 10 ) * 10 ) . 's' : 'Undated';
+}
+
+function genre_atlas_groups_page() {
+	$wide   = genre_atlas_wide_branches();
+	$branch = isset( $_GET['branch'] ) ? (int) $_GET['branch'] : 0; // phpcs:ignore WordPress.Security.NonceVerification
+
+	echo '<div class="wrap"><h1>Group wide branches</h1>';
+
+	if ( ! $wide ) {
+		echo '<p>No genre has more than 40 subgenres. Nothing to group.</p></div>';
+		return;
+	}
+
+	if ( isset( $_POST['genre_atlas_groups_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['genre_atlas_groups_nonce'] ), 'genre_atlas_groups' ) && current_user_can( 'manage_options' ) ) {
+		$saved  = 0;
+		$groups = isset( $_POST['ga_group'] ) && is_array( $_POST['ga_group'] ) ? wp_unslash( $_POST['ga_group'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		foreach ( $groups as $child_id => $label ) {
+			$child_id = (int) $child_id;
+			$label    = sanitize_text_field( $label );
+			if ( ! $child_id || 'genre' !== get_post_type( $child_id ) ) {
+				continue;
+			}
+			$before = (string) get_post_meta( $child_id, 'ga_group', true );
+			if ( $before === $label ) {
+				continue;
+			}
+			if ( '' === $label ) {
+				delete_post_meta( $child_id, 'ga_group' );
+			} else {
+				update_post_meta( $child_id, 'ga_group', $label );
+			}
+			++$saved;
+		}
+		genre_atlas_flush_cache();
+		echo '<div class="notice notice-success"><p>' . (int) $saved . ' genre(s) regrouped.</p></div>';
+	}
+
+	echo '<p>A branch wider than 40 subgenres is shown on the map as groups. Name a group after a scene ("Chicago", "UK hardcore") to replace the decade the atlas falls back to. Genres sharing a name end up in the same group; leave a field empty to go back to the decade.</p>';
+
+	echo '<h2 class="screen-reader-text">Wide branches</h2><ul class="subsubsub" style="float:none">';
+	foreach ( $wide as $id => $count ) {
+		echo '<li><a href="' . esc_url( admin_url( 'edit.php?post_type=genre&page=genre-atlas-groups&branch=' . $id ) ) . '"' . ( $branch === $id ? ' class="current"' : '' ) . '>' .
+			esc_html( get_the_title( $id ) ) . ' <span class="count">(' . (int) $count . ')</span></a></li>';
+	}
+	echo '</ul><br class="clear">';
+
+	if ( ! $branch || ! isset( $wide[ $branch ] ) ) {
+		echo '<p>Pick a branch above.</p></div>';
+		return;
+	}
+
+	// Ordering on the epoch in the query would join on the meta table and drop
+	// the genres that have no epoch yet — exactly the ones most in need of a
+	// group. Take them all, sort afterwards.
+	$children = get_posts(
+		array(
+			'post_type'   => 'genre',
+			'post_status' => 'publish',
+			'post_parent' => $branch,
+			'numberposts' => -1,
+			'orderby'     => 'title',
+			'order'       => 'ASC',
+		)
+	);
+	usort(
+		$children,
+		function ( $a, $b ) {
+			$ya = (int) get_post_meta( $a->ID, 'ga_epoch_year', true );
+			$yb = (int) get_post_meta( $b->ID, 'ga_epoch_year', true );
+			$ya = $ya ? $ya : PHP_INT_MAX;
+			$yb = $yb ? $yb : PHP_INT_MAX;
+			return $ya === $yb ? strcmp( get_the_title( $a ), get_the_title( $b ) ) : $ya - $yb;
+		}
+	);
+
+	// What the atlas would show right now, so the effect of a change is visible.
+	$preview = array();
+	foreach ( $children as $child ) {
+		$label = (string) get_post_meta( $child->ID, 'ga_group', true );
+		$label = '' !== trim( $label ) ? trim( $label ) : genre_atlas_decade_of( $child->ID );
+		$key   = mb_strtoupper( $label );
+		$preview[ $key ] = isset( $preview[ $key ] ) ? $preview[ $key ] + 1 : 1;
+	}
+	echo '<p><strong>' . count( $children ) . ' subgenres</strong> currently shown as <strong>' . count( $preview ) . ' groups</strong>: ';
+	$parts = array();
+	foreach ( $preview as $label => $n ) {
+		$parts[] = esc_html( $label ) . ' (' . (int) $n . ')';
+	}
+	echo wp_kses_post( implode( ' · ', $parts ) ) . '</p>';
+
+	echo '<form method="post">';
+	wp_nonce_field( 'genre_atlas_groups', 'genre_atlas_groups_nonce' );
+	echo '<table class="wp-list-table widefat striped"><thead><tr><th>Genre</th><th style="width:6em">Epoch</th><th style="width:20em">Group</th></tr></thead><tbody>';
+	foreach ( $children as $child ) {
+		$label = (string) get_post_meta( $child->ID, 'ga_group', true );
+		$year  = get_post_meta( $child->ID, 'ga_epoch_year', true );
+		echo '<tr><td><a href="' . esc_url( get_edit_post_link( $child->ID ) ) . '">' . esc_html( get_the_title( $child ) ) . '</a></td>' .
+			'<td>' . esc_html( $year ? $year : '—' ) . '</td>' .
+			'<td><input type="text" class="regular-text" name="ga_group[' . (int) $child->ID . ']" value="' . esc_attr( $label ) . '" placeholder="' . esc_attr( genre_atlas_decade_of( $child->ID ) ) . '"></td></tr>';
+	}
+	echo '</tbody></table>';
+	submit_button( 'Save groups' );
 	echo '</form></div>';
 }
