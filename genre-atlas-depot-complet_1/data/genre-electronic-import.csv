@@ -1,0 +1,407 @@
+wikidata_id,musicbrainz_id,name,parent_wikidata_id,parent_name,level,children_direct,descendants_total,display_rule,epoch_year,origin,bpm_min,bpm_max,parent_choice,wikidata_parents_raw,wikipedia_links
+Q9778,89255676-1f14-4dd8-bbad-fca839d6aff4,electronic music,,,0,39,405,dial,1920,,,,root,,108
+Q863539,d89f1b3c-0e50-474e-8a76-443199dbc484,binaural beats,Q9778,electronic music,1,0,0,ring,1839,,,,single,electronic music,17
+Q1326777,463066ef-ac54-4dae-9c83-73824c2c8432,electroacoustic music,Q9778,electronic music,1,3,3,ring,1956,,,,single,contemporary classical music | electronic music | experimental music,30
+Q823560,edc96a6f-e8d0-4006-b065-d0fe188191c9,musique concrète,Q1326777,electroacoustic music,2,0,0,ring,1948,,,,single,electroacoustic music | modern classical music,35
+Q423918,0464c047-e7df-4555-a4e0-86c8620b2671,acousmatic music,Q1326777,electroacoustic music,2,0,0,ring,1957,,,,single,electroacoustic music,13
+Q3587612,a66b92bb-79dc-48ba-b9c8-bd501b984e2b,electroacoustic improvisation,Q1326777,electroacoustic music,2,0,0,ring,,,,,single,electroacoustic music | free improvisation,3
+Q325504,c4a69842-f891-4569-9506-1882aa5db433,electronic rock,Q9778,electronic music,1,2,2,ring,1965,United Kingdom,,,single,electronic music | rock music,37
+Q476983,c187da0e-48a0-4de5-b759-4ca2a1503008,synth-punk,Q325504,electronic rock,2,0,0,ring,1977,,,,single,electronic rock | punk music,16
+Q25099691,2228bcbf-78ca-424a-bf37-9cfa1566d82e,neon pop-punk,Q325504,electronic rock,2,0,0,ring,2005,United States,,,single,electronic rock | pop rock | pop-punk,1
+Q111387914,faf91afb-d07f-46dc-bf38-45200c22201f,moogsploitation,Q9778,electronic music,1,0,0,ring,1966,,,,single,electronic music,0
+Q79784514,2d069613-cd1b-4ce8-ad90-d0925e4ff9c9,progressive electronic music,Q9778,electronic music,1,1,1,ring,1969,,,,single,progressive music | synth music,1
+Q530750,ae93e318-c563-4bb7-9a48-eb2f4e4df96f,Berlin School of electronic music,Q79784514,progressive electronic music,2,0,0,ring,1974,Germany,,,single,progressive electronic music,12
+Q16625659,cb058995-96b0-45ed-a3db-2f066bfe948d,space ambient,Q9778,electronic music,1,0,0,ring,1971,,,,single,ambient music | space music,0
+Q1298934,988e91a3-3341-416d-b7f8-7dbef6848dac,synth-pop,Q9778,electronic music,1,2,2,ring,1972,Germany · Japan · United Kingdom,,,single,electronic pop,53
+Q11319232,1fb74392-b39f-4415-86b9-93b74920890a,techno kayō,Q1298934,synth-pop,2,0,0,ring,1979,Japan,,,single,kayōkyoku | techno-pop,1
+Q11339397,74a197c3-5d9a-4fde-8d46-3d28a620b1d0,pon-chak disco,Q1298934,synth-pop,2,0,0,ring,1987,,,,single,synth-pop | trot,1
+Q851213,3976e9ba-16d0-461d-b732-99408a0374ba,electronic dance music,Q9778,electronic music,1,76,321,group,1977,,,,single,club/dance music | electronic music,54
+Q98528149,f6cd97fb-7c7c-483e-9f98-e5c0abe1b1b2,electro-disco,Q851213,electronic dance music,2,4,4,ring,1976,,,,single,disco | electronic dance music,2
+Q2608506,0e0b8d87-7a4c-44d1-a279-1076782af19f,space disco,Q98528149,electro-disco,3,0,0,ring,1976,Europe,,,single,electro-disco,11
+Q606393,61d50e81-17bb-4b8b-ab36-7ae1759bc589,Hi-NRG,Q98528149,electro-disco,3,0,0,ring,1978,United Kingdom · United States,,,single,electro-disco,25
+Q744417,97a4a75a-6e49-4519-9684-ae2ccb2fc0f9,Italo disco,Q98528149,electro-disco,3,0,0,ring,1978,Italy,,,single,electro-disco | music of Italy,32
+Q110226234,583a8721-c90c-4338-acce-f0db44e4854b,red disco,Q98528149,electro-disco,3,0,0,ring,1986,Soviet Union,,,single,Eastern European pop | electro-disco | music of the Soviet Union,0
+Q217597,60f00d05-df4d-496e-8f5a-c45c03a56ad4,electro,Q851213,electronic dance music,2,1,1,ring,1980,,,,single,electronic dance music,35
+Q106522238,f89fe81d-acc4-4b34-ab75-6b8d15d60209,techno bass,Q217597,electro,3,0,0,ring,1989,,,,single,Miami bass | electro,1
+Q4049849,4e45ed10-6896-4911-8b5d-366f38af0f40,spacesynth,Q851213,electronic dance music,2,1,1,ring,1981,,,,single,electronic dance music,4
+Q108297232,d9ca03bf-e5b8-47f2-a0b2-d9951ba34559,doskpop,Q4049849,spacesynth,3,0,0,ring,1995,,,,auto,spacesynth | tracker music,0
+Q372103,f3818817-6235-48d5-82f7-b223eb0261d9,electronic body music,Q851213,electronic dance music,2,2,3,ring,1982,Belgium · Canada · Germany · United Kingdom,,,single,electronic dance music | post-industrial music,33
+Q1890098,637d81ef-90b2-4385-9726-5ecf47daf4e4,new beat,Q372103,electronic body music,3,1,1,ring,1987,Belgium,,,single,electronic body music,16
+Q106577108,2d663a70-d823-4d21-a755-2c91cb039eea,hard beat,Q1890098,new beat,4,0,0,ring,1989,Belgium,,,single,new beat,1
+Q828243,6df6e38b-2a6f-4990-94dc-ea48eba4f8ad,futurepop,Q372103,electronic body music,3,0,0,ring,1993,,,,auto,electronic body music | synth-pop,22
+Q655514,c37edb66-6712-46e2-b5fd-c4d386cf844f,freestyle music,Q851213,electronic dance music,2,0,0,ring,1982,United States,,,single,dance-pop | electronic dance music | electronic pop,14
+Q20502,a2782cb6-1cd0-477c-a61d-b3f8b42dd1b3,house music,Q851213,electronic dance music,2,48,72,group,1982,United States,,,single,electronic dance music,67
+Q1071961,eb815795-3ac3-4433-b957-b14e7ccf112d,Chicago house,Q20502,house music,3,0,0,ring,1981,United States,,,single,house music,20
+Q928825,092f40b5-9157-41f2-8243-68b704cd0ed1,garage house,Q20502,house music,3,1,1,ring,1983,United States,,,single,house music,18
+Q97277483,f2c19c14-82b2-4e99-a84b-c14fe39d4362,New Jersey sound,Q928825,garage house,4,0,0,ring,1987,United States,,,single,garage house,3
+Q874038,7fa479e7-3d35-40d1-96f7-b619a5ca9d9f,deep house,Q20502,house music,3,1,1,ring,1985,United States,,,single,house music,32
+Q108555812,6de95c7c-b404-4e2a-8571-739b9ae0c5ed,lo-fi house,Q874038,deep house,4,0,0,ring,2015,,,,auto,deep house | outsider house,1
+Q341364,54c01942-22fd-4184-9877-1db0089b18f1,acid house,Q20502,house music,3,0,0,ring,1987,United States,,,auto,acid | house music | rave music,31
+Q116875230,2f90721b-70be-4657-920f-4978ed0fc801,gospel house,Q20502,house music,3,0,0,ring,1987,,,,single,house music,0
+Q3056538,14e05f33-e086-4232-8e62-ef4b2ae05c38,Latin house,Q20502,house music,3,0,0,ring,1987,United States,,,single,Latin music | house music,10
+Q2465085,cc2327cf-88a3-476b-950c-296c382eabd9,ambient house,Q20502,house music,3,0,0,ring,1988,Japan · United Kingdom,,,auto,chill-out music | house music,16
+Q4852979,6889a005-a736-4131-b399-510094d86db0,Baltimore club,Q20502,house music,3,0,0,ring,1988,United States,,,auto,East Coast club | breakbeat | house music,6
+Q3032212,a6e22eba-5f6f-4042-befa-a6c881eec0e2,diva house,Q20502,house music,3,1,1,ring,1988,United States,,,single,house music,9
+Q5655695,c05828d7-9647-4eba-8f3a-b77a4b129453,hardbag,Q3032212,diva house,4,0,0,ring,1990,United Kingdom,,,auto,Eurohouse | diva house,2
+Q30917612,8f8cbcde-3948-4be5-8bf0-8073f13e4b60,Eurohouse,Q20502,house music,3,0,0,ring,1988,,,,single,house music,4
+Q601235,b99d935b-cc28-404f-a306-50b7d468304f,hip house,Q20502,house music,3,0,0,ring,1988,United States,,,single,hip-hop | house music | rapping,19
+Q2702280,0abc808d-5d95-4839-8d60-f48ca244d68a,Italo house,Q20502,house music,3,0,0,ring,1988,Italy · United Kingdom · United States,,,single,house music,12
+Q202925,57159d7c-faa8-4266-abe1-7504e312fc88,tribal house,Q20502,house music,3,1,1,ring,1988,United States,,,single,house music | tribal music,12
+Q111678759,e18e281d-7287-49fb-b513-f15f45caf0ca,guaracha,Q202925,tribal house,4,0,0,ring,2016,,,,single,tribal house,2
+Q106522098,ede9a040-d08d-443e-981b-a8f3d1da743e,ballroom,Q20502,house music,3,0,0,ring,1989,,,,single,US bass music | house music,0
+Q915152,70adb285-e1f7-458a-823f-5cbda5e291c4,progressive house,Q20502,house music,3,1,1,ring,1990,Germany · Netherlands · United Kingdom,,,single,house music | progressive electronic dance music,25
+Q140637712,253064b4-ec3d-4a45-b0d9-669428824de2,epic house,Q915152,progressive house,4,0,0,ring,,,,,single,progressive house,0
+Q109538574,36f3209d-503c-4126-a876-f1be01498458,vinahouse,Q20502,house music,3,0,0,ring,1990,Vietnam,,,single,house music,3
+Q2748817,75ddea23-a5f4-466c-951c-900d45fc352c,ghetto house,Q20502,house music,3,2,2,ring,1992,United States,,,single,house music,8
+Q1521688,511a3aa8-abdb-4e63-b11c-2d50ab19b373,ghettotech,Q2748817,ghetto house,4,0,0,ring,1994,United States,,,single,US bass music | ghetto house,13
+Q24885387,36cdb9a1-a19e-4c8f-a887-c451e71cca46,juke,Q2748817,ghetto house,4,0,0,ring,1997,,,,single,ghetto house,0
+Q1585015,9c5052e0-36ff-4b92-9447-58f44ffdf682,hard house,Q20502,house music,3,2,2,ring,1992,United Kingdom,,,single,hard dance | house music,15
+Q106522190,7c42bdd8-e8c6-42d4-930b-02f04abc9f8a,scouse house,Q1585015,hard house,4,0,0,ring,1998,,,,single,hard house,0
+Q28458027,d3a28fe9-40f8-47d7-8fe9-b741307f5b49,hardbass,Q1585015,hard house,4,0,0,ring,2001,Russia,,,single,pumping house,25
+Q949369,62e4c7cb-a2b3-462b-8d96-1b0d66ee6cf3,funky house,Q20502,house music,3,0,0,ring,1993,,,,single,house music,16
+Q598593,1f9c4b4a-c43d-40bd-b806-357153641fd0,tech house,Q20502,house music,3,2,2,ring,1993,Spain · United States,,,single,house music,17
+Q112829330,82c2ef18-d28a-48fa-992e-793328bcc117,deep tech,Q598593,tech house,4,0,0,ring,2009,,,,single,tech house,0
+Q122474257,d706c066-a33d-49e8-ad7e-d456234854f7,rominimal,Q598593,tech house,4,0,0,ring,,,,,single,minimal house | tech house,0
+Q1455292,5acda04e-995d-4f79-9a66-5fe6a977ce15,French house,Q20502,house music,3,0,0,ring,1995,France · United Kingdom,,,single,house music,28
+Q1931555,bbce54eb-a477-4b23-ac81-d3b9aac43756,microhouse,Q20502,house music,3,0,0,ring,1996,Europe,,,single,house music | minimal EDM,12
+Q5071702,5c1976f4-700b-4737-95a6-fee0fa0a8442,changa tuki,Q20502,house music,3,0,0,ring,1997,Venezuela,,,single,Latin electronic music | house music,3
+Q627906,05247982-e44f-4c58-96f8-a5453be69f5f,electro house,Q20502,house music,3,5,6,ring,1997,Europe · Netherlands,,,single,house music,29
+Q113493820,bb55e7aa-ec06-4605-b867-ee66938713e1,French electro,Q627906,electro house,4,0,0,ring,2000,,,,single,electro house,0
+Q2365784,60cbcb55-852b-4329-9392-30a697802b71,fidget house,Q627906,electro house,4,0,0,ring,2005,,,,single,electro house,5
+Q1228230,7201af41-f0f5-4b21-b09b-d0bf86e7b3e6,Dutch house,Q627906,electro house,4,1,1,ring,2007,,,,single,electro house,8
+Q130301602,54bfae60-074c-484d-90c4-260135823190,noiadance,Q1228230,Dutch house,5,0,0,ring,,,,,single,Brazilian funk | Dutch house,0
+Q11691380,d20c40f8-935f-43f3-80cb-b65857abb7fc,complextro,Q627906,electro house,4,0,0,ring,2008,,,,single,electro house,5
+Q20047305,ffb5811c-7e3c-4807-82ef-4caec5167344,Melbourne bounce,Q627906,electro house,4,0,0,ring,2011,Australia,,,single,electro house,6
+Q956717,8894628d-7f01-4936-913f-949fcf6ae91b,kwaito,Q20502,house music,3,1,1,ring,1998,South Africa,,,single,house music | music of South Africa,19
+Q135369460,5144fcc9-6cc7-471f-ab78-565e57b77192,bacardi,Q956717,kwaito,4,0,0,ring,,,,,single,kwaito,0
+Q108321657,d5c8b95a-fcf6-4c1d-b98c-a7cb4efb494f,jackin' house,Q20502,house music,3,0,0,ring,2001,,,,single,house music,1
+Q108297203,9ae2e708-136a-4954-8ec0-9ba13eae5e35,bubbling house,Q20502,house music,3,0,0,ring,2002,,,,single,house music,0
+Q388100,07041357-bba4-415f-8b9b-5423ae05f907,Afro house,Q20502,house music,3,1,1,ring,2005,South Africa,,,single,house music,7
+Q127606394,99032cf7-a4e3-40ac-b943-293b44b9a65b,3-step,Q388100,Afro house,4,0,0,ring,2018,,,,single,Afro house,0
+Q109378734,afadfd9d-e7f3-48cc-89b7-e73eb04bc395,popcorn music,Q20502,house music,3,0,0,ring,2007,,,,single,Eastern European pop | dance-pop | electronic pop | house music,3
+Q106634944,3a50f3eb-f0fd-49e2-b51c-e79df3e025c1,festival progressive house,Q20502,house music,3,0,0,ring,2008,Sweden,,,single,house music,0
+Q15300817,d4b71a23-7dc0-4291-9a8d-a27d5dbbf9f2,big room house,Q20502,house music,3,0,0,ring,2009,,,,single,house music,15
+Q109148913,640fb6e1-c2b9-40be-bbd0-4da3c4d4832c,organic house,Q20502,house music,3,0,0,ring,2009,,,,single,house music,2
+Q119438497,682002e1-0573-4162-8708-369aced0ef97,UK jackin',Q20502,house music,3,0,0,ring,2009,,,,single,house music,0
+Q80725127,4cc411c2-ec68-4aeb-8af5-d690e96eba88,future funk,Q20502,house music,3,0,0,ring,2010,,,,single,house music | vaporwave,4
+Q18358879,09a7573a-1bf2-4f8e-aadb-b582780746a0,outsider house,Q20502,house music,3,0,0,ring,2010,United States,,,single,house music,5
+Q110101956,e5145fb2-e796-462d-bd53-fff2feedc996,eletrofunk,Q20502,house music,3,0,0,ring,2011,,,,single,Brazilian funk | house music,0
+Q85741139,de3f8f85-1d8a-499f-9a1e-edad65a26dad,Amapiano,Q20502,house music,3,1,1,ring,2012,South Africa,,,single,house music | music of South Africa,16
+Q116745991,d42b567f-0952-424b-959d-bee6e5961cc0,Afropiano,Q85741139,Amapiano,4,0,0,ring,2020,,,,single,Afrobeats | Amapiano,0
+Q27345019,2d5cd6af-6195-4d12-9788-9a9b03ac0a12,bass house,Q20502,house music,3,1,1,ring,2012,,,,single,bass music (EDM) | house music,6
+Q114878571,78431be5-9128-409d-b9e4-e145f8065a25,speed house,Q27345019,bass house,4,0,0,ring,2017,,,,single,bass house | hard dance,0
+Q85748774,47df9270-9259-4a60-ac10-086982b8622e,Brazilian bass,Q20502,house music,3,1,1,ring,2012,,,,single,house music,4
+Q122474184,0c74e40a-9ef1-4214-ba4b-7143802c5bfc,mega funk,Q85748774,Brazilian bass,4,0,0,ring,,,,,single,Brazilian bass | Brazilian funk,0
+Q29973057,51183839-ce7a-4d3b-9e04-78bd9de8c8d5,gqom,Q20502,house music,3,0,0,ring,2012,South Africa,,,single,house music | music of South Africa,8
+Q18342587,fb56e5c9-2063-4664-9293-b4aa369d5286,tropical house,Q20502,house music,3,0,0,ring,2012,Europe,,,single,house music,24
+Q20021059,593ac826-8e72-4544-abc1-53192b683751,future house,Q20502,house music,3,2,2,ring,2013,United Kingdom,,,single,house music,15
+Q106634926,499b4153-64ff-4f0a-ad79-97828bc898aa,future bounce,Q20021059,future house,4,0,0,ring,2015,Netherlands,,,single,future house,1
+Q106493832,aef0ee80-631d-4487-b5af-c7306d1f676e,slap house,Q20021059,future house,4,0,0,ring,2017,Lithuania,,,auto,Brazilian bass | future house,5
+Q107697041,bcb59664-ce5c-4105-8617-7cd7edee87c1,g-house,Q20502,house music,3,0,0,ring,2013,,,,single,house music,0
+Q126175574,345b2a80-b4da-4c3b-a89d-b0291aefbb3d,stutter house,Q20502,house music,3,0,0,ring,2019,,,,single,house music,0
+Q123753500,6edcc882-b402-440c-975d-dd2f367956fb,phonk house,Q20502,house music,3,0,0,ring,2020,,,,auto,drift phonk | house music,1
+Q105637110,1ece3afe-bbff-4408-8e45-b20ca45fe9ae,jazz house,Q20502,house music,3,0,0,ring,,,,,single,house music,1
+Q116296482,bd7072d4-359f-4441-9e04-2a8e39f6a279,melodic house,Q20502,house music,3,0,0,ring,,,,,single,house music,1
+Q173844,9405d427-8b33-4670-a41a-040e23cef8ce,vocal house,Q20502,house music,3,0,0,ring,,,,,single,house music,4
+Q170611,41fe3260-fcc1-450b-bd5a-803886c56912,techno,Q851213,electronic dance music,2,13,19,dial,1984,United States,,,single,electronic dance music,65
+Q526463,88b01b1f-9151-4a1b-a9f7-608accdeaf20,Detroit techno,Q170611,techno,3,0,0,ring,1984,United States,,,single,techno,20
+Q341395,ba64013e-27bb-4f14-a530-8d25b296e0da,acid techno,Q170611,techno,3,0,0,ring,1988,,,,single,acid | techno,14
+Q106522080,43ef7823-5f16-4c9b-840d-f6b0de83a9c4,bleep techno,Q170611,techno,3,0,0,ring,1988,United Kingdom,,,single,techno,3
+Q112663444,576ebd6b-d72f-4311-b445-cd30a1b6cb5c,Belgian hardcore techno,Q170611,techno,3,0,0,ring,1990,Belgium,,,auto,hardcore | rave music | techno,3
+Q29480448,39b5ca66-873c-4a3d-94a3-3d31176b545e,industrial techno,Q170611,techno,3,1,1,ring,1990,United Kingdom,,,single,post-industrial music | techno,6
+Q16951912,c802c2be-2351-4478-b6a1-003fdb8733c9,Birmingham sound,Q29480448,industrial techno,4,0,0,ring,1993,,,,single,industrial techno,3
+Q1430587,c1313278-b276-4a79-9fc1-770dd62a8b83,minimal techno,Q170611,techno,3,0,0,ring,1991,Germany · United States,,,single,minimal EDM | techno,20
+Q107697221,8cfe3e23-f64c-4523-ab2a-186bf0dcd12e,hardgroove techno,Q170611,techno,3,0,0,ring,1993,,,,single,techno,0
+Q10856835,09a6e5f4-86e1-421c-9440-8da880dcc140,wonky techno,Q170611,techno,3,0,0,ring,1994,,,,single,techno,1
+Q111182811,e7c41e03-c3df-4841-a9e8-3451bbbac0de,peak time techno,Q170611,techno,3,0,0,ring,2011,,,,single,techno,0
+Q110185782,7fc914c1-a44e-43fd-ace8-63a2c6550057,melodic techno,Q170611,techno,3,0,0,ring,2013,,,,single,techno,0
+Q106521662,6d9ae1bf-be62-4cf4-aa70-f6f831eea80f,deep techno,Q170611,techno,3,2,2,ring,,,,,single,techno,0
+Q9149801,1c6e4eae-915d-4662-a7ff-038920b67d9e,ambient techno,Q106521662,deep techno,4,0,0,ring,1989,,,,single,deep techno,8
+Q1262781,16aab171-3dce-454e-bb96-2636f15813fc,dub techno,Q106521662,deep techno,4,0,0,ring,1993,Germany · United Kingdom · United States,,,auto,deep techno | dubtronica,9
+Q3084222,ed2e5e6b-2af6-4c7c-a9fb-e2e886bfda38,hard techno,Q170611,techno,3,3,3,ring,,Belgium · Germany · Netherlands,,,single,techno,7
+Q1524033,3a9b4cb1-a189-437d-85fa-c55d9c59415d,free tekno,Q3084222,hard techno,4,0,0,ring,1993,,,,auto,hard techno | rave music,6
+Q3048168,79719082-6fda-4461-ba89-c923d155cc45,mákina,Q3084222,hard techno,4,0,0,ring,1995,Catalan countries · Spain,,,single,hard dance | hard techno,11
+Q307054,23b9af26-1442-4dd9-8b40-a0db8a22e149,schranz,Q3084222,hard techno,4,0,0,ring,1995,Frankfurt,,,single,hard techno,14
+Q2693142,72b2e254-8ec9-4244-b1be-911a683ae0ff,techno body music,Q170611,techno,3,0,0,ring,,,,,auto,electronic body music | techno,2
+Q2866725,2df69460-a03a-4557-8b0f-0bf95b8b0d36,Balearic beat,Q851213,electronic dance music,2,0,0,ring,1987,Spain · United Kingdom,,,auto,chill-out music | electronic dance music,15
+Q663519,3b8f3f65-6caa-47c8-b076-fa59dfb69c43,breakbeat,Q851213,electronic dance music,2,9,10,ring,1987,United Kingdom,,,single,electronic dance music,34
+Q2634010,c755b4da-de34-4d64-909a-9447833315ce,acid breaks,Q663519,breakbeat,3,0,0,ring,1987,,,,single,acid | breakbeat,4
+Q858579,aac07ae0-8acf-4249-b5c0-2762b53947a2,big beat,Q663519,breakbeat,3,0,0,ring,1992,United Kingdom,,,single,breakbeat,23
+Q25389262,93b7938a-ff65-4eae-8b95-4301ce161b27,progressive breaks,Q663519,breakbeat,3,0,0,ring,1992,,,,single,breakbeat | progressive electronic dance music,2
+Q110874814,dacdaae8-eb43-4f0a-8c77-b284196a3be0,West Coast breaks,Q663519,breakbeat,3,0,0,ring,1992,,,,single,breakbeat,0
+Q2396639,81c66c55-2790-4dfb-9954-d8b07477700e,Florida breaks,Q663519,breakbeat,3,0,0,ring,1995,,,,single,breakbeat,4
+Q1756101,5338e516-5d65-48d5-b7ee-5fd82f3387ea,nu skool breaks,Q663519,breakbeat,3,0,0,ring,1995,United Kingdom,,,single,breakbeat,8
+Q11680297,fd05e327-1e87-4db3-beeb-660b41167da5,psybreaks,Q663519,breakbeat,3,0,0,ring,1995,,,,single,breakbeat,2
+Q106636289,ddfcd69c-d363-41ca-93e9-2dc09280a369,breakbeat kota,Q663519,breakbeat,3,1,1,ring,2000,,,,auto,breakbeat | funkot,0
+Q106636283,02585ef0-2034-4905-aa47-9fb4ee090c89,jungle dutch,Q106636289,breakbeat kota,4,0,0,ring,2016,,,,single,breakbeat kota,0
+Q106521759,53ab2484-e9f7-4709-9f0e-275446e7ff7c,funky breaks,Q663519,breakbeat,3,0,0,ring,,,,,single,breakbeat,0
+Q848852,8de96944-cabb-4864-893a-ed072d802046,Eurobeat,Q851213,electronic dance music,2,1,1,ring,1988,Italy,,,single,electronic dance music,27
+Q133520038,3246236f-45aa-4637-a510-1cbbd338616f,J-euro,Q848852,Eurobeat,3,0,0,ring,,,,,single,Eurobeat | J-pop,0
+Q216961,e9a67960-9b49-4967-a1c9-c26360e9c612,Eurodance,Q851213,electronic dance music,2,2,3,ring,1988,Belgium · Germany · Netherlands,,,single,electronic dance music | music of Europe,47
+Q930592,0e246476-8dc7-4806-9493-21a510a7d63d,Italo dance,Q216961,Eurodance,3,1,1,ring,1988,Italy,,,single,Eurodance,18
+Q109589387,5ab05a08-86cd-4461-9a9c-e5ef37ef0ea5,manyao,Q930592,Italo dance,4,0,0,ring,2017,,,,single,Italo dance | electronic dance music,0
+Q2076779,17ea7898-10ff-4c48-8729-3a077f6eb75e,bubblegum dance,Q216961,Eurodance,3,0,0,ring,1995,Denmark · Japan,,,single,Eurodance,8
+Q170435,2afc2320-384f-43a4-a71e-1b763c485045,trance,Q851213,electronic dance music,2,15,28,dial,1988,Germany,,,single,electronic dance music,59
+Q481900,267433bc-721d-4d60-8455-e6ed1e0b922f,acid trance,Q170435,trance,3,0,0,ring,1988,Europe,,,single,acid | trance,11
+Q16837290,a57eaca8-4df0-4835-8581-1179a485729f,Balearic trance,Q170435,trance,3,0,0,ring,1991,Spain,,,auto,chill-out music | trance,7
+Q832665,c8acb78a-8337-4eae-9d19-48220dba03ac,hard trance,Q170435,trance,3,0,0,ring,1992,Belgium · Germany · Netherlands,,,single,hard dance | trance,19
+Q2260696,6bd228be-3374-4c4e-bc0a-46779fafe8f1,progressive trance,Q170435,trance,3,0,0,ring,1992,,,,single,progressive electronic dance music | trance,11
+Q622871,b3cccf71-e843-4546-87fa-728055ba3147,psychedelic trance,Q170435,trance,3,6,11,ring,1992,India · Israel · South Africa · United Kingdom,,,single,trance,35
+Q835131,ade8f293-c049-438a-a5f0-b51e6776d9c5,Goa trance,Q622871,psychedelic trance,4,1,1,ring,1991,India,,,single,psychedelic trance,23
+Q4706203,62065a7f-c26c-4c27-8ac6-707437acd52f,nitzhonot,Q835131,Goa trance,5,0,0,ring,1998,Israel,,,single,Goa trance,4
+Q2452152,9e70bec0-18b3-4bcd-b96c-1a607661f3b8,dark psytrance,Q622871,psychedelic trance,4,2,2,ring,1996,,,,single,psychedelic trance,10
+Q105404852,39d5078b-d2b4-44fd-86e0-e3a2e6ae1f54,hi-tech psytrance,Q2452152,dark psytrance,5,0,0,ring,2005,,,,single,dark psytrance,1
+Q114107195,d1cbfa0d-b1b6-4692-bbec-457681dd111f,psycore,Q2452152,dark psytrance,5,0,0,ring,2007,,,,single,dark psytrance,0
+Q2497323,f60ce167-04a0-4b17-ba82-57e481c5e858,suomisaundi,Q622871,psychedelic trance,4,0,0,ring,1996,,,,single,psychedelic trance,8
+Q109714096,80a85e62-8500-4b02-a5e1-1741b66e8536,forest psytrance,Q622871,psychedelic trance,4,0,0,ring,1998,,,,single,psychedelic trance,0
+Q10286190,0d89844c-d79e-427a-96ef-8117dd2769c5,full-on,Q622871,psychedelic trance,4,1,1,ring,1998,Brazil,,,single,psychedelic trance,2
+Q109714084,0d30c163-53ba-4805-aead-ba209b4eb997,twilight psytrance,Q10286190,full-on,5,0,0,ring,1999,,,,single,full-on,0
+Q2385862,050ec099-b9b5-4f5d-82fa-2238a8c9c650,progressive psytrance,Q622871,psychedelic trance,4,1,1,ring,1998,Europe · United States,,,single,progressive electronic dance music | psychedelic trance,5
+Q109715837,3bf27ab1-32dc-46dd-8512-1cbd3e8bd866,zenonesque,Q2385862,progressive psytrance,5,0,0,ring,1999,,,,single,progressive psytrance,0
+Q1027999,f4dec9c1-abe2-4f3f-adee-5aa8f395d5ce,vocal trance,Q170435,trance,3,0,0,ring,1992,Europe,,,single,trance,14
+Q2302695,ec039eb4-e175-44af-82ed-f152349eca35,tech trance,Q170435,trance,3,0,0,ring,1993,Germany,,,single,trance,13
+Q1339027,f32ff972-f3ea-41a4-80ae-650fe317abfc,dream trance,Q170435,trance,3,0,0,ring,1994,Italy,,,single,trance,16
+Q5402470,b51565b2-b298-4f43-a775-e974e3ab063b,hard NRG,Q170435,trance,3,0,0,ring,1994,,,,single,hard dance | trance,3
+Q890887,5549175d-c972-4038-b610-57e482c83608,Eurotrance,Q170435,trance,3,1,2,ring,1995,,,,single,music of Europe | trance,14
+Q733804,e7e26200-8939-4623-af75-32ba5e04e854,hands up,Q890887,Eurotrance,4,1,1,ring,2001,,,,single,Eurotrance | hard dance,13
+Q132165415,2393533c-f66a-411a-8f77-fe7465d77820,buchiage trance,Q733804,hands up,5,0,0,ring,,,,,single,hands up | music of Japan,0
+Q1136765,13e409d0-fe4a-4dd4-a957-6e06462b085f,uplifting trance,Q170435,trance,3,0,0,ring,1996,,,,single,trance,15
+Q108831582,302123f6-aaa4-4dd1-91aa-aeb622536329,big room trance,Q170435,trance,3,0,0,ring,2008,,,,single,trance,0
+Q11877639,cabec35a-16d0-47ff-9c89-398cc481c029,electro trance,Q170435,trance,3,0,0,ring,,,,,single,trance,1
+Q134997891,94eebdb4-b064-4e79-94b6-e4add8fdc784,hi-tech full-on,Q170435,trance,3,0,0,ring,,,,,single,trance,0
+Q139807789,21326c45-a01b-4438-ac08-fed83d87c423,trance 2.0,Q170435,trance,3,0,0,ring,,,,,single,trance,0
+Q388906,3308d0b0-3c7f-45e2-b835-5c2a0d433f02,hardcore,Q851213,electronic dance music,2,19,56,dial,1989,Germany,,,single,electronic dance music,36
+Q1585075,1c5db6d3-9ce6-48c0-9bff-e29f7d7cb1af,breakbeat hardcore,Q388906,hardcore,3,4,27,ring,1989,United Kingdom,,,auto,breakbeat | hardcore | rave music,15
+Q1102161,ea9b6ec3-fc8f-4c55-b2f9-19bd4511a986,jungle,Q1585075,breakbeat hardcore,4,2,23,ring,1987,United Kingdom,,,override,drum and bass,31
+Q2710523,7aae791f-dfff-4910-b133-ba1b9e9c1560,ragga jungle,Q1102161,jungle,5,0,0,ring,1989,United Kingdom,,,single,jungle | ragga,9
+Q188994,462f9321-6103-49c9-b6db-96219bce6f62,drum and bass,Q1102161,jungle,5,17,21,dial,1992,Jamaica · United Kingdom,,,override,electronic dance music,48
+Q2842043,1e215463-ccf8-413a-b281-bd83ed2246bb,atmospheric drum and bass,Q188994,drum and bass,6,0,0,ring,1991,,,,single,intelligent drum and bass,3
+Q2121992,4dbca7ea-9bea-4c14-a819-cefa071127fc,drumfunk,Q188994,drum and bass,6,0,0,ring,1994,,,,single,drum and bass,9
+Q2640307,f4553b2c-ef41-4d1c-ae02-7145202465b8,hardstep,Q188994,drum and bass,6,0,0,ring,1994,Austria,,,single,drum and bass,10
+Q9011351,6294b8c8-42d7-4f32-a888-1d77acce495a,jazzstep,Q188994,drum and bass,6,0,0,ring,1994,United Kingdom,,,single,intelligent drum and bass,7
+Q46649,5766df26-70b6-45ac-a0e2-cf5f4b1fd1ac,jump-up,Q188994,drum and bass,6,0,0,ring,1995,,,,single,drum and bass,11
+Q1335569,de706214-32bb-4b52-9bb4-463aec11bcd3,techstep,Q188994,drum and bass,6,0,0,ring,1995,United Kingdom,,,single,drum and bass,15
+Q1166321,8a51f0fd-1c24-4938-8e6a-e70c6e95b629,darkstep,Q188994,drum and bass,6,2,2,ring,1997,United Kingdom · United States,,,single,drum and bass,14
+Q108716407,c3c86aa0-cd5a-4fcc-9c35-179415787b6c,skullstep,Q1166321,darkstep,7,0,0,ring,2005,,,,single,darkstep,0
+Q11830421,a9417ed2-3276-4b0f-b5b3-33f88d33c5fc,crossbreed,Q1166321,darkstep,7,0,0,ring,2006,,,,auto,darkstep | hardcore,2
+Q2082572,f1eaf2fd-46de-4ee3-81b8-5c064a33ce82,liquid drum and bass,Q188994,drum and bass,6,0,0,ring,1998,United Kingdom,,,single,drum and bass,17
+Q967654,9094f251-8379-4ced-9541-a1c91045c327,neurofunk,Q188994,drum and bass,6,0,0,ring,1998,,,,single,drum and bass,18
+Q3179786,ea1dbc68-c880-4487-8656-6c273acb948e,sambass,Q188994,drum and bass,6,0,0,ring,2001,Brazil,,,single,drum and bass,8
+Q646165,63d216d7-1a9a-4863-87f8-906541de801a,trancestep,Q188994,drum and bass,6,0,0,ring,2001,,,,single,drum and bass,4
+Q107332291,5af8f19f-ea20-44cb-b6a3-05d5ed8b19a9,dancefloor drum and bass,Q188994,drum and bass,6,0,0,ring,2004,,,,single,drum and bass,0
+Q10268931,49f3843a-2a29-4f37-9053-3cc5a3e545b7,dubwise drum and bass,Q188994,drum and bass,6,0,0,ring,2004,,,,single,drum and bass,1
+Q106404300,8f910197-1389-4924-8428-64d9b6e2905f,minimal drum and bass,Q188994,drum and bass,6,2,2,ring,2007,,,,single,drum and bass | minimal EDM,0
+Q135437342,ba7ff630-3168-4b9e-9d05-094943af8d50,microfunk,Q106404300,minimal drum and bass,7,0,0,ring,2008,Russia,,,single,minimal drum and bass,0
+Q135553474,a0dd9bdd-ee29-4b68-8a4d-f6f308074538,autonomic,Q106404300,minimal drum and bass,7,0,0,ring,,,,,single,minimal drum and bass,0
+Q107010574,c37219bd-6d4d-464a-accb-fe70c767dcb7,halftime,Q188994,drum and bass,6,0,0,ring,2011,,,,single,drum and bass,0
+Q111804002,dd674bd2-6bff-4d94-8aa2-8f6d30fdfcd2,deep drum and bass,Q188994,drum and bass,6,0,0,ring,,,,,single,drum and bass,0
+Q4181927,995834dd-a1a0-4514-ae51-8af2be62f1d1,technoid,Q188994,drum and bass,6,0,0,ring,,,,,single,drum and bass,3
+Q11693017,74e08062-3737-4744-9177-873d8c1eb6ac,darkcore,Q1585075,breakbeat hardcore,4,0,0,ring,1992,United Kingdom,,,single,breakbeat hardcore,10
+Q4177625,6573896e-5e5e-48d9-b030-4cf95e7ac861,hardcore breaks,Q1585075,breakbeat hardcore,4,0,0,ring,2000,,,,single,breakbeat hardcore,2
+Q140528499,4baf9f91-5d11-48cc-b1ca-735bdd3683d8,jungle techno,Q1585075,breakbeat hardcore,4,0,0,ring,,,,,single,breakbeat hardcore,0
+Q1191299,e4ba3fa5-5256-4f87-981a-1239e05acab0,industrial hardcore,Q388906,hardcore,3,0,0,ring,1990,,,,single,hardcore | post-industrial music,8
+Q341396,4bcbf8f0-e8bc-403c-93d4-cf2b4385cecd,acidcore,Q388906,hardcore,3,0,0,ring,1991,Belgium · Netherlands,,,single,acid | hardcore,3
+Q56580,6d12e828-40a5-4ebc-a5b0-aa5506e2efd0,digital hardcore,Q388906,hardcore,3,0,0,ring,1992,Germany,,,single,hardcore | punk music,16
+Q820049,2f2118d7-315b-4241-bf40-d5d6ca11348d,gabber,Q388906,hardcore,3,1,1,ring,1992,Netherlands,,,single,hardcore,25
+Q1983750,5b4f9d07-d830-4ee6-8cbb-7e0dccfb7eb0,mainstream hardcore,Q820049,gabber,4,0,0,ring,1996,,,,single,gabber | hard dance,9
+Q339906,bd477a3e-9235-4597-9ce5-3caa994baef7,happy hardcore,Q388906,hardcore,3,2,3,ring,1992,Germany · Netherlands · United Kingdom,,,single,hardcore,26
+Q3066180,6804f401-50a8-4e7a-9094-278c80c2ebed,bouncy techno,Q339906,happy hardcore,4,0,0,ring,1992,Scotland · United Kingdom,,,auto,happy hardcore | rave music,5
+Q2374619,45cac621-cb2d-49a9-90b8-0472b8fbd864,UK hardcore,Q339906,happy hardcore,4,1,1,ring,1993,United Kingdom,,,single,happy hardcore | hard dance,8
+Q117750973,c10156a4-aa7c-4e81-b520-9b3ce13f2cd1,powerstomp,Q2374619,UK hardcore,5,0,0,ring,,,,,single,UK hardcore,0
+Q1242484,4bd9ad1b-ed76-4c68-a1ca-bf6025d675fb,doomcore,Q388906,hardcore,3,0,0,ring,1993,,,,single,hardcore,4
+Q903735,8aad8a03-be38-48e4-aa43-5ca0f826c569,breakcore,Q388906,hardcore,3,3,3,ring,1994,Germany · Netherlands · United Kingdom,,,single,hardcore,24
+Q1275972,41603984-87fd-47e7-ad57-64839a277c55,raggacore,Q903735,breakcore,4,0,0,ring,1998,,,,single,breakcore,7
+Q109322851,a3e44ca3-7e7c-48fb-bd92-965fe144aabc,mashcore,Q903735,breakcore,4,0,0,ring,2003,,,,single,breakcore,0
+Q5978495,73c6290f-e5fb-4e92-889a-5de98ac2a73f,lolicore,Q903735,breakcore,4,0,0,ring,2004,,,,single,breakcore,3
+Q848457,03544ca7-48ef-449b-abed-67aebdcd8120,speedcore,Q388906,hardcore,3,2,2,ring,1994,,,,single,hardcore,23
+Q3062629,6d588e79-30b0-4f8c-9924-d4a951d60aef,extratone,Q848457,speedcore,4,0,0,ring,2006,,,,single,speedcore,4
+Q11312853,dfef6183-73cc-4ff1-a78c-6200a57c21c7,splittercore,Q848457,speedcore,4,0,0,ring,2007,,,,single,speedcore,2
+Q2181965,0d7ed299-9a8b-4819-ba00-9a188a8f57e8,freeform hardcore,Q388906,hardcore,3,0,0,ring,1995,United Kingdom,,,single,hardcore,7
+Q1265050,8a757534-0928-434c-accd-6be5517c1af3,terrorcore,Q388906,hardcore,3,0,0,ring,1995,Netherlands,,,single,hardcore,12
+Q1455487,f372ab9d-3ea6-4975-93d2-a91c421b29a7,Frenchcore,Q388906,hardcore,3,0,0,ring,1997,France,,,single,hardcore,14
+Q106594174,a0b5aaea-8535-4869-a6be-5dd57c9eaadc,uptempo hardcore,Q388906,hardcore,3,0,0,ring,2008,,,,single,hard dance | hardcore,2
+Q125854043,7d22c459-5f2e-4443-b383-518c03aa990c,amigacore,Q388906,hardcore,3,0,0,ring,,,,,auto,hardcore | tracker music,0
+Q123543092,011feba0-d7a5-4441-bb28-5ce3b16aaa11,darkcore,Q388906,hardcore,3,0,0,ring,,Netherlands,,,single,hardcore,1
+Q122839839,3cc5d085-84ce-4e62-8cd0-392163a34cb1,deathchant hardcore,Q388906,hardcore,3,0,0,ring,,,,,single,hardcore,0
+Q136696186,17fa1ba8-3731-46d6-8467-df41dfdd5cf8,frapcore,Q388906,hardcore,3,0,0,ring,,,,,single,hardcore,0
+Q140716476,daf32434-30c9-4f25-8e5e-5f434dfe2016,hard renaissance,Q388906,hardcore,3,0,0,ring,,,,,auto,Japanese artcore | hardcore,0
+Q3098078,aa068134-d667-4f9b-a7a2-07a5fafe51c1,J-core,Q388906,hardcore,3,1,1,ring,,Japan,,,single,Dōjin music | hardcore,10
+Q113621229,ce119355-b6b5-40eb-adad-538a1f6a6ad4,future core,Q3098078,J-core,4,0,0,ring,,,,,auto,J-core | UK hardcore | kawaii future bass,0
+Q30902501,d8cd64c6-5b28-47e1-a9a2-8766c5388a2a,tecnorumba,Q851213,electronic dance music,2,0,0,ring,1989,Spain,,,single,dance-pop | electronic dance music | music of Spain,2
+Q108297187,6f5d9680-2932-4901-b88b-60c2e7e3f814,balani show,Q851213,electronic dance music,2,0,0,ring,1990,,,,single,electronic dance music | music of West Africa,1
+Q22909461,b3d3eddf-092e-482c-8d77-63dee15ad982,toytown techno,Q851213,electronic dance music,2,0,0,ring,1990,,,,single,electronic dance music,3
+Q660984,8eb583f1-4fd7-460c-8246-dcdccc0e3ef9,intelligent dance music,Q851213,electronic dance music,2,1,1,ring,1992,United Kingdom,,,single,electronic dance music,31
+Q1259016,6732427a-0d04-4a15-b9e5-b4b5b9532f8f,drill and bass,Q660984,intelligent dance music,3,0,0,ring,1995,,,,single,intelligent dance music,13
+Q2406633,cf9daa9d-74e2-4eff-b0eb-7269bbca6501,broken beat,Q851213,electronic dance music,2,0,0,ring,1993,United Kingdom,,,auto,electronic dance music | electronica,7
+Q4045538,351424dd-91a3-4cf2-9edb-5df647743ec0,nu-disco,Q851213,electronic dance music,2,0,0,ring,1993,,,,single,disco | electronic dance music,17
+Q1165777,95c57cd7-7fb8-4405-ade1-775c2d27e54e,UK garage,Q851213,electronic dance music,2,6,6,ring,1993,United Kingdom,,,single,electronic dance music,28
+Q780517,59c7776f-fd87-4cfb-a7a5-9fe66ec02b1b,speed garage,Q1165777,UK garage,3,0,0,ring,1994,United Kingdom,,,auto,UK garage | house music,11
+Q1751409,db325bd7-ae64-40bd-966a-a3af3cef8bb9,2-step garage,Q1165777,UK garage,3,0,0,ring,1998,United Kingdom,,,single,UK garage,13
+Q1987980,e98e563c-afaa-4e38-9fc8-c46a35c98b9d,breakstep,Q1165777,UK garage,3,0,0,ring,1998,United Kingdom,,,single,UK garage,7
+Q4846346,8ae6fbbe-2dd0-432e-a176-6678f48dffb4,bassline,Q1165777,UK garage,3,0,0,ring,1999,,,,single,UK garage | bass music (EDM),11
+Q5510816,ad6d7f8d-2224-4708-8a00-0fdd838d4676,future garage,Q1165777,UK garage,3,0,0,ring,2005,United Kingdom,,,single,UK garage,7
+Q139488139,77aa0d65-8295-469c-a428-92c9055c6ea3,dark garage,Q1165777,UK garage,3,0,0,ring,,,,,single,UK garage,0
+Q602561,9b1af4d0-2196-43d4-bbca-845a2e02d962,electro swing,Q851213,electronic dance music,2,0,0,ring,1994,,,,single,electronic dance music,19
+Q106520965,f6412203-84a7-45db-9245-c4d57c36515c,nerdcore techno,Q851213,electronic dance music,2,0,0,ring,1994,,,,single,electronic dance music,0
+Q106876075,d58c4439-f191-4344-80b9-f8887db4485f,bubbling,Q851213,electronic dance music,2,0,0,ring,1995,Dutch Caribbean,,,single,dancehall | electronic dance music,2
+Q861823,cae57e98-c939-4b0e-ae49-8e0cb1bdc91d,electroclash,Q851213,electronic dance music,2,0,0,ring,1995,,,,single,electronic dance music,26
+Q5466607,405b97cf-e1d9-48aa-97cd-53212730589c,footwork,Q851213,electronic dance music,2,1,1,ring,1997,United States,,,single,bass music (EDM),9
+Q110967939,a5b58e91-7764-4aa5-9609-4ce61cd0ddfd,footwork jungle,Q5466607,footwork,3,0,0,ring,2011,,,,auto,drum and bass | footwork,0
+Q223840,4a74a604-f702-424c-984f-93c5b04360ea,hardstyle,Q851213,electronic dance music,2,6,8,ring,1998,Europe,,,single,hard dance,35
+Q108297238,be5b703a-2544-4df4-b5d9-1c5c3a8d8edb,euphoric hardstyle,Q223840,hardstyle,3,0,0,ring,2008,,,,single,hardstyle,0
+Q21000514,0b81f6b8-dfa3-41c8-9e3f-a21ad44e1011,rawstyle,Q223840,hardstyle,3,2,2,ring,2008,,,,single,hardstyle,3
+Q114594005,f550f264-0683-4999-b99d-5dfc67b7adff,rawphoric,Q21000514,rawstyle,4,0,0,ring,2016,,,,single,rawstyle,0
+Q139567721,dbfb70cb-c515-4c6a-be5e-90658444b102,xtra raw,Q21000514,rawstyle,4,0,0,ring,,,,,single,rawstyle,0
+Q2428625,1954b2c1-2a6c-4d3c-8256-ae0343c1b7ba,dubstyle,Q223840,hardstyle,3,0,0,ring,2010,United Kingdom,,,single,hardstyle,2
+Q114743580,9a6666cb-9816-4ab4-acf6-0e91030339be,psystyle,Q223840,hardstyle,3,0,0,ring,2015,,,,single,hardstyle,0
+Q2611143,e967b751-d919-445d-93f7-2902168cbe31,early hardstyle,Q223840,hardstyle,3,0,0,ring,,,,,single,hardstyle,1
+Q136206123,573829f4-9caf-456e-a383-33fda8aa5d9a,nustyle,Q223840,hardstyle,3,0,0,ring,,,,,single,hardstyle,0
+Q11332204,c81d4b3d-e4cd-426c-b5c9-b175d81f81aa,funkot,Q851213,electronic dance music,2,0,0,ring,1999,,,,single,electronic dance music,4
+Q1191544,8134acbd-8822-4042-8e17-276599a3a843,kuduro,Q851213,electronic dance music,2,1,1,ring,1999,Angola,,,single,electronic dance music | music of Central Africa,18
+Q108297194,9889899e-cd71-49cd-aa54-b908084345a2,batida,Q1191544,kuduro,3,0,0,ring,1980,,,,single,kuduro,0
+Q1243254,8d4fc5b0-f1b2-4784-9db8-cc37bb7a151a,lento violento,Q851213,electronic dance music,2,0,0,ring,1999,Italy,,,single,hard dance,10
+Q382343,d41531c8-99c2-4c3c-981d-4ee22ddb9a6f,Nortec,Q851213,electronic dance music,2,0,0,ring,1999,,,,single,electronic dance music,5
+Q513357,9d966bd4-89d5-4d6a-a408-eeb8c300c426,coupé-décalé,Q851213,electronic dance music,2,0,0,ring,2000,France,,,single,electronic dance music | zouglou,9
+Q362515,b4d22964-4640-474e-a86a-0bdac986ca87,electrotango,Q851213,electronic dance music,2,0,0,ring,2000,,,,single,electronic dance music,7
+Q7844612,7d0d95f7-eb36-4ec9-9492-0c0d51a6c2b8,tribal guarachero,Q851213,electronic dance music,2,0,0,ring,2000,,,,single,Latin electronic music | electronic dance music,3
+Q20474,1b50083b-1afa-4778-82c8-548b309af783,dubstep,Q851213,electronic dance music,2,6,15,ring,2001,United Kingdom,,,single,bass music (EDM),50
+Q109335331,f7156de7-0602-4f5c-ac72-284119e85dad,dungeon sound,Q20474,dubstep,3,0,0,ring,2006,,,,single,dubstep,0
+Q118798959,d861508b-f667-49bf-abaf-02d1587ec902,tearout dubstep,Q20474,dubstep,3,0,0,ring,2006,,,,single,dubstep,0
+Q20903,1dfc0cd3-bf39-4240-9265-96ced154425a,brostep,Q20474,dubstep,3,6,9,ring,2007,United States,,,single,dubstep,8
+Q24876318,685717fe-3d0d-4d99-a4bf-1b9d89112de2,drumstep,Q20903,brostep,4,0,0,ring,2007,,,,auto,brostep | drum and bass,2
+Q106528420,bd728f00-d740-463c-a420-4f05917beb79,deathstep,Q20903,brostep,4,1,1,ring,2010,,,,single,brostep,0
+Q109713720,81003386-f8ee-4c22-af5d-ae3514afbc8b,minatory,Q106528420,deathstep,5,0,0,ring,2015,,,,single,deathstep,0
+Q65065491,e07f0fb2-8a7d-4436-8745-b8d26f9a2d6f,riddim,Q20903,brostep,4,2,2,ring,2010,England,,,single,brostep | dubstep,4
+Q115690999,c2cab551-1017-4ace-8ad0-f36b7c089875,future riddim,Q65065491,riddim,5,0,0,ring,2019,,,,single,riddim,0
+Q136539124,9fa9b59a-43cd-42d5-bdc5-af4be786d9b3,liquid riddim,Q65065491,riddim,5,0,0,ring,,,,,single,riddim,0
+Q108197774,6352a404-ef81-4b5a-afad-299606027903,colour bass,Q20903,brostep,4,0,0,ring,2014,,,,single,brostep,1
+Q119259589,bf44ad8f-47be-4bcc-b577-ba2268160cd1,tearout brostep,Q20903,brostep,4,0,0,ring,2015,,,,single,brostep,0
+Q123421084,700eb336-affc-4151-849f-749ecb8e4411,briddim,Q20903,brostep,4,0,0,ring,,,,,single,brostep,0
+Q98528158,c2d62074-781e-4e00-8c80-4be8147a7d4a,purple sound,Q20474,dubstep,3,0,0,ring,2007,,,,single,dubstep,0
+Q2963621,5bc51167-b526-4c78-948b-6e4b3f003b75,chillstep,Q20474,dubstep,3,0,0,ring,2009,,,,single,dubstep,5
+Q106404229,3b3a9490-18bf-437b-970a-cb4b31bd4099,melodic dubstep,Q20474,dubstep,3,0,0,ring,2010,,,,single,dubstep,0
+Q1166726,51cfaac4-6696-480b-8f1b-27cfc789109c,grime,Q851213,electronic dance music,2,2,2,ring,2001,United Kingdom,,,single,electronic dance music | rapping,33
+Q106654239,1a13716e-77cd-4bb3-a0e1-1832a53b1a1b,weightless,Q1166726,grime,3,0,0,ring,2011,,,,single,grime,0
+Q123009321,96fc9d7f-0406-4575-ab4d-37f705b1097d,neo-grime,Q1166726,grime,3,0,0,ring,,,,,auto,grime | wave,0
+Q4965901,526c7a1e-d9da-4050-a567-be44c3cf1066,Jersey club,Q851213,electronic dance music,2,0,0,ring,2002,United States,,,single,East Coast club,11
+Q111442385,a9207ed8-8173-420d-a8d7-5add746d7304,Japanese artcore,Q851213,electronic dance music,2,0,0,ring,2003,,,,single,electronic dance music,2
+Q888137,f3bab7c4-d649-4738-8a9a-d3874650c485,skweee,Q851213,electronic dance music,2,0,0,ring,2005,Finland · Sweden,,,single,electronic dance music,10
+Q140369806,0e03f72d-0423-4ed1-ab6c-51d5fa3e1bcd,outrun,Q851213,electronic dance music,2,0,0,ring,2006,,,,auto,electronic dance music | synthwave,0
+Q9364028,31ec78f2-15c9-464b-a9e4-19e531028544,UK funky,Q851213,electronic dance music,2,0,0,ring,2006,,,,single,electronic dance music,7
+Q1136045,449e7cdf-0d7e-46aa-852d-96d81078abf3,wonky,Q851213,electronic dance music,2,1,1,ring,2006,,,,single,electronic dance music,6
+Q123922710,b50429c4-e790-4689-a5be-12b9591f51d0,aquacrunk,Q1136045,wonky,3,0,0,ring,,,,,single,wonky,0
+Q106514601,31880ede-b5a4-48c0-b15a-dddc030d25c2,glitch hop (EDM),Q851213,electronic dance music,2,2,2,ring,2007,,,,single,electronic dance music,0
+Q18432631,669f7533-2739-48a7-a46c-d67bf3295dd5,neurohop,Q106514601,glitch hop (EDM),3,0,0,ring,2009,,,,single,glitch hop (EDM),1
+Q120715859,beec7d20-9f7b-4a7b-a68b-e924d4d21971,ghetto funk,Q106514601,glitch hop (EDM),3,0,0,ring,,,,,single,glitch hop (EDM),0
+Q106594102,c03e5faa-1ec3-463d-95d5-96a550189510,Philly club,Q851213,electronic dance music,2,0,0,ring,2007,,,,single,East Coast club,0
+Q17146868,5a26133b-487a-4698-82b8-19c0efb827a3,shangaan electro,Q851213,electronic dance music,2,0,0,ring,2007,South Africa,,,single,electronic dance music,2
+Q19358266,904c0b6b-8008-4feb-9410-4ed61c7ce07a,electro latino,Q851213,electronic dance music,2,0,0,ring,2008,,,,single,Latin electronic music | electronic dance music | electronic pop,1
+Q100922002,7321525e-30a2-441e-aeb1-549f47f6a26f,budots,Q851213,electronic dance music,2,0,0,ring,2009,,,,single,electronic dance music,4
+Q96376113,5a291744-e683-49bb-883e-bf978f235b6b,deconstructed club,Q851213,electronic dance music,2,0,0,ring,2010,,,,auto,experimental club music,3
+Q47781397,a21ea484-efba-4119-8120-429b26f98728,EDM trap music,Q851213,electronic dance music,2,5,5,ring,2010,,,,single,bass music (EDM),7
+Q111628716,aa8c93b7-2ac1-4776-8a11-92c257de53d8,festival trap,Q47781397,EDM trap music,3,0,0,ring,2012,,,,single,EDM trap music,1
+Q107407607,b4c47b4e-20a2-49e3-baa4-2dd94f8b1d5d,hard trap,Q47781397,EDM trap music,3,0,0,ring,2012,,,,single,EDM trap music,0
+Q111653578,93dbdf64-39ab-4956-9f4c-550692d2cc2b,hybrid trap,Q47781397,EDM trap music,3,0,0,ring,2012,,,,single,EDM trap music,1
+Q109753757,6018aa23-b08d-49f9-86c7-0c6f21a0766e,twerk,Q47781397,EDM trap music,3,0,0,ring,2012,,,,single,EDM trap music,0
+Q111971785,8715373e-6dc4-4a9a-91db-9123134c96d9,heaven trap,Q47781397,EDM trap music,3,0,0,ring,2014,,,,single,EDM trap music,0
+Q22908553,e254f865-58ea-4483-9b2f-1bc65febcd71,future bass,Q851213,electronic dance music,2,1,1,ring,2010,,,,single,bass music (EDM),19
+Q106577542,35f85622-978c-4bf4-b5e4-722394d474f1,kawaii future bass,Q22908553,future bass,3,0,0,ring,2013,,,,single,future bass,0
+Q6907397,32c42c46-0acc-4d7d-a7f0-23ce2afab5c7,moombahcore,Q851213,electronic dance music,2,0,0,ring,2010,,,,single,bass music (EDM),5
+Q21092,ce92d27c-2d7a-439e-8182-e4ccdeee522a,moombahton,Q851213,electronic dance music,2,0,0,ring,2010,Netherlands · United Kingdom · United States,,,single,electronic dance music,19
+Q106591506,a969d92f-cd87-4a30-820a-e3c6405595de,bubblegum bass,Q851213,electronic dance music,2,0,0,ring,2011,,,,single,bass music (EDM),1
+Q31836693,0ed0c455-55ef-4acd-8a9e-d3350fbcb3c2,jungle terror,Q851213,electronic dance music,2,0,0,ring,2011,Netherlands,,,single,bass music (EDM),2
+Q106477753,dc54ca20-4fd0-44bb-ac2c-0a004234ecc0,midtempo bass,Q851213,electronic dance music,2,0,0,ring,2011,,,,single,bass music (EDM),2
+Q106576261,b3a324c9-151e-484c-af70-aa1cd7be9518,bérite club,Q851213,electronic dance music,2,0,0,ring,2012,,,,single,ghetto club,0
+Q109873537,cbea6078-eff4-42e9-ad94-8a1a049ca5c5,dark disco,Q851213,electronic dance music,2,0,0,ring,2013,,,,single,electronic dance music,0
+Q108297243,7025a3b9-0f54-47dd-b310-f89cb7b7181e,flex dance music,Q851213,electronic dance music,2,0,0,ring,2014,,,,single,dancehall | electronic dance music,0
+Q135493744,2fa3bd85-9165-4773-b807-5ea5937cbee0,melodic bass,Q851213,electronic dance music,2,0,0,ring,2014,,,,single,bass music (EDM),0
+Q107697201,10a1ea21-63b0-42d3-b72d-551a5bf9100e,hard drum,Q851213,electronic dance music,2,0,0,ring,2015,,,,single,electronic dance music,0
+Q30594541,35747abe-46a7-4491-b666-66f10abd5683,hardvapour,Q851213,electronic dance music,2,0,0,ring,2015,,,,single,electronic dance music | vaporwave,5
+Q65330805,78aa8c4a-4846-43ed-a34e-cea07d1f556c,singeli,Q851213,electronic dance music,2,0,0,ring,2015,,,,single,electronic dance music | music of Tanzania,3
+Q106388388,f9d29130-733d-443d-bb80-636701762220,hardwave,Q851213,electronic dance music,2,0,0,ring,2017,,,,auto,bass music (EDM) | wave,2
+Q117198196,6abf434f-9122-4150-a21c-cb87d67df462,cruise,Q851213,electronic dance music,2,0,0,ring,2019,Nigeria,,,single,electronic dance music | music of Nigeria,0
+Q101109587,8a5393de-f9eb-41ca-beae-03282d4783c7,future rave,Q851213,electronic dance music,2,0,0,ring,2019,,,,single,electronic dance music,4
+Q120484427,5ea0841e-dd9b-46cd-85fc-b01373fa7b55,dariacore,Q851213,electronic dance music,2,0,0,ring,2020,,,,single,electronic dance music,3
+Q65937774,63eddc75-dbad-4a05-a365-e30d1e87bca8,breaks,Q851213,electronic dance music,2,0,0,ring,,,,,single,electronic dance music,0
+Q140221083,e9a374e9-aef9-4714-9146-ade77640de5d,hardtekk,Q851213,electronic dance music,2,0,0,ring,,,,,single,electronic dance music,0
+Q126335126,b931157c-80f7-42bb-b16d-24245fb4fe58,hypertechno,Q851213,electronic dance music,2,0,0,ring,,,,,single,electronic dance music,0
+Q389631,22253c29-0e14-4463-915e-1e563de4efe1,jumpstyle,Q851213,electronic dance music,2,0,0,ring,,,,,single,hard dance,28
+Q131529620,fb2853d4-76fa-4c75-83f0-970894e342e5,krushclub,Q851213,electronic dance music,2,0,0,ring,,,,,auto,HexD | electronic dance music,1
+Q139567714,12730f8b-8c9b-41be-98a4-23cf8882d26f,neo rave,Q851213,electronic dance music,2,0,0,ring,,,,,single,hard dance,0
+Q122932896,92cc82a2-5193-4056-ac1c-dcb74db3efa5,ori deck,Q851213,electronic dance music,2,0,0,ring,,,,,single,electronic dance music | music of Tahiti,0
+Q114443489,34dd0158-f504-499b-be6e-7e38ae35bb83,partyschlager,Q851213,electronic dance music,2,0,0,ring,,,,,single,electronic dance music | schlager music,2
+Q106130091,be85b02a-9cb7-47c8-a6c6-a214dde4b2b7,post-dubstep,Q851213,electronic dance music,2,0,0,ring,,United Kingdom,,,single,electronic dance music,2
+Q898709,660e755a-1b66-440b-9b7c-fbcf245f4415,rave music,Q851213,electronic dance music,2,2,4,ring,,Detroit,,,single,electronic dance music,9
+Q113600471,cb27e80f-44d6-478c-b30c-59dddbfa73fa,hardtek,Q898709,rave music,3,2,2,ring,2005,,,,single,hard dance | rave music,0
+Q137442001,156557a7-d3fe-4dfc-9129-256b3237cfa4,pumpcore,Q113600471,hardtek,4,0,0,ring,,,,,single,hardtek,0
+Q117405746,e3563a72-1bcc-445e-ac7d-84ca1a47d290,raggatek,Q113600471,hardtek,4,0,0,ring,,,,,single,hardtek,0
+Q116952929,5ec5840c-60fd-47da-b651-9bb1c554701f,hyper techno,Q898709,rave music,3,0,0,ring,,Japan,,,single,rave music,0
+Q134380635,5338769c-f422-4222-bfc3-b5d84d197d73,slimepunk,Q851213,electronic dance music,2,0,0,ring,,,,,single,electronic dance music,0
+Q6865341,556be6ff-df60-4bb1-bd88-3ec7c69dfa28,minimal wave,Q9778,electronic music,1,1,1,ring,1977,,,,single,minimal electronic music,5
+Q98528171,ada97e23-fc67-462e-ae4f-dc24a93d723a,minimal synth,Q6865341,minimal wave,2,0,0,ring,1977,,,,single,minimal wave,0
+Q188450,3f3388b4-e36a-4bf8-a0be-66b10d92aaa4,electropop,Q9778,electronic music,1,0,0,ring,1978,United Kingdom,,,single,electronic pop,35
+Q98528139,94bd08a1-367d-49ad-a9f5-6db1c08f196a,tribal ambient,Q9778,electronic music,1,0,0,ring,1978,,,,single,ambient music | tribal music,0
+Q106422444,50a99000-1e63-444e-8624-7c45fb517d9d,bit music,Q9778,electronic music,1,7,7,ring,1979,,,,single,electronic music,0
+Q135637,103a65bb-35d9-4d27-9c9b-f35a458621ba,chiptune,Q106422444,bit music,2,0,0,ring,1978,Japan,,,single,bit music | nerd music,30
+Q106424145,0c129160-a881-4313-8d15-335ce650d0da,FM synthesis,Q106422444,bit music,2,0,0,ring,1986,,,,single,bit music | video game music,0
+Q773880,c4c55689-2b92-430e-811c-1e8c0ff5c6fb,bitpop,Q106422444,bit music,2,0,0,ring,1990,Australia · Europe · Japan · United States,,,single,bit music | electronic pop,13
+Q22964975,ed4813b3-3187-4319-b458-e3de48de694b,black MIDI,Q106422444,bit music,2,0,0,ring,2009,,,,single,MIDI music,12
+Q110942239,4f9d3457-479a-4aa1-8e13-2f7dd5dbac8f,bytebeat,Q106422444,bit music,2,0,0,ring,,,,,single,bit music,0
+Q125799361,7a13c4bb-5385-47ee-ba7f-d93755f511a3,demostyle,Q106422444,bit music,2,0,0,ring,,,,,single,tracker music,0
+Q140630035,37369d59-6ffd-4c9d-be9f-913cad71f740,dungeon chip,Q106422444,bit music,2,0,0,ring,,,,,single,bit music | dungeon synth,0
+Q107985638,a92d5780-7201-4e87-95d3-1967a53133e5,horror synth,Q9778,electronic music,1,0,0,ring,1979,,,,single,synth music,0
+Q1403744,6e2e809f-8c54-4e0f-aca0-0642771ab3cf,electro-industrial,Q9778,electronic music,1,1,2,ring,1985,Belgium · Canada · France · Germany,,,single,electronic music | post-industrial music,18
+Q4155078,24db3574-7c54-4d9b-b238-8d17eb7e8d63,dark electro,Q1403744,electro-industrial,2,1,1,ring,1989,,,,auto,electro-industrial | electronic body music,6
+Q1091450,c844c144-90a8-4288-981e-e38275592688,aggrotech,Q4155078,dark electro,3,0,0,ring,1993,,,,single,dark electro,13
+Q817138,53a3cea3-17af-4421-a07a-5824b540aeb5,electronica,Q9778,electronic music,1,7,8,ring,1991,,,,single,electronic music,36
+Q106641525,c4496647-f9f9-4b0b-b97f-22ef8f1a432a,Celtic electronica,Q817138,electronica,2,0,0,ring,1987,,,,single,Celtic music | electronica,0
+Q3613770,9c143ab1-1506-4134-ba40-1660fbad7f51,ambient dub,Q817138,electronica,2,0,0,ring,1991,,,,auto,chill-out music | dubtronica,4
+Q1435509,ec5a14c7-7793-46dc-b858-470183eb63f7,folktronica,Q817138,electronica,2,0,0,ring,1993,United Kingdom,,,single,electronica,23
+Q325397,9e7ae1de-d5f2-46a5-b105-11c7367dc70d,indietronica,Q817138,electronica,2,1,1,ring,1993,,,,single,alternative music | electronica | independent music,17
+Q106528422,997baf8b-203b-4567-a475-1c1fe348d206,glitch pop,Q325397,indietronica,3,0,0,ring,1993,,,,single,indietronica | pop music,0
+Q1136331,848ecccf-e7fa-4439-a8ab-9dd3c31b4cf6,nu jazz,Q817138,electronica,2,0,0,ring,1995,Brazil · Mexico · United Kingdom · United States,,,single,electronica | jazz,24
+Q6658771,cf7c6a4f-9e37-4dac-b0b7-fd70fced51a2,livetronica,Q817138,electronica,2,0,0,ring,1997,United States,,,single,electronica | jam band music,2
+Q1091056,2fe74485-a939-4aa5-958f-ce09ba16906c,funktronica,Q817138,electronica,2,0,0,ring,2001,,,,single,electronica,6
+Q757143,7232e5df-8466-421f-ad5a-ce2048e5522d,chill-out music,Q9778,electronic music,1,5,6,ring,1992,Europe,,,single,electronic music,29
+Q251192,cc38aba3-48ed-439a-83b9-f81a34a66598,downtempo,Q757143,chill-out music,2,1,1,ring,1988,United Kingdom,,,single,chill-out music,30
+Q205560,45eb1d9c-588c-4dc8-9394-a14b7c8f02bc,trip hop,Q251192,downtempo,3,0,0,ring,1992,United Kingdom,,,single,downtempo,47
+Q4993553,b4b397c1-c3e8-4b8b-af20-be6fdac65994,ambient trance,Q757143,chill-out music,2,0,0,ring,1990,,,,single,chill-out music,3
+Q749475,fee8ccf9-8def-4855-9e6a-7d03da945f32,psybient,Q757143,chill-out music,2,0,0,ring,1993,,,,single,chill-out music,12
+Q97265899,d92aaf30-5941-4a65-b741-d9d48c80772a,lofi hip-hop,Q757143,chill-out music,2,0,0,ring,2000,,,,single,chill-out music | hip-hop,10
+Q115456684,6af98bb7-9232-48a7-b559-5f27dcbff3c2,barber beats,Q757143,chill-out music,2,0,0,ring,,,,,single,chill-out music | vaporwave,1
+Q1658757,da52c9d1-73f2-456e-a0d0-94bd854cb338,illbient,Q9778,electronic music,1,0,0,ring,1994,United States,,,single,electronic music,12
+Q1143744,bcdbf8df-f5b0-4f30-b01e-5d2ad5ac48e8,digital cumbia,Q9778,electronic music,1,0,0,ring,1997,,,,single,Latin electronic music | cumbia,1
+Q1634085,694e1a00-cb09-4eb0-9064-402ef8a1059d,tecno brega,Q9778,electronic music,1,2,3,ring,2000,Brazil,,,single,brega | electronic music,10
+Q97278139,719e578f-ebc9-4d47-bb40-14bd222900ed,brega funk,Q1634085,tecno brega,2,1,1,ring,2011,,,,single,Brazilian funk | tecno brega,4
+Q97178866,38345d21-80bd-48a0-b0bf-b0fb35cdfe2a,batidão romântico,Q97278139,brega funk,3,0,0,ring,2018,,,,single,brega funk,3
+Q117193818,ead3ec76-41fa-4d3e-bddd-0c6f833a769f,tecnofunk,Q1634085,tecno brega,2,0,0,ring,,,,,single,Brazilian funk | tecno brega,0
+Q3876770,4f2977aa-6943-404a-b8ec-295639ff0adf,nightcore,Q9778,electronic music,1,0,0,ring,2002,Norway,,,single,electronic music,24
+Q115063474,c1e6e9ef-0ca6-4bf0-a0ad-a45dcacf6c5f,digital fusion,Q9778,electronic music,1,0,0,ring,2005,,,,single,electronic music,0
+Q19938910,19565d07-8460-4773-8d54-149208a61bb4,synthwave,Q9778,electronic music,1,4,4,ring,2005,United Kingdom,,,single,electronic music,31
+Q60973191,c3632505-be72-487c-8430-f85bd6b3f7c9,darksynth,Q19938910,synthwave,2,0,0,ring,2010,,,,single,synthwave,3
+Q110620412,4a615a8e-8360-4209-9e68-e3df1641bcff,chillsynth,Q19938910,synthwave,2,0,0,ring,2014,,,,auto,chillwave | synthwave,0
+Q140005978,6fc0962d-52b9-4b38-ae43-26bd4b6af749,dreamwave,Q19938910,synthwave,2,0,0,ring,,,,,single,synthwave,0
+Q30895273,fa50a85d-fb61-441c-84a4-599482e190b6,Sovietwave,Q19938910,synthwave,2,0,0,ring,,,,,single,synthwave,14
+Q784310,6c1451bd-5d65-487d-8757-682a3592c702,electro hop,Q9778,electronic music,1,0,0,ring,2007,,,,single,electronic pop,9
+Q1840167,34ec5538-a91a-454f-b500-18253bb45c20,witch house,Q9778,electronic music,1,0,0,ring,2007,,,,single,electronic music,19
+Q2626684,18d52a87-bbbf-42f0-8338-189c8c314523,chillwave,Q9778,electronic music,1,0,0,ring,2008,United States,,,single,electronic music | popular music,22
+Q108297235,52a8ce12-2dcf-4317-b8c8-c9d66895f630,epic collage,Q9778,electronic music,1,0,0,ring,2008,,,,single,electronic music | sound collage,0
+Q3476798,5b544a79-4583-4f5a-a312-bade7eac7201,seapunk,Q9778,electronic music,1,0,0,ring,2011,,,,single,electronic music,10
+Q116314630,38dd5ce2-96d8-4202-b477-75a857d78adb,rare phonk,Q9778,electronic music,1,0,0,ring,2012,,,,single,phonk | trap music,0
+Q106369996,dc935785-4fbf-4e18-b733-77917cde0c49,wave,Q9778,electronic music,1,0,0,ring,2012,,,,single,electronic music,3
+Q28055053,23190de4-9051-4512-b87e-bfbdf25c6985,Q-pop,Q9778,electronic music,1,0,0,ring,2015,Kazakhstan,,,single,electronic pop | music of Kazakhstan,15
+Q112997482,5a401ed0-7024-40e5-981d-4aed335fe2f4,drift phonk,Q9778,electronic music,1,1,1,ring,2016,,,,single,electronic music | phonk,3
+Q125455905,4519564f-98ae-4c33-af8d-e9968ea41ab3,Brazilian phonk,Q112997482,drift phonk,2,0,0,ring,,,,,single,drift phonk | funk mandelão,3
+Q107697234,72fc5ddb-2c22-4f87-9511-fd16a7813f5c,HexD,Q9778,electronic music,1,0,0,ring,2016,,,,single,electronic music,1
+Q124851801,c9c58bd8-bf69-428e-8c71-9e34d5916eda,acholitronix,Q9778,electronic music,1,0,0,ring,,,,,single,Acholi music | electronic music,0
+Q106582942,75858cef-eb30-4787-b524-3e04a41698cc,cyberpunk music,Q9778,electronic music,1,0,0,ring,,,,,single,electronic music,0
+Q105763581,3832a068-e169-40cb-9638-d0b04342f3a3,experimental electronic music,Q9778,electronic music,1,4,5,ring,,,,,single,electronic music | experimental music,0
+Q1100989,18b010d7-7d85-4445-a4a8-1889a4688308,glitch,Q105763581,experimental electronic music,2,1,1,ring,1990,Europe · United States,,,single,experimental electronic music,22
+Q3108920,aa3215ae-28e6-4993-908e-ed3807e1ce54,glitch hop,Q1100989,glitch,3,0,0,ring,1998,United States,,,auto,electronic dance music | glitch | hip-hop,8
+Q3503814,299c1b38-5c7b-4dfc-ab3a-f541c936987a,microsound,Q105763581,experimental electronic music,2,0,0,ring,1992,,,,single,experimental electronic music,6
+Q108297242,0e4eae85-208b-4480-8b45-92df4bf446d8,flashcore,Q105763581,experimental electronic music,2,0,0,ring,1998,,,,single,experimental electronic music,0
+Q16002495,e0a9d0d1-b86f-4344-82a9-022a84627087,algorave,Q105763581,experimental electronic music,2,0,0,ring,2011,,,,single,experimental electronic music,6
+Q5597175,f5ebef72-89dc-4c1e-a099-5917bf1abeb3,graphical sound,Q9778,electronic music,1,0,0,ring,,,,,single,electronic music | experimental music,4
+Q104695865,a8a72860-0bf8-44fd-90a1-b947a8ac2c56,hyperpop,Q9778,electronic music,1,0,0,ring,,,,,single,electronic pop | experimental pop,25
+Q65937906,32bea60c-e201-4241-8ed4-228636d34a97,leftfield electronic,Q9778,electronic music,1,0,0,ring,,,,,single,electronic music,0
+Q129098689,047e0133-a88e-4d7b-b680-0ff27678aea6,maloya électronique,Q9778,electronic music,1,0,0,ring,,,,,single,electronic music | maloya,0

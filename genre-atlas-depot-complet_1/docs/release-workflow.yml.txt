@@ -1,0 +1,23 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check that the tag matches the plugin version
+        run: |
+          v=$(grep -m1 -oP "Version:\s*\K[0-9.]+" genre-atlas/genre-atlas.php)
+          test "v$v" = "$GITHUB_REF_NAME" || { echo "Tag $GITHUB_REF_NAME does not match plugin version $v"; exit 1; }
+      - name: Lint PHP
+        run: find genre-atlas -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Build zip
+        run: zip -r genre-atlas.zip genre-atlas
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" genre-atlas.zip --title "$GITHUB_REF_NAME" --generate-notes
