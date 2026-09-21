@@ -27,4 +27,7 @@ Les groupes sont une couche d'affichage, pas de la taxonomie : chaque nœud gard
 ## Suite
 Reste au cadrage (`docs/cadrage-mvp.md`, « Reste à faire ») : saisie des BPM et des descriptions, autres familles, réglages de forme et couleur par famille.
 
-Deux blocages connus pour les autres familles : `query.wikidata.org` est injoignable depuis les sessions Claude (même politique réseau que `wordpress.org`), donc les fichiers d'import ne peuvent pas être fabriqués ici ; et la question ouverte du cadrage n'est pas tranchée (Metal et Punk, familles ou enfants de Rock ?).
+Deux blocages connus pour les autres familles.
+
+1. **Les CSV sources manquent.** `data/wikidata-build-electronic.py` ne va pas chercher Wikidata : il lit cinq fichiers extraits à la main par des requêtes SPARQL séparées (`a_labels.csv`, `b_parents.csv`, `c_inception.csv`, `d_country.csv`, `e_mb.csv`, voir « Test d'import Wikidata » dans le cadrage). Aucun n'est dans le dépôt, seul le résultat `genre-electronic-import.csv` y est. Il faut donc les refaire, et `query.wikidata.org` est hors de la politique réseau des sessions Claude par défaut. Maxime peut l'ouvrir : environnement → Network access « Custom » → `query.wikidata.org` dans « Allowed domains », en cochant « Also include default list of common package managers » sans quoi npm tombe et le banc de test ne s'installe plus. **Quand ces CSV seront régénérés, les commiter dans `data/`** pour que la chaîne soit rejouable.
+2. **La question ouverte du cadrage n'est pas tranchée** : Metal et Punk, familles de niveau 1 ou enfants de Rock ? Elle détermine la forme de l'accueil.
