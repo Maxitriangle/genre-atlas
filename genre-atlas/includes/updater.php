@@ -96,8 +96,11 @@ function genre_atlas_plugin_info( $result, $action, $args ) {
 add_action( 'upgrader_process_complete', function () {
 	delete_transient( 'genre_atlas_release' );
 } );
+// Priority 1 matters: core hooks wp_update_plugins() on this same action at 10
+// and registers it first, so anything later than that reads the stale cache and
+// "Check again" only takes effect on the following visit.
 add_action( 'load-update-core.php', function () {
 	if ( isset( $_GET['force-check'] ) ) { // phpcs:ignore
 		delete_transient( 'genre_atlas_release' );
 	}
-} );
+}, 1 );
