@@ -10,7 +10,7 @@ Projet personnel et non commercial de Maxime : un atlas des genres musicaux (sit
 
 ## Le dépôt
 - `genre-atlas/` : l'extension WordPress. PHP sans dépendance, JavaScript sans dépendance (`assets/atlas.js`), police embarquée.
-- `data/` : script Wikidata et fichier d'import de la famille Electronic (406 genres).
+- `data/` : chaîne Wikidata rejouable — `wikidata-fetch.sh` récupère les cinq extraits SPARQL, `wikidata-build-electronic.py` en construit le fichier d'import de la famille Electronic (406 genres).
 - `docs/` : cadrage, note de reprise.
 - `tools/` : banc de test local (`test-local.sh` monte le site, `smoke.mjs` le parcourt au navigateur).
 

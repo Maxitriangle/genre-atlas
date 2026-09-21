@@ -1,6 +1,7 @@
-import csv,collections,re,sys
+import csv,collections,re,sys,os
 sys.setrecursionlimit(10000)
-def rd(f): return [x for x in list(csv.reader(open(f,encoding='utf-8')))[1:] if x]
+HERE=os.path.dirname(os.path.abspath(__file__))
+def rd(f): return [x for x in list(csv.reader(open(os.path.join(HERE,f),encoding='utf-8')))[1:] if x]
 q=lambda u:u.rsplit('/',1)[-1]
 lab={};links={}
 for g,l,k in rd('a_labels.csv'): lab[q(g)]=l; links[q(g)]=int(k or 0)
@@ -47,10 +48,10 @@ for g in B:
     c=cand[g]
     if len(c)==1: choice[g]=next(iter(c)); how[g]='single'
     else:
-        best=max(c,key=lambda p:(len(words(lab[p])&words(lab[g])),depth_raw(p),links[p]))
+        best=max(c,key=lambda p:(len(words(lab[p])&words(lab[g])),depth_raw(p),links[p],p))
         choice[g]=best; how[g]='auto'
 # known inversions in Wikidata
-byname={lab[g].lower():g for g in B}
+byname={lab[g].lower():g for g in sorted(B)}
 OV={'jungle':['breakbeat hardcore','breakbeat','electronic dance music'],'drum and bass':['jungle']}
 for child,plist in OV.items():
     if child in byname:
@@ -80,8 +81,7 @@ def emit(g):
         emit(k)
 rows.append(dict(wikidata_id=ROOT,musicbrainz_id=mbid.get(ROOT,''),name=lab[ROOT],parent_wikidata_id='',parent_name='',level=0,children_direct=len(kids[ROOT]),descendants_total=total(ROOT),display_rule=rule(len(kids[ROOT])),epoch_year=yr.get(ROOT,''),origin='',bpm_min='',bpm_max='',parent_choice='root',wikidata_parents_raw='',wikipedia_links=links[ROOT]))
 emit(ROOT)
-import os; os.makedirs('/mnt/user-data/outputs',exist_ok=True)
-out='/mnt/user-data/outputs/genre-electronic-import.csv'
+out=sys.argv[1] if len(sys.argv)>1 else os.path.join(HERE,'genre-electronic-import.csv')
 w=csv.DictWriter(open(out,'w',newline='',encoding='utf-8'),fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
 assert len(rows)==len(B)+1
 print('rows',len(rows),'single',sum(1 for g in B if how[g]=='single'),'auto',sum(1 for g in B if how[g]=='auto'),'override',sum(1 for g in B if how[g]=='override'))
