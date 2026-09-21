@@ -11,7 +11,8 @@
   var INK = '#E4DFF5';
 
   var N = {};            // id -> node, genres and editorial groups alike
-  var ROOTS = [];        // families
+  var ROOTS = [];        // roots of the tree: genres with no parent
+  var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
   var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false };
 
@@ -21,7 +22,7 @@
   function rad(d) { return d * Math.PI / 180; }
   function f2(x) { return x.toFixed(2); }
   function byEpoch(a, b) { var ya = a.y || 9999, yb = b.y || 9999; return ya - yb || a.name.localeCompare(b.name); }
-  function family(n) { while (n.p && N[n.p]) n = N[n.p]; return n; }
+  function family(n) { while (n.p && N[n.p] && !n.f) n = N[n.p]; return n; }
   // Two lineages: the real one, which the permalinks are built from, and the
   // displayed one, which goes through the editorial group of a wide branch.
   function realPath(n) { var p = [n]; while (p[0].p && N[p[0].p]) p.unshift(N[p[0].p]); return p; }
@@ -72,7 +73,11 @@
     tree.nodes.forEach(function (n) { n.kids = []; n.dp = n.p; N[n.id] = n; });
     tree.nodes.forEach(function (n) { if (n.p && N[n.p]) N[n.p].kids.push(n); else { n.p = 0; ROOTS.push(n); } });
     tree.nodes.forEach(function (n) { n.kids.sort(byEpoch); });
-    ROOTS.forEach(function (r, i) {
+    // Entry points: every root, plus any genre flagged as a territory. A tile
+    // states its own order; anything left unflagged falls in after them.
+    TILES = tree.nodes.filter(function (n) { return n.f || !n.p; })
+      .sort(function (a, b) { return (a.f || 99) - (b.f || 99) || a.name.localeCompare(b.name); });
+    TILES.forEach(function (r, i) {
       if (!r.shape) { r.shape = SHAPES[i % SHAPES.length]; }
       r.dbl = i >= SHAPES.length;
       if (r.hue == null) r.hue = (295 + 157.5 * (i + 1)) % 360;
@@ -141,7 +146,7 @@
 
   /* ---------- shared pieces ---------- */
   function header() {
-    return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (ROOTS[0] ? glyph(ROOTS[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
+    return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
       '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a></nav>' +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
@@ -155,12 +160,14 @@
 
   /* ---------- index ---------- */
   function viewIndex() {
-    var tiles = ROOTS.map(function (r, i) {
-      return '<a class="ga-tile" href="' + esc(url(r)) + '" data-go="' + r.id + '" style="--fam:' + color(r) + '"><div class="ga-tile-top"><span>' + pad(i + 1) + ' // FAMILY</span><span class="ga-badge">' + pad(r.total, 4) + ' GENRES</span></div>' +
-        '<div class="ga-tile-body">' + glyph(r, 104) + '<div><h2>' + esc(r.name) + '</h2><p>' + esc(micro(r) || 'ORIGIN: —') + '</p><p>' + pad(r.kids.length) + ' DIRECT SUBGENRES</p></div></div></a>';
+    var tiles = TILES.map(function (r, i) {
+      // A territory names the family it belongs to rather than claiming to be one.
+      var kind = r.p && N[r.p] ? 'IN ' + N[r.p].name.toUpperCase() : 'FAMILY';
+      return '<a class="ga-tile" href="' + esc(url(r)) + '" data-go="' + r.id + '" style="--fam:' + color(r) + '"><div class="ga-tile-top"><span>' + pad(i + 1) + ' // ' + esc(kind) + '</span><span class="ga-badge">' + pad(r.total, 4) + ' GENRES</span></div>' +
+        '<div class="ga-tile-body">' + glyph(r, 104) + '<div><h2>' + esc(r.name) + '</h2><p>' + esc(micro(r) || 'ORIGIN: —') + '</p><p>' + pad(r.grouped || r.kids.length) + ' DIRECT SUBGENRES' + (r.grouped ? ' // ' + pad(r.kids.length) + ' GROUPS' : '') + '</p></div></div></a>';
     }).join('');
     return '<main class="ga-index"><div class="ga-hero"><div><p class="ga-micro">[INDEX] MUSIC GENRE ATLAS</p><h1>Every genre.<br>Every lineage.</h1></div>' +
-      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(ROOTS.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div></main>';
+      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(TILES.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div></main>';
   }
 
   /* ---------- detail panel ---------- */
@@ -272,12 +279,12 @@
 
   /* ---------- legend ---------- */
   function viewLegend() {
-    var r = ROOTS[0]; if (!r) return '';
+    var r = TILES[0]; if (!r) return '';
     function rule(code, title, items) { return '<section><h2><b>' + code + '</b> ' + title + '</h2><div>' + items.map(function (it) { return '<figure>' + it[0] + '<figcaption>' + it[1] + '</figcaption></figure>'; }).join('') + '</div></section>'; }
     var base = { children: 0, depth: 0, year: 1990, bpm: null };
     function g(o, n) { var x = {}; for (var k in base) x[k] = base[k]; for (k in o) x[k] = o[k]; return glyph(n || r, 56, x); }
     return '<main class="ga-legend"><div><p class="ga-micro">[LEGEND] GLYPH SPECIFICATION</p><h1>How to read<br>a glyph</h1><p class="ga-desc">No glyph is drawn by hand. Each one is generated from the genre\'s own data, so a subgenre always looks like its family. A missing arc or missing spokes simply mean the data has not been filled in yet.</p></div><div>' +
-      rule('A', 'FAMILY → FRAME + COLOUR', ROOTS.slice(0, 6).map(function (f) { return [g({}, f), esc(f.name)]; })) +
+      rule('A', 'FAMILY → FRAME + COLOUR', TILES.slice(0, 6).map(function (f) { return [g({}, f), esc(f.name)]; })) +
       rule('B', 'TEMPO → SPOKES (ONE PER 20 BPM)', [60, 100, 140, 180].map(function (b) { return [g({ bpm: [b, b] }), b + ' BPM']; })) +
       rule('C', 'DEPTH → RINGS', [0, 1, 2, 3, 4].map(function (d) { return [g({ depth: d }), 'LEVEL ' + pad(d)]; })) +
       rule('D', 'SUBGENRES → ORBIT NODES (MAX 12)', [0, 3, 7, 12].map(function (k) { return [g({ children: k }), pad(k) + ' SUB']; })) +

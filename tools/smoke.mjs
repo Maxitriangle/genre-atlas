@@ -46,6 +46,24 @@ const ring = pick( 4, 12 );        // fixed ring
 const dialCase = pick( 13, 40 );   // rotating dial
 const wide = pick( 41, Infinity ); // editorial grouping
 
+// A territory: a genre that has a tile on the home page AND a parent. Metal
+// under Rock is the case the whole design rests on, so the bench derives it
+// from the data rather than naming it.
+const territory = tree.nodes.find( n => n.f && n.p );
+const territoryChild = territory ? tree.nodes.find( n => n.p === territory.id ) : null;
+const territoryRoot = ( () => {
+	let n = territory;
+	while ( n && n.p && byId.get( n.p ) ) { n = byId.get( n.p ); }
+	return n;
+} )();
+
+// The colour a genre is drawn in, read off the glyph in its panel.
+async function glyphColour( page, node ) {
+	await page.goto( permalink( node ), { waitUntil: 'networkidle' } );
+	await page.waitForSelector( '.ga-panel-head .ga-glyph', { timeout: 10000 } );
+	return page.locator( '.ga-panel-head .ga-glyph circle' ).first().getAttribute( 'stroke' );
+}
+
 const browser = await chromium.launch( BIN ? { executablePath: BIN } : {} );
 
 async function newPage( width, height ) {
@@ -75,8 +93,40 @@ try {
 	await page.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
 	await page.waitForSelector( '.ga-ready', { timeout: 10000 } );
 	const tiles = await page.locator( '.ga-tile' ).count();
-	check( 'index : la grille des familles s affiche', await page.locator( '.ga-index' ).count() === 1 && tiles > 0, `${ tiles } famille(s)` );
+	check( 'index : la grille des familles s affiche', await page.locator( '.ga-index' ).count() === 1 && tiles > 0, `${ tiles } tuile(s)` );
+	// A territory has a tile and a parent at once: its tile names the family it
+	// sits in instead of claiming to be one. That is the whole point of the
+	// Metal-under-Rock decision, so the test holds it.
+	const territories = await page.locator( '.ga-tile-top span:text-matches( "// IN " )' ).count();
+	check( 'index : les territoires annoncent leur famille', territories > 0, `${ territories } territoire(s)` );
 	await page.screenshot( { path: `${ SHOTS }/01-index.png`, fullPage: true } );
+
+	// 1b. A territory is an entry point, not a root: its subgenres must still
+	// show the family they descend from, while being drawn in the territory's
+	// own colour so the home page tiles stay tellable apart.
+	if ( territory && territoryChild && territoryRoot && territoryRoot !== territory ) {
+		await page.goto( permalink( territoryChild ), { waitUntil: 'networkidle' } );
+		await page.waitForSelector( '.ga-panel-head .fam', { timeout: 10000 } );
+		// The panel puts the lineage in capitals, so compare case-insensitively.
+		const lineage = ( await page.locator( '.ga-panel-head .fam' ).first().innerText() ).toUpperCase();
+		check(
+			`territoire : « ${ territoryChild.name } » descend toujours de « ${ territoryRoot.name } »`,
+			lineage.includes( territoryRoot.name.toUpperCase() ) && lineage.includes( territory.name.toUpperCase() ),
+			lineage.trim()
+		);
+		const [ childColour, territoryColour, rootColour ] = [
+			await glyphColour( page, territoryChild ),
+			await glyphColour( page, territory ),
+			await glyphColour( page, territoryRoot ),
+		];
+		check(
+			`territoire : « ${ territory.name } » a sa propre couleur`,
+			childColour === territoryColour && territoryColour !== rootColour,
+			`${ territoryColour } vs ${ rootColour }`
+		);
+		await page.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await page.waitForSelector( '.ga-ready', { timeout: 10000 } );
+	}
 
 	// 2. Map.
 	await page.locator( '.ga-tile' ).first().click();

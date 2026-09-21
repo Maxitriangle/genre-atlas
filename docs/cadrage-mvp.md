@@ -34,8 +34,17 @@ Canvas Design « Genre — MVP screens » : https://claude.ai/artifact/NXfTYZ3p7
 ## Mobile (proposition, maquettée le 21/09/2026)
 La carte radiale est réservée aux tablettes et ordinateurs. Sur mobile, une seule vue (pas de bascule map/list) : arbre vertical avec glyphes. Lignée des ancêtres en haut, genre centré en bloc, enfants en colonne triés par époque, dépliage sur place, bouton « CENTRE ON », fiche détail en feuille montant du bas. Pas de plafond « +N » (défilement vertical). Une seule ligne de micro-texte par genre (origine · époque). Écrans 07 à 09 du canvas.
 
+## Familles et territoires (tranché le 21/09/2026)
+Metal et Punk sont **des enfants de Rock dans l'arbre, et des tuiles sur l'accueil**. C'étaient deux questions traitées comme une seule : de quoi un genre descend-il, et par où entre-t-on dans l'atlas ? La filiation Rock → Metal est un fait parmi les mieux documentés de l'histoire de la musique, et la couper pour arranger une page d'accueil renierait la promesse « Every genre, every lineage ». Un atlas du monde montre l'Europe et l'Asie séparément sans affirmer qu'il n'y a pas d'Eurasie.
+
+Le code sépare donc les deux notions. Le parent reste `post_parent`, l'arbre est inchangé ; un nouveau champ `ga_featured` porte le rang de la tuile. La forme et la couleur d'une branche remontent jusqu'à la tuile et non jusqu'à la racine, donc Metal a ses propres couleurs tout en restant sous Rock. Sa tuile annonce « IN ROCK MUSIC » au lieu de se dire famille.
+
+13 familles, 15 tuiles (Metal et Punk sont les deux territoires) : Electronic 363, Rock 291, Metal 61, Punk 80, Folk 221, Latin 201, Art music 167, Hip-hop 100, Pop 95, Jazz 43, Experimental 37, R&B 32, Country 27, Blues 25, Reggae 15. Metal et Punk sont comptés dans Rock.
+
+`art music` garde son libellé Wikidata : c'est l'ombrelle qui contient le classique occidental, indien, japonais et d'Asie du Sud-Est. La renommer « Classical music » entrerait en collision avec son propre enfant `classical music` (46 sous-genres), qui est la branche occidentale.
+
 ## Questions ouvertes
-- Liste définitive des familles de niveau 1 (16 provisoires ; Metal et Punk sont-ils des familles ou des enfants de Rock ?).
+- 481 genres reconnus (23 %) restent hors de l'atlas, faute d'un parent que Wikidata donne : 248 isolés, 233 sous 54 racines. Les plus notables sont funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer et raï. Soit on les déclare familles, soit on leur écrit une table de rattachement dans `data/wikidata-build.py`, sur le modèle de la table des inversions connues.
 
 ## Test d'import Wikidata (21/09/2026)
 Requêtes SPARQL sur query.wikidata.org, éléments `instance of (P31) = music genre (Q188451)`. À découper en requêtes légères (libellés, P279, P571, P495, P8052 séparément) : la requête unique avec le service de libellés est tronquée par le délai du serveur.

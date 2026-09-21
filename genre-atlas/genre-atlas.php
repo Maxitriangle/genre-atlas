@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.3.0
+ * Version: 0.4.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.3.0' );
+define( 'GENRE_ATLAS_VERSION', '0.4.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v1' );
@@ -35,8 +35,9 @@ function genre_atlas_meta_fields() {
 		'ga_origin'               => array( 'type' => 'string', 'label' => 'Origin (place)' ),
 		'ga_bpm_min'              => array( 'type' => 'integer', 'label' => 'BPM min' ),
 		'ga_bpm_max'              => array( 'type' => 'integer', 'label' => 'BPM max' ),
-		'ga_family_shape'         => array( 'type' => 'string', 'label' => 'Family shape (top-level genres only)' ),
-		'ga_family_hue'           => array( 'type' => 'integer', 'label' => 'Family colour hue 0–360 (top-level genres only)' ),
+		'ga_featured'             => array( 'type' => 'integer', 'label' => 'Home page tile (order; blank = no tile)' ),
+		'ga_family_shape'         => array( 'type' => 'string', 'label' => 'Family shape (genres with a home page tile)' ),
+		'ga_family_hue'           => array( 'type' => 'integer', 'label' => 'Family colour hue 0–360 (genres with a home page tile)' ),
 		'ga_group'                => array( 'type' => 'string', 'label' => 'Editorial group (used when the parent has more than 40 subgenres)' ),
 		'ga_status'               => array( 'type' => 'string', 'label' => 'Status' ),
 		'ga_wikidata_id'          => array( 'type' => 'string', 'label' => 'Wikidata ID' ),
@@ -163,7 +164,14 @@ function genre_atlas_tree() {
 		if ( $bmin || $bmax ) {
 			$node['b'] = array( $bmin ? $bmin : $bmax, $bmax ? $bmax : $bmin );
 		}
-		if ( ! $p->post_parent ) {
+		// A tile on the home page and having no parent are two different things:
+		// Metal is a child of Rock and still a place a visitor enters the atlas
+		// from. So the shape and colour of a branch hang off the tile, not the root.
+		$featured = get_post_meta( $p->ID, 'ga_featured', true );
+		if ( '' !== $featured && null !== $featured && (int) $featured > 0 ) {
+			$node['f'] = (int) $featured;
+		}
+		if ( ! $p->post_parent || isset( $node['f'] ) ) {
 			$shape = get_post_meta( $p->ID, 'ga_family_shape', true );
 			$hue   = get_post_meta( $p->ID, 'ga_family_hue', true );
 			if ( $shape ) {

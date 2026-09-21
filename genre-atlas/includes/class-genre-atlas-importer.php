@@ -2,7 +2,8 @@
 /**
  * CSV importer. Expected columns (header row, any order):
  * wikidata_id, musicbrainz_id, name, parent_wikidata_id, epoch_year, origin,
- * bpm_min, bpm_max, parent_choice, wikidata_parents_raw
+ * bpm_min, bpm_max, parent_choice, wikidata_parents_raw, featured,
+ * family_shape, family_hue
  *
  * Genres are matched on wikidata_id, so the same file can be imported again
  * safely: existing genres are updated, never duplicated. Fields already
@@ -90,6 +91,11 @@ class Genre_Atlas_Importer {
 				'ga_bpm_max'              => isset( $row['bpm_max'] ) && '' !== $row['bpm_max'] ? (int) $row['bpm_max'] : '',
 				'ga_parent_choice'        => isset( $row['parent_choice'] ) ? $row['parent_choice'] : '',
 				'ga_wikidata_parents_raw' => isset( $row['wikidata_parents_raw'] ) ? $row['wikidata_parents_raw'] : '',
+				// A tile on the home page, and the shape and colour that go with it.
+				// Set on families and on the territories that are not roots.
+				'ga_featured'             => isset( $row['featured'] ) && '' !== $row['featured'] ? (int) $row['featured'] : '',
+				'ga_family_shape'         => isset( $row['family_shape'] ) ? $row['family_shape'] : '',
+				'ga_family_hue'           => isset( $row['family_hue'] ) && '' !== $row['family_hue'] ? (int) $row['family_hue'] : '',
 			);
 			if ( isset( $ids[ $qid ] ) ) {
 				$post_id = $ids[ $qid ];
@@ -126,10 +132,6 @@ class Genre_Atlas_Importer {
 				}
 				$ids[ $qid ] = (int) $post_id;
 				$stats['created']++;
-				if ( '' === $row['parent_wikidata_id'] && 'electronic music' === strtolower( $row['name'] ) ) {
-					update_post_meta( $post_id, 'ga_family_shape', 'circle' );
-					update_post_meta( $post_id, 'ga_family_hue', 295 );
-				}
 			}
 		}
 
