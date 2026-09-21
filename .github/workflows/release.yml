@@ -2,6 +2,7 @@ name: Release
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
@@ -9,10 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check that the tag matches the plugin version
+      - name: Work out the version to release
         run: |
           v=$(grep -m1 -oP "Version:\s*\K[0-9.]+" genre-atlas/genre-atlas.php)
-          test "v$v" = "$GITHUB_REF_NAME" || { echo "Tag $GITHUB_REF_NAME does not match plugin version $v"; exit 1; }
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            test "v$v" = "$GITHUB_REF_NAME" || { echo "Tag $GITHUB_REF_NAME does not match plugin version $v"; exit 1; }
+          fi
+          echo "TAG=v$v" >> "$GITHUB_ENV"
       - name: Lint PHP
         run: find genre-atlas -name '*.php' -print0 | xargs -0 -n1 php -l
       - name: Build zip
@@ -20,4 +24,4 @@ jobs:
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" genre-atlas.zip --title "$GITHUB_REF_NAME" --generate-notes
+        run: gh release create "$TAG" genre-atlas.zip --title "$TAG" --target "$GITHUB_SHA" --generate-notes

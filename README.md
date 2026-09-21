@@ -11,6 +11,7 @@ WordPress plugin + the data pipeline that feeds it.
 
 Bump `Version` and `GENRE_ATLAS_VERSION` in `genre-atlas/genre-atlas.php`, commit, then push a tag `vX.Y.Z`.
 The workflow builds `genre-atlas.zip` and publishes a release; the site then offers the update in Plugins.
+The same workflow can be run by hand from the Actions tab: it reads the version from the plugin, tags the current commit and publishes the release.
 
 ## Licences
 
