@@ -12,9 +12,10 @@ Projet personnel et non commercial de Maxime : un atlas des genres musicaux (sit
 - `genre-atlas/` : l'extension WordPress. PHP sans dépendance, JavaScript sans dépendance (`assets/atlas.js`), police embarquée.
 - `data/` : script Wikidata et fichier d'import de la famille Electronic (406 genres).
 - `docs/` : cadrage, note de reprise.
+- `tools/` : banc de test local (`test-local.sh` monte le site, `smoke.mjs` le parcourt au navigateur).
 
 ## Publier une version
-1. Tester sur un WordPress local jetable avant de publier (WP-CLI + extension « SQLite Database Integration » + serveur PHP intégré ; piloter le navigateur avec Playwright pour vérifier l'index, la carte, le cadran, la liste, la vue mobile et l'écran d'import).
+1. Tester avant de publier : `tools/test-local.sh` monte un WordPress jetable, y installe l'extension, importe la famille Electronic et parcourt l'index, la carte, l'anneau fixe, le cadran, la liste, la vue mobile et l'écran d'import dans un vrai navigateur. Le script sort en erreur si une vérification échoue ou si l'extension écrit dans le journal PHP, et dépose une capture par écran dans son cache. `wordpress.org` n'est pas joignable depuis ces sessions : WordPress et le pilote SQLite sont récupérés par git depuis GitHub, et WP-CLI n'est pas disponible (le script appelle l'importeur directement).
 2. Monter `Version` et `GENRE_ATLAS_VERSION` dans `genre-atlas/genre-atlas.php`, et `Stable tag` dans `readme.txt`.
 3. Commit sur `main`, puis tag `vX.Y.Z`. Le workflow `.github/workflows/release.yml` fabrique `genre-atlas.zip` et publie la release. Le workflow se lance aussi à la main depuis l'onglet Actions (« Run workflow ») : il reprend alors la version écrite dans le plugin et crée le tag lui-même — c'est la voie à suivre quand le tag ne peut pas être poussé.
 4. Le site de Maxime (o2switch) lit la dernière release via `includes/updater.php` et propose la mise à jour dans Extensions. L'updater attend un fichier joint nommé exactement `genre-atlas.zip` contenant le dossier `genre-atlas/`.

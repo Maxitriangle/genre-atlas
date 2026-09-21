@@ -12,8 +12,12 @@ Le site de Maxime tourne en **v0.2.3**, et la mise à jour automatique depuis le
 1. **Installer le bon fichier.** Sur la page d'une release, `genre-atlas.zip` (section « Assets ») est le bon ; « Source code (zip) » ne s'installe pas. Surtout : un ancien `genre-atlas.zip` traînant dans le dossier Téléchargements se réinstalle sans erreur et sans rien changer — WordPress affiche un succès, la version ne bouge pas. Faire le ménage avant, ou donner à Maxime le lien de téléchargement direct.
 2. **Bug corrigé en 0.2.2.** Le bouton « Vérifier à nouveau » restait sans effet : le cache de 6 h était vidé *après* que WordPress avait déjà lu la réponse. Core accroche `wp_update_plugins()` sur `load-update-core.php` en priorité 10 depuis `wp-includes/update.php`, chargé bien avant les extensions. La suppression du cache est passée en priorité 1.
 
-## Point d'attention
-Le test sur un WordPress local jetable prévu par `CLAUDE.md` n'a jamais pu être fait : le réseau des sessions Claude bloque `wordpress.org`. Les v0.2.0 à v0.2.3 n'ont été vérifiées que par le lint PHP, la cohérence des versions et le contenu du zip — pas dans un vrai WordPress. À refaire dès qu'une session a le réseau ouvert, **avant** toute version qui touche au code de l'atlas.
+## Banc de test local
+`tools/test-local.sh` existe maintenant et **doit tourner avant chaque publication**. Il monte un WordPress jetable hors du dépôt, installe l'extension, importe les 406 genres et parcourt les six écrans au navigateur. La v0.2.3 y passe les 9 vérifications sans une erreur PHP.
+
+Le contournement qui rend ça possible : `wordpress.org` est bloqué depuis les sessions Claude, mais `git clone` de `WordPress/WordPress` et de `WordPress/sqlite-database-integration` passe. WP-CLI n'est pas installable (l'API GitHub est limitée aux dépôts attachés), donc le script appelle `Genre_Atlas_Importer::import()` directement plutôt que `wp genre-atlas import` — cette commande WP-CLI reste donc non testée.
+
+Deux détails à ne pas réapprendre : les règles de réécriture doivent être reconstruites dans une requête PHP séparée de celle qui change la structure des permaliens, sinon `/genre/` renvoie 404 ; et le serveur PHP intégré n'a pas de réécriture d'URL, d'où `router.php`.
 
 ## Suite
 Les versions 0.2.1 à 0.2.3 ne changent rien au plugin : elles ne servaient qu'à éprouver la chaîne. La prochaine version doit porter du vrai travail (voir `docs/cadrage-mvp.md`, section « Questions ouvertes »).
