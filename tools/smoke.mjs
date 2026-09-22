@@ -204,6 +204,11 @@ try {
 	await admin.click( '#wp-submit' );
 	await admin.waitForLoadState( 'networkidle' );
 	await admin.goto( `${ BASE }/wp-admin/edit.php?post_type=genre`, { waitUntil: 'networkidle' } );
+	// With a complete import file no branch is left without groups, so the
+	// stale-data warning must stay silent. It is the only thing that tells
+	// Maxime his CSV is older than his plugin.
+	const warn = await admin.locator( '.notice-warning', { hasText: /no group/i } ).count();
+	check( 'admin : aucun avertissement de groupes manquants', warn === 0, warn ? `${ warn } avertissement(s)` : '' );
 	const importLink = admin.locator( 'a', { hasText: /import/i } ).first();
 	if ( await importLink.count() ) {
 		await importLink.click();

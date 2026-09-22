@@ -1,6 +1,6 @@
 # Reprise — état au 22/09/2026 au soir
 
-**La v0.7.1 est publiée**, et Maxime tournait en v0.6.0 avec le CSV de la 0.6.0 au moment où la session s'est arrêtée. Vérifier avec lui, à la reprise, qu'il a bien fait les deux étapes : mise à jour de l'extension **et** réimport du CSV de la 0.7.1. La mise à jour automatique depuis les releases GitHub est validée de bout en bout : une version publiée apparaît dans Extensions et s'installe en un clic, sans zip.
+**La v0.7.2 est publiée.** Maxime a mis l'extension à jour mais pas réimporté le CSV, d'où les groupes « S–W » qu'il a signalés (voir la dernière section). Vérifier avec lui, à la reprise, qu'il a bien fait **les deux** étapes : mise à jour de l'extension **et** réimport du CSV. Depuis la 0.7.2 un avertissement dans l'admin le lui dit tout seul. La mise à jour automatique depuis les releases GitHub est validée de bout en bout : une version publiée apparaît dans Extensions et s'installe en un clic, sans zip.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Les quatre dernières (v0.5.0 à v0.7.1) sont celles qui décrivent le site actuel.
@@ -148,3 +148,16 @@ Maxime tombe sur « THE ISLANDS » découpé en « 1850S » et « UNDATED ». Le
 3. **Le tri par époque est remplacé par l'ordre alphabétique** (`byName`), et le libellé « SUBGENRES — BY EPOCH » devient « SUBGENRES — A TO Z ». C'était une demande de la première conversation, restée non traitée : trier par année est encore une classification par date. L'année reste affichée comme métadonnée sous un nœud, ce qui est autre chose.
 
 **Un trou dans la vérification, corrigé.** `tools/check-widths.py` annonçait « aucun cadran » alors que trois groupes (SOUTH ASIA, SOUTHEAST ASIA, KEYBOARD FORMS) montraient bien 10 nœuds. Il ne contrôlait que la largeur, ignorait la valeur de retour de ses appels récursifs, et ne disait rien quand le repli ne produisait qu'un seul groupe. Il signale désormais les deux choses : un nœud trop large, et un nœud que le chemin éditorial ne sait pas couper. Il sort en erreur, donc le banc de test s'arrête.
+
+## L'extension à jour avec un CSV périmé (v0.7.2, 22/09/2026)
+Maxime voit des groupes nommés « S–W » sous Electronic Music. Diagnostic : **extension en 0.7.1, fichier de données en 0.6.0**. Les libellés de groupe vivent dans les données ; sans eux le front retombe sur le repli alphabétique ajouté la veille. Rejoué sur le CSV de la 0.6.0, l'algorithme produit 46 nœuds coupés alphabétiquement, dont Electronic Music en `A–E | E–M | M–W`.
+
+Le vrai défaut n'est pas là : **rien ne signalait cet état**. L'atlas se dégradait silencieusement.
+
+**Ce que la 0.7.2 ajoute.** Un avertissement sur les écrans Genres dès qu'un genre situé sous une branche de plus de 8 sous-genres n'a pas de groupe, avec la marche à suivre. Vérifié dans les deux sens sur le site de test : 0 avec les données complètes, 23 après avoir vidé les groupes d'Electronic Music.
+
+**Trois seuils restés à 40 côté admin, corrigés au passage.** L'écran Genres → Groups ne listait que les branches de plus de 40 sous-genres : Maxime ne pouvait donc éditer que 8 des 36 branches concernées. La colonne de la liste affichait encore « (dial) » de 9 à 40. Et le compteur de groupes suivait l'ancien repli par décennie plutôt que le premier segment du chemin.
+
+**Un piège de comptage à ne pas réapprendre.** Une tuile quitte l'anneau de son parent, donc elle n'a pas besoin de groupe : Metal et Punk n'en ont pas. Le premier jet de l'avertissement les comptait et criait au loup sur des données parfaites. Les trois requêtes partagent désormais `genre_atlas_on_ring_sql()`, qui exclut les tuiles. La règle : **tout comptage d'enfants côté admin doit exclure les tuiles**, comme le fait la carte.
+
+L'écran Groups triait encore par époque et listait les tuiles ; il est passé à l'ordre alphabétique, sur les seuls enfants de l'anneau.
