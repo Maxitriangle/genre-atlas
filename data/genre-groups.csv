@@ -58,25 +58,25 @@ Q3410882,punto guajiro,Latin music,CUBA & THE CARIBBEAN > SON & GUARACHA
 Q4428744,son cubano,Latin music,CUBA & THE CARIBBEAN > SON & GUARACHA
 Q1756680,songo music,Latin music,CUBA & THE CARIBBEAN > SON & GUARACHA
 Q2420447,trova,Latin music,CUBA & THE CARIBBEAN > SON & GUARACHA
-Q814402,biguine,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q2278063,bomba,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q3191747,cadence rampa,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q723418,cumbia,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q2726026,konpa,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q282131,merengue,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q2715398,plena,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q7295057,rasin,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q2406900,twoubadou,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS
-Q40461,bachata,Latin music,DANCE & CARNIVAL
-Q16986699,cha-cha-chá,Latin music,DANCE & CARNIVAL
-Q125850367,cuplé,Latin music,DANCE & CARNIVAL
-Q586110,forró,Latin music,DANCE & CARNIVAL
-Q1455932,frevo,Latin music,DANCE & CARNIVAL
-Q3889661,marchinha,Latin music,DANCE & CARNIVAL
-Q1452181,murga,Latin music,DANCE & CARNIVAL
-Q3419744,rara,Latin music,DANCE & CARNIVAL
-Q208239,salsa,Latin music,DANCE & CARNIVAL
-Q14390274,tango,Latin music,DANCE & CARNIVAL
+Q814402,biguine,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
+Q3191747,cadence rampa,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
+Q2726026,konpa,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
+Q7295057,rasin,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
+Q2406900,twoubadou,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
+Q2278063,bomba,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
+Q723418,cumbia,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
+Q282131,merengue,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
+Q2715398,plena,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
+Q40461,bachata,Latin music,DANCE & CARNIVAL > BALLROOM & COUPLE DANCES
+Q16986699,cha-cha-chá,Latin music,DANCE & CARNIVAL > BALLROOM & COUPLE DANCES
+Q208239,salsa,Latin music,DANCE & CARNIVAL > BALLROOM & COUPLE DANCES
+Q14390274,tango,Latin music,DANCE & CARNIVAL > BALLROOM & COUPLE DANCES
+Q1455932,frevo,Latin music,DANCE & CARNIVAL > CARNIVAL & STREET
+Q3889661,marchinha,Latin music,DANCE & CARNIVAL > CARNIVAL & STREET
+Q1452181,murga,Latin music,DANCE & CARNIVAL > CARNIVAL & STREET
+Q3419744,rara,Latin music,DANCE & CARNIVAL > CARNIVAL & STREET
+Q125850367,cuplé,Latin music,DANCE & CARNIVAL > SONG FORMS
+Q586110,forró,Latin music,DANCE & CARNIVAL > SONG FORMS
 Q18217098,New Mexico music,Latin music,MEXICO & CENTRAL AMERICA
 Q961146,chilena,Latin music,MEXICO & CENTRAL AMERICA
 Q113133172,merequetengue,Latin music,MEXICO & CENTRAL AMERICA
@@ -187,16 +187,16 @@ Q207591,Romantic music,classical music,HISTORICAL PERIODS
 Q163775,medieval music,classical music,HISTORICAL PERIODS
 Q65937946,modern classical music,classical music,HISTORICAL PERIODS
 Q65943744,post-classical,classical music,HISTORICAL PERIODS
-Q788460,bagatelle,classical music,KEYBOARD FORMS
-Q876812,capriccio,classical music,KEYBOARD FORMS
-Q1063010,character piece,classical music,KEYBOARD FORMS
-Q836571,fantasia,classical music,KEYBOARD FORMS
-Q181014,fugue,classical music,KEYBOARD FORMS
-Q852027,impromptu,classical music,KEYBOARD FORMS
-Q212148,prelude,classical music,KEYBOARD FORMS
-Q746743,ricercar,classical music,KEYBOARD FORMS
-Q140544,toccata,classical music,KEYBOARD FORMS
-Q207841,étude,classical music,KEYBOARD FORMS
+Q788460,bagatelle,classical music,KEYBOARD FORMS > CHARACTER PIECES
+Q876812,capriccio,classical music,KEYBOARD FORMS > CHARACTER PIECES
+Q1063010,character piece,classical music,KEYBOARD FORMS > CHARACTER PIECES
+Q852027,impromptu,classical music,KEYBOARD FORMS > CHARACTER PIECES
+Q207841,étude,classical music,KEYBOARD FORMS > CHARACTER PIECES
+Q836571,fantasia,classical music,KEYBOARD FORMS > COUNTERPOINT & IMPROVISATION
+Q181014,fugue,classical music,KEYBOARD FORMS > COUNTERPOINT & IMPROVISATION
+Q212148,prelude,classical music,KEYBOARD FORMS > COUNTERPOINT & IMPROVISATION
+Q746743,ricercar,classical music,KEYBOARD FORMS > COUNTERPOINT & IMPROVISATION
+Q140544,toccata,classical music,KEYBOARD FORMS > COUNTERPOINT & IMPROVISATION
 Q48810672,English Pastoral School,classical music,MODERN & AVANT-GARDE
 Q3736603,New Complexity,classical music,MODERN & AVANT-GARDE
 Q4993367,indeterminacy,classical music,MODERN & AVANT-GARDE
@@ -274,15 +274,15 @@ Q2121992,drumfunk,drum and bass,LIQUID & ATMOSPHERIC
 Q9011351,jazzstep,drum and bass,LIQUID & ATMOSPHERIC
 Q2082572,liquid drum and bass,drum and bass,LIQUID & ATMOSPHERIC
 Q106404300,minimal drum and bass,drum and bass,LIQUID & ATMOSPHERIC
-Q20474,dubstep,electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q22908553,future bass,electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q106514601,glitch hop (EDM),electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q1166726,grime,electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q135493744,melodic bass,electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q106477753,midtempo bass,electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q106130091,post-dubstep,electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q888137,skweee,electronic dance music,BASS MUSIC > DUBSTEP & BASS
-Q1136045,wonky,electronic dance music,BASS MUSIC > DUBSTEP & BASS
+Q20474,dubstep,electronic dance music,BASS MUSIC > DUBSTEP & BASS > DUBSTEP & GRIME
+Q1166726,grime,electronic dance music,BASS MUSIC > DUBSTEP & BASS > DUBSTEP & GRIME
+Q106130091,post-dubstep,electronic dance music,BASS MUSIC > DUBSTEP & BASS > DUBSTEP & GRIME
+Q22908553,future bass,electronic dance music,BASS MUSIC > DUBSTEP & BASS > FUTURE & MELODIC BASS
+Q135493744,melodic bass,electronic dance music,BASS MUSIC > DUBSTEP & BASS > FUTURE & MELODIC BASS
+Q106477753,midtempo bass,electronic dance music,BASS MUSIC > DUBSTEP & BASS > FUTURE & MELODIC BASS
+Q106514601,glitch hop (EDM),electronic dance music,BASS MUSIC > DUBSTEP & BASS > GLITCH & WONKY
+Q888137,skweee,electronic dance music,BASS MUSIC > DUBSTEP & BASS > GLITCH & WONKY
+Q1136045,wonky,electronic dance music,BASS MUSIC > DUBSTEP & BASS > GLITCH & WONKY
 Q47781397,EDM trap music,electronic dance music,BASS MUSIC > TRAP & HYPERPOP
 Q111442385,Japanese artcore,electronic dance music,BASS MUSIC > TRAP & HYPERPOP
 Q106591506,bubblegum bass,electronic dance music,BASS MUSIC > TRAP & HYPERPOP
@@ -302,21 +302,21 @@ Q117198196,cruise,electronic dance music,CLUB & BREAKS > UK & US CLUB
 Q120484427,dariacore,electronic dance music,CLUB & BREAKS > UK & US CLUB
 Q96376113,deconstructed club,electronic dance music,CLUB & BREAKS > UK & US CLUB
 Q108297243,flex dance music,electronic dance music,CLUB & BREAKS > UK & US CLUB
-Q382343,Nortec,electronic dance music,GLOBAL CLUB
-Q108297187,balani show,electronic dance music,GLOBAL CLUB
-Q100922002,budots,electronic dance music,GLOBAL CLUB
-Q106576261,bérite club,electronic dance music,GLOBAL CLUB
-Q513357,coupé-décalé,electronic dance music,GLOBAL CLUB
-Q19358266,electro latino,electronic dance music,GLOBAL CLUB
-Q362515,electrotango,electronic dance music,GLOBAL CLUB
-Q11332204,funkot,electronic dance music,GLOBAL CLUB
-Q1191544,kuduro,electronic dance music,GLOBAL CLUB
-Q6907397,moombahcore,electronic dance music,GLOBAL CLUB
-Q21092,moombahton,electronic dance music,GLOBAL CLUB
-Q17146868,shangaan electro,electronic dance music,GLOBAL CLUB
-Q65330805,singeli,electronic dance music,GLOBAL CLUB
-Q30902501,tecnorumba,electronic dance music,GLOBAL CLUB
-Q7844612,tribal guarachero,electronic dance music,GLOBAL CLUB
+Q108297187,balani show,electronic dance music,GLOBAL CLUB > AFRICAN CLUB
+Q106576261,bérite club,electronic dance music,GLOBAL CLUB > AFRICAN CLUB
+Q513357,coupé-décalé,electronic dance music,GLOBAL CLUB > AFRICAN CLUB
+Q1191544,kuduro,electronic dance music,GLOBAL CLUB > AFRICAN CLUB
+Q17146868,shangaan electro,electronic dance music,GLOBAL CLUB > AFRICAN CLUB
+Q65330805,singeli,electronic dance music,GLOBAL CLUB > AFRICAN CLUB
+Q100922002,budots,electronic dance music,GLOBAL CLUB > ASIAN CLUB
+Q11332204,funkot,electronic dance music,GLOBAL CLUB > ASIAN CLUB
+Q382343,Nortec,electronic dance music,GLOBAL CLUB > LATIN CLUB
+Q19358266,electro latino,electronic dance music,GLOBAL CLUB > LATIN CLUB
+Q362515,electrotango,electronic dance music,GLOBAL CLUB > LATIN CLUB
+Q6907397,moombahcore,electronic dance music,GLOBAL CLUB > LATIN CLUB
+Q21092,moombahton,electronic dance music,GLOBAL CLUB > LATIN CLUB
+Q30902501,tecnorumba,electronic dance music,GLOBAL CLUB > LATIN CLUB
+Q7844612,tribal guarachero,electronic dance music,GLOBAL CLUB > LATIN CLUB
 Q107697201,hard drum,electronic dance music,HARDCORE & HARDSTYLE
 Q388906,hardcore,electronic dance music,HARDCORE & HARDSTYLE
 Q223840,hardstyle,electronic dance music,HARDCORE & HARDSTYLE
@@ -332,15 +332,15 @@ Q126335126,hypertechno,electronic dance music,HOUSE & TECHNO
 Q106520965,nerdcore techno,electronic dance music,HOUSE & TECHNO
 Q170611,techno,electronic dance music,HOUSE & TECHNO
 Q22909461,toytown techno,electronic dance music,HOUSE & TECHNO
-Q848852,Eurobeat,electronic dance music,RETRO & EURODANCE
-Q216961,Eurodance,electronic dance music,RETRO & EURODANCE
-Q602561,electro swing,electronic dance music,RETRO & EURODANCE
-Q861823,electroclash,electronic dance music,RETRO & EURODANCE
-Q372103,electronic body music,electronic dance music,RETRO & EURODANCE
-Q655514,freestyle music,electronic dance music,RETRO & EURODANCE
-Q140369806,outrun,electronic dance music,RETRO & EURODANCE
-Q114443489,partyschlager,electronic dance music,RETRO & EURODANCE
-Q4049849,spacesynth,electronic dance music,RETRO & EURODANCE
+Q602561,electro swing,electronic dance music,RETRO & EURODANCE > ELECTRO & BODY MUSIC
+Q861823,electroclash,electronic dance music,RETRO & EURODANCE > ELECTRO & BODY MUSIC
+Q372103,electronic body music,electronic dance music,RETRO & EURODANCE > ELECTRO & BODY MUSIC
+Q848852,Eurobeat,electronic dance music,RETRO & EURODANCE > EURODANCE
+Q216961,Eurodance,electronic dance music,RETRO & EURODANCE > EURODANCE
+Q655514,freestyle music,electronic dance music,RETRO & EURODANCE > EURODANCE
+Q114443489,partyschlager,electronic dance music,RETRO & EURODANCE > EURODANCE
+Q140369806,outrun,electronic dance music,RETRO & EURODANCE > SYNTH REVIVAL
+Q4049849,spacesynth,electronic dance music,RETRO & EURODANCE > SYNTH REVIVAL
 Q2866725,Balearic beat,electronic dance music,TRANCE & RAVE
 Q101109587,future rave,electronic dance music,TRANCE & RAVE
 Q140221083,hardtekk,electronic dance music,TRANCE & RAVE
@@ -418,26 +418,26 @@ Q4207331,musok eumak,folk music,ASIA > KOREA
 Q482981,pansori,folk music,ASIA > KOREA
 Q497674,pungmul,folk music,ASIA > KOREA
 Q710917,sanjo,folk music,ASIA > KOREA
-Q5000356,Burra katha,folk music,ASIA > SOUTH ASIA
-Q13058900,baul gaan,folk music,ASIA > SOUTH ASIA
-Q55593233,biraha,folk music,ASIA > SOUTH ASIA
-Q4936753,boduberu,folk music,ASIA > SOUTH ASIA
-Q4937089,boedra,folk music,ASIA > SOUTH ASIA
-Q25620807,dohori,folk music,ASIA > SOUTH ASIA
-Q947155,kirtan,folk music,ASIA > SOUTH ASIA
-Q140369612,nepali lok geet,folk music,ASIA > SOUTH ASIA
-Q109719071,sarala gee,folk music,ASIA > SOUTH ASIA
-Q110242082,urumi melam,folk music,ASIA > SOUTH ASIA
-Q122034415,Philippine rondalla,folk music,ASIA > SOUTHEAST ASIA
-Q108297188,balitaw,folk music,ASIA > SOUTHEAST ASIA
-Q4349839,chèo,folk music,ASIA > SOUTHEAST ASIA
-Q10973951,gondang,folk music,ASIA > SOUTHEAST ASIA
-Q25339674,harana,folk music,ASIA > SOUTHEAST ASIA
-Q3181943,kuda kepang,folk music,ASIA > SOUTHEAST ASIA
-Q6444335,kundiman,folk music,ASIA > SOUTHEAST ASIA
-Q3525838,quan họ,folk music,ASIA > SOUTHEAST ASIA
-Q128792625,tarawangsa,folk music,ASIA > SOUTHEAST ASIA
-Q10836741,xẩm,folk music,ASIA > SOUTHEAST ASIA
+Q13058900,baul gaan,folk music,ASIA > SOUTH ASIA > BENGAL & THE HIMALAYA
+Q4937089,boedra,folk music,ASIA > SOUTH ASIA > BENGAL & THE HIMALAYA
+Q25620807,dohori,folk music,ASIA > SOUTH ASIA > BENGAL & THE HIMALAYA
+Q140369612,nepali lok geet,folk music,ASIA > SOUTH ASIA > BENGAL & THE HIMALAYA
+Q5000356,Burra katha,folk music,ASIA > SOUTH ASIA > INDIA
+Q55593233,biraha,folk music,ASIA > SOUTH ASIA > INDIA
+Q947155,kirtan,folk music,ASIA > SOUTH ASIA > INDIA
+Q110242082,urumi melam,folk music,ASIA > SOUTH ASIA > INDIA
+Q4936753,boduberu,folk music,ASIA > SOUTH ASIA > SRI LANKA & THE MALDIVES
+Q109719071,sarala gee,folk music,ASIA > SOUTH ASIA > SRI LANKA & THE MALDIVES
+Q10973951,gondang,folk music,ASIA > SOUTHEAST ASIA > INDONESIA
+Q3181943,kuda kepang,folk music,ASIA > SOUTHEAST ASIA > INDONESIA
+Q128792625,tarawangsa,folk music,ASIA > SOUTHEAST ASIA > INDONESIA
+Q122034415,Philippine rondalla,folk music,ASIA > SOUTHEAST ASIA > THE PHILIPPINES
+Q108297188,balitaw,folk music,ASIA > SOUTHEAST ASIA > THE PHILIPPINES
+Q25339674,harana,folk music,ASIA > SOUTHEAST ASIA > THE PHILIPPINES
+Q6444335,kundiman,folk music,ASIA > SOUTHEAST ASIA > THE PHILIPPINES
+Q4349839,chèo,folk music,ASIA > SOUTHEAST ASIA > VIETNAM
+Q3525838,quan họ,folk music,ASIA > SOUTHEAST ASIA > VIETNAM
+Q10836741,xẩm,folk music,ASIA > SOUTHEAST ASIA > VIETNAM
 Q1430717,Hambo,folk music,EUROPE > CENTRAL & EASTERN EUROPE
 Q2583965,duma,folk music,EUROPE > CENTRAL & EASTERN EUROPE
 Q648283,krakowiak,folk music,EUROPE > CENTRAL & EASTERN EUROPE
@@ -445,31 +445,31 @@ Q2360319,kujawiak,folk music,EUROPE > CENTRAL & EASTERN EUROPE
 Q11794650,oberek,folk music,EUROPE > CENTRAL & EASTERN EUROPE
 Q4400125,runo song,folk music,EUROPE > CENTRAL & EASTERN EUROPE
 Q988502,sutartinė,folk music,EUROPE > CENTRAL & EASTERN EUROPE
-Q220528,Rebetiko,folk music,EUROPE > ITALY & GREECE
-Q3656466,cantu a chiterra,folk music,EUROPE > ITALY & GREECE
-Q774475,cantu a tenore,folk music,EUROPE > ITALY & GREECE
-Q1195630,canzone napoletana,folk music,EUROPE > ITALY & GREECE
-Q15931253,dimotiko,folk music,EUROPE > ITALY & GREECE
-Q2087267,laïko,folk music,EUROPE > ITALY & GREECE
-Q16572889,liscio,folk music,EUROPE > ITALY & GREECE
-Q359607,paghjella,folk music,EUROPE > ITALY & GREECE
-Q16327884,rizitika,folk music,EUROPE > ITALY & GREECE
-Q1093232,stornello,folk music,EUROPE > ITALY & GREECE
+Q220528,Rebetiko,folk music,EUROPE > ITALY & GREECE > GREECE
+Q15931253,dimotiko,folk music,EUROPE > ITALY & GREECE > GREECE
+Q2087267,laïko,folk music,EUROPE > ITALY & GREECE > GREECE
+Q16327884,rizitika,folk music,EUROPE > ITALY & GREECE > GREECE
+Q3656466,cantu a chiterra,folk music,EUROPE > ITALY & GREECE > ITALY
+Q774475,cantu a tenore,folk music,EUROPE > ITALY & GREECE > ITALY
+Q1195630,canzone napoletana,folk music,EUROPE > ITALY & GREECE > ITALY
+Q16572889,liscio,folk music,EUROPE > ITALY & GREECE > ITALY
+Q359607,paghjella,folk music,EUROPE > ITALY & GREECE > ITALY
+Q1093232,stornello,folk music,EUROPE > ITALY & GREECE > ITALY
 Q19754215,cante alentejano,folk music,EUROPE > PORTUGAL
 Q108297212,chamarrita açoriana,folk music,EUROPE > PORTUGAL
 Q10265571,desgarrada,folk music,EUROPE > PORTUGAL
 Q185676,fado,folk music,EUROPE > PORTUGAL
-Q8261759,asturianada,folk music,EUROPE > SPAIN
-Q108297216,chotis madrileño,folk music,EUROPE > SPAIN
-Q15042720,copla,folk music,EUROPE > SPAIN
-Q1130969,fandango,folk music,EUROPE > SPAIN
-Q252626,jota,folk music,EUROPE > SPAIN
-Q1550501,muiñeira,folk music,EUROPE > SPAIN
-Q139907417,música festera,folk music,EUROPE > SPAIN
-Q208341,pasodoble,folk music,EUROPE > SPAIN
-Q958982,saeta,folk music,EUROPE > SPAIN
-Q1413570,sardana,folk music,EUROPE > SPAIN
-Q29252685,trikiti,folk music,EUROPE > SPAIN
+Q108297216,chotis madrileño,folk music,EUROPE > SPAIN > SPANISH DANCE
+Q1130969,fandango,folk music,EUROPE > SPAIN > SPANISH DANCE
+Q252626,jota,folk music,EUROPE > SPAIN > SPANISH DANCE
+Q1550501,muiñeira,folk music,EUROPE > SPAIN > SPANISH DANCE
+Q208341,pasodoble,folk music,EUROPE > SPAIN > SPANISH DANCE
+Q1413570,sardana,folk music,EUROPE > SPAIN > SPANISH DANCE
+Q29252685,trikiti,folk music,EUROPE > SPAIN > SPANISH DANCE
+Q8261759,asturianada,folk music,EUROPE > SPAIN > SPANISH SONG
+Q15042720,copla,folk music,EUROPE > SPAIN > SPANISH SONG
+Q139907417,música festera,folk music,EUROPE > SPAIN > SPANISH SONG
+Q958982,saeta,folk music,EUROPE > SPAIN > SPANISH SONG
 Q4947422,Bosnian root music,folk music,EUROPE > THE BALKANS
 Q4936212,bocet,folk music,EUROPE > THE BALKANS
 Q2138543,doina,folk music,EUROPE > THE BALKANS
@@ -477,61 +477,61 @@ Q1428470,klapa,folk music,EUROPE > THE BALKANS
 Q674684,sevdalinka,folk music,EUROPE > THE BALKANS
 Q786815,turbo-folk,folk music,EUROPE > THE BALKANS
 Q3408409,čalgija,folk music,EUROPE > THE BALKANS
-Q4735603,Alpini song,folk music,EUROPE > WESTERN EUROPE
-Q65067835,Gaelic psalm singing,folk music,EUROPE > WESTERN EUROPE
-Q82469,Gstanzl,folk music,EUROPE > WESTERN EUROPE
-Q722989,Hungarian folk music,folk music,EUROPE > WESTERN EUROPE
-Q7482056,Irish folk music,folk music,EUROPE > WESTERN EUROPE
-Q118744381,Scottish country dance music,folk music,EUROPE > WESTERN EUROPE
-Q7770873,bal-musette,folk music,EUROPE > WESTERN EUROPE
-Q1452401,għana,folk music,EUROPE > WESTERN EUROPE
-Q3083000,kan ha diskan,folk music,EUROPE > WESTERN EUROPE
-Q1879175,ländler music,folk music,EUROPE > WESTERN EUROPE
-Q15975701,narodnozabavna glasba,folk music,EUROPE > WESTERN EUROPE
-Q1798870,pagan folk,folk music,EUROPE > WESTERN EUROPE
-Q108055228,pipe band music,folk music,EUROPE > WESTERN EUROPE
+Q65067835,Gaelic psalm singing,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND
+Q7482056,Irish folk music,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND
+Q118744381,Scottish country dance music,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND
+Q108055228,pipe band music,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND
+Q7770873,bal-musette,folk music,EUROPE > WESTERN EUROPE > FRANCE & THE MEDITERRANEAN
+Q1452401,għana,folk music,EUROPE > WESTERN EUROPE > FRANCE & THE MEDITERRANEAN
+Q3083000,kan ha diskan,folk music,EUROPE > WESTERN EUROPE > FRANCE & THE MEDITERRANEAN
+Q1798870,pagan folk,folk music,EUROPE > WESTERN EUROPE > FRANCE & THE MEDITERRANEAN
+Q4735603,Alpini song,folk music,EUROPE > WESTERN EUROPE > THE ALPS & CENTRAL EUROPE
+Q82469,Gstanzl,folk music,EUROPE > WESTERN EUROPE > THE ALPS & CENTRAL EUROPE
+Q722989,Hungarian folk music,folk music,EUROPE > WESTERN EUROPE > THE ALPS & CENTRAL EUROPE
+Q1879175,ländler music,folk music,EUROPE > WESTERN EUROPE > THE ALPS & CENTRAL EUROPE
+Q15975701,narodnozabavna glasba,folk music,EUROPE > WESTERN EUROPE > THE ALPS & CENTRAL EUROPE
 Q17048822,Fakaseasea,folk music,OCEANIA
-Q331810,colindă,folk music,SONG & DANCE FORMS
-Q106298881,contemporary folk music,folk music,SONG & DANCE FORMS
-Q89423571,contra dance music,folk music,SONG & DANCE FORMS
-Q2165184,drinking song,folk music,SONG & DANCE FORMS
-Q627181,industrial folk music,folk music,SONG & DANCE FORMS
-Q446241,neo-medieval music,folk music,SONG & DANCE FORMS
-Q1973457,seguidilla,folk music,SONG & DANCE FORMS
-Q1432540,trallalero,folk music,SONG & DANCE FORMS
-Q127624,white voice,folk music,SONG & DANCE FORMS
-Q60030725,yodel,folk music,SONG & DANCE FORMS
+Q106298881,contemporary folk music,folk music,SONG & DANCE FORMS > DANCE & REVIVAL
+Q89423571,contra dance music,folk music,SONG & DANCE FORMS > DANCE & REVIVAL
+Q627181,industrial folk music,folk music,SONG & DANCE FORMS > DANCE & REVIVAL
+Q446241,neo-medieval music,folk music,SONG & DANCE FORMS > DANCE & REVIVAL
+Q331810,colindă,folk music,SONG & DANCE FORMS > SONG
+Q2165184,drinking song,folk music,SONG & DANCE FORMS > SONG
+Q1973457,seguidilla,folk music,SONG & DANCE FORMS > SONG
+Q1432540,trallalero,folk music,SONG & DANCE FORMS > SONG
+Q127624,white voice,folk music,SONG & DANCE FORMS > SONG
+Q60030725,yodel,folk music,SONG & DANCE FORMS > SONG
 Q10970468,Taquirari,folk music,THE AMERICAS > ANDES & PACIFIC COAST
 Q5747874,canto a lo poeta,folk music,THE AMERICAS > ANDES & PACIFIC COAST
 Q766240,cueca,folk music,THE AMERICAS > ANDES & PACIFIC COAST
 Q6741049,malagueña,folk music,THE AMERICAS > ANDES & PACIFIC COAST
 Q106558878,yaraví,folk music,THE AMERICAS > ANDES & PACIFIC COAST
 Q2738178,zamacueca,folk music,THE AMERICAS > ANDES & PACIFIC COAST
-Q6039799,aboio,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q107254627,cantoria,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q1145867,cururu,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q109369576,fandango caiçara,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q505343,jongo,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q1499839,lundu,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q1753071,maracatu,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q1692318,modinha,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q9300201,samba de roda,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q16844015,toada de boi,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
-Q3570841,xaxado,folk music,THE AMERICAS > BRAZIL & THE GUIANAS
+Q109369576,fandango caiçara,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN DANCE & DRUMMING
+Q505343,jongo,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN DANCE & DRUMMING
+Q1499839,lundu,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN DANCE & DRUMMING
+Q1753071,maracatu,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN DANCE & DRUMMING
+Q9300201,samba de roda,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN DANCE & DRUMMING
+Q3570841,xaxado,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN DANCE & DRUMMING
+Q6039799,aboio,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN SONG & POETRY
+Q107254627,cantoria,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN SONG & POETRY
+Q1145867,cururu,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN SONG & POETRY
+Q1692318,modinha,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN SONG & POETRY
+Q16844015,toada de boi,folk music,THE AMERICAS > BRAZIL & THE GUIANAS > BRAZILIAN SONG & POETRY
 Q527675,bambuco,folk music,THE AMERICAS > CARIBBEAN COAST
 Q535328,gaita zuliana,folk music,THE AMERICAS > CARIBBEAN COAST
 Q1202208,joropo,folk music,THE AMERICAS > CARIBBEAN COAST
 Q6138499,tamborito,folk music,THE AMERICAS > CARIBBEAN COAST
-Q108616106,Appalachian folk music,folk music,THE AMERICAS > NORTH AMERICA
-Q2447797,Cape Breton fiddling,folk music,THE AMERICAS > NORTH AMERICA
-Q111394868,James Bay fiddling,folk music,THE AMERICAS > NORTH AMERICA
-Q6950147,Métis fiddle,folk music,THE AMERICAS > NORTH AMERICA
-Q972424,old-time music,folk music,THE AMERICAS > NORTH AMERICA
-Q138588714,rabbit song,folk music,THE AMERICAS > NORTH AMERICA
-Q132362695,ring shout,folk music,THE AMERICAS > NORTH AMERICA
-Q212024,spirituals,folk music,THE AMERICAS > NORTH AMERICA
-Q3980452,talking blues,folk music,THE AMERICAS > NORTH AMERICA
-Q123105792,unakesa,folk music,THE AMERICAS > NORTH AMERICA
+Q132362695,ring shout,folk music,THE AMERICAS > NORTH AMERICA > AFRICAN-AMERICAN TRADITIONS
+Q212024,spirituals,folk music,THE AMERICAS > NORTH AMERICA > AFRICAN-AMERICAN TRADITIONS
+Q3980452,talking blues,folk music,THE AMERICAS > NORTH AMERICA > AFRICAN-AMERICAN TRADITIONS
+Q108616106,Appalachian folk music,folk music,THE AMERICAS > NORTH AMERICA > FIDDLE TRADITIONS
+Q2447797,Cape Breton fiddling,folk music,THE AMERICAS > NORTH AMERICA > FIDDLE TRADITIONS
+Q111394868,James Bay fiddling,folk music,THE AMERICAS > NORTH AMERICA > FIDDLE TRADITIONS
+Q6950147,Métis fiddle,folk music,THE AMERICAS > NORTH AMERICA > FIDDLE TRADITIONS
+Q972424,old-time music,folk music,THE AMERICAS > NORTH AMERICA > FIDDLE TRADITIONS
+Q138588714,rabbit song,folk music,THE AMERICAS > NORTH AMERICA > INDIGENOUS TRADITIONS
+Q123105792,unakesa,folk music,THE AMERICAS > NORTH AMERICA > INDIGENOUS TRADITIONS
 Q1033073,candombe,folk music,THE AMERICAS > RÍO DE LA PLATA
 Q597493,chacarera,folk music,THE AMERICAS > RÍO DE LA PLATA
 Q1060475,chamamé,folk music,THE AMERICAS > RÍO DE LA PLATA
@@ -606,15 +606,15 @@ Q5421158,experimental hip-hop,hip-hop,ALTERNATIVE & EXPERIMENTAL
 Q1077172,instrumental hip-hop,hip-hop,ALTERNATIVE & EXPERIMENTAL
 Q255406,jazz rap,hip-hop,ALTERNATIVE & EXPERIMENTAL
 Q97265899,lofi hip-hop,hip-hop,ALTERNATIVE & EXPERIMENTAL
-Q124399713,Jersey club rap,hip-hop,CLUB & PARTY RAP
-Q546206,Miami bass,hip-hop,CLUB & PARTY RAP
-Q125653755,Philly club rap,hip-hop,CLUB & PARTY RAP
-Q2261628,chopped and screwed,hip-hop,CLUB & PARTY RAP
-Q936573,crunk,hip-hop,CLUB & PARTY RAP
-Q2043175,hyphy,hip-hop,CLUB & PARTY RAP
-Q124692508,jerk,hip-hop,CLUB & PARTY RAP
-Q109941986,ratchet music,hip-hop,CLUB & PARTY RAP
-Q2991840,snap music,hip-hop,CLUB & PARTY RAP
+Q124399713,Jersey club rap,hip-hop,CLUB & PARTY RAP > EAST COAST CLUB RAP
+Q125653755,Philly club rap,hip-hop,CLUB & PARTY RAP > EAST COAST CLUB RAP
+Q546206,Miami bass,hip-hop,CLUB & PARTY RAP > SOUTHERN CLUB RAP
+Q2261628,chopped and screwed,hip-hop,CLUB & PARTY RAP > SOUTHERN CLUB RAP
+Q936573,crunk,hip-hop,CLUB & PARTY RAP > SOUTHERN CLUB RAP
+Q2991840,snap music,hip-hop,CLUB & PARTY RAP > SOUTHERN CLUB RAP
+Q2043175,hyphy,hip-hop,CLUB & PARTY RAP > WEST COAST CLUB RAP
+Q124692508,jerk,hip-hop,CLUB & PARTY RAP > WEST COAST CLUB RAP
+Q109941986,ratchet music,hip-hop,CLUB & PARTY RAP > WEST COAST CLUB RAP
 Q12302979,battle rap,hip-hop,OLD SCHOOL & FOUNDATIONS
 Q529742,boom bap,hip-hop,OLD SCHOOL & FOUNDATIONS
 Q966564,hardcore hip-hop,hip-hop,OLD SCHOOL & FOUNDATIONS
@@ -776,15 +776,15 @@ Q109678435,microtonal classical music,modern classical music,POST-WAR & PROCESS
 Q572901,minimalist music,modern classical music,POST-WAR & PROCESS
 Q3512282,process music,modern classical music,POST-WAR & PROCESS
 Q507246,serialism,modern classical music,POST-WAR & PROCESS
-Q95469495,alternative pop,pop music,ART & INDIE POP
-Q33160145,ambient pop,pop music,ART & INDIE POP
-Q25094849,art pop,pop music,ART & INDIE POP
-Q9162904,avant-pop,pop music,ART & INDIE POP
-Q46046,baroque pop,pop music,ART & INDIE POP
-Q842324,indie pop,pop music,ART & INDIE POP
-Q3397882,progressive pop,pop music,ART & INDIE POP
-Q383982,psychedelic pop,pop music,ART & INDIE POP
-Q264289,sophisti-pop,pop music,ART & INDIE POP
+Q25094849,art pop,pop music,ART & INDIE POP > ART POP
+Q9162904,avant-pop,pop music,ART & INDIE POP > ART POP
+Q46046,baroque pop,pop music,ART & INDIE POP > ART POP
+Q3397882,progressive pop,pop music,ART & INDIE POP > ART POP
+Q383982,psychedelic pop,pop music,ART & INDIE POP > ART POP
+Q95469495,alternative pop,pop music,ART & INDIE POP > INDIE POP
+Q33160145,ambient pop,pop music,ART & INDIE POP > INDIE POP
+Q842324,indie pop,pop music,ART & INDIE POP > INDIE POP
+Q264289,sophisti-pop,pop music,ART & INDIE POP > INDIE POP
 Q28206879,Brill Building,pop music,CLASSIC POP
 Q997481,bubblegum music,pop music,CLASSIC POP
 Q11324951,new music,pop music,CLASSIC POP
@@ -806,17 +806,17 @@ Q188450,electropop,pop music,ELECTRONIC POP
 Q106528422,glitch pop,pop music,ELECTRONIC POP
 Q104695865,hyperpop,pop music,ELECTRONIC POP
 Q1298934,synth-pop,pop music,ELECTRONIC POP
-Q517415,Europop,pop music,EUROPEAN POP
-Q1936659,Nederpop,pop music,EUROPEAN POP
-Q870340,chalga,pop music,EUROPEAN POP
-Q105757139,dansband music,pop music,EUROPEAN POP
-Q12307741,dansktop,pop music,EUROPEAN POP
-Q642983,manele,pop music,EUROPEAN POP
-Q107970042,mulatós,pop music,EUROPEAN POP
-Q3415943,rabiz,pop music,EUROPEAN POP
-Q959583,schlager music,pop music,EUROPEAN POP
-Q17153632,tallava,pop music,EUROPEAN POP
-Q1636684,yé-yé,pop music,EUROPEAN POP
+Q870340,chalga,pop music,EUROPEAN POP > BALKAN & EASTERN EUROPEAN POP
+Q642983,manele,pop music,EUROPEAN POP > BALKAN & EASTERN EUROPEAN POP
+Q107970042,mulatós,pop music,EUROPEAN POP > BALKAN & EASTERN EUROPEAN POP
+Q3415943,rabiz,pop music,EUROPEAN POP > BALKAN & EASTERN EUROPEAN POP
+Q17153632,tallava,pop music,EUROPEAN POP > BALKAN & EASTERN EUROPEAN POP
+Q105757139,dansband music,pop music,EUROPEAN POP > NORDIC POP
+Q12307741,dansktop,pop music,EUROPEAN POP > NORDIC POP
+Q517415,Europop,pop music,EUROPEAN POP > WESTERN EUROPEAN POP
+Q1936659,Nederpop,pop music,EUROPEAN POP > WESTERN EUROPEAN POP
+Q959583,schlager music,pop music,EUROPEAN POP > WESTERN EUROPEAN POP
+Q1636684,yé-yé,pop music,EUROPEAN POP > WESTERN EUROPEAN POP
 Q547137,Latin pop,pop music,POP AROUND THE WORLD > LATIN POP
 Q5747258,canción melódica,pop music,POP AROUND THE WORLD > LATIN POP
 Q6993291,neomelodic music,pop music,POP AROUND THE WORLD > LATIN POP
@@ -941,15 +941,15 @@ Q65936391,acoustic rock,rock music,"ROOTS ROCK > FOLK, COUNTRY & ACOUSTIC"
 Q613408,country rock,rock music,"ROOTS ROCK > FOLK, COUNTRY & ACOUSTIC"
 Q186472,folk rock,rock music,"ROOTS ROCK > FOLK, COUNTRY & ACOUSTIC"
 Q1929352,roots rock,rock music,"ROOTS ROCK > FOLK, COUNTRY & ACOUSTIC"
-Q3606268,Afro-rock,rock music,SCENES AROUND THE WORLD
-Q483740,Anatolian rock,rock music,SCENES AROUND THE WORLD
-Q185162,Latin rock,rock music,SCENES AROUND THE WORLD
-Q13060093,Sufi rock,rock music,SCENES AROUND THE WORLD
-Q145980,Zamrock,rock music,SCENES AROUND THE WORLD
-Q6110311,flamenco rock,rock music,SCENES AROUND THE WORLD
-Q6453929,könsrock,rock music,SCENES AROUND THE WORLD
-Q9261178,miejski folk,rock music,SCENES AROUND THE WORLD
-Q107267446,rock andino,rock music,SCENES AROUND THE WORLD
+Q3606268,Afro-rock,rock music,SCENES AROUND THE WORLD > AFRICA & THE MIDDLE EAST
+Q483740,Anatolian rock,rock music,SCENES AROUND THE WORLD > AFRICA & THE MIDDLE EAST
+Q13060093,Sufi rock,rock music,SCENES AROUND THE WORLD > AFRICA & THE MIDDLE EAST
+Q145980,Zamrock,rock music,SCENES AROUND THE WORLD > AFRICA & THE MIDDLE EAST
+Q6110311,flamenco rock,rock music,SCENES AROUND THE WORLD > EUROPE
+Q6453929,könsrock,rock music,SCENES AROUND THE WORLD > EUROPE
+Q9261178,miejski folk,rock music,SCENES AROUND THE WORLD > EUROPE
+Q185162,Latin rock,rock music,SCENES AROUND THE WORLD > LATIN AMERICA
+Q107267446,rock andino,rock music,SCENES AROUND THE WORLD > LATIN AMERICA
 Q3360459,pagode,samba,MODERN SAMBA
 Q10367225,samba rap,samba,MODERN SAMBA
 Q834959,samba rock,samba,MODERN SAMBA

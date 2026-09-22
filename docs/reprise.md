@@ -116,3 +116,14 @@ Maxime signalait encore « la navigation par décennie avec des flèches » sur 
 **`tools/check-widths.py` est la vraie preuve.** Il rejoue l'algorithme de `cut()` sur l'arbre entier et liste tout nœud que la carte devrait encore mettre au cadran. Le banc de test l'exécute avant d'ouvrir le navigateur, qui ne parcourt qu'une poignée d'écrans. Il sort aujourd'hui « aucun nœud au-dessus de la capacité de l'anneau ».
 
 **Réserve assumée.** Regrouper un nœud de 9 enfants en 2 groupes de 4 ou 5 ajoute un clic et un libellé inventé pour peu de gain. C'était le prix à payer pour supprimer les flèches partout, ce que Maxime a demandé deux fois. Le seuil `GROUP_LIMIT` dans `atlas.js` se remonte en une ligne si l'usage donne tort.
+
+## Plus aucune date, nulle part (v0.7.1, 22/09/2026)
+Maxime tombe sur « THE ISLANDS » découpé en « 1850S » et « UNDATED ». Le repli par décennie était toujours là, et il se déclenchait partout où un groupe dépassait 8 membres sans troisième segment de chemin.
+
+**Trois corrections, dans cet ordre d'importance.**
+
+1. **Le repli n'est plus la décennie mais l'ordre alphabétique** (`alphaBuckets` dans `atlas.js`). C'est le garde-fou : même si un chemin éditorial manque à l'avenir, une date ne peut plus réapparaître. `decade()` est supprimée du code.
+2. **18 groupes ont reçu un troisième segment** (table `DEEP` dans `build-groups.py`), pour que le repli ne serve jamais. `THE ISLANDS` se coupe en Haïti / Porto Rico et Hispaniola, `KEYBOARD FORMS` en contrepoint / pièces de caractère, etc.
+3. **Le tri par époque est remplacé par l'ordre alphabétique** (`byName`), et le libellé « SUBGENRES — BY EPOCH » devient « SUBGENRES — A TO Z ». C'était une demande de la première conversation, restée non traitée : trier par année est encore une classification par date. L'année reste affichée comme métadonnée sous un nœud, ce qui est autre chose.
+
+**Un trou dans la vérification, corrigé.** `tools/check-widths.py` annonçait « aucun cadran » alors que trois groupes (SOUTH ASIA, SOUTHEAST ASIA, KEYBOARD FORMS) montraient bien 10 nœuds. Il ne contrôlait que la largeur, ignorait la valeur de retour de ses appels récursifs, et ne disait rien quand le repli ne produisait qu'un seul groupe. Il signale désormais les deux choses : un nœud trop large, et un nœud que le chemin éditorial ne sait pas couper. Il sort en erreur, donc le banc de test s'arrête.

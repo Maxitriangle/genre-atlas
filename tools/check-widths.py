@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Reports every node the map would still show behind a dial.
+"""Reports every node the map cannot cut on its editorial path.
 
 Mirrors what `regroup()`/`cut()` in assets/atlas.js do to the tree — a tile
 leaves its parent's ring, then any node wider than the ring is cut on the next
-segment of its children's group path — and lists what is left above the ring's
-capacity. Run it after changing the groups:
+segment of its children's group path. Reports two things: a node still above
+the ring's capacity, and a node the path cannot cut, where the map falls back
+on alphabetical ranges. Run it after changing the groups:
 
     python3 tools/check-widths.py [data/genre-import.csv]
 """
@@ -34,9 +35,6 @@ def path(q):
     return [s.strip().upper() for s in (by_q[q]['group'] or '').split(SEP) if s.strip()]
 
 
-def decade(q):
-    y = by_q[q]['epoch_year']
-    return (str(int(y) // 10 * 10) + 'S') if y else 'UNDATED'
 
 
 over = []
@@ -47,17 +45,20 @@ def cut(label, members, depth, is_tile):
     seats = RING_MAX if is_tile else DEEP_MAX
     if len(members) <= GROUP_LIMIT:
         return len(members)
+    if not all(len(path(q)) > depth for q in members):
+        over.append((label, len(members), 'sans chemin, replies par ordre alphabetique'))
+        return min(len(members), GROUP_LIMIT)
     buckets, order = {}, []
     for q in members:
-        seg = path(q)[depth] if len(path(q)) > depth else decade(q)
+        seg = path(q)[depth]
         if seg not in buckets:
             buckets[seg] = []
             order.append(seg)
         buckets[seg].append(q)
     if len(order) < 2 or len(order) >= len(members):
-        return len(members)   # cannot be narrowed: the dial stays
+        return len(members)   # cannot be narrowed
     if len(order) > seats:
-        over.append((label, len(order), 'groupes'))
+        over.append((label, len(order), 'groupes, au-dessus de la capacite de l anneau'))
     for seg in order:
         cut('%s > %s' % (label, seg), buckets[seg], depth + 1, False)
     return len(order)
@@ -69,7 +70,7 @@ def walk(q, is_tile):
         width = cut(by_q[q]['name'], children, 0, is_tile)
         seats = RING_MAX if is_tile else DEEP_MAX
         if width > seats and len(children) <= GROUP_LIMIT:
-            over.append((by_q[q]['name'], width, 'genres'))
+            over.append((by_q[q]['name'], width, 'genres, au-dessus de la capacite de l anneau'))
         elif width > seats and len(children) > GROUP_LIMIT:
             pass  # already reported inside cut()
     for k in kids[q]:
@@ -81,8 +82,9 @@ for r in rows:
         walk(r['wikidata_id'], True)
 
 if not over:
-    print('Aucun noeud au-dessus de la capacite de l anneau : plus aucun cadran.')
+    print('Tout tient dans l anneau, et chaque coupe suit un chemin editorial.')
 else:
-    print('%d noeud(s) encore au cadran :\n' % len(over))
+    print('%d probleme(s) :\n' % len(over))
     for label, n, what in sorted(over, key=lambda x: -x[1]):
-        print('  %-58s %3d %s' % (label[:58], n, what))
+        print('  %-52s %3d %s' % (label[:52], n, what))
+    sys.exit(1)
