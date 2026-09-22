@@ -161,3 +161,16 @@ Le vrai défaut n'est pas là : **rien ne signalait cet état**. L'atlas se dég
 **Un piège de comptage à ne pas réapprendre.** Une tuile quitte l'anneau de son parent, donc elle n'a pas besoin de groupe : Metal et Punk n'en ont pas. Le premier jet de l'avertissement les comptait et criait au loup sur des données parfaites. Les trois requêtes partagent désormais `genre_atlas_on_ring_sql()`, qui exclut les tuiles. La règle : **tout comptage d'enfants côté admin doit exclure les tuiles**, comme le fait la carte.
 
 L'écran Groups triait encore par époque et listait les tuiles ; il est passé à l'ordre alphabétique, sur les seuls enfants de l'anneau.
+
+## Trois résidus d'un ancien import cassaient toute une branche (v0.7.3, 22/09/2026)
+Maxime réimporte le CSV et voit encore des libellés alphabétiques, avec l'avertissement « 3 genres have no group ».
+
+**Les trois genres.** `space ambient`, `tribal ambient` et `maloya électronique`, enfants directs d'Electronic Music. Ils viennent du fichier `genre-electronic-import.csv` de la v0.3.0 et **ne sont plus dans le fichier actuel** : six genres de cet ancien fichier ont disparu quand la chaîne est passée en construction globale (v0.4.0), parce que leur parent choisi est sorti de l'atlas — `ambient music` fait partie des 481 laissés dehors. Un import ne peut donc pas les atteindre : l'importeur ne touche qu'aux lignes présentes dans le fichier.
+
+Les trois autres (`mega funk`, `J-euro`, `dungeon chip`) sont sous des parents étroits et ne déclenchaient rien.
+
+**Le vrai défaut était dans `cut()`.** Il exigeait que *tous* les enfants aient un segment de chemin, sinon toute la branche basculait en alphabétique. Trois résidus suffisaient donc à annuler le regroupement des 23 autres. Désormais un genre sans groupe **reste à côté des groupes** : Electronic Music affiche 4 groupes + 3 genres isolés = 7 nœuds. Le repli alphabétique ne sert que si le total dépasse encore l'anneau. Vérifié sur un CSV reconstituant exactement cette situation.
+
+**L'avertissement nomme maintenant les genres**, avec un lien d'édition et leur parent. Un compteur seul ne permettait pas d'agir — c'est ce qui a fait perdre un aller-retour.
+
+**À retenir.** Un site qui a connu plusieurs versions du fichier d'import peut contenir des genres qu'aucun import ne met plus à jour. Ils restent avec leur ancien parent et leurs anciennes métadonnées. Si un comportement inexplicable apparaît, comparer les identifiants Wikidata du site avec ceux du CSV courant.

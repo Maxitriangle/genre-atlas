@@ -231,11 +231,6 @@ function genre_atlas_group_count( $parent_id ) {
 	return count( $labels );
 }
 
-/**
- * Genres sitting under a branch too wide to show one by one, with no group of
- * their own. The map has nothing to cut them on and falls back on alphabetical
- * ranges, which is what a stale import file looks like from the front end.
- */
 /** The children of a branch that the map actually draws around it. */
 function genre_atlas_ring_children( $parent_id ) {
 	global $wpdb;
@@ -246,17 +241,29 @@ function genre_atlas_ring_children( $parent_id ) {
 	);
 }
 
+/**
+ * Genres sitting under a branch too wide to show one by one, with no group of
+ * their own. The map draws them beside the groups rather than inside one. Two
+ * causes: an import file older than the plugin, or genres left over from an
+ * older file and no longer part of it, which no import can reach.
+ *
+ * @return int[] Post IDs.
+ */
 function genre_atlas_ungrouped_under_wide() {
 	global $wpdb;
 	$child  = genre_atlas_on_ring_sql( 'c' );
 	$parent = genre_atlas_on_ring_sql( 'p' );
-	return (int) $wpdb->get_var(
-		"SELECT COUNT(*) FROM {$wpdb->posts} c
-		  JOIN ( SELECT p.post_parent FROM {$wpdb->posts} p
-		          WHERE $parent AND p.post_parent > 0
-		          GROUP BY p.post_parent HAVING COUNT(*) > 8 ) w ON w.post_parent = c.post_parent
-		  LEFT JOIN {$wpdb->postmeta} m ON m.post_id = c.ID AND m.meta_key = 'ga_group'
-		 WHERE $child AND ( m.meta_value IS NULL OR TRIM( m.meta_value ) = '' )"
+	return array_map(
+		'intval',
+		$wpdb->get_col(
+			"SELECT c.ID FROM {$wpdb->posts} c
+			  JOIN ( SELECT p.post_parent FROM {$wpdb->posts} p
+			          WHERE $parent AND p.post_parent > 0
+			          GROUP BY p.post_parent HAVING COUNT(*) > 8 ) w ON w.post_parent = c.post_parent
+			  LEFT JOIN {$wpdb->postmeta} m ON m.post_id = c.ID AND m.meta_key = 'ga_group'
+			 WHERE $child AND ( m.meta_value IS NULL OR TRIM( m.meta_value ) = '' )
+			 ORDER BY c.post_title"
+		)
 	);
 }
 
@@ -266,14 +273,23 @@ function genre_atlas_stale_groups_notice() {
 	if ( ! $screen || 'genre' !== $screen->post_type || ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
-	$n = genre_atlas_ungrouped_under_wide();
-	if ( ! $n ) {
+	$ids = genre_atlas_ungrouped_under_wide();
+	if ( ! $ids ) {
 		return;
 	}
-	echo '<div class="notice notice-warning"><p><strong>' . (int) $n . ' genres have no group</strong> and sit under a branch with more than 8 subgenres. '
-		. 'The map cannot cut those branches by scene or region, so it falls back on alphabetical ranges such as "S–W". '
-		. 'This is what an out-of-date import file looks like: import the latest <code>genre-import.csv</code> from Genres &rarr; Import CSV, '
-		. 'or name the groups yourself in <a href="' . esc_url( admin_url( 'edit.php?post_type=genre&page=genre-atlas-groups' ) ) . '">Genres &rarr; Groups</a>.</p></div>';
+	$links = array();
+	foreach ( array_slice( $ids, 0, 12 ) as $id ) {
+		$parent  = wp_get_post_parent_id( $id );
+		$links[] = '<a href="' . esc_url( get_edit_post_link( $id ) ) . '">' . esc_html( get_the_title( $id ) ) . '</a>'
+			. ( $parent ? ' <span class="description">(under ' . esc_html( get_the_title( $parent ) ) . ')</span>' : '' );
+	}
+	$more = count( $ids ) - count( $links );
+	echo '<div class="notice notice-warning"><p><strong>' . count( $ids ) . ' genres have no group</strong> and sit under a branch with more than 8 subgenres. '
+		. 'The map draws them beside the groups rather than inside one.</p><p>'
+		. wp_kses_post( implode( ', ', $links ) ) . ( $more > 0 ? ', and ' . (int) $more . ' more' : '' ) . '</p><p>'
+		. 'If your import file is older than the plugin, importing the latest <code>genre-import.csv</code> fixes it. '
+		. 'If these genres are not in that file at all, they are left over from an older one and no import can reach them: delete them, '
+		. 'or give them a group in <a href="' . esc_url( admin_url( 'edit.php?post_type=genre&page=genre-atlas-groups' ) ) . '">Genres &rarr; Groups</a>.</p></div>';
 }
 
 function genre_atlas_groups_page() {

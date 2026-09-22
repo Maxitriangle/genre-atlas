@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.7.2
+ * Version: 0.7.3
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.7.2' );
+define( 'GENRE_ATLAS_VERSION', '0.7.3' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v1' );
