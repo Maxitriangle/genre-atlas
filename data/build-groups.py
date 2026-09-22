@@ -111,6 +111,88 @@ REGIONS = {
 }
 LABEL_TO_REGION = {lab: reg for reg, labs in REGIONS.items() for lab in labs}
 
+# Finer cuts inside the branches rolled up by region, applied after the roll-up.
+# The regional signal runs out at one level: "music of Cuba" is a single label
+# on all 18 Cuban genres, so nothing below it can be derived. These are cut by
+# musical family instead, and stay at the SAME level rather than nesting, which
+# keeps them one click away.
+OVERRIDES = {
+    'folk music': {
+        'RÍO DE LA PLATA': [
+            'chacarera', 'chamamé', 'chamarrita rioplatense', 'milonga',
+            'candombe', 'zamba', 'payada',
+        ],
+        'ANDES & PACIFIC COAST': [
+            'Taquirari', 'cueca', 'canto a lo poeta', 'yaraví', 'zamacueca',
+            'malagueña',
+        ],
+        'CARIBBEAN COAST': [
+            'bambuco', 'gaita zuliana', 'joropo', 'tamborito',
+        ],
+        # Hispanic-influenced, but Philippine music: it does not belong in
+        # Hispanic America, where the roll-up had put it.
+        'SOUTHEAST ASIA': ['Philippine rondalla'],
+        'WEST AFRICA': ['apala', 'zinli', 'tchinkoumé', 'ambasse bey', 'batuque'],
+        'CENTRAL & SOUTHERN AFRICA': [
+            'semba', 'kilapanga', 'Ngoma music', 'montea',
+        ],
+        'NORTH AFRICA & THE ISLANDS': ['Gnawa music', 'traditional séga'],
+        'SPAIN': [
+            'asturianada', 'chotis madrileño', 'copla', 'fandango', 'jota',
+            'muiñeira', 'música festera', 'pasodoble', 'saeta', 'sardana',
+            'trikiti',
+        ],
+        'PORTUGAL': [
+            'fado', 'cante alentejano', 'desgarrada', 'chamarrita açoriana',
+        ],
+        'JAPAN': [
+            'kouta', "min'yō", 'ondo', 'rōkyoku', 'taiko music',
+            'tsugaru-jamisen', 'upopo', 'yukar',
+        ],
+        'KOREA': ['Sinawi', 'musok eumak', 'pansori', 'pungmul', 'sanjo'],
+        'THE BALKANS': [
+            'bocet', 'doina', 'klapa', 'sevdalinka', 'turbo-folk', 'čalgija',
+            'Bosnian root music',
+        ],
+        'CENTRAL & EASTERN EUROPE': [
+            'Hambo', 'duma', 'krakowiak', 'kujawiak', 'oberek', 'runo song',
+            'sutartinė',
+        ],
+    },
+    'Latin music': {
+        'SON & GUARACHA': [
+            'son cubano', 'changüí', 'guaracha', 'songo music', 'trova',
+            'guajira', 'punto guajiro', 'descarga',
+        ],
+        'RUMBA & AFRO-CUBAN': [
+            'Cuban rumba', 'rumba', 'conga', 'tumba francesa', 'pilón',
+        ],
+        'DANZÓN & BALLROOM': [
+            'danzón', 'mambo', 'pachanga', 'habanera', 'Cuban charanga',
+        ],
+        'SAMBA & BOSSA NOVA': [
+            'samba', 'bossa nova', 'choro', 'maxixe',
+            'música popular brasileira',
+        ],
+        'NORTHEASTERN BRAZIL': [
+            'baião', 'coco', 'carimbó', 'xote', 'repente', 'afoxê', 'axé',
+        ],
+        'MODERN BRAZILIAN POP': [
+            'brega', 'lambada', 'mangue bit', 'sertanejo', 'vanera',
+            'bandinha',
+        ],
+        'COLOMBIA': [
+            'Vallenato', 'champeta', 'currulao', 'porro', 'pasillo',
+        ],
+        'THE ANDES': [
+            'coplas cajamarquinas', 'música criolla', 'pandilla',
+        ],
+        # Two genres the roll-up left alone in a group of their own.
+        'DANCE & CARNIVAL': ['murga'],
+        'MEXICO & CENTRAL AMERICA': ['New Mexico music'],
+    },
+}
+
 # Where a branch's unmatched leftovers go.
 FALLBACK = {'folk music': 'SONG & DANCE FORMS', 'Latin music': 'ACROSS LATIN AMERICA'}
 
@@ -347,10 +429,10 @@ def main():
         if branch in STYLES:
             for group, names in STYLES[branch].items():
                 for n in names:
-                    hit = next((c for c in children if c['name'] == n), None)
-                    if hit is None:
+                    hits = [c for c in children if c['name'] == n]
+                    if not hits:
                         problems.append('%s : « %s » introuvable parmi les enfants' % (branch, n))
-                    else:
+                    for hit in hits:
                         assigned[hit['wikidata_id']] = group
         else:
             for c in children:
@@ -359,6 +441,14 @@ def main():
                 group = next((LABEL_TO_REGION[a.lower()] for a in alts
                               if a.lower() in LABEL_TO_REGION), None)
                 assigned[c['wikidata_id']] = group or FALLBACK[branch]
+            # The finer cut wins over the region it came from.
+            for group, names in OVERRIDES.get(branch, {}).items():
+                for n in names:
+                    hits = [c for c in children if c['name'] == n]
+                    if not hits:
+                        problems.append('%s : « %s » introuvable parmi les enfants' % (branch, n))
+                    for hit in hits:
+                        assigned[hit['wikidata_id']] = group
 
         missing = [c for c in children if c['wikidata_id'] not in assigned]
         for c in missing:

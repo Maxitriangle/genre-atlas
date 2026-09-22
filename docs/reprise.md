@@ -92,4 +92,10 @@ Les branches larges ne se coupent plus par décennie mais par scène, style ou r
 
 **Un défaut latent corrigé au passage.** La reconstruction du CSV n'était pas reproductible : deux genres distincts s'appellent « bolero » sous Latin music et n'ont pas d'année, donc la clé de tri `(année, libellé)` les laissait à égalité et leur ordre retombait sur l'itération d'un ensemble Python. Quatre lignes bougeaient d'une exécution à l'autre. Départage final ajouté sur l'identifiant Wikidata, vérifié identique sur trois graines de hachage.
 
-**Ce qui reste à décider.** Le regroupement n'a qu'un niveau. Les plus gros groupes restants comptent 17 genres (Hispanic America sous folk) et 18 (Brazil et Cuba sous Latin) : lisibles au cadran, mais un second niveau les rendrait meilleurs. C'est la prochaine évolution possible, et elle demande du code, pas des données.
+**Le second niveau a été envisagé puis écarté, au profit d'un premier niveau plus fin.** Les plus gros groupes comptaient 17 genres (Hispanic America sous folk) et 18 (Brazil, Cuba sous Latin). Mesure faite, le signal régional est épuisé à ce stade : « music of Cuba » est l'unique libellé des 18 genres cubains, et « music of Brazil » couvre 17 des 18 brésiliens. Rien ne peut donc être déduit en dessous.
+
+En revanche ces groupes se coupent très bien par famille musicale — Cuba en son / rumba / danzón, Brazil en samba-bossa / Nordeste / pop moderne — et cette coupe tient **au même niveau**. Même lisibilité, un clic de moins, et aucun code nouveau. Folk passe à 24 groupes (le plus gros : 13, contre 17), Latin à 14 (le plus gros : 10, contre 18). Table `OVERRIDES` dans `build-groups.py`, appliquée après la remontée régionale.
+
+Deux corrections au passage : `Philippine rondalla` était rangé dans Hispanic America par la remontée et part en Asie du Sud-Est ; `murga` et `New Mexico music` formaient chacun un groupe d'un seul membre et rejoignent Dance & Carnival et Mexico & Central America.
+
+Le regroupement imbriqué reste possible si le besoin revient. Il demanderait de faire récurser `regroup()` dans `atlas.js` — par exemple sur un séparateur dans `ga_group` (« CUBA > SON ») — et du travail éditorial pour inventer le niveau que les données ne donnent pas.

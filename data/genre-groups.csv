@@ -1,80 +1,80 @@
 wikidata_id,name,parent,group
 Q16491869,Dominican dembow,Latin music,ACROSS LATIN AMERICA
-Q1574985,Vallenato,Latin music,ACROSS LATIN AMERICA
 Q5713112,avanzada,Latin music,ACROSS LATIN AMERICA
 Q15830404,bolero,Latin music,ACROSS LATIN AMERICA
-Q1061165,champeta,Latin music,ACROSS LATIN AMERICA
-Q140129045,coplas cajamarquinas,Latin music,ACROSS LATIN AMERICA
-Q5794983,currulao,Latin music,ACROSS LATIN AMERICA
 Q3278092,guarania,Latin music,ACROSS LATIN AMERICA
-Q6950428,música criolla,Latin music,ACROSS LATIN AMERICA
 Q6050834,onda nueva,Latin music,ACROSS LATIN AMERICA
-Q140369829,pandilla,Latin music,ACROSS LATIN AMERICA
-Q7142141,pasillo,Latin music,ACROSS LATIN AMERICA
-Q3069904,porro,Latin music,ACROSS LATIN AMERICA
 Q6138491,tamborera,Latin music,ACROSS LATIN AMERICA
 Q115327281,tropicanibalismo,Latin music,ACROSS LATIN AMERICA
-Q383530,afoxê,Latin music,BRAZIL
-Q1435485,axé,Latin music,BRAZIL
-Q2879962,baião,Latin music,BRAZIL
-Q111241124,bandinha,Latin music,BRAZIL
-Q486263,bossa nova,Latin music,BRAZIL
-Q2464314,brega,Latin music,BRAZIL
-Q1036183,carimbó,Latin music,BRAZIL
-Q1076539,choro,Latin music,BRAZIL
-Q502448,coco,Latin music,BRAZIL
-Q533946,lambada,Latin music,BRAZIL
-Q1759189,mangue bit,Latin music,BRAZIL
-Q430075,maxixe,Latin music,BRAZIL
-Q1046768,música popular brasileira,Latin music,BRAZIL
-Q2936879,repente,Latin music,BRAZIL
-Q11403,samba,Latin music,BRAZIL
-Q1958273,sertanejo,Latin music,BRAZIL
-Q3554510,vanera,Latin music,BRAZIL
-Q502808,xote,Latin music,BRAZIL
-Q107195014,Cuban charanga,Latin music,CUBA
-Q388475,Cuban rumba,Latin music,CUBA
-Q1062199,changüí,Latin music,CUBA
-Q1125657,conga,Latin music,CUBA
-Q1165358,danzón,Latin music,CUBA
-Q28219760,descarga,Latin music,CUBA
-Q787663,guajira,Latin music,CUBA
-Q1552806,guaracha,Latin music,CUBA
-Q835562,habanera,Latin music,CUBA
-Q1646666,mambo,Latin music,CUBA
-Q367751,pachanga,Latin music,CUBA
-Q23925185,pilón,Latin music,CUBA
-Q3410882,punto guajiro,Latin music,CUBA
-Q21684437,rumba,Latin music,CUBA
-Q4428744,son cubano,Latin music,CUBA
-Q1756680,songo music,Latin music,CUBA
-Q2420447,trova,Latin music,CUBA
-Q976802,tumba francesa,Latin music,CUBA
+Q1574985,Vallenato,Latin music,COLOMBIA
+Q1061165,champeta,Latin music,COLOMBIA
+Q5794983,currulao,Latin music,COLOMBIA
+Q7142141,pasillo,Latin music,COLOMBIA
+Q3069904,porro,Latin music,COLOMBIA
 Q40461,bachata,Latin music,DANCE & CARNIVAL
 Q16986699,cha-cha-chá,Latin music,DANCE & CARNIVAL
 Q125850367,cuplé,Latin music,DANCE & CARNIVAL
 Q586110,forró,Latin music,DANCE & CARNIVAL
 Q1455932,frevo,Latin music,DANCE & CARNIVAL
 Q3889661,marchinha,Latin music,DANCE & CARNIVAL
+Q1452181,murga,Latin music,DANCE & CARNIVAL
 Q3419744,rara,Latin music,DANCE & CARNIVAL
 Q208239,salsa,Latin music,DANCE & CARNIVAL
 Q14390274,tango,Latin music,DANCE & CARNIVAL
-Q1452181,murga,Latin music,HISPANIC AMERICA
+Q107195014,Cuban charanga,Latin music,DANZÓN & BALLROOM
+Q1165358,danzón,Latin music,DANZÓN & BALLROOM
+Q835562,habanera,Latin music,DANZÓN & BALLROOM
+Q1646666,mambo,Latin music,DANZÓN & BALLROOM
+Q367751,pachanga,Latin music,DANZÓN & BALLROOM
+Q18217098,New Mexico music,Latin music,MEXICO & CENTRAL AMERICA
 Q961146,chilena,Latin music,MEXICO & CENTRAL AMERICA
 Q113133172,merequetengue,Latin music,MEXICO & CENTRAL AMERICA
 Q7309098,regional Mexican,Latin music,MEXICO & CENTRAL AMERICA
 Q5690818,rock urbano mexicano,Latin music,MEXICO & CENTRAL AMERICA
 Q6132088,son nica,Latin music,MEXICO & CENTRAL AMERICA
 Q6169362,xuc,Latin music,MEXICO & CENTRAL AMERICA
-Q18217098,New Mexico music,Latin music,NORTH AMERICA
+Q111241124,bandinha,Latin music,MODERN BRAZILIAN POP
+Q2464314,brega,Latin music,MODERN BRAZILIAN POP
+Q533946,lambada,Latin music,MODERN BRAZILIAN POP
+Q1759189,mangue bit,Latin music,MODERN BRAZILIAN POP
+Q1958273,sertanejo,Latin music,MODERN BRAZILIAN POP
+Q3554510,vanera,Latin music,MODERN BRAZILIAN POP
+Q383530,afoxê,Latin music,NORTHEASTERN BRAZIL
+Q1435485,axé,Latin music,NORTHEASTERN BRAZIL
+Q2879962,baião,Latin music,NORTHEASTERN BRAZIL
+Q1036183,carimbó,Latin music,NORTHEASTERN BRAZIL
+Q502448,coco,Latin music,NORTHEASTERN BRAZIL
+Q2936879,repente,Latin music,NORTHEASTERN BRAZIL
+Q502808,xote,Latin music,NORTHEASTERN BRAZIL
+Q388475,Cuban rumba,Latin music,RUMBA & AFRO-CUBAN
+Q1125657,conga,Latin music,RUMBA & AFRO-CUBAN
+Q23925185,pilón,Latin music,RUMBA & AFRO-CUBAN
+Q21684437,rumba,Latin music,RUMBA & AFRO-CUBAN
+Q976802,tumba francesa,Latin music,RUMBA & AFRO-CUBAN
+Q486263,bossa nova,Latin music,SAMBA & BOSSA NOVA
+Q1076539,choro,Latin music,SAMBA & BOSSA NOVA
+Q430075,maxixe,Latin music,SAMBA & BOSSA NOVA
+Q1046768,música popular brasileira,Latin music,SAMBA & BOSSA NOVA
+Q11403,samba,Latin music,SAMBA & BOSSA NOVA
+Q1062199,changüí,Latin music,SON & GUARACHA
+Q28219760,descarga,Latin music,SON & GUARACHA
+Q787663,guajira,Latin music,SON & GUARACHA
+Q1552806,guaracha,Latin music,SON & GUARACHA
+Q3410882,punto guajiro,Latin music,SON & GUARACHA
+Q4428744,son cubano,Latin music,SON & GUARACHA
+Q1756680,songo music,Latin music,SON & GUARACHA
+Q2420447,trova,Latin music,SON & GUARACHA
 Q2707994,Catalan rumba,Latin music,SPAIN
 Q489913,bolero,Latin music,SPAIN
 Q9764,flamenco,Latin music,SPAIN
 Q5716336,baguala,Latin music,THE ANDES
 Q123253590,caporal,Latin music,THE ANDES
+Q140129045,coplas cajamarquinas,Latin music,THE ANDES
 Q5654316,harawi,Latin music,THE ANDES
 Q3141879,huaylarsh,Latin music,THE ANDES
 Q1640587,morenada,Latin music,THE ANDES
+Q6950428,música criolla,Latin music,THE ANDES
+Q140369829,pandilla,Latin music,THE ANDES
 Q814402,biguine,Latin music,THE ISLANDS
 Q2278063,bomba,Latin music,THE ISLANDS
 Q3191747,cadence rampa,Latin music,THE ISLANDS
@@ -210,17 +210,12 @@ Q117198196,cruise,electronic dance music,UK & US CLUB
 Q120484427,dariacore,electronic dance music,UK & US CLUB
 Q96376113,deconstructed club,electronic dance music,UK & US CLUB
 Q108297243,flex dance music,electronic dance music,UK & US CLUB
-Q2000173,Gnawa music,folk music,AFRICA
-Q109589714,Ngoma music,folk music,AFRICA
-Q4741152,ambasse bey,folk music,AFRICA
-Q617338,apala,folk music,AFRICA
-Q2891921,batuque,folk music,AFRICA
-Q108845022,kilapanga,folk music,AFRICA
-Q11693803,montea,folk music,AFRICA
-Q1470503,semba,folk music,AFRICA
-Q108575656,tchinkoumé,folk music,AFRICA
-Q108981355,traditional séga,folk music,AFRICA
-Q106654137,zinli,folk music,AFRICA
+Q10970468,Taquirari,folk music,ANDES & PACIFIC COAST
+Q5747874,canto a lo poeta,folk music,ANDES & PACIFIC COAST
+Q766240,cueca,folk music,ANDES & PACIFIC COAST
+Q6741049,malagueña,folk music,ANDES & PACIFIC COAST
+Q106558878,yaraví,folk music,ANDES & PACIFIC COAST
+Q2738178,zamacueca,folk music,ANDES & PACIFIC COAST
 Q6039799,aboio,folk music,BRAZIL & THE GUIANAS
 Q107254627,cantoria,folk music,BRAZIL & THE GUIANAS
 Q1145867,cururu,folk music,BRAZIL & THE GUIANAS
@@ -229,61 +224,29 @@ Q505343,jongo,folk music,BRAZIL & THE GUIANAS
 Q1499839,lundu,folk music,BRAZIL & THE GUIANAS
 Q1753071,maracatu,folk music,BRAZIL & THE GUIANAS
 Q1692318,modinha,folk music,BRAZIL & THE GUIANAS
-Q5955539,payada,folk music,BRAZIL & THE GUIANAS
 Q9300201,samba de roda,folk music,BRAZIL & THE GUIANAS
 Q16844015,toada de boi,folk music,BRAZIL & THE GUIANAS
 Q3570841,xaxado,folk music,BRAZIL & THE GUIANAS
+Q527675,bambuco,folk music,CARIBBEAN COAST
+Q535328,gaita zuliana,folk music,CARIBBEAN COAST
+Q1202208,joropo,folk music,CARIBBEAN COAST
+Q6138499,tamborito,folk music,CARIBBEAN COAST
+Q1430717,Hambo,folk music,CENTRAL & EASTERN EUROPE
+Q2583965,duma,folk music,CENTRAL & EASTERN EUROPE
+Q648283,krakowiak,folk music,CENTRAL & EASTERN EUROPE
+Q2360319,kujawiak,folk music,CENTRAL & EASTERN EUROPE
+Q11794650,oberek,folk music,CENTRAL & EASTERN EUROPE
+Q4400125,runo song,folk music,CENTRAL & EASTERN EUROPE
+Q988502,sutartinė,folk music,CENTRAL & EASTERN EUROPE
+Q109589714,Ngoma music,folk music,CENTRAL & SOUTHERN AFRICA
+Q108845022,kilapanga,folk music,CENTRAL & SOUTHERN AFRICA
+Q11693803,montea,folk music,CENTRAL & SOUTHERN AFRICA
+Q1470503,semba,folk music,CENTRAL & SOUTHERN AFRICA
 Q106634987,Chinese classical music,folk music,CHINA & MONGOLIA
 Q1785243,Long song,folk music,CHINA & MONGOLIA
 Q18702741,bogino duu,folk music,CHINA & MONGOLIA
 Q136031262,haozi,folk music,CHINA & MONGOLIA
 Q7487815,shan'ge,folk music,CHINA & MONGOLIA
-Q4947422,Bosnian root music,folk music,EASTERN EUROPE & THE BALKANS
-Q1430717,Hambo,folk music,EASTERN EUROPE & THE BALKANS
-Q4936212,bocet,folk music,EASTERN EUROPE & THE BALKANS
-Q2138543,doina,folk music,EASTERN EUROPE & THE BALKANS
-Q2583965,duma,folk music,EASTERN EUROPE & THE BALKANS
-Q1428470,klapa,folk music,EASTERN EUROPE & THE BALKANS
-Q648283,krakowiak,folk music,EASTERN EUROPE & THE BALKANS
-Q2360319,kujawiak,folk music,EASTERN EUROPE & THE BALKANS
-Q11794650,oberek,folk music,EASTERN EUROPE & THE BALKANS
-Q4400125,runo song,folk music,EASTERN EUROPE & THE BALKANS
-Q674684,sevdalinka,folk music,EASTERN EUROPE & THE BALKANS
-Q988502,sutartinė,folk music,EASTERN EUROPE & THE BALKANS
-Q786815,turbo-folk,folk music,EASTERN EUROPE & THE BALKANS
-Q3408409,čalgija,folk music,EASTERN EUROPE & THE BALKANS
-Q122034415,Philippine rondalla,folk music,HISPANIC AMERICA
-Q10970468,Taquirari,folk music,HISPANIC AMERICA
-Q527675,bambuco,folk music,HISPANIC AMERICA
-Q1033073,candombe,folk music,HISPANIC AMERICA
-Q5747874,canto a lo poeta,folk music,HISPANIC AMERICA
-Q597493,chacarera,folk music,HISPANIC AMERICA
-Q1060475,chamamé,folk music,HISPANIC AMERICA
-Q108297213,chamarrita rioplatense,folk music,HISPANIC AMERICA
-Q766240,cueca,folk music,HISPANIC AMERICA
-Q535328,gaita zuliana,folk music,HISPANIC AMERICA
-Q1202208,joropo,folk music,HISPANIC AMERICA
-Q6741049,malagueña,folk music,HISPANIC AMERICA
-Q942955,milonga,folk music,HISPANIC AMERICA
-Q6138499,tamborito,folk music,HISPANIC AMERICA
-Q106558878,yaraví,folk music,HISPANIC AMERICA
-Q2738178,zamacueca,folk music,HISPANIC AMERICA
-Q3106448,zamba,folk music,HISPANIC AMERICA
-Q8261759,asturianada,folk music,IBERIA
-Q19754215,cante alentejano,folk music,IBERIA
-Q108297212,chamarrita açoriana,folk music,IBERIA
-Q108297216,chotis madrileño,folk music,IBERIA
-Q15042720,copla,folk music,IBERIA
-Q10265571,desgarrada,folk music,IBERIA
-Q185676,fado,folk music,IBERIA
-Q1130969,fandango,folk music,IBERIA
-Q252626,jota,folk music,IBERIA
-Q1550501,muiñeira,folk music,IBERIA
-Q139907417,música festera,folk music,IBERIA
-Q208341,pasodoble,folk music,IBERIA
-Q958982,saeta,folk music,IBERIA
-Q1413570,sardana,folk music,IBERIA
-Q29252685,trikiti,folk music,IBERIA
 Q220528,Rebetiko,folk music,ITALY & GREECE
 Q3656466,cantu a chiterra,folk music,ITALY & GREECE
 Q774475,cantu a tenore,folk music,ITALY & GREECE
@@ -294,19 +257,19 @@ Q16572889,liscio,folk music,ITALY & GREECE
 Q359607,paghjella,folk music,ITALY & GREECE
 Q16327884,rizitika,folk music,ITALY & GREECE
 Q1093232,stornello,folk music,ITALY & GREECE
-Q4216001,Sinawi,folk music,JAPAN & KOREA
-Q11459349,kouta,folk music,JAPAN & KOREA
-Q901610,min'yō,folk music,JAPAN & KOREA
-Q4207331,musok eumak,folk music,JAPAN & KOREA
-Q7092205,ondo,folk music,JAPAN & KOREA
-Q482981,pansori,folk music,JAPAN & KOREA
-Q497674,pungmul,folk music,JAPAN & KOREA
-Q3867028,rōkyoku,folk music,JAPAN & KOREA
-Q710917,sanjo,folk music,JAPAN & KOREA
-Q109526125,taiko music,folk music,JAPAN & KOREA
-Q3541635,tsugaru-jamisen,folk music,JAPAN & KOREA
-Q108665895,upopo,folk music,JAPAN & KOREA
-Q1193421,yukar,folk music,JAPAN & KOREA
+Q11459349,kouta,folk music,JAPAN
+Q901610,min'yō,folk music,JAPAN
+Q7092205,ondo,folk music,JAPAN
+Q3867028,rōkyoku,folk music,JAPAN
+Q109526125,taiko music,folk music,JAPAN
+Q3541635,tsugaru-jamisen,folk music,JAPAN
+Q108665895,upopo,folk music,JAPAN
+Q1193421,yukar,folk music,JAPAN
+Q4216001,Sinawi,folk music,KOREA
+Q4207331,musok eumak,folk music,KOREA
+Q482981,pansori,folk music,KOREA
+Q497674,pungmul,folk music,KOREA
+Q710917,sanjo,folk music,KOREA
 Q6754164,Mappila song,folk music,MIDDLE EAST
 Q1810546,Turkish folk music,folk music,MIDDLE EAST
 Q22949256,aita,folk music,MIDDLE EAST
@@ -315,6 +278,8 @@ Q5448207,fijiri,folk music,MIDDLE EAST
 Q5684704,liwa,folk music,MIDDLE EAST
 Q2500734,meykhana,folk music,MIDDLE EAST
 Q133826466,sa'idi,folk music,MIDDLE EAST
+Q2000173,Gnawa music,folk music,NORTH AFRICA & THE ISLANDS
+Q108981355,traditional séga,folk music,NORTH AFRICA & THE ISLANDS
 Q108616106,Appalachian folk music,folk music,NORTH AMERICA
 Q2447797,Cape Breton fiddling,folk music,NORTH AMERICA
 Q111394868,James Bay fiddling,folk music,NORTH AMERICA
@@ -326,6 +291,17 @@ Q212024,spirituals,folk music,NORTH AMERICA
 Q3980452,talking blues,folk music,NORTH AMERICA
 Q123105792,unakesa,folk music,NORTH AMERICA
 Q17048822,Fakaseasea,folk music,OCEANIA
+Q19754215,cante alentejano,folk music,PORTUGAL
+Q108297212,chamarrita açoriana,folk music,PORTUGAL
+Q10265571,desgarrada,folk music,PORTUGAL
+Q185676,fado,folk music,PORTUGAL
+Q1033073,candombe,folk music,RÍO DE LA PLATA
+Q597493,chacarera,folk music,RÍO DE LA PLATA
+Q1060475,chamamé,folk music,RÍO DE LA PLATA
+Q108297213,chamarrita rioplatense,folk music,RÍO DE LA PLATA
+Q942955,milonga,folk music,RÍO DE LA PLATA
+Q5955539,payada,folk music,RÍO DE LA PLATA
+Q3106448,zamba,folk music,RÍO DE LA PLATA
 Q331810,colindă,folk music,SONG & DANCE FORMS
 Q106298881,contemporary folk music,folk music,SONG & DANCE FORMS
 Q89423571,contra dance music,folk music,SONG & DANCE FORMS
@@ -346,6 +322,7 @@ Q947155,kirtan,folk music,SOUTH ASIA
 Q140369612,nepali lok geet,folk music,SOUTH ASIA
 Q109719071,sarala gee,folk music,SOUTH ASIA
 Q110242082,urumi melam,folk music,SOUTH ASIA
+Q122034415,Philippine rondalla,folk music,SOUTHEAST ASIA
 Q108297188,balitaw,folk music,SOUTHEAST ASIA
 Q4349839,chèo,folk music,SOUTHEAST ASIA
 Q10973951,gondang,folk music,SOUTHEAST ASIA
@@ -355,10 +332,28 @@ Q6444335,kundiman,folk music,SOUTHEAST ASIA
 Q3525838,quan họ,folk music,SOUTHEAST ASIA
 Q128792625,tarawangsa,folk music,SOUTHEAST ASIA
 Q10836741,xẩm,folk music,SOUTHEAST ASIA
+Q8261759,asturianada,folk music,SPAIN
+Q108297216,chotis madrileño,folk music,SPAIN
+Q15042720,copla,folk music,SPAIN
+Q1130969,fandango,folk music,SPAIN
+Q252626,jota,folk music,SPAIN
+Q1550501,muiñeira,folk music,SPAIN
+Q139907417,música festera,folk music,SPAIN
+Q208341,pasodoble,folk music,SPAIN
+Q958982,saeta,folk music,SPAIN
+Q1413570,sardana,folk music,SPAIN
+Q29252685,trikiti,folk music,SPAIN
 Q2307786,huayno,folk music,THE ANDES
 Q9035712,muliza,folk music,THE ANDES
 Q63197384,saya afroboliviana,folk music,THE ANDES
 Q109406646,tonada potosina,folk music,THE ANDES
+Q4947422,Bosnian root music,folk music,THE BALKANS
+Q4936212,bocet,folk music,THE BALKANS
+Q2138543,doina,folk music,THE BALKANS
+Q1428470,klapa,folk music,THE BALKANS
+Q674684,sevdalinka,folk music,THE BALKANS
+Q786815,turbo-folk,folk music,THE BALKANS
+Q3408409,čalgija,folk music,THE BALKANS
 Q5639767,Haitian vodou drumming,folk music,THE CARIBBEAN
 Q4889602,benna,folk music,THE CARIBBEAN
 Q2929369,bélé,folk music,THE CARIBBEAN
@@ -367,6 +362,11 @@ Q3333303,méringue,folk music,THE CARIBBEAN
 Q3365745,parang,folk music,THE CARIBBEAN
 Q7335754,ripsaw music,folk music,THE CARIBBEAN
 Q2738469,tumba,folk music,THE CARIBBEAN
+Q4741152,ambasse bey,folk music,WEST AFRICA
+Q617338,apala,folk music,WEST AFRICA
+Q2891921,batuque,folk music,WEST AFRICA
+Q108575656,tchinkoumé,folk music,WEST AFRICA
+Q106654137,zinli,folk music,WEST AFRICA
 Q4735603,Alpini song,folk music,WESTERN EUROPE
 Q65067835,Gaelic psalm singing,folk music,WESTERN EUROPE
 Q82469,Gstanzl,folk music,WESTERN EUROPE
