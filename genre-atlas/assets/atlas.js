@@ -134,19 +134,24 @@
   }
   function cut(parent, depth) {
     if (parent.kids.length <= GROUP_LIMIT) return;
-    var order = [], buckets = {};
-    if (parent.kids.every(function (k) { return groupPath(k).length > depth; })) {
-      parent.kids.forEach(function (k) {
-        var label = groupPath(k)[depth];
-        if (!buckets[label]) { buckets[label] = []; order.push(label); }
-        buckets[label].push(k);
-      });
-    } else {
+    // A genre with no group of its own stays beside the groups rather than
+    // dragging the whole branch onto alphabetical ranges. A few leftovers from
+    // an older import are not a reason to stop grouping the rest.
+    var labelled = [], loose = [], order = [], buckets = {};
+    parent.kids.forEach(function (k) {
+      (groupPath(k).length > depth ? labelled : loose).push(k);
+    });
+    labelled.forEach(function (k) {
+      var label = groupPath(k)[depth];
+      if (!buckets[label]) { buckets[label] = []; order.push(label); }
+      buckets[label].push(k);
+    });
+    var total = order.length + loose.length;
+    if (total < 2 || total >= parent.kids.length || total > GROUP_LIMIT) {
       var a = alphaBuckets(parent.kids);
-      order = a.order; buckets = a.buckets;
+      order = a.order; buckets = a.buckets; loose = [];
+      if (order.length < 2 || order.length >= parent.kids.length) return;
     }
-    // One bucket, or one per genre, would not make the branch any narrower.
-    if (order.length < 2 || order.length >= parent.kids.length) return;
     var groups = order.map(function (label, i) {
       var members = buckets[label], ys = years(members);
       var g = {
@@ -161,9 +166,8 @@
       N[g.id] = g;
       return g;
     });
-    groups.sort(byName);
     parent.grouped = parent.kids.length;
-    parent.kids = groups;
+    parent.kids = groups.concat(loose).sort(byName);
     // A group still too wide is cut again on the next segment of the path.
     groups.forEach(function (g) { cut(g, depth + 1); });
   }

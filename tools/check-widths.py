@@ -45,23 +45,26 @@ def cut(label, members, depth, is_tile):
     seats = RING_MAX if is_tile else DEEP_MAX
     if len(members) <= GROUP_LIMIT:
         return len(members)
-    if not all(len(path(q)) > depth for q in members):
-        over.append((label, len(members), 'sans chemin, replies par ordre alphabetique'))
-        return min(len(members), GROUP_LIMIT)
-    buckets, order = {}, []
+    # A genre with no segment at this depth stays beside the groups.
+    buckets, order, loose = {}, [], []
     for q in members:
+        if len(path(q)) <= depth:
+            loose.append(q)
+            continue
         seg = path(q)[depth]
         if seg not in buckets:
             buckets[seg] = []
             order.append(seg)
         buckets[seg].append(q)
-    if len(order) < 2 or len(order) >= len(members):
-        return len(members)   # cannot be narrowed
-    if len(order) > seats:
-        over.append((label, len(order), 'groupes, au-dessus de la capacite de l anneau'))
+    total = len(order) + len(loose)
+    if total < 2 or total >= len(members) or total > GROUP_LIMIT:
+        over.append((label, len(members), 'sans chemin, replies par ordre alphabetique'))
+        return min(len(members), GROUP_LIMIT)
+    if total > seats:
+        over.append((label, total, 'noeuds, au-dessus de la capacite de l anneau'))
     for seg in order:
         cut('%s > %s' % (label, seg), buckets[seg], depth + 1, False)
-    return len(order)
+    return total
 
 
 def walk(q, is_tile):
