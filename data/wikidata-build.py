@@ -196,7 +196,18 @@ tiles = [resolve(n) for n in TILE_ORDER]
 assert set(tiles) == set(family_ids) | {resolve(n) for n in TERRITORIES}, 'TILE_ORDER is incomplete'
 tile_rank = {g: i for i, g in enumerate(tiles)}
 
-width = lambda n: 'ring' if n <= 12 else ('dial' if n <= 40 else 'group')
+width = lambda n: 'ring' if n <= 8 else ('dial' if n <= 40 else 'group')
+
+# Editorial groups for the branches too wide to read one genre at a time,
+# written by build-groups.py. Absent file = every wide branch falls back to
+# decades, which is what the atlas did before.
+groups = {}
+_gf = os.path.join(HERE, 'genre-groups.csv')
+if os.path.exists(_gf):
+    for _r in csv.DictReader(io.open(_gf, encoding='utf-8')):
+        groups[_r['wikidata_id']] = _r['group']
+    sys.stderr.write('groupes editoriaux : %d genres\n' % len(groups))
+
 rows = []
 
 
@@ -215,6 +226,7 @@ def emit(g, root, level):
         display_rule=width(n),
         epoch_year=year.get(g, ''),
         origin=' · '.join(sorted(country.get(g, []))),
+        group=groups.get(g, ''),
         bpm_min='',
         bpm_max='',
         parent_choice='root' if g == root else how[g],
@@ -224,7 +236,10 @@ def emit(g, root, level):
         family_shape='' if i is None else SHAPES[i % len(SHAPES)],
         family_hue='' if i is None else (HUE_START + HUE_STEP * i) % 360,
     ))
-    for k in sorted(kids[g], key=lambda k: (year.get(k, 9999), label[k].lower())):
+    # Final tie-break on the Wikidata ID: two genres can share a label and
+    # have no year (there are two 'bolero' under Latin music), and without
+    # it their order falls back on set iteration, which moves between runs.
+    for k in sorted(kids[g], key=lambda k: (year.get(k, 9999), label[k].lower(), k)):
         emit(k, root, level + 1)
 
 

@@ -3,7 +3,7 @@
  * CSV importer. Expected columns (header row, any order):
  * wikidata_id, musicbrainz_id, name, parent_wikidata_id, epoch_year, origin,
  * bpm_min, bpm_max, parent_choice, wikidata_parents_raw, featured,
- * family_shape, family_hue
+ * family_shape, family_hue, group
  *
  * Genres are matched on wikidata_id, so the same file can be imported again
  * safely: existing genres are updated, never duplicated. Fields already
@@ -87,6 +87,9 @@ class Genre_Atlas_Importer {
 				'ga_musicbrainz_id'       => isset( $row['musicbrainz_id'] ) ? $row['musicbrainz_id'] : '',
 				'ga_epoch_year'           => isset( $row['epoch_year'] ) && '' !== $row['epoch_year'] ? (int) $row['epoch_year'] : '',
 				'ga_origin'               => isset( $row['origin'] ) ? $row['origin'] : '',
+				// Editorial group for the branches too wide to read one genre at a
+				// time. Empty leaves the genre on its decade fallback.
+				'ga_group'                => isset( $row['group'] ) ? $row['group'] : '',
 				'ga_bpm_min'              => isset( $row['bpm_min'] ) && '' !== $row['bpm_min'] ? (int) $row['bpm_min'] : '',
 				'ga_bpm_max'              => isset( $row['bpm_max'] ) && '' !== $row['bpm_max'] ? (int) $row['bpm_max'] : '',
 				'ga_parent_choice'        => isset( $row['parent_choice'] ) ? $row['parent_choice'] : '',
