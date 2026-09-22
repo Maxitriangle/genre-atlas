@@ -405,6 +405,215 @@ STYLES = {
 }
 
 
+# --- The nodes between 9 and 33 children -----------------------------------
+# Nothing to derive here: their children carry no second Wikidata parent worth
+# grouping on, so these are families anyone who knows the genre would recognise.
+MORE_STYLES = {
+    'jazz': {
+        'ORIGINS & SWING': ['Dixieland jazz', 'Creole jazz', 'big band music', 'swing', 'sweet jazz', 'jazz standard', 'orchestral jazz'],
+        'BEBOP & MODERN JAZZ': ['bebop', 'cool jazz', 'modal jazz', 'third stream', 'contemporary jazz'],
+        'FUSION & FUNK': ['jazz fusion', 'jazz-funk', 'nu jazz', 'crossover jazz', 'smooth jazz', 'world fusion'],
+        'BLUES & SPIRITUAL JAZZ': ['jazz blues', 'spiritual jazz', 'vocal jazz', 'instrumental jazz'],
+        'JAZZ AROUND THE WORLD': ['Afro-jazz', 'Ethio-jazz', 'Gypsy jazz', 'Indo jazz', 'Latin jazz', 'cape jazz', 'marabi', 'paramaribop'],
+        'MOOD & SCREEN': ['crime jazz', 'dark jazz', 'jazz poetry'],
+    },
+    'electronic music': {
+        'CLUB & DANCEFLOOR': ['electronic dance music', 'nightcore', 'witch house', 'seapunk'],
+        'AMBIENT & CHILL-OUT': ['chill-out music', 'chillwave', 'binaural beats', 'illbient', 'leftfield electronic', 'minimal wave', 'wave'],
+        'SYNTH & RETRO': ['synthwave', 'horror synth', 'bit music', 'moogsploitation', 'cyberpunk music', 'progressive electronic music'],
+        'EXPERIMENTAL & DIGITAL': ['experimental electronic music', 'graphical sound', 'digital fusion', 'HexD', 'acholitronix', 'electronica'],
+    },
+    'metal music': {
+        'EXTREME METAL': ['black metal', 'death metal', 'thrash metal', 'groove metal'],
+        'DOOM & SLUDGE': ['doom metal', 'sludge metal', 'drone metal', 'stoner metal', 'post-metal'],
+        'CLASSIC & POWER METAL': ['heavy metal music', 'power metal', 'neo-classical metal', 'glam metal', 'Southern metal'],
+        'PROGRESSIVE & SYMPHONIC': ['progressive metal', 'symphonic metal', 'avant-garde metal', 'gothic metal', 'folk metal'],
+        'CROSSOVER METAL': ['alternative metal', 'pop metal', 'kawaii metal', 'trance metal'],
+    },
+    'hardcore': {
+        'GABBER & MAINSTREAM': ['gabber', 'happy hardcore', 'uptempo hardcore', 'hard renaissance', 'Frenchcore'],
+        'SPEED & EXTREME': ['speedcore', 'terrorcore', 'doomcore', 'darkcore', 'deathchant hardcore'],
+        'BREAKS & DIGITAL': ['breakbeat hardcore', 'breakcore', 'digital hardcore', 'amigacore', 'acidcore'],
+        'SCENES & OFFSHOOTS': ['J-core', 'frapcore', 'freeform hardcore', 'industrial hardcore'],
+    },
+    'drum and bass': {
+        'LIQUID & ATMOSPHERIC': ['liquid drum and bass', 'atmospheric drum and bass', 'deep drum and bass', 'minimal drum and bass', 'jazzstep', 'drumfunk'],
+        'DARK & TECHNICAL': ['darkstep', 'techstep', 'neurofunk', 'technoid', 'halftime', 'trancestep'],
+        'DANCEFLOOR & JUMP-UP': ['jump-up', 'hardstep', 'dancefloor drum and bass', 'dubwise drum and bass', 'sambass'],
+    },
+    'punk rock': {
+        'HARDCORE & OI!': ['hardcore punk', 'oi!', 'anarcho-punk', 'queercore', 'riot grrrl'],
+        'POP & SKATE PUNK': ['pop-punk', 'skate punk', 'alternative punk', 'garage punk'],
+        'ROOTS & REVIVAL': ['psychobilly', 'surf punk', 'horror punk', 'Gypsy punk', 'Celtic punk'],
+        'PUNK FUSIONS': ['ska punk', 'punk rap', 'Neue Deutsche Welle'],
+    },
+    'contemporary folk music': {
+        'FOLK REVIVAL': ['skiffle', 'campus folk song', 'country folk', 'neofolklore', 'American primitive guitar'],
+        'INDIE & ALTERNATIVE FOLK': ['indie folk', 'alternative folk', 'anti-folk', 'folk-pop', 'loner folk'],
+        'PSYCHEDELIC & AVANT FOLK': ['psychedelic folk', 'avant-folk', 'chamber folk', 'neofolk', 'progressive folk', 'filk'],
+    },
+    'regional Mexican': {
+        'SON & HUAPANGO': ['son calentano', 'son huasteco', 'son istmeño', 'son jarocho', 'huapango', 'trova yucateca'],
+        'BANDA & NORTEÑO': ['banda music', 'norteño', 'Duranguense', 'corrido', 'grupera', 'tejano music'],
+        'MARIACHI & RANCHERA': ['mariachi', 'ranchera', 'canto cardenche', 'pirekua'],
+    },
+    'trance': {
+        'CLASSIC & UPLIFTING': ['uplifting trance', 'vocal trance', 'dream trance', 'Balearic trance', 'Eurotrance'],
+        'HARD & TECH TRANCE': ['hard trance', 'tech trance', 'acid trance', 'hard NRG', 'electro trance'],
+        'PSYCHEDELIC & MODERN': ['psychedelic trance', 'hi-tech full-on', 'progressive trance', 'big room trance', 'trance 2.0'],
+    },
+    'samba': {
+        'TRADITIONAL SAMBA': ['samba de terreiro', 'samba de breque', 'partido alto', 'batucada', 'samba-enredo', 'samba-exaltação'],
+        'SAMBA & SONG': ['samba-canção', 'samba-choro', 'samba-jazz', 'samba de gafieira', 'samba-joia'],
+        'MODERN SAMBA': ['pagode', 'samba rock', 'samba rap', 'sambalanço'],
+    },
+    'blues': {
+        'COUNTRY & ACOUSTIC BLUES': ['country blues', 'acoustic blues', 'acoustic Chicago blues', 'piano blues', 'fife and drum blues', 'jug band'],
+        'ELECTRIC & JUMP BLUES': ['electric blues', 'jump blues', 'boogie-woogie', 'soul blues', 'classic female blues'],
+        'REGIONAL & AFRICAN BLUES': ['Texas blues', 'Louisiana blues', 'African blues', 'desert blues'],
+    },
+    'hardcore punk': {
+        'METALLIC HARDCORE': ['metalcore', 'grindcore', 'thrashcore', 'powerviolence', 'beatdown hardcore', 'tough guy hardcore'],
+        'CRUST & D-BEAT': ['D-beat', 'crust punk', 'noisecore', 'burning spirits'],
+        'MELODIC & THEMED': ['melodic hardcore', 'street punk', 'Christian hardcore', 'Nintendocore'],
+    },
+    'soul': {
+        'CITY SCENES': ['Chicago soul', 'Philadelphia soul', 'Southern soul', 'Northern soul', 'deep soul'],
+        'MODERN SOUL': ['neo soul', 'progressive soul', 'psychedelic soul', 'smooth soul', 'pop soul'],
+        'SOUL CROSSOVERS': ['soul jazz', 'Latin soul', 'country soul', 'blue-eyed soul'],
+    },
+    'pop rock': {
+        'BEAT & POWER POP': ['beat music', 'beat rock', 'power pop', 'jangle pop', 'twee pop'],
+        'BRITPOP & SOFT ROCK': ['Britpop', 'soft rock', 'piano rock', 'Donosti sound'],
+        'POP ROCK AROUND THE WORLD': ['Burmese stereo', 'Manila sound', 'pop yeh-yeh', 'tropical rock'],
+    },
+    'trap music': {
+        'TRAP FUSIONS': ['trap soul', 'trap metal', 'new jazz', 'plugg music'],
+        'RAGE & PHONK': ['rage', 'rare phonk', 'sigilkore', 'no melody trap', 'tread rap'],
+        'TRAP AROUND THE WORLD': ['Afro trap', 'Latin trap', 'trap shaabi', 'regalia'],
+    },
+    'country music': {
+        'TRADITIONAL COUNTRY': ['traditional country music', 'classic country', 'honky tonk', 'western music', 'Western swing'],
+        'MODERN NASHVILLE': ['Nashville sound', 'contemporary country', 'truck-driving country'],
+        'ALTERNATIVE & REGIONAL': ['alternative country', 'progressive country', 'Texas country music', 'country and Irish', 'Czech tramping music'],
+    },
+    'techno': {
+        'DETROIT & CLASSIC TECHNO': ['Detroit techno', 'bleep techno', 'acid techno', 'minimal techno'],
+        'HARD & INDUSTRIAL TECHNO': ['hard techno', 'industrial techno', 'Belgian hardcore techno', 'hardgroove techno'],
+        'DEEP & MELODIC TECHNO': ['deep techno', 'melodic techno', 'peak time techno', 'wonky techno'],
+    },
+    'art music': {
+        'WESTERN ART MUSIC': ['classical music', 'avant-garde music', 'pìobaireachd'],
+        'EAST ASIAN COURT MUSIC': ['Japanese classical music', 'Korean court music', 'gagaku', 'guoyue', 'Vietnamese classical music'],
+        'OTHER CLASSICAL TRADITIONS': ['Indian classical music', 'Southeast Asian classical music', 'maqāmic music', 'kete'],
+    },
+    'black metal': {
+        'ATMOSPHERIC & MELODIC': ['atmospheric black metal', 'melodic black metal', 'symphonic black metal', 'depressive black metal', 'pagan black metal'],
+        'RAW & DISSONANT': ["black 'n' roll", 'black noise', 'dissonant black metal', 'viking metal', 'war metal'],
+    },
+    'alternative rock': {
+        'INDIE & GUITAR': ['indie rock', 'shoegaze', 'gothic rock', 'geek rock', 'Japanese rock'],
+        'GRUNGE & EMO': ['grunge', 'post-grunge', 'emo', 'post-Britpop', 'alternative dance'],
+    },
+    'cumbia': {
+        'ANDEAN & PACIFIC CUMBIA': ['Colombian cumbia', 'Peruvian cumbia', 'Chilean cumbia', 'new Chilean cumbia', 'bullerengue'],
+        'SOUTHERN & MODERN CUMBIA': ['Argentine cumbia', 'cumbia santafesina', 'Mexican cumbia', 'cumbia salvadoreña', 'digital cumbia'],
+    },
+    'Southeast Asian classical music': {
+        'INDONESIAN TRADITIONS': ['gamelan', 'kacapi suling', 'tembang sunda', 'saluang klasik', 'kakawin'],
+        'MAINLAND & PHILIPPINE': ['Burmese classical music', 'Thai classical music', 'pinpeat', 'mahori', 'kulintang'],
+    },
+    'experimental music': {
+        'NOISE & DRONE': ['noise music', 'drone music', 'industrial music', 'sound art', 'tape music'],
+        'IMPROVISATION & PROCESS': ['free improvisation', 'conducted improvisation', 'modern creative', 'reductionism', 'data sonification music'],
+    },
+    'breakbeat': {
+        'BIG BEAT & FUNKY BREAKS': ['big beat', 'funky breaks', 'Florida breaks', 'West Coast breaks', 'breakbeat kota'],
+        'NU SKOOL & PSY BREAKS': ['nu skool breaks', 'progressive breaks', 'psybreaks', 'acid breaks'],
+    },
+    'punk music': {
+        'PUNK ROOTS': ['proto-punk', 'punk rock', 'cowpunk', 'punk blues', 'folk punk'],
+        'POST-PUNK & ART PUNK': ['post-punk', 'post-hardcore', 'art punk', 'synth-punk'],
+    },
+    'modern classical music': {
+        'EARLY MODERNISM': ['impressionist music', 'expressionist music', 'futurism', 'neoclassical music'],
+        'POST-WAR & PROCESS': ['serialism', 'minimalist music', 'process music', 'microtonal classical music', 'contemporary classical music'],
+    },
+    'gamelan': {
+        'JAVA & BALI': ['Javanese gamelan', 'Gamelan Bali', 'gamelan degung', 'gamelan salendro', 'gamelan sekaten'],
+        'OTHER GAMELAN': ['Malay gamelan', 'American gamelan', 'gamelan joged bumbung', 'gamelan siteran'],
+    },
+    'metalcore': {
+        'DEATHCORE & EXTREME': ['deathcore', 'downtempo deathcore', 'thall', 'mathcore'],
+        'MELODIC & PROGRESSIVE': ['melodic metalcore', 'progressive metalcore', 'easycore', 'electronicore'],
+    },
+    'Hindustani classical music': {
+        'DHRUPAD & KHYAL': ['dhrupad', 'Khyal', 'tappa', 'tarana'],
+        'DEVOTIONAL & LIGHT': ['Abhang', 'qawwali', 'Thumri', 'Klasik'],
+    },
+    'maqāmic music': {
+        'ARAB & ANDALUSI': ['Andalusi classical music', 'Iraqi maqam', 'Ottoman classical music', 'Sufiana kalam'],
+        'PERSIAN & CENTRAL ASIAN': ['Persian traditional music', 'mugham', 'muqam', 'shashmaqam'],
+    },
+    'Gamelan Bali': {
+        'CEREMONIAL GAMELAN': ['Gamelan selunding', 'gamelan angklung', 'gamelan beleganjur', 'gamelan gong gede'],
+        'THEATRE & MODERN GAMELAN': ['gamelan gender wayang', 'gamelan gong kebyar', 'gamelan jegog', 'gamelan semar pegulingan'],
+    },
+    'rhythm and blues': {
+        'CLASSIC R&B': ['New Orleans rhythm and blues', 'British rhythm and blues', 'doo-wop', 'boogie', 'swamp pop'],
+        'SOUL & DISCO': ['soul', 'disco', 'boogaloo', 'beach music'],
+    },
+}
+STYLES.update(MORE_STYLES)
+
+# --- The level above ---------------------------------------------------------
+# Folk ends at 24 groups and Latin at 14, more than the ring holds. A continent
+# above them turns the label into a path ("EUROPE > IBERIA"), which the atlas
+# cuts one segment at a time. Same for the branches that came out at 9 groups.
+SUPER = {
+    'folk music': {
+        'NORTH AMERICA': 'THE AMERICAS', 'BRAZIL & THE GUIANAS': 'THE AMERICAS',
+        'THE CARIBBEAN': 'THE AMERICAS', 'RÍO DE LA PLATA': 'THE AMERICAS',
+        'ANDES & PACIFIC COAST': 'THE AMERICAS', 'CARIBBEAN COAST': 'THE AMERICAS',
+        'THE ANDES': 'THE AMERICAS',
+        'WESTERN EUROPE': 'EUROPE', 'SPAIN': 'EUROPE', 'PORTUGAL': 'EUROPE',
+        'ITALY & GREECE': 'EUROPE', 'THE BALKANS': 'EUROPE',
+        'CENTRAL & EASTERN EUROPE': 'EUROPE',
+        'JAPAN': 'ASIA', 'KOREA': 'ASIA', 'CHINA & MONGOLIA': 'ASIA',
+        'SOUTH ASIA': 'ASIA', 'SOUTHEAST ASIA': 'ASIA',
+        'WEST AFRICA': 'AFRICA & THE MIDDLE EAST',
+        'CENTRAL & SOUTHERN AFRICA': 'AFRICA & THE MIDDLE EAST',
+        'NORTH AFRICA & THE ISLANDS': 'AFRICA & THE MIDDLE EAST',
+        'MIDDLE EAST': 'AFRICA & THE MIDDLE EAST',
+    },
+    'Latin music': {
+        'SON & GUARACHA': 'CUBA & THE CARIBBEAN',
+        'RUMBA & AFRO-CUBAN': 'CUBA & THE CARIBBEAN',
+        'DANZÓN & BALLROOM': 'CUBA & THE CARIBBEAN',
+        'THE ISLANDS': 'CUBA & THE CARIBBEAN',
+        'SAMBA & BOSSA NOVA': 'BRAZIL', 'NORTHEASTERN BRAZIL': 'BRAZIL',
+        'MODERN BRAZILIAN POP': 'BRAZIL',
+        'THE ANDES': 'THE ANDES & THE PACIFIC', 'COLOMBIA': 'THE ANDES & THE PACIFIC',
+    },
+    'rock music': {
+        'BLUES & SOUTHERN ROCK': 'ROOTS ROCK',
+        'FOLK, COUNTRY & ACOUSTIC': 'ROOTS ROCK',
+    },
+    'electronic dance music': {
+        'DUBSTEP & BASS': 'BASS MUSIC', 'TRAP & HYPERPOP': 'BASS MUSIC',
+        'UK & US CLUB': 'CLUB & BREAKS', 'BREAKBEAT & JUNGLE': 'CLUB & BREAKS',
+    },
+    'house music': {
+        'CHICAGO & THE ORIGINS': 'CLASSIC HOUSE',
+        'SOUL, JAZZ & VOCAL HOUSE': 'CLASSIC HOUSE',
+    },
+    'pop music': {
+        'SOUTH & SOUTHEAST ASIAN POP': 'POP AROUND THE WORLD',
+        'MIDDLE EASTERN & AFRICAN POP': 'POP AROUND THE WORLD',
+        'LATIN POP': 'POP AROUND THE WORLD',
+    },
+}
+
 def main():
     src = os.path.join(HERE, 'genre-import.csv')
     rows = list(csv.DictReader(open(src, encoding='utf-8')))
@@ -454,7 +663,12 @@ def main():
         for c in missing:
             problems.append('%s : « %s » sans groupe' % (branch, c['name']))
 
-        sizes = collections.Counter(assigned.values())
+        for q, g in list(assigned.items()):
+            top = SUPER.get(branch, {}).get(g)
+            if top:
+                assigned[q] = top + ' > ' + g
+
+        sizes = collections.Counter(a.split(' > ')[0] for a in assigned.values())
         print('%-24s %3d enfants -> %2d groupes  (le plus gros : %d)'
               % (branch, len(children), len(sizes),
                  max(sizes.values()) if sizes else 0))

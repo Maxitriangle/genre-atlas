@@ -154,6 +154,11 @@ for _ in $(seq 1 40); do
 done
 curl -sf -o /dev/null "http://127.0.0.1:$PORT/" || { echo "le serveur ne repond pas"; tail -20 "$CACHE/server.log"; exit 1; }
 
+say "Largeur de l arbre entier"
+# The browser only walks a handful of screens; this reads the whole tree and
+# reports any node the map would still have to put behind a dial.
+python3 "$REPO/tools/check-widths.py" "$REPO/data/genre-import.csv" || exit 1
+
 say "Navigateur"
 if [ ! -d "$CACHE/node_modules/playwright" ]; then
 	( cd "$CACHE" && npm install playwright --no-audit --no-fund --silent )

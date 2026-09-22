@@ -5,7 +5,7 @@
   var root = document.getElementById('genre-atlas');
   if (!root) return;
 
-  var RING_MAX = 8, ARC_MAX = 8, DIAL_STEP = 6, GROUP_LIMIT = 40;
+  var RING_MAX = 8, ARC_MAX = 8, DIAL_STEP = 6, GROUP_LIMIT = 8, GROUP_SEP = '>';
   var SHAPES = ['circle', 'hex', 'pent', 'square', 'diamond', 'oct', 'tri_up', 'tri_down', 'hex_r'];
   var POLY = { tri_up: [3, -90, 1.18], tri_down: [3, 90, 1.18], square: [4, 45, 1.1], diamond: [4, 0, 1.05], pent: [5, -90, 1.04], hex: [6, 0, 1], hex_r: [6, 30, 1], oct: [8, 22.5, 1] };
   var INK = '#E4DFF5';
@@ -101,38 +101,47 @@
 
   /* ---------- editorial grouping of the wide branches ----------
    * Past GROUP_LIMIT children the ring is unreadable, so it shows groups
-   * instead of genres. A genre's own label wins; anything left unlabelled
-   * falls back to its decade, so a branch is never unreadable while the
-   * editorial work is still under way. */
+   * instead of genres. A genre's group is a path — "EUROPE > IBERIA" — and
+   * cutting recurses one segment at a time, so a branch as wide as folk
+   * (170 subgenres) narrows to a handful of continents, then to regions.
+   * Anything left unlabelled falls back to its decade, so a branch is never
+   * unreadable while the editorial work is still under way. */
+  function groupPath(n) {
+    return String(n.g || '').toUpperCase().split(GROUP_SEP)
+      .map(function (x) { return x.trim(); }).filter(Boolean);
+  }
   function regroup() {
-    Object.keys(N).forEach(function (id) {
-      var parent = N[id];
-      if (parent.grp || parent.kids.length <= GROUP_LIMIT) return;
-      var order = [], buckets = {};
-      parent.kids.forEach(function (k) {
-        var label = String(k.g || '').trim().toUpperCase() || decade(k);
-        if (!buckets[label]) { buckets[label] = []; order.push(label); }
-        buckets[label].push(k);
-      });
-      // One bucket, or one per genre, would not make the branch any narrower.
-      if (order.length < 2 || order.length >= parent.kids.length) return;
-      var groups = order.map(function (label, i) {
-        var members = buckets[label], ys = years(members);
-        var g = {
-          id: 'g' + parent.id + '-' + i, grp: true, p: parent.id, dp: parent.id,
-          name: label, slug: parent.slug, kids: members,
-          y: ys.length ? Math.min.apply(null, ys) : 0,
-          last: ys.length ? Math.max.apply(null, ys) : 0,
-          total: members.reduce(function (t, m) { return t + 1 + m.total; }, 0)
-        };
-        members.forEach(function (m) { m.dp = g.id; });
-        N[g.id] = g;
-        return g;
-      });
-      groups.sort(byEpoch);
-      parent.grouped = parent.kids.length;
-      parent.kids = groups;
+    Object.keys(N).forEach(function (id) { if (!N[id].grp) cut(N[id], 0); });
+  }
+  function cut(parent, depth) {
+    if (parent.kids.length <= GROUP_LIMIT) return;
+    var order = [], buckets = {};
+    parent.kids.forEach(function (k) {
+      var label = groupPath(k)[depth] || decade(k);
+      if (!buckets[label]) { buckets[label] = []; order.push(label); }
+      buckets[label].push(k);
     });
+    // One bucket, or one per genre, would not make the branch any narrower.
+    if (order.length < 2 || order.length >= parent.kids.length) return;
+    var groups = order.map(function (label, i) {
+      var members = buckets[label], ys = years(members);
+      var g = {
+        id: 'g' + parent.id + '-' + depth + '-' + i, grp: true,
+        p: parent.grp ? parent.p : parent.id, dp: parent.id,
+        name: label, slug: parent.slug, kids: members,
+        y: ys.length ? Math.min.apply(null, ys) : 0,
+        last: ys.length ? Math.max.apply(null, ys) : 0,
+        total: members.reduce(function (t, m) { return t + 1 + m.total; }, 0)
+      };
+      members.forEach(function (m) { m.dp = g.id; });
+      N[g.id] = g;
+      return g;
+    });
+    groups.sort(byEpoch);
+    parent.grouped = parent.kids.length;
+    parent.kids = groups;
+    // A group still too wide is cut again on the next segment of the path.
+    groups.forEach(function (g) { cut(g, depth + 1); });
   }
 
   /* ---------- state / routing ---------- */
@@ -198,8 +207,10 @@
   }
 
   /* ---------- map ---------- */
-  // Ring capacity: 8 around a family; fewer deeper down, where the horizontal axis is kept for the lineage.
-  function windowSize(centre, open) { return isTile(centre) ? RING_MAX : (open ? 6 : 7); }
+  // Ring capacity: 8 seats, spread over two arcs and staggered in radius when
+  // there are more than six. Opening a child costs two, the horizontal axis
+  // being kept for the lineage.
+  function windowSize(centre, open) { return open && !isTile(centre) ? 6 : RING_MAX; }
   function viewMap(centre, open) {
     var box = root.querySelector('.ga-map'), W = box ? box.clientWidth : 1040, H = box ? box.clientHeight : 880;
     W = Math.max(W, 720); H = Math.max(H, 620);

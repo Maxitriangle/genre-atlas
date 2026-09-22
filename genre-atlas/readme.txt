@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.6.0
+Stable tag: 0.7.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -14,11 +14,11 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
 == Notes ==
 * Re-importing the same file never creates duplicates (genres are matched on their Wikidata ID).
 * A genre marked "Reviewed" is never modified by an import.
-* The Genres list shows which genres have more than 8 subgenres (dial) or more than 40 (grouped).
-* Past 40 subgenres the map shows editorial groups instead of genres. The import file carries a group for each of
-  those genres, cut by scene, style or region; Genres > Groups is where they are renamed. A genre with no group
-  falls back to its decade. Genres > Settings can switch the editorial names off and put every wide branch back
-  on decades without losing what has been typed.
+* The Genres list shows which genres have more than 8 subgenres, the point past which the map groups them.
+* Past 8 subgenres the map shows editorial groups instead of genres, so nothing is ever hidden behind arrows.
+  A group is a path ("EUROPE > IBERIA") and the map cuts one segment at a time, so folk's 170 subgenres narrow
+  to continents, then regions. The import file carries the group; Genres > Groups is where they are renamed.
+  A genre with no group falls back to its decade. Genres > Settings switches the editorial names off.
 * A tile on the home page and having no parent are two different things. "Home page tile" on the genre screen
   gives a genre a tile and its own colour, whatever its parent: Metal keeps Rock as its parent in the tree and
   still opens the atlas from its own tile, which reads "FAMILY": a tile closes the displayed lineage, so nothing

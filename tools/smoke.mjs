@@ -42,9 +42,9 @@ function pick( min, max ) {
 	return hit ? { node: hit, count: kids.get( hit.id ) } : null;
 }
 
-const ring = pick( 4, 6 );         // fixed ring, whatever the depth
-const dialCase = pick( 9, 40 );    // rotating dial
-const wide = pick( 41, Infinity ); // editorial grouping
+const ring = pick( 4, 8 );         // shown genre by genre
+const mid = pick( 9, 40 );         // cut into groups
+const wide = pick( 41, Infinity ); // cut into groups, then into subgroups
 
 // A territory: a genre that has a tile on the home page AND a parent. Metal
 // under Rock is the case the whole design rests on, so the bench derives it
@@ -140,24 +140,13 @@ try {
 		await page.screenshot( { path: `${ SHOTS }/03-anneau.png`, fullPage: true } );
 	}
 
-	// 4. Rotating dial, 9 to 40 children.
-	if ( dialCase ) {
-		await centre( page, dialCase.node );
-		const dial = await page.locator( '.ga-dial' ).count();
-		check( `cadran : « ${ dialCase.node.name } » (${ dialCase.count } enfants) affiche le cadran`, dial > 0, dial ? '' : 'aucun .ga-dial' );
-		if ( dial ) {
-			const caption = () => page.locator( '.ga-dial + .ga-micro' ).first().innerText().catch( () => '' );
-			const before = await caption();
-			await page.locator( '[data-dial="1"]' ).first().click();
-			await page.waitForTimeout( 300 );
-			const after = await caption();
-			check( 'cadran : la rotation change la fenetre affichee', before !== after && !! before, `${ before.split( ' · ' )[ 0 ] } -> ${ after.split( ' · ' )[ 0 ] }` );
-			// The ring never shows more than 8 nodes at once: that is what keeps
-			// the labels from overlapping.
-			const span = ( before.split( ' · ' )[ 0 ] || '' ).match( /(\d+)\D+(\d+)\s*\// );
-			const shown = span ? Number( span[ 2 ] ) - Number( span[ 1 ] ) + 1 : -1;
-			check( 'cadran : l anneau ne montre jamais plus de 8 noeuds', shown > 0 && shown <= 8, `${ shown } noeud(s) affiche(s)` );
-		}
+	// 4. Between 9 and 40 children: cut into groups, and no dial left to turn.
+	if ( mid ) {
+		await centre( page, mid.node );
+		const nodes = await page.locator( '.ga-map .ga-node:not(.centre):not(.anc)' ).count();
+		check( `regroupement : « ${ mid.node.name } » (${ mid.count } enfants) tient en ${ nodes } noeuds sans cadran`,
+			nodes >= 2 && nodes <= 8 && await page.locator( '.ga-dial' ).count() === 0,
+			`${ nodes } noeud(s), cadran ${ await page.locator( '.ga-dial' ).count() ? 'present' : 'absent' }` );
 		await page.screenshot( { path: `${ SHOTS }/04-cadran.png`, fullPage: true } );
 	}
 
@@ -165,12 +154,9 @@ try {
 	if ( wide ) {
 		await centre( page, wide.node );
 		const groups = await page.locator( '.ga-map .ga-node:not(.centre):not(.anc)' ).count();
-		// Grouping and the dial are not exclusive: a branch cut into more groups
-		// than the ring holds is grouped AND dialled. What matters is that the
-		// ring itself never goes past 8.
-		check( `groupes : « ${ wide.node.name } » (${ wide.count } enfants) est regroupe`,
-			groups >= 2 && groups <= 8,
-			`${ groups } groupe(s) sur l anneau, cadran ${ await page.locator( '.ga-dial' ).count() ? 'present' : 'absent' }` );
+		check( `groupes : « ${ wide.node.name } » (${ wide.count } enfants) tient en ${ groups } groupes sans cadran`,
+			groups >= 2 && groups <= 8 && await page.locator( '.ga-dial' ).count() === 0,
+			`${ groups } groupe(s), cadran ${ await page.locator( '.ga-dial' ).count() ? 'present' : 'absent' }` );
 		// The point of the editorial groups: a wide branch is cut by scene or
 		// region, never by decade. "1960S" and "UNDATED" are the fallback the
 		// atlas uses only where nothing has been named.
@@ -204,7 +190,7 @@ try {
 
 	// 7. Mobile: a single vertical tree, no radial map.
 	const phone = await newPage( 390, 844 );
-	await centre( phone, dialCase ? dialCase.node : byId.get( tree.nodes[ 0 ].id ) );
+	await centre( phone, mid ? mid.node : byId.get( tree.nodes[ 0 ].id ) );
 	const vertical = await phone.locator( '.ga-mobile, .ga-mtree' ).count() > 0;
 	check( 'mobile : arbre vertical, carte radiale absente', vertical && await phone.locator( '.ga-map' ).count() === 0 );
 	await phone.screenshot( { path: `${ SHOTS }/07-mobile.png`, fullPage: true } );

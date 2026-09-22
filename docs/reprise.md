@@ -99,3 +99,20 @@ En revanche ces groupes se coupent très bien par famille musicale — Cuba en s
 Deux corrections au passage : `Philippine rondalla` était rangé dans Hispanic America par la remontée et part en Asie du Sud-Est ; `murga` et `New Mexico music` formaient chacun un groupe d'un seul membre et rejoignent Dance & Carnival et Mexico & Central America.
 
 Le regroupement imbriqué reste possible si le besoin revient. Il demanderait de faire récurser `regroup()` dans `atlas.js` — par exemple sur un séparateur dans `ga_group` (« CUBA > SON ») — et du travail éditorial pour inventer le niveau que les données ne donnent pas.
+
+## Le cadran supprimé (v0.7.0, 22/09/2026)
+Maxime signalait encore « la navigation par décennie avec des flèches » sur Rock et sur Electronic Music. Deux causes différentes :
+- **Rock** : ses 9 groupes dépassaient les 8 places de l'anneau, donc le cadran revenait par-dessus le regroupement.
+- **Electronic Music** : 23 enfants, sous l'ancien seuil de 40, donc aucun groupe — la carte paginait les genres triés par époque, et la légende du cadran affichait les années. D'où la lecture « par décennie ».
+
+**La solution tient en deux changements.** Le seuil de regroupement passe de 40 à **8**, et le libellé de groupe devient un **chemin** (`EUROPE > IBERIA`) que `cut()` coupe segment par segment, récursivement. Une branche aussi large que folk se réduit donc à 6 continents, puis à des régions, sans jamais dépasser 8 nœuds.
+
+**Le périmètre.** 36 nœuds dépassent 8 enfants. 8 étaient déjà traités en 0.6.0 ; les 28 autres représentaient 395 genres. Total : **1 020 genres portent un groupe**, contre 593 en 0.6.0.
+
+**Le signal automatique n'existait pas pour ces 28.** Contrairement à folk et Latin (99 % de seconds parents Wikidata exploitables), leur valeur dominante est « aucun second parent ». Ces découpages — metal, jazz, blues, techno, punk, soul… — sont donc entièrement éditoriaux. Ce sont des familles qu'un connaisseur reconnaîtra, mais aucune source ne les valide.
+
+**La capacité en profondeur passe de 7 à 8.** Elle avait été fixée à 7 par prudence en 0.5.0. Quatre nœuds ont exactement 8 enfants (metalcore, Hindustani classical music, maqāmic music, Gamelan Bali) : sous le seuil de regroupement, mais un de trop pour 7 places. Le code répartit déjà les nœuds sur deux arcs de 130° et les décale en rayon au-delà de six, donc 8 tient sans chevauchement.
+
+**`tools/check-widths.py` est la vraie preuve.** Il rejoue l'algorithme de `cut()` sur l'arbre entier et liste tout nœud que la carte devrait encore mettre au cadran. Le banc de test l'exécute avant d'ouvrir le navigateur, qui ne parcourt qu'une poignée d'écrans. Il sort aujourd'hui « aucun nœud au-dessus de la capacité de l'anneau ».
+
+**Réserve assumée.** Regrouper un nœud de 9 enfants en 2 groupes de 4 ou 5 ajoute un clic et un libellé inventé pour peu de gain. C'était le prix à payer pour supprimer les flèches partout, ce que Maxime a demandé deux fois. Le seuil `GROUP_LIMIT` dans `atlas.js` se remonte en une ligne si l'usage donne tort.
