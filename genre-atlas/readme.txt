@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.7.1
+Stable tag: 0.7.2
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -15,6 +15,8 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
 * Re-importing the same file never creates duplicates (genres are matched on their Wikidata ID).
 * A genre marked "Reviewed" is never modified by an import.
 * The Genres list shows which genres have more than 8 subgenres, the point past which the map groups them.
+* A warning appears on the Genres screens when genres under such a branch carry no group: the map then falls
+  back on alphabetical ranges, which is what an out-of-date import file looks like from the front end.
 * Past 8 subgenres the map shows editorial groups instead of genres, so nothing is ever hidden behind arrows.
   A group is a path ("EUROPE > IBERIA") and the map cuts one segment at a time, so folk's 170 subgenres narrow
   to continents, then regions. The import file carries the group; Genres > Groups is where they are renamed.
