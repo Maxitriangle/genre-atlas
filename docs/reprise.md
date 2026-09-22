@@ -46,7 +46,7 @@ L'atlas est passé d'une famille à treize, et de 406 à **1 630 genres**. Fichi
 
 **La décision de fond.** Metal et Punk restent des enfants de Rock dans l'arbre et ont quand même leur tuile sur l'accueil. Le code confondait les deux : une famille, c'était un genre sans parent, un point c'est tout. C'est pour ça que la question paraissait insoluble. Elle est désormais séparée en deux, comme l'avaient été le parent réel et le parent d'affichage pour les groupes éditoriaux.
 
-Concrètement : un champ `ga_featured` porte le rang de la tuile, et la forme comme la couleur d'une branche remontent jusqu'à la tuile plutôt que jusqu'à la racine. Metal porte donc ses propres couleurs sans cesser d'être sous Rock, et sa tuile affiche « IN ROCK MUSIC » plutôt que de se déclarer famille. Le banc de test tient ce point : il trouve un territoire dans les données, vérifie que ses sous-genres affichent toujours la famille dont ils descendent, et que sa couleur diffère de celle de sa racine.
+Concrètement : un champ `ga_featured` porte le rang de la tuile, et la forme comme la couleur d'une branche remontent jusqu'à la tuile plutôt que jusqu'à la racine. Metal porte donc ses propres couleurs sans cesser d'être sous Rock, et sa tuile affiche « IN ROCK MUSIC » plutôt que de se déclarer famille. *(Ce dernier point est revenu en v0.5.0 : la tuile affiche « FAMILY » — voir plus bas.)* Le banc de test tient ce point : il trouve un territoire dans les données, vérifie que ses sous-genres affichent toujours la famille dont ils descendent, et que sa couleur diffère de celle de sa racine.
 
 **La construction est globale, et c'est ce qui change le plus.** L'ancien script partait d'une racine et ramassait tout autour ; il ne connaissait qu'une famille, donc des genres limites étaient aspirés dans Electronic faute de mieux. Le nouveau construit l'arbre entier d'un coup puis le découpe, donc chaque genre n'a qu'une seule maison. Conséquence : **Electronic passe de 405 à 363 genres**, 42 partent ailleurs (Italo disco et Hi-NRG vers Pop, brega funk et digital cumbia vers Latin). Ce n'est pas un progrès garanti genre par genre, c'est la même heuristique appliquée à un choix plus large. Le moment était le bon : rien n'était encore curé, donc aucun travail éditorial n'a été perdu.
 
@@ -55,3 +55,21 @@ Concrètement : un champ `ga_featured` porte le rang de la tuile, et la forme co
 2. La tuile affichait le nombre de groupes au lieu du nombre de sous-genres pour les familles larges (Rock annonçait 7 au lieu de 50). `parent.grouped` garde le vrai compte avant regroupement.
 
 **Ce qui reste dehors : 481 genres reconnus (23 %)**, faute d'un parent que Wikidata leur donne — 248 isolés, 233 sous 54 racines. Parmi eux funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. `wikidata-build.py` les liste à chaque exécution. C'est la prochaine décision : les déclarer familles, ou leur écrire une table de rattachement sur le modèle de la table des inversions connues.
+
+## Lisibilité de l'anneau et tuiles autonomes (v0.5.0, 22/09/2026)
+Deux réglages d'affichage demandés par Maxime, sans changement de données.
+
+**L'anneau passe de 12 à 8 places** (6 à 7 aux niveaux inférieurs, où l'axe horizontal reste pris par la lignée). À 12, deux noms longs côte à côte se chevauchaient. Le cadran tourne donc plus souvent : c'est le prix assumé.
+
+**Une tuile ferme la lignée affichée.** Metal et Punk se présentaient comme « IN ROCK MUSIC » ; ils affichent maintenant « FAMILY ». La décision de la v0.4.0 (tuile et racine sont deux choses distinctes) n'est pas défaite, elle est menée au bout : une tuile quitte aussi l'anneau de son parent. Sans ça on pouvait descendre de Rock vers Metal et voir le fil d'Ariane se réinitialiser à l'arrivée — plus déroutant que le point de départ.
+
+Le parent réel n'est jamais touché : les adresses restent en `/genre/rock-music/metal-music/…`. Les permaliens sont hiérarchiques (`hierarchical => true`, et `url()` les construit sur `realPath`), donc un détachement réel aurait changé l'adresse de Metal, de Punk et de leurs 143 sous-genres. C'est la raison de faire la coupure à l'affichage seulement.
+
+Effet de bord traité : les comptes des tuiles se recouvraient (Rock annonçait 291 genres dont les 61 de Metal et les 80 de Punk). Une tuile sortant de l'anneau de son parent, `count()` ne la compte plus deux fois : Rock affiche 148.
+
+Trois points d'accroche qui se testaient sur « avoir un parent réel » et devaient passer à « être une tuile » : le centrage (`select()`, sinon le permalien d'une tuile ouvrait l'index au lieu de sa carte), le libellé FAMILY du mobile, et la capacité de l'anneau.
+
+Une vérification du banc a dû être assouplie : regrouper et faire tourner le cadran ne s'excluent plus. Classical Music se coupe en 9 groupes alors que l'anneau en tient 7, donc la branche est regroupée *et* au cadran. Ce que le banc tient désormais, c'est que l'anneau ne dépasse jamais 8.
+
+## Suite immédiate
+Étape 3 demandée par Maxime : remplacer le tri par époque par un regroupement par genre, avec un maximum de 8 sous-genres à chaque niveau. Mesuré sur les données : **36 nœuds sur 327 dépassent 8 enfants**, et les ramener à 8 demande **149 groupes intermédiaires à nommer**. Le travail est éditorial plus que technique. Le repli quand un groupe n'est pas encore nommé reste à trancher (les décennies sont écartées). `data/wikidata-build.py:199` porte encore les anciens seuils dans sa colonne `display_rule`, non lue par l'extension : à reprendre à ce moment-là, avec une reconstruction du CSV.

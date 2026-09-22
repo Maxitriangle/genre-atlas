@@ -92,7 +92,7 @@ function genre_atlas_column( $column, $post_id ) {
 			if ( $n > 40 ) {
 				$groups = genre_atlas_group_count( $post_id );
 				echo (int) $n . ' → <a href="' . esc_url( admin_url( 'edit.php?post_type=genre&page=genre-atlas-groups&branch=' . $post_id ) ) . '">' . (int) $groups . ' groups</a>';
-			} elseif ( $n > 12 ) {
+			} elseif ( $n > 8 ) {
 				echo (int) $n . ' (dial)';
 			} else {
 				echo $n ? (int) $n : '—';

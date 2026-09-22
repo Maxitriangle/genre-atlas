@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -14,7 +14,7 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
 == Notes ==
 * Re-importing the same file never creates duplicates (genres are matched on their Wikidata ID).
 * A genre marked "Reviewed" is never modified by an import.
-* The Genres list shows which genres have more than 12 subgenres (dial) or more than 40 (grouped).
+* The Genres list shows which genres have more than 8 subgenres (dial) or more than 40 (grouped).
 * Past 40 subgenres the map shows editorial groups instead of genres. Genres > Groups is where they are named;
   a genre with no group falls back to its decade, so a wide branch is readable before any of that work is done.
 * A tile on the home page and having no parent are two different things. "Home page tile" on the genre screen

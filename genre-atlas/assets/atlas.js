@@ -5,7 +5,7 @@
   var root = document.getElementById('genre-atlas');
   if (!root) return;
 
-  var RING_MAX = 12, ARC_MAX = 8, DIAL_STEP = 6, GROUP_LIMIT = 40;
+  var RING_MAX = 8, ARC_MAX = 8, DIAL_STEP = 6, GROUP_LIMIT = 40;
   var SHAPES = ['circle', 'hex', 'pent', 'square', 'diamond', 'oct', 'tri_up', 'tri_down', 'hex_r'];
   var POLY = { tri_up: [3, -90, 1.18], tri_down: [3, 90, 1.18], square: [4, 45, 1.1], diamond: [4, 0, 1.05], pent: [5, -90, 1.04], hex: [6, 0, 1], hex_r: [6, 30, 1], oct: [8, 22.5, 1] };
   var INK = '#E4DFF5';
@@ -23,10 +23,13 @@
   function f2(x) { return x.toFixed(2); }
   function byEpoch(a, b) { var ya = a.y || 9999, yb = b.y || 9999; return ya - yb || a.name.localeCompare(b.name); }
   function family(n) { while (n.p && N[n.p] && !n.f) n = N[n.p]; return n; }
+  // An entry point closes the displayed lineage: it is where shape, colour
+  // and breadcrumbs start, whether or not it has a parent of its own.
+  function isTile(n) { return !!n.f || !n.p; }
   // Two lineages: the real one, which the permalinks are built from, and the
   // displayed one, which goes through the editorial group of a wide branch.
   function realPath(n) { var p = [n]; while (p[0].p && N[p[0].p]) p.unshift(N[p[0].p]); return p; }
-  function path(n) { var p = [n]; while (p[0].dp && N[p[0].dp]) p.unshift(N[p[0].dp]); return p; }
+  function path(n) { var p = [n]; while (!isTile(p[0]) && p[0].dp && N[p[0].dp]) p.unshift(N[p[0].dp]); return p; }
   function depth(n) { return path(n).length - 1; }
   // A group has no page of its own: its link points at the genre it stands under.
   function url(n) { return n.grp ? url(N[n.p]) : CFG.base + realPath(n).map(function (x) { return x.slug; }).join('/') + '/'; }
@@ -75,12 +78,22 @@
     tree.nodes.forEach(function (n) { n.kids.sort(byEpoch); });
     // Entry points: every root, plus any genre flagged as a territory. A tile
     // states its own order; anything left unflagged falls in after them.
-    TILES = tree.nodes.filter(function (n) { return n.f || !n.p; })
+    TILES = tree.nodes.filter(isTile)
       .sort(function (a, b) { return (a.f || 99) - (b.f || 99) || a.name.localeCompare(b.name); });
     TILES.forEach(function (r, i) {
       if (!r.shape) { r.shape = SHAPES[i % SHAPES.length]; }
       r.dbl = i >= SHAPES.length;
       if (r.hue == null) r.hue = (295 + 157.5 * (i + 1)) % 360;
+    });
+    // A tile stands on its own: it leaves its parent's ring, so Metal is never
+    // reached as a subgenre of Rock and the two counts stop overlapping. Its
+    // real parent is kept, so its permalink does not move.
+    TILES.forEach(function (r) {
+      if (!r.p || !N[r.p]) return;
+      var sib = N[r.p].kids, at = sib.indexOf(r);
+      if (at >= 0) sib.splice(at, 1);
+      r.dp = 0;
+      ROOTS.push(r);
     });
     (function count(list) { list.forEach(function (n) { count(n.kids); n.total = n.kids.reduce(function (t, k) { return t + 1 + k.total; }, 0); }); })(ROOTS);
     regroup();
@@ -126,7 +139,7 @@
   function select(n, centreOnIt, push) {
     S.legend = false;
     if (!n) { S.centre = 0; S.open = 0; }
-    else if (centreOnIt || !n.p) { S.centre = n.id; S.open = 0; }
+    else if (centreOnIt || isTile(n)) { S.centre = n.id; S.open = 0; }
     else { S.centre = n.dp; S.open = n.id; }
     S.dial = 0;
     if (S.open) { // bring the opened child inside the dial window
@@ -136,7 +149,7 @@
     }
     if (n) path(n).forEach(function (a) { S.expanded[a.id] = true; });
     if (push !== false && window.history && history.pushState) {
-      var u = n ? url(n) + (centreOnIt && n.p ? '#centre' : '') : CFG.base;
+      var u = n ? url(n) + (centreOnIt && !isTile(n) ? '#centre' : '') : CFG.base;
       try { history.pushState({ id: n ? n.id : 0, c: !!centreOnIt }, '', u); } catch (e) { /* embedded on another URL */ }
     }
     document.title = (n ? n.name + ' — ' : '') + (CFG.title || 'Genre');
@@ -161,9 +174,7 @@
   /* ---------- index ---------- */
   function viewIndex() {
     var tiles = TILES.map(function (r, i) {
-      // A territory names the family it belongs to rather than claiming to be one.
-      var kind = r.p && N[r.p] ? 'IN ' + N[r.p].name.toUpperCase() : 'FAMILY';
-      return '<a class="ga-tile" href="' + esc(url(r)) + '" data-go="' + r.id + '" style="--fam:' + color(r) + '"><div class="ga-tile-top"><span>' + pad(i + 1) + ' // ' + esc(kind) + '</span><span class="ga-badge">' + pad(r.total, 4) + ' GENRES</span></div>' +
+      return '<a class="ga-tile" href="' + esc(url(r)) + '" data-go="' + r.id + '" style="--fam:' + color(r) + '"><div class="ga-tile-top"><span>' + pad(i + 1) + ' // ' + 'FAMILY' + '</span><span class="ga-badge">' + pad(r.total, 4) + ' GENRES</span></div>' +
         '<div class="ga-tile-body">' + glyph(r, 104) + '<div><h2>' + esc(r.name) + '</h2><p>' + esc(micro(r) || 'ORIGIN: —') + '</p><p>' + pad(r.grouped || r.kids.length) + ' DIRECT SUBGENRES' + (r.grouped ? ' // ' + pad(r.kids.length) + ' GROUPS' : '') + '</p></div></div></a>';
     }).join('');
     return '<main class="ga-index"><div class="ga-hero"><div><p class="ga-micro">[INDEX] MUSIC GENRE ATLAS</p><h1>Every genre.<br>Every lineage.</h1></div>' +
@@ -187,8 +198,8 @@
   }
 
   /* ---------- map ---------- */
-  // Ring capacity: 12 around a family; fewer deeper down, where the horizontal axis is kept for the lineage.
-  function windowSize(centre, open) { return centre.p ? (open ? 9 : 10) : RING_MAX; }
+  // Ring capacity: 8 around a family; fewer deeper down, where the horizontal axis is kept for the lineage.
+  function windowSize(centre, open) { return isTile(centre) ? RING_MAX : (open ? 6 : 7); }
   function viewMap(centre, open) {
     var box = root.querySelector('.ga-map'), W = box ? box.clientWidth : 1040, H = box ? box.clientHeight : 880;
     W = Math.max(W, 720); H = Math.max(H, 620);
@@ -273,7 +284,7 @@
       }
       return h;
     }).join('');
-    return '<main class="ga-mobile" style="--fam:' + color(centre) + '"><nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (centre.p ? 'LEVEL ' + pad(depth(centre)) : 'FAMILY') + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
+    return '<main class="ga-mobile" style="--fam:' + color(centre) + '"><nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
       (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + '<p class="ga-micro pad">SUBGENRES — BY EPOCH</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div></main>';
   }
 
