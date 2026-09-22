@@ -5,8 +5,8 @@
  * node tools/smoke.mjs <base-url> <shots-dir> [playwright-node-modules] [chromium-binary]
  *
  * Which genres it exercises is derived from the imported data, not hard-coded:
- * it picks a genre with at most 12 children for the fixed ring and one in the
- * 13-40 band for the dial, so the test keeps its meaning as the data grows.
+ * it picks a genre with at most 6 children for the fixed ring and one in the
+ * 9-40 band for the dial, so the test keeps its meaning as the data grows.
  */
 const [ BASE, SHOTS, PW_DIR, BIN ] = process.argv.slice( 2 );
 
@@ -42,8 +42,8 @@ function pick( min, max ) {
 	return hit ? { node: hit, count: kids.get( hit.id ) } : null;
 }
 
-const ring = pick( 4, 12 );        // fixed ring
-const dialCase = pick( 13, 40 );   // rotating dial
+const ring = pick( 4, 6 );         // fixed ring, whatever the depth
+const dialCase = pick( 9, 40 );    // rotating dial
 const wide = pick( 41, Infinity ); // editorial grouping
 
 // A territory: a genre that has a tile on the home page AND a parent. Metal
@@ -94,24 +94,23 @@ try {
 	await page.waitForSelector( '.ga-ready', { timeout: 10000 } );
 	const tiles = await page.locator( '.ga-tile' ).count();
 	check( 'index : la grille des familles s affiche', await page.locator( '.ga-index' ).count() === 1 && tiles > 0, `${ tiles } tuile(s)` );
-	// A territory has a tile and a parent at once: its tile names the family it
-	// sits in instead of claiming to be one. That is the whole point of the
-	// Metal-under-Rock decision, so the test holds it.
+	// A tile closes the displayed lineage: Metal is an entry point in its own
+	// right, so no tile announces a family above itself.
 	const territories = await page.locator( '.ga-tile-top span:text-matches( "// IN " )' ).count();
-	check( 'index : les territoires annoncent leur famille', territories > 0, `${ territories } territoire(s)` );
+	check( 'index : aucune tuile ne se declare sous une famille', territories === 0, `${ territories } tuile(s) avec « // IN »` );
 	await page.screenshot( { path: `${ SHOTS }/01-index.png`, fullPage: true } );
 
-	// 1b. A territory is an entry point, not a root: its subgenres must still
-	// show the family they descend from, while being drawn in the territory's
-	// own colour so the home page tiles stay tellable apart.
+	// 1b. A territory is an entry point: the lineage of its subgenres starts at
+	// the territory and stops there, and they are drawn in the territory's own
+	// colour so the home page tiles stay tellable apart.
 	if ( territory && territoryChild && territoryRoot && territoryRoot !== territory ) {
 		await page.goto( permalink( territoryChild ), { waitUntil: 'networkidle' } );
 		await page.waitForSelector( '.ga-panel-head .fam', { timeout: 10000 } );
 		// The panel puts the lineage in capitals, so compare case-insensitively.
 		const lineage = ( await page.locator( '.ga-panel-head .fam' ).first().innerText() ).toUpperCase();
 		check(
-			`territoire : « ${ territoryChild.name } » descend toujours de « ${ territoryRoot.name } »`,
-			lineage.includes( territoryRoot.name.toUpperCase() ) && lineage.includes( territory.name.toUpperCase() ),
+			`territoire : la lignee de « ${ territoryChild.name } » part de « ${ territory.name } » sans remonter a « ${ territoryRoot.name } »`,
+			lineage.includes( territory.name.toUpperCase() ) && ! lineage.includes( territoryRoot.name.toUpperCase() ),
 			lineage.trim()
 		);
 		const [ childColour, territoryColour, rootColour ] = [
@@ -134,14 +133,14 @@ try {
 	check( 'carte : la carte radiale s ouvre', await page.locator( '.ga-map' ).count() === 1 );
 	await page.screenshot( { path: `${ SHOTS }/02-carte.png`, fullPage: true } );
 
-	// 3. Fixed ring, at most 12 children.
+	// 3. Fixed ring, at most 8 children.
 	if ( ring ) {
 		await centre( page, ring.node );
 		check( `anneau fixe : « ${ ring.node.name } » (${ ring.count } enfants) sans cadran`, await page.locator( '.ga-dial' ).count() === 0 );
 		await page.screenshot( { path: `${ SHOTS }/03-anneau.png`, fullPage: true } );
 	}
 
-	// 4. Rotating dial, 13 to 40 children.
+	// 4. Rotating dial, 9 to 40 children.
 	if ( dialCase ) {
 		await centre( page, dialCase.node );
 		const dial = await page.locator( '.ga-dial' ).count();
@@ -153,6 +152,11 @@ try {
 			await page.waitForTimeout( 300 );
 			const after = await caption();
 			check( 'cadran : la rotation change la fenetre affichee', before !== after && !! before, `${ before.split( ' · ' )[ 0 ] } -> ${ after.split( ' · ' )[ 0 ] }` );
+			// The ring never shows more than 8 nodes at once: that is what keeps
+			// the labels from overlapping.
+			const span = ( before.split( ' · ' )[ 0 ] || '' ).match( /(\d+)\D+(\d+)\s*\// );
+			const shown = span ? Number( span[ 2 ] ) - Number( span[ 1 ] ) + 1 : -1;
+			check( 'cadran : l anneau ne montre jamais plus de 8 noeuds', shown > 0 && shown <= 8, `${ shown } noeud(s) affiche(s)` );
 		}
 		await page.screenshot( { path: `${ SHOTS }/04-cadran.png`, fullPage: true } );
 	}
@@ -161,9 +165,12 @@ try {
 	if ( wide ) {
 		await centre( page, wide.node );
 		const groups = await page.locator( '.ga-map .ga-node:not(.centre):not(.anc)' ).count();
+		// Grouping and the dial are not exclusive: a branch cut into more groups
+		// than the ring holds is grouped AND dialled. What matters is that the
+		// ring itself never goes past 8.
 		check( `groupes : « ${ wide.node.name } » (${ wide.count } enfants) est regroupe`,
-			groups >= 2 && groups <= 12 && await page.locator( '.ga-dial' ).count() === 0,
-			`${ groups } groupe(s), cadran ${ await page.locator( '.ga-dial' ).count() ? 'present' : 'absent' }` );
+			groups >= 2 && groups <= 8,
+			`${ groups } groupe(s) sur l anneau, cadran ${ await page.locator( '.ga-dial' ).count() ? 'present' : 'absent' }` );
 		await page.screenshot( { path: `${ SHOTS }/05-groupes.png`, fullPage: true } );
 
 		// A group opens onto its genres, and those keep their own address.

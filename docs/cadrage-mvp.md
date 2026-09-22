@@ -4,7 +4,8 @@
 - **Filiation** : arbre strict, un seul parent par genre, profondeur illimitée (sous-genres de sous-genres). Les influences sont **retirées de l'interface** (carte, liste, panneau, glyphe) car elles compliquent la lecture. Le champ reste stocké dans WordPress, non affiché.
 - **Navigation mind map** : recentrage au clic. Une seule branche ouverte par niveau ; on ne voit jamais plus de deux niveaux à la fois (anneau des enfants + arc de l'enfant ouvert), plus la lignée des ancêtres à gauche et le fil d'Ariane. Un clic ouvre un nœud, un second clic (ou « CENTRE ON ») le place au centre.
 - **Débordement de l'arc** (aperçu du niveau suivant) : plafonné à 8 nœuds triés par époque, puis nœud « +N ».
-- **Largeur de l'anneau central — règle unique** : jusqu'à 12 enfants, anneau fixe ; de 13 à 40, cadran rotatif trié par époque (12 positions fixes = fenêtre glissante, frise d'époque autour de l'anneau, libellé « 13–24 / 40 · 1988 → 1994 ») ; au-delà de 40, **regroupement éditorial forcé** (sous-groupes par scène ou décennie). Mobile non concerné (colonne défilante).
+- **Largeur de l'anneau central — règle unique** : jusqu'à 8 enfants, anneau fixe ; de 9 à 40, cadran rotatif (8 positions fixes = fenêtre glissante, libellé « 09–16 / 40 · 1988 → 1994 ») ; au-delà de 40, **regroupement éditorial forcé**. Mobile non concerné (colonne défilante).
+  - Révisé en 0.5.0 : la règle était de 12 positions. À 12, les libellés se chevauchaient dès que deux noms longs tombaient côte à côte. 8 est le nombre qui tient sans chevauchement à toutes les profondeurs.
 - **Données** : import initial Wikidata / MusicBrainz, puis curation éditoriale dans WordPress. Les regroupements intermédiaires (par scène, par décennie) pour réduire la largeur sont un choix éditorial manuel.
 - **Icônes** : glyphes générés à partir des données du genre (aucun dessin à la main), une couleur par grande famille.
 - **MVP** : accueil avec toutes les familles + une seule famille creusée en profondeur (Electronic retenue pour les maquettes).
@@ -20,7 +21,7 @@ Référence : pack « Micrographics Vol.1 » (fond quasi noir, monospace capital
 - A · Frame : forme + couleur = famille (cercle Electronic, hexagone Rock, hexagone double Metal, etc.).
 - B · Spokes : tempo, un rayon par 20 BPM.
 - C · Rings : profondeur, un anneau par niveau sous la famille.
-- D · Orbit nodes : sous-genres directs (max 12).
+- D · Orbit nodes : sous-genres directs (max 8).
 - E · Outer arc : époque, balayage horaire 1850 → aujourd'hui (pointillé = traditionnel).
 - (Les encoches d'influences de la rev. 01 sont supprimées.)
 
@@ -74,7 +75,7 @@ Sources dans `claude/plugin/` (plus `templates/atlas.php`, `includes/cli.php`, l
 - Import : Genres → Import CSV (ou `wp genre-atlas import fichier.csv`). Appariement sur l'identifiant Wikidata, donc ré-importable sans doublon ; un genre « reviewed » n'est jamais modifié ; une valeur saisie à la main n'est jamais écrasée par du vide.
 - Données : `/wp-json/genre-atlas/v1/tree`, arbre complet compact mis en cache (environ 31 Ko pour 406 genres), vidé à chaque modification.
 - Front (JavaScript sans dépendance) : chaque URL de genre (`/genre/electronic-music/.../house-music/`) et l'archive `/genre/` affichent l'atlas centré sur ce genre, avec un contenu HTML simple pour les moteurs de recherche. Index des familles, carte avec recentrage, cadran rotatif, arc « +N », panneau, vue liste, recherche, légende, vue mobile verticale sous 900 px. Modèle de page « Genre Atlas (full screen) » et shortcode `[genre_atlas]`.
-- Ajustement de la règle de largeur constaté à l'usage : 12 positions autour d'une famille, mais 9 à 10 aux niveaux inférieurs, où l'axe horizontal est réservé à la lignée (sinon les libellés se chevauchent). La liste des genres dans l'admin signale ceux à plus de 12 (cadran) et plus de 40 sous-genres (regroupement à faire).
+- Ajustement de la règle de largeur constaté à l'usage : 8 positions autour d'une famille, mais 6 à 7 aux niveaux inférieurs, où l'axe horizontal est réservé à la lignée (sinon les libellés se chevauchent). La liste des genres dans l'admin signale ceux à plus de 8 (cadran) et plus de 40 sous-genres (regroupement à faire).
 - Reste à faire : saisie des BPM, descriptions, regroupements des branches larges (electronic dance music 76, house 48), autres familles, réglages de forme/couleur par famille.
 
 ## Mise en ligne
