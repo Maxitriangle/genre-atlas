@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.5.0
+ * Version: 0.6.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.5.0' );
+define( 'GENRE_ATLAS_VERSION', '0.6.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v1' );
@@ -139,7 +139,8 @@ function genre_atlas_tree() {
 			'suppress_filters'       => true,
 		)
 	);
-	$nodes = array();
+	$editorial_groups = '1' === get_option( 'genre_atlas_groups', '1' );
+	$nodes            = array();
 	foreach ( $posts as $p ) {
 		$node = array(
 			'id'   => (int) $p->ID,
@@ -155,9 +156,14 @@ function genre_atlas_tree() {
 		if ( $origin ) {
 			$node['o'] = $origin;
 		}
-		$group = get_post_meta( $p->ID, 'ga_group', true );
-		if ( $group ) {
-			$node['g'] = $group;
+		// Editorial groups can be switched off from the settings screen, which
+		// puts every wide branch back on its decade fallback without touching
+		// what has been typed in Genres > Groups.
+		if ( $editorial_groups ) {
+			$group = get_post_meta( $p->ID, 'ga_group', true );
+			if ( $group ) {
+				$node['g'] = $group;
+			}
 		}
 		$bmin = (int) get_post_meta( $p->ID, 'ga_bpm_min', true );
 		$bmax = (int) get_post_meta( $p->ID, 'ga_bpm_max', true );

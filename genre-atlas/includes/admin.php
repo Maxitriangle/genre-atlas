@@ -151,13 +151,18 @@ function genre_atlas_settings_menu() {
 function genre_atlas_settings_page() {
 	if ( isset( $_POST['genre_atlas_settings_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['genre_atlas_settings_nonce'] ), 'genre_atlas_settings' ) && current_user_can( 'manage_options' ) ) {
 		update_option( 'genre_atlas_home', empty( $_POST['genre_atlas_home'] ) ? '0' : '1' );
+		update_option( 'genre_atlas_groups', empty( $_POST['genre_atlas_groups'] ) ? '0' : '1' );
+		delete_transient( GENRE_ATLAS_CACHE ); // the tree carries the group labels.
 		echo '<div class="notice notice-success"><p>Settings saved.</p></div>';
 	}
-	$on = get_option( 'genre_atlas_home', '1' );
+	$on     = get_option( 'genre_atlas_home', '1' );
+	$groups = get_option( 'genre_atlas_groups', '1' );
 	echo '<div class="wrap"><h1>Genre Atlas settings</h1><form method="post">';
 	wp_nonce_field( 'genre_atlas_settings', 'genre_atlas_settings_nonce' );
 	echo '<p><label><input type="checkbox" name="genre_atlas_home" value="1"' . checked( $on, '1', false ) . '> Show the atlas on the home page of the site</label></p>';
 	echo '<p class="description">When ticked, the home page of the site is the atlas index, whatever the theme. The atlas is always available at <code>' . esc_html( get_post_type_archive_link( 'genre' ) ) . '</code>.</p>';
+	echo '<p><label><input type="checkbox" name="genre_atlas_groups" value="1"' . checked( $groups, '1', false ) . '> Use the editorial group names on wide branches</label></p>';
+	echo '<p class="description">A branch with more than 40 subgenres is shown as groups rather than genre by genre. Ticked, the groups are the ones named in Genres &rarr; Groups. Unticked, every wide branch falls back to decades, which is what the atlas did before. Nothing is lost either way: the names stay stored.</p>';
 	submit_button( 'Save' );
 	echo '</form></div>';
 }

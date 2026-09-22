@@ -8,6 +8,13 @@ cd data
 python3 wikidata-build.py    # en construit genre-import.csv
 ```
 
+`wikidata-build.py` reprend au passage `genre-groups.csv`, le découpage éditorial des branches larges. Pour le régénérer (après avoir modifié les tables de `build-groups.py`) :
+
+```bash
+python3 build-groups.py      # relit genre-import.csv, réécrit genre-groups.csv
+python3 wikidata-build.py    # reporte la colonne group dans genre-import.csv
+```
+
 Le fichier à importer dans WordPress est **`genre-import.csv`** : Genres → Import CSV.
 
 ## Les fichiers
@@ -21,6 +28,8 @@ Le fichier à importer dans WordPress est **`genre-import.csv`** : Genres → Im
 | `d_country.csv` | Pays d'origine (P495). |
 | `e_mb.csv` | Identifiant MusicBrainz (P8052). |
 | `wikidata-build.py` | Construit l'arbre strict et écrit `genre-import.csv`. |
+| `build-groups.py` | Découpe les huit branches de plus de 40 sous-genres et écrit `genre-groups.csv`. |
+| `genre-groups.csv` | Le groupe de chacun des 593 genres concernés. Colonne `group` du fichier d'import. |
 | `genre-import.csv` | **Le fichier d'import.** 13 familles, 15 tuiles, 1 630 genres. |
 | `wikidata-build-electronic.py` | L'ancien script, une famille à la fois. |
 | `genre-electronic-import.csv` | Son résultat, les 406 genres de la v0.3.0. |

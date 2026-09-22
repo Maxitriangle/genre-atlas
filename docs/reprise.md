@@ -73,3 +73,29 @@ Une vérification du banc a dû être assouplie : regrouper et faire tourner le 
 
 ## Suite immédiate
 Étape 3 demandée par Maxime : remplacer le tri par époque par un regroupement par genre, avec un maximum de 8 sous-genres à chaque niveau. Mesuré sur les données : **36 nœuds sur 327 dépassent 8 enfants**, et les ramener à 8 demande **149 groupes intermédiaires à nommer**. Le travail est éditorial plus que technique. Le repli quand un groupe n'est pas encore nommé reste à trancher (les décennies sont écartées). `data/wikidata-build.py:199` porte encore les anciens seuils dans sa colonne `display_rule`, non lue par l'extension : à reprendre à ce moment-là, avec une reconstruction du CSV.
+
+## Les décennies remplacées par des groupes éditoriaux (v0.6.0, 22/09/2026)
+Les branches larges ne se coupent plus par décennie mais par scène, style ou région. 593 genres répartis sur les **huit** nœuds concernés.
+
+**Le périmètre est plus petit qu'il n'y paraît.** Le regroupement ne se déclenche qu'au-delà de 40 enfants directs : seuls folk (170), Latin (91), electronic dance music (74), pop (62), hip-hop (54), rock (48), house (48) et classical (46) affichaient des décennies. Les 28 autres nœuds larges montrent déjà leurs genres avec le cadran.
+
+**Une hypothèse testée puis abandonnée.** On a d'abord cherché si Wikidata offrait un parent plus précis que « rock music » pour ses 48 enfants, ce qui aurait approfondi l'arbre sans rien inventer. Non : 32 des 48 n'ont qu'un seul parent, et aucun n'a d'alternative située plus bas dans Rock. La platitude vient de Wikidata.
+
+**Aucune source ne donne de taxonomie stylistique.** La « List of rock genres » de Wikipédia est alphabétique, et son propre bandeau de navigation retombe sur les décennies — exactement notre problème. Le découpage stylistique de `build-groups.py` est donc éditorial, et assumé comme tel.
+
+**Ce qui vient des données, en revanche.** 99 à 100 % des enfants de folk et de Latin portent un second parent Wikidata qui nomme une culture ou un lieu (« Polish folk music », « music of Cuba »). Ces deux branches, les plus grosses, sont donc regroupées automatiquement par remontée de ces libellés vers des régions, pas à la main. C'est ce qui rend les 170 genres de folk traitables.
+
+**Trois manières de revenir en arrière**, par ordre de portée :
+1. Genres → Settings, décocher « Use the editorial group names » : toute branche large repasse aux décennies, sans rien réimporter et sans perdre les libellés stockés.
+2. Genres → Groups : renommer ou vider un groupe à la main, genre par genre.
+3. `data/genre-groups.csv` et `build-groups.py` sont versionnés à part ; la chaîne entière tourne sans eux et retombe alors sur les décennies.
+
+**Un défaut latent corrigé au passage.** La reconstruction du CSV n'était pas reproductible : deux genres distincts s'appellent « bolero » sous Latin music et n'ont pas d'année, donc la clé de tri `(année, libellé)` les laissait à égalité et leur ordre retombait sur l'itération d'un ensemble Python. Quatre lignes bougeaient d'une exécution à l'autre. Départage final ajouté sur l'identifiant Wikidata, vérifié identique sur trois graines de hachage.
+
+**Le second niveau a été envisagé puis écarté, au profit d'un premier niveau plus fin.** Les plus gros groupes comptaient 17 genres (Hispanic America sous folk) et 18 (Brazil, Cuba sous Latin). Mesure faite, le signal régional est épuisé à ce stade : « music of Cuba » est l'unique libellé des 18 genres cubains, et « music of Brazil » couvre 17 des 18 brésiliens. Rien ne peut donc être déduit en dessous.
+
+En revanche ces groupes se coupent très bien par famille musicale — Cuba en son / rumba / danzón, Brazil en samba-bossa / Nordeste / pop moderne — et cette coupe tient **au même niveau**. Même lisibilité, un clic de moins, et aucun code nouveau. Folk passe à 24 groupes (le plus gros : 13, contre 17), Latin à 14 (le plus gros : 10, contre 18). Table `OVERRIDES` dans `build-groups.py`, appliquée après la remontée régionale.
+
+Deux corrections au passage : `Philippine rondalla` était rangé dans Hispanic America par la remontée et part en Asie du Sud-Est ; `murga` et `New Mexico music` formaient chacun un groupe d'un seul membre et rejoignent Dance & Carnival et Mexico & Central America.
+
+Le regroupement imbriqué reste possible si le besoin revient. Il demanderait de faire récurser `regroup()` dans `atlas.js` — par exemple sur un séparateur dans `ga_group` (« CUBA > SON ») — et du travail éditorial pour inventer le niveau que les données ne donnent pas.

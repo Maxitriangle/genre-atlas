@@ -171,6 +171,14 @@ try {
 		check( `groupes : « ${ wide.node.name } » (${ wide.count } enfants) est regroupe`,
 			groups >= 2 && groups <= 8,
 			`${ groups } groupe(s) sur l anneau, cadran ${ await page.locator( '.ga-dial' ).count() ? 'present' : 'absent' }` );
+		// The point of the editorial groups: a wide branch is cut by scene or
+		// region, never by decade. "1960S" and "UNDATED" are the fallback the
+		// atlas uses only where nothing has been named.
+		const labels = await page.locator( '.ga-map .ga-node:not(.centre):not(.anc) .ga-name' ).allInnerTexts();
+		const decades = labels.filter( l => /^\s*(\d{4}S|UNDATED)\s*$/i.test( l ) );
+		check( `groupes : « ${ wide.node.name } » est coupe par theme, pas par decennie`,
+			labels.length > 0 && decades.length === 0,
+			labels.join( ' · ' ).slice( 0, 120 ) );
 		await page.screenshot( { path: `${ SHOTS }/05-groupes.png`, fullPage: true } );
 
 		// A group opens onto its genres, and those keep their own address.
