@@ -1,6 +1,27 @@
-# Reprise — état au 21/09/2026
+# Reprise — état au 22/09/2026 au soir
 
-Le site de Maxime tourne en **v0.2.3**, et la mise à jour automatique depuis les releases GitHub **est validée de bout en bout** : une version publiée apparaît dans Extensions et s'installe en un clic, sans zip.
+**La v0.7.1 est publiée**, et Maxime tournait en v0.6.0 avec le CSV de la 0.6.0 au moment où la session s'est arrêtée. Vérifier avec lui, à la reprise, qu'il a bien fait les deux étapes : mise à jour de l'extension **et** réimport du CSV de la 0.7.1. La mise à jour automatique depuis les releases GitHub est validée de bout en bout : une version publiée apparaît dans Extensions et s'installe en un clic, sans zip.
+
+## Lire d'abord
+Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Les quatre dernières (v0.5.0 à v0.7.1) sont celles qui décrivent le site actuel.
+
+## Où on en est
+- **1 630 genres, 15 tuiles, 13 familles.** Metal et Punk ont leur tuile sans cesser d'être sous Rock.
+- **Plus aucun cadran, plus aucune date.** Au-delà de 8 sous-genres la carte montre des groupes éditoriaux, jamais des flèches ni des décennies. 1 020 genres portent un groupe, sous forme de chemin (« EUROPE > IBERIA > SPAIN »).
+- **`tools/check-widths.py` est le garde-fou.** Il rejoue l'algorithme de la carte sur l'arbre entier, sort en erreur si un nœud dépasse l'anneau ou si un chemin manque, et le banc de test l'exécute avant le navigateur.
+
+## Ce qui attend, par ordre de maturité
+1. **Contester les regroupements.** Maxime n'a encore contesté aucun placement. Les plus discutables sont « POP, NEW WAVE & ALTERNATIVE » sous Rock (qui mélange trois choses) et « ACROSS LATIN AMERICA » (fourre-tout). C'est du travail de données : modifier `data/build-groups.py`, rejouer `build-groups.py` puis `wikidata-build.py`, renvoyer le CSV. Aucune republication de l'extension nécessaire.
+2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. Décision à prendre : les déclarer familles, ou leur écrire une table de rattachement. `wikidata-build.py` les liste à chaque exécution.
+3. **BPM et descriptions**, jamais commencés : `bpm_min`/`bpm_max` sont vides sur les 1 630 lignes.
+4. **Un défaut cosmétique connu** : le titre du panneau coupe au milieu d'un mot sur les noms longs (« ALTERNATIV / E ROCK »). Défaut CSS antérieur à ces sessions, jamais corrigé.
+
+## Ce qu'il ne faut pas réapprendre
+- Le dépôt est **privé** : les liens de téléchargement direct vers un fichier du dépôt ne fonctionnent pas pour Maxime. Lui envoyer le fichier directement.
+- Après une modification des groupes, **deux étapes chez lui** : mettre à jour l'extension *et* réimporter le CSV. La première seule ne change rien, les libellés vivent dans les données.
+- Le dossier de captures du banc de test est **reconstruit à chaque exécution** : une capture ad hoc est perdue au passage suivant.
+- Un serveur PHP lancé dans un appel Bash **ne survit pas** à la fin de cet appel, et un serveur lancé en tâche de fond n'est pas joignable par le navigateur Playwright (contexte réseau séparé). Serveur et navigateur doivent tourner dans le même appel, comme le fait `test-local.sh`.
+- `pkill -f "php -S …"` **tue le shell appelant**, dont la ligne de commande contient le motif.
 
 ## Ce qui a été fait
 - Le dépôt a été remis à plat : le dépôt manuel depuis le Finder avait tout placé dans `genre-atlas-depot-complet_1/`, où la fabrication du zip ne trouvait pas `genre-atlas/`.
