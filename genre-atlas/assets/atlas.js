@@ -21,7 +21,10 @@
   function pad(n, l) { n = String(n); while (n.length < (l || 2)) n = '0' + n; return n; }
   function rad(d) { return d * Math.PI / 180; }
   function f2(x) { return x.toFixed(2); }
-  function byEpoch(a, b) { var ya = a.y || 9999, yb = b.y || 9999; return ya - yb || a.name.localeCompare(b.name); }
+  // Subgenres and groups read alphabetically. Sorting them by year was one
+  // more classification by date, and the atlas shows none: the year stays as
+  // metadata under a node, which is a different thing.
+  function byName(a, b) { return a.name.localeCompare(b.name); }
   function family(n) { while (n.p && N[n.p] && !n.f) n = N[n.p]; return n; }
   // An entry point closes the displayed lineage: it is where shape, colour
   // and breadcrumbs start, whether or not it has a parent of its own.
@@ -33,7 +36,6 @@
   function depth(n) { return path(n).length - 1; }
   // A group has no page of its own: its link points at the genre it stands under.
   function url(n) { return n.grp ? url(N[n.p]) : CFG.base + realPath(n).map(function (x) { return x.slug; }).join('/') + '/'; }
-  function decade(n) { return n.y ? Math.floor(n.y / 10) * 10 + 'S' : 'UNDATED'; }
   function years(list) { return list.map(function (k) { return k.y; }).filter(Boolean); }
   function bpmText(n) { return n.b ? (n.b[0] === n.b[1] ? n.b[0] : n.b[0] + '–' + n.b[1]) + ' BPM' : '—'; }
   function color(n) { return 'oklch(0.80 0.105 ' + family(n).hue + ')'; }
@@ -75,7 +77,7 @@
     COUNT = tree.nodes.length;
     tree.nodes.forEach(function (n) { n.kids = []; n.dp = n.p; N[n.id] = n; });
     tree.nodes.forEach(function (n) { if (n.p && N[n.p]) N[n.p].kids.push(n); else { n.p = 0; ROOTS.push(n); } });
-    tree.nodes.forEach(function (n) { n.kids.sort(byEpoch); });
+    tree.nodes.forEach(function (n) { n.kids.sort(byName); });
     // Entry points: every root, plus any genre flagged as a territory. A tile
     // states its own order; anything left unflagged falls in after them.
     TILES = tree.nodes.filter(isTile)
@@ -104,8 +106,9 @@
    * instead of genres. A genre's group is a path — "EUROPE > IBERIA" — and
    * cutting recurses one segment at a time, so a branch as wide as folk
    * (170 subgenres) narrows to a handful of continents, then to regions.
-   * Anything left unlabelled falls back to its decade, so a branch is never
-   * unreadable while the editorial work is still under way. */
+   * A branch whose path runs out before it is narrow enough falls back on
+   * alphabetical ranges. Never on the decade: paging genres by date is the
+   * one thing the grouping exists to replace. */
   function groupPath(n) {
     return String(n.g || '').toUpperCase().split(GROUP_SEP)
       .map(function (x) { return x.trim(); }).filter(Boolean);
@@ -113,14 +116,35 @@
   function regroup() {
     Object.keys(N).forEach(function (id) { if (!N[id].grp) cut(N[id], 0); });
   }
+  // Last resort, when the editorial path runs out: contiguous alphabetical
+  // ranges. Never fewer than two buckets, never more than GROUP_LIMIT, and
+  // never more than GROUP_LIMIT in one.
+  function alphaBuckets(list) {
+    var sorted = list.slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
+    var n = Math.ceil(sorted.length / GROUP_LIMIT), size = Math.ceil(sorted.length / n);
+    var order = [], buckets = {}, i, part, label;
+    for (i = 0; i < sorted.length; i += size) {
+      part = sorted.slice(i, i + size);
+      label = part[0].name.charAt(0).toUpperCase();
+      if (part.length > 1) { label += '–' + part[part.length - 1].name.charAt(0).toUpperCase(); }
+      while (buckets[label]) { label += "'"; }   // two ranges can read alike
+      buckets[label] = part; order.push(label);
+    }
+    return { order: order, buckets: buckets };
+  }
   function cut(parent, depth) {
     if (parent.kids.length <= GROUP_LIMIT) return;
     var order = [], buckets = {};
-    parent.kids.forEach(function (k) {
-      var label = groupPath(k)[depth] || decade(k);
-      if (!buckets[label]) { buckets[label] = []; order.push(label); }
-      buckets[label].push(k);
-    });
+    if (parent.kids.every(function (k) { return groupPath(k).length > depth; })) {
+      parent.kids.forEach(function (k) {
+        var label = groupPath(k)[depth];
+        if (!buckets[label]) { buckets[label] = []; order.push(label); }
+        buckets[label].push(k);
+      });
+    } else {
+      var a = alphaBuckets(parent.kids);
+      order = a.order; buckets = a.buckets;
+    }
     // One bucket, or one per genre, would not make the branch any narrower.
     if (order.length < 2 || order.length >= parent.kids.length) return;
     var groups = order.map(function (label, i) {
@@ -137,7 +161,7 @@
       N[g.id] = g;
       return g;
     });
-    groups.sort(byEpoch);
+    groups.sort(byName);
     parent.grouped = parent.kids.length;
     parent.kids = groups;
     // A group still too wide is cut again on the next segment of the path.
@@ -203,7 +227,7 @@
       '<div class="ga-panel-head">' + glyph(n, 120) + '<div><h1>' + esc(n.name) + '</h1>' + (lineage ? '<p class="fam">↳ ' + esc(lineage) + '</p>' : '<p class="fam">FAMILY</p>') + (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : '') + '</div></div>' +
       (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') + '<div>' + rows + '</div>' +
       (n.kids.length && !isCentre ? '<a class="ga-cta" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>CENTRE ON ' + esc(n.name) + '</span><span>⊕</span></a>' : '') +
-      (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — BY EPOCH</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + '</aside>';
+      (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — A TO Z</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + '</aside>';
   }
 
   /* ---------- map ---------- */
@@ -296,7 +320,7 @@
       return h;
     }).join('');
     return '<main class="ga-mobile" style="--fam:' + color(centre) + '"><nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
-      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + '<p class="ga-micro pad">SUBGENRES — BY EPOCH</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div></main>';
+      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div></main>';
   }
 
   /* ---------- legend ---------- */

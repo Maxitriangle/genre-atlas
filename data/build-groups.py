@@ -614,6 +614,74 @@ SUPER = {
     },
 }
 
+# --- A third segment, where a group is still wider than the ring -------------
+# 15 groups came out between 9 and 15 members. Without a segment below them the
+# map had nothing left to cut on and fell back on the decade, which is the one
+# thing this whole mechanism exists to remove.
+DEEP = {
+    'Latin music': {
+        'HAITI & THE FRENCH CARIBBEAN': ['cadence rampa', 'konpa', 'rasin', 'twoubadou', 'biguine'],
+        'PUERTO RICO, HISPANIOLA & THE COAST': ['bomba', 'plena', 'merengue', 'cumbia'],
+        'BALLROOM & COUPLE DANCES': ['tango', 'salsa', 'bachata', 'cha-cha-chá'],
+        'CARNIVAL & STREET': ['frevo', 'marchinha', 'murga', 'rara'],
+        'SONG FORMS': ['cuplé', 'forró'],
+    },
+    'electronic dance music': {
+        'DUBSTEP & GRIME': ['dubstep', 'post-dubstep', 'grime'],
+        'FUTURE & MELODIC BASS': ['future bass', 'melodic bass', 'midtempo bass'],
+        'GLITCH & WONKY': ['glitch hop (EDM)', 'wonky', 'skweee'],
+        'AFRICAN CLUB': ['kuduro', 'singeli', 'coupé-décalé', 'balani show', 'bérite club', 'shangaan electro'],
+        'LATIN CLUB': ['electro latino', 'electrotango', 'tecnorumba', 'tribal guarachero', 'moombahton', 'moombahcore', 'Nortec'],
+        'ASIAN CLUB': ['funkot', 'budots'],
+        'EURODANCE': ['Eurobeat', 'Eurodance', 'freestyle music', 'partyschlager'],
+        'ELECTRO & BODY MUSIC': ['electroclash', 'electronic body music', 'electro swing'],
+        'SYNTH REVIVAL': ['spacesynth', 'outrun'],
+    },
+    'rock music': {
+        'AFRICA & THE MIDDLE EAST': ['Afro-rock', 'Zamrock', 'Anatolian rock', 'Sufi rock'],
+        'EUROPE': ['flamenco rock', 'könsrock', 'miejski folk'],
+        'LATIN AMERICA': ['Latin rock', 'rock andino'],
+    },
+    'folk music': {
+        'ITALY': ['cantu a chiterra', 'cantu a tenore', 'canzone napoletana', 'liscio', 'paghjella', 'stornello'],
+        'GREECE': ['Rebetiko', 'dimotiko', 'laïko', 'rizitika'],
+        'SPANISH SONG': ['asturianada', 'copla', 'saeta', 'música festera'],
+        'SPANISH DANCE': ['chotis madrileño', 'fandango', 'jota', 'muiñeira', 'pasodoble', 'sardana', 'trikiti'],
+        'BRITAIN & IRELAND': ['Irish folk music', 'Scottish country dance music', 'Gaelic psalm singing', 'pipe band music'],
+        'THE ALPS & CENTRAL EUROPE': ['Alpini song', 'Gstanzl', 'ländler music', 'Hungarian folk music', 'narodnozabavna glasba'],
+        'FRANCE & THE MEDITERRANEAN': ['bal-musette', 'kan ha diskan', 'għana', 'pagan folk'],
+        'SONG': ['colindă', 'drinking song', 'seguidilla', 'white voice', 'yodel', 'trallalero'],
+        'DANCE & REVIVAL': ['contra dance music', 'contemporary folk music', 'industrial folk music', 'neo-medieval music'],
+        'BRAZILIAN SONG & POETRY': ['cantoria', 'modinha', 'aboio', 'toada de boi', 'cururu'],
+        'BRAZILIAN DANCE & DRUMMING': ['samba de roda', 'jongo', 'maracatu', 'xaxado', 'fandango caiçara', 'lundu'],
+        'FIDDLE TRADITIONS': ['Cape Breton fiddling', 'James Bay fiddling', 'Métis fiddle', 'old-time music', 'Appalachian folk music'],
+        'AFRICAN-AMERICAN TRADITIONS': ['spirituals', 'ring shout', 'talking blues'],
+        'INDIGENOUS TRADITIONS': ['rabbit song', 'unakesa'],
+        'THE PHILIPPINES': ['Philippine rondalla', 'balitaw', 'harana', 'kundiman'],
+        'VIETNAM': ['chèo', 'quan họ', 'xẩm'],
+        'INDONESIA': ['gondang', 'kuda kepang', 'tarawangsa'],
+        'INDIA': ['Burra katha', 'biraha', 'kirtan', 'urumi melam'],
+        'BENGAL & THE HIMALAYA': ['baul gaan', 'dohori', 'nepali lok geet', 'boedra'],
+        'SRI LANKA & THE MALDIVES': ['sarala gee', 'boduberu'],
+    },
+    'classical music': {
+        'COUNTERPOINT & IMPROVISATION': ['fugue', 'ricercar', 'fantasia', 'toccata', 'prelude'],
+        'CHARACTER PIECES': ['bagatelle', 'capriccio', 'character piece', 'impromptu', 'étude'],
+    },
+    'hip-hop': {
+        'SOUTHERN CLUB RAP': ['crunk', 'snap music', 'Miami bass', 'chopped and screwed'],
+        'WEST COAST CLUB RAP': ['hyphy', 'jerk', 'ratchet music'],
+        'EAST COAST CLUB RAP': ['Jersey club rap', 'Philly club rap'],
+    },
+    'pop music': {
+        'ART POP': ['art pop', 'avant-pop', 'baroque pop', 'progressive pop', 'psychedelic pop'],
+        'INDIE POP': ['indie pop', 'alternative pop', 'sophisti-pop', 'ambient pop'],
+        'WESTERN EUROPEAN POP': ['Europop', 'Nederpop', 'schlager music', 'yé-yé'],
+        'NORDIC POP': ['dansband music', 'dansktop'],
+        'BALKAN & EASTERN EUROPEAN POP': ['chalga', 'manele', 'tallava', 'mulatós', 'rabiz'],
+    },
+}
+
 def main():
     src = os.path.join(HERE, 'genre-import.csv')
     rows = list(csv.DictReader(open(src, encoding='utf-8')))
@@ -667,6 +735,15 @@ def main():
             top = SUPER.get(branch, {}).get(g)
             if top:
                 assigned[q] = top + ' > ' + g
+
+        # One more segment where the group is still wider than the ring.
+        for seg, names in DEEP.get(branch, {}).items():
+            for n in names:
+                hits = [c for c in children if c['name'] == n]
+                if not hits:
+                    problems.append('%s : « %s » introuvable (DEEP)' % (branch, n))
+                for hit in hits:
+                    assigned[hit['wikidata_id']] += ' > ' + seg
 
         sizes = collections.Counter(a.split(' > ')[0] for a in assigned.values())
         print('%-24s %3d enfants -> %2d groupes  (le plus gros : %d)'
