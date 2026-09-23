@@ -211,3 +211,18 @@ Décision de Maxime : pas de nouvelle famille, un parent existant pour chacun. L
 **Un piège de script.** `wikidata-build.py` écrit dans `sys.argv[1]` s'il existe. Exécuté par `runpy` depuis un autre script, il écrase le premier argument de ce script. Remettre `sys.argv = ['x']` avant.
 
 Le banc de test passe ses 16 vérifications, `check-widths.py` ne signale rien.
+
+## Fiches genre : maquette validée et artistes choisis (23/09/2026)
+Maquette validée par Maxime : https://claude.ai/artifact/3dzMxxCMFJxLS3zxYeVxAX (décisions dans `docs/cadrage-mvp.md`, section « Fiche genre »). Rien n'est encore codé dans l'extension.
+
+**Artistes.** Maxime a demandé tous les genres d'un coup ; la relecture se fera en équipe à la fin du projet. `data/artists-picks.csv` : 1 462 genres sur 2 098 ont 1 à 8 artistes (456 en ont 8), 6 000 noms distincts, 636 genres vides. Choisis par dix sous-agents Claude en parallèle, de mémoire, avec consigne de laisser vide plutôt que deviner. La sélection de l'alternative rock est celle de la maquette.
+
+**Pourquoi de mémoire et pas depuis Wikidata.** Le jour même, Wikidata limitait à une requête par minute (« rule created during active wdqs outage ») : `artists-fetch.py` aurait pris ~35 h. Wikimedia refuse aussi par intermittence l'API et Commons avec des 429 (« robot policy »). Ne jamais compter sur un accès Wikimedia soutenu depuis ces sessions : cache, reprise, lenteur.
+
+**Reste à faire, dans l'ordre.**
+1. Finir `artists-verify.py` (en cours ou à relancer : il reprend depuis son cache). Il écarte tout nom qui n'est pas une personne musicienne ou un groupe sur Wikidata et liste les rejets dans `artists-rejected.csv`.
+2. Photos : vignettes Commons en 330 px, tramées en masque 1 bit (voir la maquette), crédits via l'API Commons `extmetadata` par lots de 50.
+3. Descriptions : premier paragraphe Wikipédia (REST `page/summary`), avec User-Agent identifié.
+4. L'extension : CPT `artist`, champs de fiche, vue plein écran avec adresse propre, bouton OPEN DOSSIER.
+
+**Piège rencontré.** `pkill -f artists-verify.py` a encore tué le shell appelant, comme noté plus haut pour `php -S`. Chercher le PID avec `pgrep -f` puis `kill PID`.

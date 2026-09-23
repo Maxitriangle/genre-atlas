@@ -31,6 +31,9 @@ Le fichier à importer dans WordPress est **`genre-import.csv`** : Genres → Im
 | `build-groups.py` | Découpe les 40 branches de plus de 8 sous-genres et écrit `genre-groups.csv`. |
 | `genre-groups.csv` | Le groupe de chacun des 1 327 genres concernés. Colonne `group` du fichier d'import. Un groupe est un chemin : « EUROPE > IBERIA ». |
 | `genre-import.csv` | **Le fichier d'import.** 13 familles, 15 tuiles, 2 098 genres. |
+| `artists-picks.csv` | **Key artists** des fiches : au plus 8 noms par genre, choisis à la main, A→Z. 636 genres vides plutôt qu'un nom deviné. |
+| `artists-verify.py` | Vérifie chaque nom sur Wikidata (personne musicienne ou groupe) et écrit `artists.csv`, `genre-artists.csv` et `artists-rejected.csv`. Reprend depuis son cache `.artists-cache.json` (non versionné). |
+| `artists-fetch.py` | Récupère les candidats Wikidata de chaque genre. Pas utilisé pour la sélection actuelle ; gardé pour un futur complément. |
 | `genre-attach.csv` | Les genres rattachés à la main, faute de parent chez Wikidata. Lu par les deux scripts. |
 | `wikidata-build-electronic.py` | L'ancien script, une famille à la fois. |
 | `genre-electronic-import.csv` | Son résultat, les 406 genres de la v0.3.0. |
