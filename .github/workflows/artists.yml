@@ -1,0 +1,49 @@
+name: Verify artists
+# Checks data/artists-picks.csv against Wikidata with data/artists-verify.py and
+# commits what it finds. It runs here rather than in a Claude session because
+# Wikimedia throttles, then blocks, the shared address those sessions leave from.
+# The script's cache is carried from run to run, so a run cut short by the
+# time limit or by Wikimedia is simply started again and picks up where it was.
+on:
+  push:
+    paths:
+      - data/artists-picks.csv
+      - data/artists-verify.py
+      - .github/workflows/artists.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: verify-artists-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore the Wikidata cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/.artists-cache.json
+          key: artists-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: artists-cache-
+      - name: Verify
+        id: verify
+        timeout-minutes: 330
+        run: python3 data/artists-verify.py
+      - name: Keep the cache, finished or not
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/.artists-cache.json
+          key: artists-cache-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Commit the results
+        if: steps.verify.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add data/artists.csv data/genre-artists.csv data/artists-rejected.csv
+          git diff --cached --quiet && exit 0
+          git commit -m "Verified key artists against Wikidata"
+          git push
