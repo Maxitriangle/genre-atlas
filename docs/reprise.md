@@ -226,3 +226,16 @@ Maquette validée par Maxime : https://claude.ai/artifact/3dzMxxCMFJxLS3zxYeVxAX
 4. L'extension : CPT `artist`, champs de fiche, vue plein écran avec adresse propre, bouton OPEN DOSSIER.
 
 **Piège rencontré.** `pkill -f artists-verify.py` a encore tué le shell appelant, comme noté plus haut pour `php -S` — et `pgrep -f` dans une boucle `kill` aussi, pour la même raison. Mettre une classe de caractères dans le motif pour qu'il ne se reconnaisse pas lui-même : `pgrep -f "[a]rtists-verify"`.
+
+## La fiche genre dans l'extension (v0.8.0, 23/09/2026)
+Publiée sans artistes ni descriptions, à la demande de Maxime, pour voir la mise en page sur le vrai site. Ce qu'elle montre déjà : glyphe, nom, famille et niveau, origine, époque, tempo, nombre de sous-genres et de descendants, lignée (avec le groupe éditorial en pointillé), sous-genres réels A→Z, liens Wikidata et MusicBrainz. Une section sans données n'est pas affichée : Overview et Key Artists apparaîtront seules quand les données arriveront.
+
+**Adresse.** `/genre/…/alternative-rock/about/`, par une règle de réécriture placée avant celle du type de contenu (sinon « about » est lu comme un sous-genre). Les règles sont reconstruites une fois par version (`genre_atlas_rules`), parce qu'une mise à jour depuis Extensions n'est pas une activation.
+
+**Données.** Rien de plus dans l'arbre que tout visiteur télécharge : la fiche appelle `/wp-json/genre-atlas/v1/genre/<id>` (description découpée en paragraphes, identifiants, `artists` vide pour l'instant). Le premier paragraphe sert de chapeau, les suivants d'Overview.
+
+**Navigation.** OPEN DOSSIER en plein au-dessus de CENTRE ON (passé en contour) dans le panneau, et sur mobile. Retour : bouton MAP, touche Échap, ou le bouton retour du navigateur ; quand la fiche a été ouverte depuis la carte, fermer revient en arrière dans l'historique et la carte réapparaît telle quelle. Les groupes éditoriaux n'ont pas de fiche.
+
+**Piège.** `wp_localize_script` transmet toutes les valeurs en chaînes : `"0"` est vrai en JavaScript, et toutes les pages de genre s'ouvraient sur la fiche. Toujours convertir (`Number(CFG.about) === 1`).
+
+Le banc passe 23 vérifications, dont 7 sur la fiche (ordre des boutons, adresse, sous-genres, Échap, accès direct, groupe sans fiche, largeur mobile).
