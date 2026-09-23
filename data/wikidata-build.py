@@ -153,6 +153,23 @@ for child, candidates in OVERRIDE.items():
                 break
 
 
+# Genres Wikidata gives no usable parent, attached by hand: genre-attach.csv.
+# 'attach' sets the parent, 'regroup' only moves a genre to another group (read
+# by build-groups.py), 'leave out' records why a genre stays out of the atlas.
+attached = {}
+_af = os.path.join(HERE, 'genre-attach.csv')
+if os.path.exists(_af):
+    for _r in csv.DictReader(io.open(_af, encoding='utf-8')):
+        if _r['action'] != 'attach':
+            continue
+        hits = [g for g in M if label[g] == _r['parent']]
+        if len(hits) != 1:
+            sys.exit('genre-attach.csv: parent %r of %r matches %d genres.'
+                     % (_r['parent'], _r['name'], len(hits)))
+        choice[_r['wikidata_id']], how[_r['wikidata_id']] = hits[0], 'attach'
+        attached[_r['wikidata_id']] = _r['name']
+
+
 def resolve(name):
     g = by_name.get(name.lower())
     if not g:
@@ -254,6 +271,10 @@ writer.writerows(rows)
 # ---- report -------------------------------------------------------------
 seen = {r['wikidata_id'] for r in rows}
 assert len(seen) == len(rows), 'a genre was emitted twice'
+stray = sorted(n for g, n in attached.items() if g not in seen)
+if stray:
+    sys.exit('genre-attach.csv: attached under a parent outside the atlas: '
+             + ', '.join(stray))
 print('%d rows written to %s' % (len(rows), os.path.relpath(out, HERE)))
 print('%d of %d recognised genres are covered (%d%%)'
       % (len(rows), len(M), 100 * len(rows) // len(M)))

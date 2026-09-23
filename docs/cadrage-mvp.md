@@ -46,7 +46,7 @@ Le code sépare donc les deux notions. Le parent reste `post_parent`, l'arbre es
 `art music` garde son libellé Wikidata : c'est l'ombrelle qui contient le classique occidental, indien, japonais et d'Asie du Sud-Est. La renommer « Classical music » entrerait en collision avec son propre enfant `classical music` (46 sous-genres), qui est la branche occidentale.
 
 ## Questions ouvertes
-- 481 genres reconnus (23 %) restent hors de l'atlas, faute d'un parent que Wikidata donne : 248 isolés, 233 sous 54 racines. Les plus notables sont funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer et raï. Soit on les déclare familles, soit on leur écrit une table de rattachement dans `data/wikidata-build.py`, sur le modèle de la table des inversions connues.
+- ~~481 genres reconnus restent hors de l'atlas.~~ Tranché le 23/09/2026 : ils sont rattachés à des genres existants par `data/genre-attach.csv`, les familles restent 13. 13 genres restent dehors, raison à l'appui.
 
 ## Test d'import Wikidata (21/09/2026)
 Requêtes SPARQL sur query.wikidata.org, éléments `instance of (P31) = music genre (Q188451)`. À découper en requêtes légères (libellés, P279, P571, P495, P8052 séparément) : la requête unique avec le service de libellés est tronquée par le délai du serveur.

@@ -15,7 +15,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 
 ## Ce qui attend, par ordre de maturité
 1. **Contester les regroupements.** Les deux premiers sont traités (voir « Rock et Latin » en bas). Les autres restent ouverts à la contestation : modifier `data/build-groups.py`, rejouer `build-groups.py` puis `wikidata-build.py`, renvoyer le CSV. Aucune republication de l'extension nécessaire.
-2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. **Décidé le 23/09 : les rattacher** à un genre existant par une table, les 13 familles restent 13. Maxime relit la liste des rattachements avant import. Pas encore commencé.
+2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. **Décidé le 23/09 : les rattacher** à un genre existant par une table, les 13 familles restent 13. Fait : `data/genre-attach.csv` (voir la dernière section). **En attente de la relecture de Maxime** avant qu'il importe.
 3. **BPM et descriptions**, jamais commencés : `bpm_min`/`bpm_max` sont vides sur les 1 630 lignes. **Décidé le 23/09 : après les points 1 et 2**, pour ne rien écrire sur des genres qui vont changer de place.
 4. **Six genres résiduels sur le site de Maxime**, hérités de la v0.3.0 et absents du fichier actuel : `space ambient`, `tribal ambient`, `maloya électronique` (sous Electronic Music), `mega funk`, `J-euro`, `dungeon chip`. **Décidé le 23/09 : Maxime les supprime** à la main (corbeille). Les deux ambient reviendront proprement si ambient est rattaché (point 2).
 5. **Un défaut cosmétique connu** : le titre du panneau coupe au milieu d'un mot sur les noms longs (« ALTERNATIV / E ROCK »). Défaut CSS antérieur à ces sessions, jamais corrigé.
@@ -190,6 +190,24 @@ Premières contestations de Maxime, toutes deux dans `build-groups.py`. Aucune n
 
 **Piège : deux genres s'appellent « bolero » sous Latin** (cubain Q15830404, espagnol Q489913). Les listes d'`OVERRIDES` acceptent désormais un identifiant Wikidata à la place d'un nom, pour viser l'un sans l'autre.
 
-**Point ouvert.** Le groupe « ROCK AND ROLL ERA » porte le mot « era » : un libellé d'époque, à la limite de la règle « jamais par date ». Proposé à Maxime, pas encore tranché.
+**Tranché ensuite.** « ROCK AND ROLL ERA » portait un libellé d'époque : renommé « ROCK AND ROLL & GARAGE » avec l'accord de Maxime.
+
+Le banc de test passe ses 16 vérifications, `check-widths.py` ne signale rien.
+
+## Les 481 genres dehors rattachés à la main (23/09/2026, données seules)
+Décision de Maxime : pas de nouvelle famille, un parent existant pour chacun. L'atlas passe de **1 630 à 2 098 genres**, et 1 327 portent un groupe (40 branches larges).
+
+**Le tableau.** `data/genre-attach.csv`, une ligne par genre, 330 lignes : 292 `attach`, 25 `regroup` (des genres déjà présents qui changent de groupe pour faire de la place), 13 `leave out`. La colonne `reason` est en français, pour la relecture. Rattacher une racine fait entrer sa descendance, donc 302 racines suffisent pour 468 genres. `wikidata-build.py` lit le parent, `build-groups.py` lit le groupe, et le groupe du tableau l'emporte sur tout le reste. Chaîne : `wikidata-build.py`, `build-groups.py`, puis `wikidata-build.py` à nouveau.
+
+**Où c'est allé, en gros.**
+- Pop : un 8ᵉ groupe « AFRICAN POP » (Afrique de l'Ouest, centrale, de l'Est, australe, océan Indien, découpés par pays). « POP AROUND THE WORLD » est refait : Moyen-Orient et Maghreb, Asie du Sud, Asie du Sud-Est, Russie et Asie centrale. « EAST ASIAN POP » se coupe en Japon, Corée, pop sinophone.
+- Folk : genres traditionnels ; nouveaux sous-groupes NORDIC COUNTRIES, CENTRAL ASIA & THE CAUCASUS, THE MALAY WORLD, LOUISIANA, EAST AFRICA & THE HORN, et Océanie en trois.
+- Art music : trois nouveaux groupes, SACRED TRADITIONS (chrétienne, juive, islamique et soufie, hindoue-bouddhiste-taoïste), STAGE & CABARET, BANDS & MARCHES.
+- Latin : les Caraïbes non hispaniques (zouk, soca, calypso, Suriname…) sous « THE WIDER CARIBBEAN » (ex-« THE ISLANDS »), reggaeton avec Porto Rico, funk brésilien sous Brazil.
+- Reggae (ska, rocksteady, mento, dub), R&B (funk, gospel), électronique (ambient, vaporwave), jazz (ragtime, easy listening, acid jazz).
+
+**Choix discutables, signalés à Maxime.** Les Caraïbes anglophones et francophones rangées sous Latin ; le théâtre musical et les fanfares sous Art music ; les regroupements du funk brésilien (connaissance limitée) ; `puxa` sans pays chez Wikidata.
+
+**Un piège de script.** `wikidata-build.py` écrit dans `sys.argv[1]` s'il existe. Exécuté par `runpy` depuis un autre script, il écrase le premier argument de ce script. Remettre `sys.argv = ['x']` avant.
 
 Le banc de test passe ses 16 vérifications, `check-widths.py` ne signale rien.

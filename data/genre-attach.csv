@@ -1,0 +1,331 @@
+wikidata_id,name,action,parent,group,reason
+Q193207,ambient music,attach,electronic music,AMBIENT & CHILL-OUT,Genre électronique ; ramène space ambient et tribal ambient.
+Q15733887,vaporwave,attach,electronic music,SYNTH & RETRO,Microgenre électronique rétro.
+Q138081554,slowed & reverb,attach,vaporwave,,Procédé issu du vaporwave.
+Q48971892,dungeon synth,attach,dark ambient,,Variante du dark ambient ; ramène dungeon chip.
+Q213121,new age music,attach,ambient music,,Proche de l'ambient ; le rattacher à Pop aurait tout débordé.
+Q85765918,hauntology,attach,electronic music,EXPERIMENTAL & DIGITAL,"Courant électronique (Burial, Ghost Box)."
+Q7410145,sampledelia,attach,plunderphonics,,Musique faite d'échantillons.
+Q133687529,toypop,attach,pop music,ELECTRONIC POP,Pop électronique enfantine.
+Q135493769,psychploitation,attach,psychedelic rock,,"Seul enfant de « psychedelic music », doublon de psychedelic rock."
+Q131425,visual kei,attach,rock music,SCENES AROUND THE WORLD > ASIA,Mouvement rock japonais.
+Q7139128,parlour music,attach,jazz,ORIGINS & SWING,"Ragtime, stride, cakewalk : les racines du jazz."
+Q221772,acid jazz,attach,jazz,FUSION & FUNK,Seul genre de « club/dance music » hors funk brésilien.
+Q848399,easy listening,attach,jazz,MOOD & SCREEN,"Lounge et exotica, voisins du jazz d'ambiance."
+Q26906566,Beat poetry,attach,jazz,MOOD & SCREEN,"Poésie lue sur du jazz, à côté de jazz poetry."
+Q2064394,worldbeat,attach,pop music,POP CROSSOVERS,Pop mêlée de musiques du monde.
+Q56342556,classical crossover,attach,pop music,POP CROSSOVERS,Pop lyrique.
+Q1062400,chanson,attach,pop music,EUROPEAN POP > WESTERN EUROPEAN POP,Chanson française.
+Q2138639,Levenslied,attach,pop music,EUROPEAN POP > WESTERN EUROPEAN POP,Chanson populaire néerlandaise.
+Q3025242,pimba,attach,pop music,EUROPEAN POP > WESTERN EUROPEAN POP,Chanson populaire portugaise.
+Q8059887,Yu-Mex,attach,pop music,EUROPEAN POP > BALKAN & EASTERN EUROPEAN POP,Pop yougoslave d'inspiration mexicaine.
+Q53806314,éntekhno,attach,pop music,EUROPEAN POP > BALKAN & EASTERN EUROPEAN POP,Chanson savante grecque.
+Q1762761,Finnish tango,attach,pop music,EUROPEAN POP > NORDIC POP,Tango populaire finlandais.
+Q107539904,estrada music,attach,pop music,POP AROUND THE WORLD > RUSSIA & CENTRAL ASIA,Variété soviétique.
+Q1891685,Russian chanson,attach,pop music,POP AROUND THE WORLD > RUSSIA & CENTRAL ASIA,Chanson populaire russe.
+Q4400837,Russian romance,attach,pop music,POP AROUND THE WORLD > RUSSIA & CENTRAL ASIA,Romance russe.
+Q28055053,Q-pop,regroup,,POP AROUND THE WORLD > RUSSIA & CENTRAL ASIA,"Déjà dans l'atlas : pop kazakhe, sortie de « East Asian pop »."
+Q131578,J-pop,attach,pop music,EAST ASIAN POP > JAPAN,Ramène J-euro.
+Q873478,enka,attach,pop music,EAST ASIAN POP > JAPAN,Ballade populaire japonaise.
+Q7385628,Ryūkōka,attach,pop music,EAST ASIAN POP > JAPAN,Premières chansons populaires japonaises.
+Q1418683,kayōkyoku,regroup,,EAST ASIAN POP > JAPAN,Déjà dans l'atlas.
+Q11307326,city pop,regroup,,EAST ASIAN POP > JAPAN,Déjà dans l'atlas.
+Q1207347,Shibuya-kei,regroup,,EAST ASIAN POP > JAPAN,Déjà dans l'atlas.
+Q213665,K-pop,attach,pop music,EAST ASIAN POP > KOREA,Pop coréenne.
+Q485915,trot,attach,pop music,EAST ASIAN POP > KOREA,Chanson populaire coréenne.
+Q55648025,Korean ballad,regroup,,EAST ASIAN POP > KOREA,Déjà dans l'atlas.
+Q1192110,C-pop,attach,pop music,EAST ASIAN POP > CHINESE-LANGUAGE POP,Pop sinophone.
+Q7496127,shidaiqu,attach,pop music,EAST ASIAN POP > CHINESE-LANGUAGE POP,Chanson de Shanghai des années folles.
+Q853873,cantopop,regroup,,EAST ASIAN POP > CHINESE-LANGUAGE POP,Déjà dans l'atlas.
+Q5398894,V-pop,regroup,,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > VIETNAM,"Déjà dans l'atlas : pop vietnamienne, sortie de « East Asian pop »."
+Q7855391,Turkish pop,regroup,,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > TURKEY & IRAN,Déjà dans l'atlas.
+Q7170257,Iranian pop,regroup,,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > TURKEY & IRAN,Déjà dans l'atlas.
+Q623824,arabesque,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > TURKEY & IRAN,Pop turque orientalisante.
+Q6016474,Fantezi,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > TURKEY & IRAN,Variante légère de l'arabesque turque.
+Q3735422,Bandari music,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > TURKEY & IRAN,Musique de danse du golfe Persique.
+Q135112773,mūsīqā lubnāniyya,regroup,,"POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE LEVANT, ISRAEL & THE GULF",Déjà dans l'atlas.
+Q110555065,Orthodox pop,regroup,,"POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE LEVANT, ISRAEL & THE GULF",Déjà dans l'atlas.
+Q2738544,Mizrahi music,attach,pop music,"POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE LEVANT, ISRAEL & THE GULF",Pop israélienne d'origine orientale.
+Q7410295,samri,attach,pop music,"POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE LEVANT, ISRAEL & THE GULF",Chant populaire du Golfe.
+Q2516031,sawt,attach,pop music,"POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE LEVANT, ISRAEL & THE GULF",Chant urbain du Koweït et de Bahreïn.
+Q2610186,al jeel,regroup,,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > EGYPT,Déjà dans l'atlas.
+Q16323732,shaabi,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > EGYPT,Chanson populaire égyptienne ; ramène mahraganat.
+Q804596,baladi,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > EGYPT,Musique populaire égyptienne.
+Q839029,raï,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE MAGHREB,Algérie.
+Q2961766,Algerian chaabi,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE MAGHREB,Algérie.
+Q2961759,Moroccan chaabi,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE MAGHREB,Maroc.
+Q3328762,staifi music,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE MAGHREB,Algérie (Sétif).
+Q3305039,malhun,attach,pop music,POP AROUND THE WORLD > MIDDLE EAST & NORTH AFRICA > THE MAGHREB,Poésie chantée du Maghreb.
+Q3535998,Indian pop,regroup,,POP AROUND THE WORLD > SOUTH ASIAN POP,Déjà dans l'atlas.
+Q2612458,rigsar,regroup,,POP AROUND THE WORLD > SOUTH ASIAN POP,Déjà dans l'atlas.
+Q55642856,adhunik geet,attach,pop music,POP AROUND THE WORLD > SOUTH ASIAN POP,Chanson moderne népalaise.
+Q2879826,baila,attach,pop music,POP AROUND THE WORLD > SOUTH ASIAN POP,Musique de danse du Sri Lanka.
+Q15720097,bhavageete,attach,pop music,POP AROUND THE WORLD > SOUTH ASIAN POP,Poésie chantée du Karnataka.
+Q5515214,gaana,attach,pop music,POP AROUND THE WORLD > SOUTH ASIAN POP,Chanson urbaine de Chennai.
+Q281111,ghazal,attach,pop music,POP AROUND THE WORLD > SOUTH ASIAN POP,Chant poétique ourdou.
+Q854844,bhangra,attach,pop music,POP AROUND THE WORLD > SOUTH ASIAN POP,Pop pendjabie ; ramène folkhop.
+Q118640019,pop kreatif,regroup,,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Déjà dans l'atlas.
+Q117745444,pop minang,regroup,,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Déjà dans l'atlas.
+Q4372158,pop Sunda,regroup,,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Déjà dans l'atlas.
+Q1159539,dangdut,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Ramène koplo.
+Q1930107,kroncong,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Ramène langgam jawa et cilokaq.
+Q3274667,campursari,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Java.
+Q110230818,qasidah modern,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Pop islamique indonésienne.
+Q11185609,Gambang kromong,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > INDONESIA & MALAYSIA,Musique populaire de Jakarta.
+Q61127902,Vietnamese bolero,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > VIETNAM,Viêt Nam.
+Q1499262,yellow music,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > VIETNAM,Viêt Nam.
+Q7023411,nhạc đỏ,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > VIETNAM,Chanson révolutionnaire vietnamienne.
+Q10801096,Purple music,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > VIETNAM,Viêt Nam.
+Q3328764,Thai pop,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > MAINLAND SOUTHEAST ASIA,Thaïlande.
+Q665286,luk thung,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > MAINLAND SOUTHEAST ASIA,Thaïlande.
+Q6701559,luk krung,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > MAINLAND SOUTHEAST ASIA,Thaïlande.
+Q1753803,mor lam,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > MAINLAND SOUTHEAST ASIA,Laos et Isan.
+Q4925966,kantrum,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > MAINLAND SOUTHEAST ASIA,Khmers de Thaïlande.
+Q7361460,rom kbach,regroup,,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > MAINLAND SOUTHEAST ASIA,Déjà dans l'atlas.
+Q109050954,Burmese mono,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP > MAINLAND SOUTHEAST ASIA,Birmanie.
+Q107565104,original Pilipino music,attach,pop music,POP AROUND THE WORLD > SOUTHEAST ASIAN POP,Philippines.
+Q25099840,Afrobeats,regroup,,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,Déjà dans l'atlas.
+Q963061,highlife,attach,pop music,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,Ghana.
+Q5480212,palm-wine music,attach,pop music,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,"Sierra Leone et Liberia, ancêtre du highlife."
+Q388296,Afrobeat,attach,pop music,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,Fela Kuti.
+Q3509353,fuji music,attach,pop music,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,Nigeria (yoruba).
+Q1715700,Jùjú music,attach,pop music,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,Nigeria (yoruba).
+Q9095433,waka music,attach,pop music,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,Nigeria (yoruba).
+Q123945693,egwu ogene,attach,pop music,AFRICAN POP > WEST AFRICA > NIGERIA & GHANA,Nigeria (igbo).
+Q227036,zouglou,attach,pop music,AFRICAN POP > WEST AFRICA > IVORY COAST,Côte d'Ivoire.
+Q199415,ziglibithy,attach,pop music,AFRICAN POP > WEST AFRICA > IVORY COAST,Côte d'Ivoire.
+Q16526296,alloukou,attach,pop music,AFRICAN POP > WEST AFRICA > IVORY COAST,Côte d'Ivoire.
+Q3575673,zoblazo,attach,pop music,AFRICAN POP > WEST AFRICA > IVORY COAST,Côte d'Ivoire.
+Q125854050,tradi-moderne ivoirien,attach,pop music,AFRICAN POP > WEST AFRICA > IVORY COAST,Côte d'Ivoire.
+Q556959,mbalax,attach,pop music,"AFRICAN POP > WEST AFRICA > SENEGAL, MALI & CAPE VERDE",Sénégal.
+Q7972788,Wassoulou music,attach,pop music,"AFRICAN POP > WEST AFRICA > SENEGAL, MALI & CAPE VERDE",Mali.
+Q3090876,funaná,attach,pop music,"AFRICAN POP > WEST AFRICA > SENEGAL, MALI & CAPE VERDE",Cap-Vert.
+Q2982341,coladeira,attach,pop music,"AFRICAN POP > WEST AFRICA > SENEGAL, MALI & CAPE VERDE",Cap-Vert.
+Q502535,morna,attach,pop music,"AFRICAN POP > WEST AFRICA > SENEGAL, MALI & CAPE VERDE",Cap-Vert.
+Q1815364,makossa,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CAMEROON,Cameroun.
+Q860196,bikutsi,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CAMEROON,Cameroun.
+Q590662,bend-skin,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CAMEROON,Cameroun.
+Q2867170,assiko,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CAMEROON,Cameroun.
+Q6748746,mangambeu,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CAMEROON,Cameroun.
+Q115612369,mbolé,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CAMEROON,Cameroun.
+Q3453150,Congolese rumba,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CONGO & ANGOLA,Ramène soukous et kwassa kwassa.
+Q98528236,tradi-moderne congolais,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CONGO & ANGOLA,RD Congo.
+Q122589702,puxa,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CONGO & ANGOLA,"Afrique centrale, pays non précisé par Wikidata."
+Q1597549,kizomba,attach,pop music,AFRICAN POP > CENTRAL AFRICA > CONGO & ANGOLA,Angola.
+Q6301761,benga music,attach,pop music,"AFRICAN POP > EAST AFRICA > KENYA, UGANDA & SOMALIA",Kenya.
+Q110168453,omutibo,attach,pop music,"AFRICAN POP > EAST AFRICA > KENYA, UGANDA & SOMALIA",Kenya.
+Q17115009,mugithi,attach,pop music,"AFRICAN POP > EAST AFRICA > KENYA, UGANDA & SOMALIA",Kenya.
+Q6404580,kidandali,attach,pop music,"AFRICAN POP > EAST AFRICA > KENYA, UGANDA & SOMALIA",Ouganda.
+Q17108262,Kadongo kamu,attach,pop music,"AFRICAN POP > EAST AFRICA > KENYA, UGANDA & SOMALIA",Ouganda.
+Q25683514,Qaraami,attach,pop music,"AFRICAN POP > EAST AFRICA > KENYA, UGANDA & SOMALIA",Somalie.
+Q1564596,taarab,attach,pop music,AFRICAN POP > EAST AFRICA > TANZANIA,Zanzibar et côte swahilie.
+Q3815106,kidumbaki,attach,pop music,AFRICAN POP > EAST AFRICA > TANZANIA,Tanzanie.
+Q118255449,mchiriku,attach,pop music,AFRICAN POP > EAST AFRICA > TANZANIA,Tanzanie.
+Q55605210,beni,attach,pop music,AFRICAN POP > EAST AFRICA > TANZANIA,Tanzanie.
+Q4943457,boomba music,attach,pop music,AFRICAN POP > EAST AFRICA > TANZANIA,Afrique de l'Est.
+Q6124308,jaiva,attach,pop music,AFRICAN POP > SOUTHERN AFRICA > SOUTH AFRICA & LESOTHO,Afrique du Sud.
+Q6783396,maskandi,attach,pop music,AFRICAN POP > SOUTHERN AFRICA > SOUTH AFRICA & LESOTHO,Afrique du Sud (zoulou).
+Q6799787,mbube,attach,pop music,AFRICAN POP > SOUTHERN AFRICA > SOUTH AFRICA & LESOTHO,Chœur a cappella zoulou.
+Q1673922,isicathamiya,attach,pop music,AFRICAN POP > SOUTHERN AFRICA > SOUTH AFRICA & LESOTHO,Chœur a cappella zoulou.
+Q5433431,famo,attach,pop music,AFRICAN POP > SOUTHERN AFRICA > SOUTH AFRICA & LESOTHO,Lesotho.
+Q108667604,Tsonga disco,attach,pop music,AFRICAN POP > SOUTHERN AFRICA > SOUTH AFRICA & LESOTHO,Afrique du Sud.
+Q95366506,Jit,attach,pop music,"AFRICAN POP > SOUTHERN AFRICA > ZIMBABWE, ZAMBIA & MOZAMBIQUE",Zimbabwe.
+Q5099460,chimurenga music,attach,pop music,"AFRICAN POP > SOUTHERN AFRICA > ZIMBABWE, ZAMBIA & MOZAMBIQUE",Zimbabwe.
+Q109538468,sungura,attach,pop music,"AFRICAN POP > SOUTHERN AFRICA > ZIMBABWE, ZAMBIA & MOZAMBIQUE",Zimbabwe.
+Q1669802,kalindula,attach,pop music,"AFRICAN POP > SOUTHERN AFRICA > ZIMBABWE, ZAMBIA & MOZAMBIQUE",Zambie.
+Q1786724,marrabenta,attach,pop music,"AFRICAN POP > SOUTHERN AFRICA > ZIMBABWE, ZAMBIA & MOZAMBIQUE",Mozambique.
+Q1781796,sega,attach,pop music,AFRICAN POP > INDIAN OCEAN,Maurice.
+Q496929,maloya,attach,pop music,AFRICAN POP > INDIAN OCEAN,La Réunion ; ramène maloya électronique.
+Q17088735,santé engagé,attach,pop music,AFRICAN POP > INDIAN OCEAN,Seychelles.
+Q3032090,Salegy,attach,pop music,AFRICAN POP > INDIAN OCEAN,Madagascar.
+Q25093633,tsapiky,attach,pop music,AFRICAN POP > INDIAN OCEAN,Madagascar.
+Q101002867,mgodro,attach,pop music,AFRICAN POP > INDIAN OCEAN,Mayotte.
+Q164444,funk,attach,rhythm and blues,"SOUL, FUNK & DISCO","Ramène P-Funk, G-funk, go-go…"
+Q180268,gospel music,attach,rhythm and blues,GOSPEL & VOCAL HARMONY,Musique afro-américaine.
+Q1379958,contemporary Christian music,attach,gospel music,,Pop chrétienne.
+Q807820,barbershop music,attach,rhythm and blues,GOSPEL & VOCAL HARMONY,"Chant en harmonie, à côté du doo-wop."
+Q1262697,mento,attach,reggae,JAMAICAN ORIGINS,Ancêtre du ska.
+Q54365,ska,attach,reggae,JAMAICAN ORIGINS,Jamaïque.
+Q573484,rocksteady,attach,reggae,JAMAICAN ORIGINS,Entre ska et reggae.
+Q212688,dub music,attach,reggae,"DUB, DEEJAY & DANCEHALL",Jamaïque.
+Q3192617,kaneka,attach,reggae,REGGAE AROUND THE WORLD,Nouvelle-Calédonie.
+Q202930,reggaeton,attach,Latin music,"CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > PUERTO RICO, HISPANIOLA & THE COAST",Porto Rico.
+Q227045,zouk,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > FRENCH ANTILLES & GUIANA,Antilles françaises.
+Q2915789,gwo ka,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > FRENCH ANTILLES & GUIANA,Guadeloupe.
+Q108556409,tumbélé,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > FRENCH ANTILLES & GUIANA,Antilles françaises.
+Q4950496,bouyon,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > FRENCH ANTILLES & GUIANA,Dominique.
+Q2932658,cadence-lypso,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > FRENCH ANTILLES & GUIANA,Dominique.
+Q60722009,Kasékò,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > FRENCH ANTILLES & GUIANA,Guyane.
+Q1051735,soca music,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > TRINIDAD & THE ENGLISH-SPEAKING ISLANDS,Trinité-et-Tobago.
+Q752785,calypso,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > TRINIDAD & THE ENGLISH-SPEAKING ISLANDS,Trinité-et-Tobago.
+Q1090048,chutney music,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > TRINIDAD & THE ENGLISH-SPEAKING ISLANDS,Trinité-et-Tobago.
+Q100330555,steel band music,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > TRINIDAD & THE ENGLISH-SPEAKING ISLANDS,Trinité-et-Tobago.
+Q106634508,junkanoo,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > TRINIDAD & THE ENGLISH-SPEAKING ISLANDS,Bahamas.
+Q5583956,goombay,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > TRINIDAD & THE ENGLISH-SPEAKING ISLANDS,Bahamas.
+Q610022,kaseko,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > SURINAME & GUYANA,Suriname.
+Q4848738,baithak gana,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > SURINAME & GUYANA,Suriname (diaspora indienne).
+Q65447927,aleke,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > SURINAME & GUYANA,Guyana.
+Q7489094,Shanto,attach,Latin music,CUBA & THE CARIBBEAN > THE WIDER CARIBBEAN > SURINAME & GUYANA,Guyana.
+Q283405,punta,attach,Latin music,MEXICO & CENTRAL AMERICA > CENTRAL AMERICA,Belize et Honduras (garifuna).
+Q16615430,Palo de Mayo,attach,Latin music,MEXICO & CENTRAL AMERICA > CENTRAL AMERICA,Nicaragua.
+Q108951349,music of the Llanos,attach,Latin music,THE ANDES & THE PACIFIC > COLOMBIA & VENEZUELA,Plaines de Colombie et du Venezuela.
+Q117745223,Brazilian funk,attach,Latin music,BRAZIL > MODERN BRAZILIAN POP,Funk carioca et ses dérivés ; seul vrai contenu de « club/dance music ».
+Q89363113,singer-songwriter music,attach,folk music,SONG & DANCE FORMS,"Nueva canción, Liedermacher, nova cançó…"
+Q1443316,Christmas music,attach,folk music,SONG & DANCE FORMS,Chants de Noël.
+Q2389651,children's music,attach,folk music,SONG & DANCE FORMS,Chansons pour enfants.
+Q2489759,football chant,attach,folk music,SONG & DANCE FORMS,Chants de stade.
+Q502658,work song,attach,folk music,SONG & DANCE FORMS > SONG,Chants de travail ; ramène sea shanty.
+Q193605,lullaby,attach,folk music,SONG & DANCE FORMS > SONG,Berceuses.
+Q151942,mazurka,attach,folk music,SONG & DANCE FORMS > DANCE & REVIVAL,Danse polonaise.
+Q212944,klezmer,attach,folk music,EUROPE > CENTRAL & EASTERN EUROPE,Musique juive ashkénaze.
+Q3482281,visa,attach,folk music,EUROPE > THE NORDIC COUNTRIES,Chanson scandinave.
+Q744327,joik,attach,folk music,EUROPE > THE NORDIC COUNTRIES,Chant sami.
+Q1430717,Hambo,regroup,,EUROPE > THE NORDIC COUNTRIES,Déjà dans l'atlas : danse suédoise.
+Q4400125,runo song,regroup,,EUROPE > THE NORDIC COUNTRIES,Déjà dans l'atlas : chant finnois.
+Q854451,Celtic music,attach,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND,Musique celtique.
+Q23637018,hornpipe,attach,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND,Danse britannique.
+Q1540495,puirt à beul,attach,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND,Chant gaélique écossais.
+Q461406,change ringing,attach,folk music,EUROPE > WESTERN EUROPE > BRITAIN & IRELAND,Sonnerie de cloches anglaise.
+Q329385,schottische,attach,folk music,EUROPE > WESTERN EUROPE > THE ALPS & CENTRAL EUROPE,Danse d'Europe centrale.
+Q1399566,Guggenmusik,attach,folk music,EUROPE > WESTERN EUROPE > THE ALPS & CENTRAL EUROPE,Fanfares de carnaval suisses et allemandes.
+Q12302,bagad,attach,folk music,EUROPE > WESTERN EUROPE > FRANCE & THE MEDITERRANEAN,Bretagne.
+Q2936886,cantèra,attach,folk music,EUROPE > WESTERN EUROPE > FRANCE & THE MEDITERRANEAN,Chant polyphonique occitan.
+Q324617,tarantella,attach,folk music,EUROPE > ITALY & GREECE > ITALY,Italie du Sud.
+Q2036172,pizzica,attach,tarantella,,Forme de tarentelle des Pouilles.
+Q7676784,tajaraste,attach,folk music,EUROPE > SPAIN > SPANISH DANCE,Canaries.
+Q9009342,Isa,attach,folk music,EUROPE > SPAIN > SPANISH SONG,Canaries.
+Q1232283,villancico,attach,folk music,EUROPE > SPAIN > SPANISH SONG,Chant de Noël espagnol.
+Q1571388,Jácara,attach,folk music,EUROPE > SPAIN > SPANISH SONG,Chanson espagnole ancienne.
+Q3622181,tonadilla,attach,folk music,EUROPE > SPAIN > SPANISH SONG,Scène chantée espagnole.
+Q127270988,dechovka,attach,polka,,Polka tchèque pour fanfare.
+Q137767022,Eastern-style polka,attach,polka,,Polka des États-Unis.
+Q1026089,Cajun music,attach,folk music,THE AMERICAS > NORTH AMERICA > LOUISIANA,Louisiane.
+Q245296,zydeco,attach,folk music,THE AMERICAS > NORTH AMERICA > LOUISIANA,Louisiane.
+Q3347093,néo-trad,attach,folk music,THE AMERICAS > NORTH AMERICA > FIDDLE TRADITIONS,Québec.
+Q5096318,Chicken scratch,attach,folk music,THE AMERICAS > NORTH AMERICA > INDIGENOUS TRADITIONS,Tohono O'odham.
+Q122658157,kalattut,attach,folk music,THE AMERICAS > NORTH AMERICA > INDIGENOUS TRADITIONS,Groenland.
+Q123699455,vaigat music,attach,folk music,THE AMERICAS > NORTH AMERICA > INDIGENOUS TRADITIONS,Groenland.
+Q127835715,uaajeerneq,attach,folk music,THE AMERICAS > NORTH AMERICA > INDIGENOUS TRADITIONS,Groenland.
+Q124428373,tivaner inngernerlu,attach,folk music,THE AMERICAS > NORTH AMERICA > INDIGENOUS TRADITIONS,Groenland.
+Q17048822,Fakaseasea,regroup,,OCEANIA > POLYNESIA & HAWAII,Déjà dans l'atlas.
+Q5765288,Himene tarava,attach,folk music,OCEANIA > POLYNESIA & HAWAII,Polynésie.
+Q3357584,ʻōteʻa,attach,folk music,OCEANIA > POLYNESIA & HAWAII,Tahiti.
+Q123028778,hapa haole,attach,folk music,OCEANIA > POLYNESIA & HAWAII,Hawaï.
+Q98528264,slack-key guitar,attach,folk music,OCEANIA > POLYNESIA & HAWAII,Hawaï.
+Q115776141,vude,attach,folk music,OCEANIA > MELANESIA & MICRONESIA,Fidji.
+Q115812361,sigidrigi,attach,folk music,OCEANIA > MELANESIA & MICRONESIA,Fidji.
+Q6365333,kantan chamorrita,attach,folk music,OCEANIA > MELANESIA & MICRONESIA,Guam.
+Q7967858,wangga,attach,folk music,OCEANIA > AUSTRALIA,Aborigènes d'Australie.
+Q108297231,djanba,attach,folk music,OCEANIA > AUSTRALIA,Aborigènes d'Australie.
+Q107123896,griot music,attach,folk music,AFRICA & THE MIDDLE EAST > WEST AFRICA > SAHEL & SENEGAMBIA,Afrique de l'Ouest.
+Q105883401,takamba,attach,folk music,AFRICA & THE MIDDLE EAST > WEST AFRICA > SAHEL & SENEGAMBIA,Touaregs et Songhaï.
+Q110241400,tassu,attach,folk music,AFRICA & THE MIDDLE EAST > WEST AFRICA > SAHEL & SENEGAMBIA,Wolof.
+Q7042505,Njuup,attach,folk music,AFRICA & THE MIDDLE EAST > WEST AFRICA > SAHEL & SENEGAMBIA,Sénégal (sérère).
+Q4691650,agbekor,attach,folk music,"AFRICA & THE MIDDLE EAST > WEST AFRICA > GHANA, TOGO & BENIN",Ewe.
+Q30632442,agbadza,attach,folk music,"AFRICA & THE MIDDLE EAST > WEST AFRICA > GHANA, TOGO & BENIN",Ewe.
+Q106654137,zinli,regroup,,"AFRICA & THE MIDDLE EAST > WEST AFRICA > GHANA, TOGO & BENIN",Déjà dans l'atlas.
+Q108575656,tchinkoumé,regroup,,"AFRICA & THE MIDDLE EAST > WEST AFRICA > GHANA, TOGO & BENIN",Déjà dans l'atlas.
+Q17630580,Izlan,attach,folk music,AFRICA & THE MIDDLE EAST > NORTH AFRICA & THE ISLANDS,Maroc (berbère).
+Q4696445,ahwash,attach,folk music,AFRICA & THE MIDDLE EAST > NORTH AFRICA & THE ISLANDS,Maroc (berbère).
+Q2159891,chopi timbila,attach,folk music,AFRICA & THE MIDDLE EAST > CENTRAL & SOUTHERN AFRICA,Mozambique.
+Q7810544,tizita,attach,folk music,AFRICA & THE MIDDLE EAST > EAST AFRICA & THE HORN,Éthiopie.
+Q16960459,dhaanto,attach,folk music,AFRICA & THE MIDDLE EAST > EAST AFRICA & THE HORN,Somalie.
+Q1156570,dabke,attach,folk music,AFRICA & THE MIDDLE EAST > MIDDLE EAST,Levant.
+Q2500734,meykhana,regroup,,ASIA > CENTRAL ASIA & THE CAUCASUS,"Déjà dans l'atlas : Azerbaïdjan, sorti de « Middle East »."
+Q5431633,falak,attach,folk music,ASIA > CENTRAL ASIA & THE CAUCASUS,Tadjikistan (Pamir).
+Q110606359,Central Asian throat singing,attach,folk music,ASIA > CENTRAL ASIA & THE CAUCASUS,Touva et Mongolie.
+Q7273050,quyi,attach,folk music,ASIA > CHINA & MONGOLIA,Chant narratif chinois.
+Q106654136,zohioliin duu,attach,folk music,ASIA > CHINA & MONGOLIA,Chanson mongole.
+Q121437389,fusion gugak,attach,folk music,ASIA > KOREA,Corée.
+Q124851788,changjak gugak,attach,folk music,ASIA > KOREA,Corée.
+Q2278881,shima-uta,attach,min'yō,,Chant d'Okinawa.
+Q13118900,Powada,attach,folk music,ASIA > SOUTH ASIA > INDIA,Ballade marathe.
+Q2722134,lavani,attach,folk music,ASIA > SOUTH ASIA > INDIA,Maharashtra.
+Q882985,garba,attach,folk music,ASIA > SOUTH ASIA > INDIA,Gujarat.
+Q125754839,dhol tasha,attach,folk music,ASIA > SOUTH ASIA > INDIA,Maharashtra.
+Q3160589,Jaipongan,attach,folk music,ASIA > SOUTHEAST ASIA > INDONESIA,Java-Ouest ; ramène kliningan.
+Q20427333,ketuk tilu,attach,folk music,ASIA > SOUTHEAST ASIA > INDONESIA,Java-Ouest.
+Q1737691,Kecak,attach,folk music,ASIA > SOUTHEAST ASIA > INDONESIA,Bali.
+Q25458248,bantengan,attach,folk music,ASIA > SOUTHEAST ASIA > INDONESIA,Java.
+Q7679165,talempong,attach,folk music,ASIA > SOUTHEAST ASIA > INDONESIA,Sumatra.
+Q5276535,Dikir barat,attach,folk music,ASIA > SOUTHEAST ASIA > THE MALAY WORLD,Malaisie.
+Q5295546,Dondang Sayang,attach,folk music,ASIA > SOUTHEAST ASIA > THE MALAY WORLD,Malaisie.
+Q118395684,orkes gambus,attach,folk music,ASIA > SOUTHEAST ASIA > THE MALAY WORLD,Indonésie et Malaisie.
+Q5202988,cải lương,attach,folk music,ASIA > SOUTHEAST ASIA > VIETNAM,Théâtre chanté vietnamien.
+Q123556216,tân cổ giao duyên,attach,folk music,ASIA > SOUTHEAST ASIA > VIETNAM,Viêt Nam.
+Q125544586,ngâm thơ,attach,folk music,ASIA > SOUTHEAST ASIA > VIETNAM,Poésie psalmodiée vietnamienne.
+Q8812109,church music,attach,art music,SACRED TRADITIONS > CHRISTIAN,"Chant grégorien, byzantin…"
+Q30324607,Ethiopian chant,attach,art music,SACRED TRADITIONS > CHRISTIAN,Éthiopie.
+Q919516,troparion,attach,art music,SACRED TRADITIONS > CHRISTIAN,Hymne byzantin.
+Q1337498,Kontakion,attach,art music,SACRED TRADITIONS > CHRISTIAN,Hymne byzantin.
+Q574784,lauda,attach,art music,SACRED TRADITIONS > CHRISTIAN,Italie médiévale.
+Q7397088,Sacred Harp,attach,art music,SACRED TRADITIONS > CHRISTIAN,Chant d'église américain.
+Q781402,piyyut,attach,art music,SACRED TRADITIONS > JEWISH,Poésie liturgique juive.
+Q108297215,chazzanut,attach,art music,SACRED TRADITIONS > JEWISH,Chant du hazzan.
+Q1989725,nigun,attach,art music,SACRED TRADITIONS > JEWISH,Mélodie hassidique.
+Q6030291,maftirim,attach,art music,SACRED TRADITIONS > JEWISH,Séfarade.
+Q122616091,muzika yehudit mekorit,attach,art music,SACRED TRADITIONS > JEWISH,Musique juive contemporaine.
+Q783874,nasheed,attach,art music,SACRED TRADITIONS > ISLAMIC & SUFI,Chant islamique.
+Q5683605,Maddahi,attach,art music,SACRED TRADITIONS > ISLAMIC & SUFI,Iran.
+Q5562953,ginans,attach,art music,SACRED TRADITIONS > ISLAMIC & SUFI,Ismaéliens d'Asie du Sud.
+Q6346110,Kafi,attach,art music,SACRED TRADITIONS > ISLAMIC & SUFI,Poésie soufie du Pendjab et du Sind.
+Q39046042,menzuma,attach,art music,SACRED TRADITIONS > ISLAMIC & SUFI,Éthiopie.
+Q124354571,mataali,attach,art music,SACRED TRADITIONS > ISLAMIC & SUFI,Ouganda.
+Q130711589,banga,attach,art music,SACRED TRADITIONS > ISLAMIC & SUFI,Tunisie.
+Q48723594,Vedic chant,attach,art music,"SACRED TRADITIONS > HINDU, BUDDHIST & TAOIST",Inde.
+Q854775,bhajan,attach,art music,"SACRED TRADITIONS > HINDU, BUDDHIST & TAOIST",Inde.
+Q131510,mantra,attach,art music,"SACRED TRADITIONS > HINDU, BUDDHIST & TAOIST",Ramène le chant bouddhiste tibétain.
+Q4371786,beompae,attach,art music,"SACRED TRADITIONS > HINDU, BUDDHIST & TAOIST",Corée (bouddhiste).
+Q130391382,chöd,attach,art music,"SACRED TRADITIONS > HINDU, BUDDHIST & TAOIST",Tibet.
+Q3296779,Taoist music,attach,art music,"SACRED TRADITIONS > HINDU, BUDDHIST & TAOIST",Chine.
+Q1348260,Kagura,attach,art music,"SACRED TRADITIONS > HINDU, BUDDHIST & TAOIST",Japon (shintô).
+Q2743,musical play,attach,art music,STAGE & CABARET,Théâtre musical.
+Q918727,revue,attach,art music,STAGE & CABARET,Revue.
+Q109719462,vaudeville,attach,art music,STAGE & CABARET,Vaudeville.
+Q940462,music hall,attach,art music,STAGE & CABARET,Music-hall britannique.
+Q111535905,cabaret music,attach,art music,STAGE & CABARET,Cabaret.
+Q1937548,minstrel music,attach,art music,STAGE & CABARET,Minstrel show américain (historique).
+Q6981036,Natya Sangeet,attach,art music,STAGE & CABARET,Théâtre chanté marathe.
+Q6365528,kanto,attach,art music,STAGE & CABARET,Théâtre chanté turc.
+Q16154635,Kabarett,attach,cabaret music,,Cabaret germanique.
+Q11817196,piosenka aktorska,attach,cabaret music,,Chanson d'acteur polonaise.
+Q1166158,dark cabaret,attach,cabaret music,,Ramène steampunk music.
+Q5151495,comedy music,attach,cabaret music,,Chanson comique.
+Q2265295,coon song,attach,minstrel music,,Chanson du minstrel show (historique).
+Q211025,march,attach,art music,BANDS & MARCHES,Marche.
+Q110230168,British brass band music,attach,art music,BANDS & MARCHES,Brass band britannique.
+Q128631435,drum and bugle corps music,attach,art music,BANDS & MARCHES,États-Unis.
+Q4752840,fife and drum corps,attach,art music,BANDS & MARCHES,États-Unis.
+Q952404,drumline,attach,art music,BANDS & MARCHES,États-Unis.
+Q115063561,pep band music,attach,art music,BANDS & MARCHES,États-Unis.
+Q135965645,concertina band,attach,art music,BANDS & MARCHES,Royaume-Uni.
+Q116875242,tanjidor music,attach,art music,BANDS & MARCHES,Fanfare de Jakarta.
+Q226887,noh,attach,art music,EAST ASIAN COURT & THEATRE,Théâtre japonais.
+Q1361891,jōruri,attach,art music,EAST ASIAN COURT & THEATRE,Théâtre de marionnettes japonais.
+Q3080963,nagauta,attach,Japanese classical music,,Chant au shamisen.
+Q11162353,jiuta,attach,Japanese classical music,,Chant au shamisen.
+Q3129432,heikyoku,attach,Japanese classical music,,Récit chanté au biwa.
+Q7497655,shinkyoku,attach,Japanese classical music,,Musique japonaise « nouvelle ».
+Q134005844,sizhu music,attach,guoyue,,Ensemble chinois de soie et bambou.
+Q85477,oratorio,attach,classical music,VOCAL & SACRED FORMS,Forme vocale sacrée.
+Q9734,symphony,attach,symphonic music,,Forme orchestrale.
+Q9748,concerto,attach,symphonic music,,Forme orchestrale.
+Q632964,tiento,attach,classical music,KEYBOARD FORMS > COUNTERPOINT & IMPROVISATION,Forme d'orgue espagnole.
+Q1808721,sound poetry,attach,experimental music,IMPROVISATION & PROCESS,Poésie sonore.
+Q213608,beatboxing,attach,hip-hop,OLD SCHOOL & FOUNDATIONS,Technique vocale du hip-hop.
+Q2407862,Americana,attach,country music,ALTERNATIVE & REGIONAL,Country et roots.
+Q5179572,cowboy poetry,attach,country music,TRADITIONAL COUNTRY,Poésie cow-boy.
+Q11787389,club/dance music,leave out,,,Catégorie fourre-tout : ses deux vrais genres sont rattachés un par un.
+Q846119,psychedelic music,leave out,,,Doublon de psychedelic rock.
+Q65937876,glam music,leave out,,,Doublon de glam rock.
+Q13646229,gothic music,leave out,,,Doublon de gothic rock.
+Q4940448,bomba,leave out,,,Doublon de la bomba portoricaine déjà dans Latin.
+Q116690343,ballad,leave out,,,"Trop général : une forme, pas un genre."
+Q639197,instrumental music,leave out,,,Trop général.
+Q7248857,progressive music,leave out,,,Trop général.
+Q140310844,music of the Indian subcontinent,leave out,,,"Une région, pas un genre."
+Q1507298,lo-fi music,leave out,,,"Une esthétique d'enregistrement, pas un genre."
+Q2111784,production music,leave out,,,"Musique d'illustration, pas un genre."
+Q106582938,hopepunk music,leave out,,,Étiquette marginale née sur Internet.
+Q106582953,steampunk music,attach,dark cabaret,,Proche du dark cabaret.
+Q110249607,siffleur,leave out,,,"Une technique (le sifflement), pas un genre."
