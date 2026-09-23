@@ -220,9 +220,9 @@ Maquette validée par Maxime : https://claude.ai/artifact/3dzMxxCMFJxLS3zxYeVxAX
 **Pourquoi de mémoire et pas depuis Wikidata.** Le jour même, Wikidata limitait à une requête par minute (« rule created during active wdqs outage ») : `artists-fetch.py` aurait pris ~35 h. Wikimedia refuse aussi par intermittence l'API et Commons avec des 429 (« robot policy »). Ne jamais compter sur un accès Wikimedia soutenu depuis ces sessions : cache, reprise, lenteur.
 
 **Reste à faire, dans l'ordre.**
-1. Finir `artists-verify.py` (en cours ou à relancer : il reprend depuis son cache). Il écarte tout nom qui n'est pas une personne musicienne ou un groupe sur Wikidata et liste les rejets dans `artists-rejected.csv`.
+1. Finir `artists-verify.py`. Il écarte tout nom qui n'est pas une personne musicienne ou un groupe sur Wikidata et liste les rejets dans `artists-rejected.csv`. **Il tourne sur GitHub Actions** (`.github/workflows/artists.yml`, « Verify artists ») : depuis une session Claude, Wikimedia a fini par répondre 403 « robot policy » à toutes les requêtes. Le cache passe d'une exécution à l'autre (actions/cache) ; une exécution coupée se relance (onglet Actions → Verify artists → Re-run, ou « Run workflow » depuis `main`) et reprend. Le workflow commite lui-même `artists.csv`, `genre-artists.csv` et `artists-rejected.csv` quand il a fini.
 2. Photos : vignettes Commons en 330 px, tramées en masque 1 bit (voir la maquette), crédits via l'API Commons `extmetadata` par lots de 50.
 3. Descriptions : premier paragraphe Wikipédia (REST `page/summary`), avec User-Agent identifié.
 4. L'extension : CPT `artist`, champs de fiche, vue plein écran avec adresse propre, bouton OPEN DOSSIER.
 
-**Piège rencontré.** `pkill -f artists-verify.py` a encore tué le shell appelant, comme noté plus haut pour `php -S`. Chercher le PID avec `pgrep -f` puis `kill PID`.
+**Piège rencontré.** `pkill -f artists-verify.py` a encore tué le shell appelant, comme noté plus haut pour `php -S` — et `pgrep -f` dans une boucle `kill` aussi, pour la même raison. Mettre une classe de caractères dans le motif pour qu'il ne se reconnaisse pas lui-même : `pgrep -f "[a]rtists-verify"`.
