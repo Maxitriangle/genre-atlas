@@ -87,13 +87,28 @@ def year(ent, *props):
     return ''
 
 
+KEEP = ('P31', 'P106', 'P136', 'P1303', 'P264', 'P495', 'P27', 'P740', 'P18', 'P571', 'P2031', 'P569')
+
+
+def slim(ent):
+    """Only what this script reads: a full entity weighs tens of kilobytes,
+    and some 40,000 candidates go through the cache."""
+    return {'labels': {k: v for k, v in ent.get('labels', {}).items() if k == 'en'},
+            'claims': {p: [{'mainsnak': c['mainsnak']} for c in cs]
+                       for p, cs in ent.get('claims', {}).items() if p in KEEP},
+            'sitelinks': {k: 1 for k in ent.get('sitelinks', {})}}
+
+
 def entities(qids):
     out = {}
-    qids = list(qids)
+    qids = sorted(qids)
     for i in range(0, len(qids), 50):
-        d = get({'action': 'wbgetentities', 'ids': '|'.join(qids[i:i + 50]),
-                 'props': 'labels|claims|sitelinks', 'languages': 'en'})
-        out.update(d.get('entities', {}))
+        params = {'action': 'wbgetentities', 'ids': '|'.join(qids[i:i + 50]),
+                  'props': 'labels|claims|sitelinks', 'languages': 'en'}
+        d = get(params)
+        slimmed = {q: slim(e) for q, e in d.get('entities', {}).items()}
+        cache[json.dumps(params, sort_keys=True)] = {'entities': slimmed}
+        out.update(slimmed)
     return out
 
 
@@ -101,7 +116,10 @@ def kind(ent):
     p31 = ids(ent, 'P31')
     if p31 & GROUPS:
         return 'group'
-    if HUMAN in p31 and ids(ent, 'P106') & MUSIC_JOBS:
+    # A music occupation, or anything only musicians carry: a genre, an
+    # instrument, a record label.
+    if HUMAN in p31 and (ids(ent, 'P106') & MUSIC_JOBS or ids(ent, 'P136')
+                         or ids(ent, 'P1303') or ids(ent, 'P264')):
         return 'person'
     return None
 
