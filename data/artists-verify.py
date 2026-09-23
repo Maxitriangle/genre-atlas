@@ -54,19 +54,30 @@ def get(params):
     if key in cache:
         return cache[key]
     url = API + urllib.parse.urlencode(dict(params, format='json', formatversion=2))
-    for attempt in range(8):
+    # Wikimedia throttles shared addresses hard (429, "robot policy"). Be slow
+    # and patient: honour Retry-After, back off up to ten minutes, keep going.
+    for attempt in range(20):
         try:
             req = urllib.request.Request(url, headers={'User-Agent': UA})
             data = json.load(urllib.request.urlopen(req, timeout=60))
             cache[key] = data
             if len(cache) % 25 == 0:
-                json.dump(cache, open(CACHE, 'w'))
-            time.sleep(1)
+                save()
+            time.sleep(2)
             return data
         except Exception as e:
-            sys.stderr.write('  retry %s (%s)\n' % (params.get('search') or params.get('action'), e))
-            time.sleep(min(300, 5 * 2 ** attempt))
+            wait = min(600, 10 * 2 ** attempt)
+            after = getattr(e, 'headers', None) and e.headers.get('Retry-After')
+            if after and after.isdigit():
+                wait = max(wait, int(after))
+            sys.stderr.write('  retry %s in %ds (%s)\n' % (params.get('search') or params.get('action'), wait, e))
+            time.sleep(wait)
+    save()
     sys.exit('Wikidata keeps refusing; run again later, the cache keeps what is done.')
+
+
+def save():
+    json.dump(cache, open(CACHE, 'w'))
 
 
 def claims(ent, prop):
