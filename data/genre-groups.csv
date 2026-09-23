@@ -15,13 +15,6 @@ Q62128,Khyal,Hindustani classical music,DHRUPAD & KHYAL
 Q59158,dhrupad,Hindustani classical music,DHRUPAD & KHYAL
 Q70076,tappa,Hindustani classical music,DHRUPAD & KHYAL
 Q3981034,tarana,Hindustani classical music,DHRUPAD & KHYAL
-Q16491869,Dominican dembow,Latin music,ACROSS LATIN AMERICA
-Q5713112,avanzada,Latin music,ACROSS LATIN AMERICA
-Q15830404,bolero,Latin music,ACROSS LATIN AMERICA
-Q3278092,guarania,Latin music,ACROSS LATIN AMERICA
-Q6050834,onda nueva,Latin music,ACROSS LATIN AMERICA
-Q6138491,tamborera,Latin music,ACROSS LATIN AMERICA
-Q115327281,tropicanibalismo,Latin music,ACROSS LATIN AMERICA
 Q111241124,bandinha,Latin music,BRAZIL > MODERN BRAZILIAN POP
 Q2464314,brega,Latin music,BRAZIL > MODERN BRAZILIAN POP
 Q533946,lambada,Latin music,BRAZIL > MODERN BRAZILIAN POP
@@ -41,6 +34,7 @@ Q430075,maxixe,Latin music,BRAZIL > SAMBA & BOSSA NOVA
 Q1046768,música popular brasileira,Latin music,BRAZIL > SAMBA & BOSSA NOVA
 Q11403,samba,Latin music,BRAZIL > SAMBA & BOSSA NOVA
 Q107195014,Cuban charanga,Latin music,CUBA & THE CARIBBEAN > DANZÓN & BALLROOM
+Q15830404,bolero,Latin music,CUBA & THE CARIBBEAN > DANZÓN & BALLROOM
 Q1165358,danzón,Latin music,CUBA & THE CARIBBEAN > DANZÓN & BALLROOM
 Q835562,habanera,Latin music,CUBA & THE CARIBBEAN > DANZÓN & BALLROOM
 Q1646666,mambo,Latin music,CUBA & THE CARIBBEAN > DANZÓN & BALLROOM
@@ -63,6 +57,7 @@ Q3191747,cadence rampa,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & 
 Q2726026,konpa,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
 Q7295057,rasin,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
 Q2406900,twoubadou,Latin music,CUBA & THE CARIBBEAN > THE ISLANDS > HAITI & THE FRENCH CARIBBEAN
+Q16491869,Dominican dembow,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
 Q2278063,bomba,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
 Q723418,cumbia,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
 Q282131,merengue,Latin music,"CUBA & THE CARIBBEAN > THE ISLANDS > PUERTO RICO, HISPANIOLA & THE COAST"
@@ -77,21 +72,24 @@ Q1452181,murga,Latin music,DANCE & CARNIVAL > CARNIVAL & STREET
 Q3419744,rara,Latin music,DANCE & CARNIVAL > CARNIVAL & STREET
 Q125850367,cuplé,Latin music,DANCE & CARNIVAL > SONG FORMS
 Q586110,forró,Latin music,DANCE & CARNIVAL > SONG FORMS
-Q18217098,New Mexico music,Latin music,MEXICO & CENTRAL AMERICA
-Q961146,chilena,Latin music,MEXICO & CENTRAL AMERICA
-Q113133172,merequetengue,Latin music,MEXICO & CENTRAL AMERICA
-Q7309098,regional Mexican,Latin music,MEXICO & CENTRAL AMERICA
-Q5690818,rock urbano mexicano,Latin music,MEXICO & CENTRAL AMERICA
-Q6132088,son nica,Latin music,MEXICO & CENTRAL AMERICA
-Q6169362,xuc,Latin music,MEXICO & CENTRAL AMERICA
+Q6132088,son nica,Latin music,MEXICO & CENTRAL AMERICA > CENTRAL AMERICA
+Q6138491,tamborera,Latin music,MEXICO & CENTRAL AMERICA > CENTRAL AMERICA
+Q6169362,xuc,Latin music,MEXICO & CENTRAL AMERICA > CENTRAL AMERICA
+Q18217098,New Mexico music,Latin music,MEXICO & CENTRAL AMERICA > MEXICO
+Q961146,chilena,Latin music,MEXICO & CENTRAL AMERICA > MEXICO
+Q113133172,merequetengue,Latin music,MEXICO & CENTRAL AMERICA > MEXICO
+Q7309098,regional Mexican,Latin music,MEXICO & CENTRAL AMERICA > MEXICO
+Q5690818,rock urbano mexicano,Latin music,MEXICO & CENTRAL AMERICA > MEXICO
+Q115327281,tropicanibalismo,Latin music,MEXICO & CENTRAL AMERICA > MEXICO
 Q2707994,Catalan rumba,Latin music,SPAIN
 Q489913,bolero,Latin music,SPAIN
 Q9764,flamenco,Latin music,SPAIN
-Q1574985,Vallenato,Latin music,THE ANDES & THE PACIFIC > COLOMBIA
-Q1061165,champeta,Latin music,THE ANDES & THE PACIFIC > COLOMBIA
-Q5794983,currulao,Latin music,THE ANDES & THE PACIFIC > COLOMBIA
-Q7142141,pasillo,Latin music,THE ANDES & THE PACIFIC > COLOMBIA
-Q3069904,porro,Latin music,THE ANDES & THE PACIFIC > COLOMBIA
+Q1574985,Vallenato,Latin music,THE ANDES & THE PACIFIC > COLOMBIA & VENEZUELA
+Q1061165,champeta,Latin music,THE ANDES & THE PACIFIC > COLOMBIA & VENEZUELA
+Q5794983,currulao,Latin music,THE ANDES & THE PACIFIC > COLOMBIA & VENEZUELA
+Q6050834,onda nueva,Latin music,THE ANDES & THE PACIFIC > COLOMBIA & VENEZUELA
+Q7142141,pasillo,Latin music,THE ANDES & THE PACIFIC > COLOMBIA & VENEZUELA
+Q3069904,porro,Latin music,THE ANDES & THE PACIFIC > COLOMBIA & VENEZUELA
 Q5716336,baguala,Latin music,THE ANDES & THE PACIFIC > THE ANDES
 Q123253590,caporal,Latin music,THE ANDES & THE PACIFIC > THE ANDES
 Q140129045,coplas cajamarquinas,Latin music,THE ANDES & THE PACIFIC > THE ANDES
@@ -101,8 +99,10 @@ Q1640587,morenada,Latin music,THE ANDES & THE PACIFIC > THE ANDES
 Q6950428,música criolla,Latin music,THE ANDES & THE PACIFIC > THE ANDES
 Q140369829,pandilla,Latin music,THE ANDES & THE PACIFIC > THE ANDES
 Q7134728,Paraguayan polka,Latin music,THE SOUTHERN CONE
+Q5713112,avanzada,Latin music,THE SOUTHERN CONE
 Q155119,cuarteto,Latin music,THE SOUTHERN CONE
 Q124630346,guaracha santiagueña,Latin music,THE SOUTHERN CONE
+Q3278092,guarania,Latin music,THE SOUTHERN CONE
 Q120233553,jazz guachaca,Latin music,THE SOUTHERN CONE
 Q117193811,mambo chileno,Latin music,THE SOUTHERN CONE
 Q124080517,música típica chilena,Latin music,THE SOUTHERN CONE
@@ -902,6 +902,15 @@ Q4875789,beach music,rhythm and blues,SOUL & DISCO
 Q892958,boogaloo,rhythm and blues,SOUL & DISCO
 Q58339,disco,rhythm and blues,SOUL & DISCO
 Q131272,soul,rhythm and blues,SOUL & DISCO
+Q49451,progressive rock,rock music,ART & PROGRESSIVE ROCK > PROGRESSIVE & THEATRICAL
+Q7354827,rock musical,rock music,ART & PROGRESSIVE ROCK > PROGRESSIVE & THEATRICAL
+Q253137,rock opera,rock music,ART & PROGRESSIVE ROCK > PROGRESSIVE & THEATRICAL
+Q719927,symphonic rock,rock music,ART & PROGRESSIVE ROCK > PROGRESSIVE & THEATRICAL
+Q217467,art rock,rock music,ART & PROGRESSIVE ROCK > PSYCHEDELIC & EXPERIMENTAL
+Q1641839,experimental rock,rock music,ART & PROGRESSIVE ROCK > PSYCHEDELIC & EXPERIMENTAL
+Q1132152,math rock,rock music,ART & PROGRESSIVE ROCK > PSYCHEDELIC & EXPERIMENTAL
+Q206159,psychedelic rock,rock music,ART & PROGRESSIVE ROCK > PSYCHEDELIC & EXPERIMENTAL
+Q106654134,zolo,rock music,ART & PROGRESSIVE ROCK > PSYCHEDELIC & EXPERIMENTAL
 Q2281409,dance-rock,rock music,FUSIONS
 Q325504,electronic rock,rock music,FUSIONS
 Q835891,funk rock,rock music,FUSIONS
@@ -913,20 +922,11 @@ Q56351111,classic rock,rock music,HARD & ARENA ROCK
 Q76092,glam rock,rock music,HARD & ARENA ROCK
 Q83270,hard rock,rock music,HARD & ARENA ROCK
 Q2526653,mainstream rock,rock music,HARD & ARENA ROCK
-Q753520,Christian rock,rock music,"POP, NEW WAVE & ALTERNATIVE"
-Q11366,alternative rock,rock music,"POP, NEW WAVE & ALTERNATIVE"
-Q1391336,comedy rock,rock music,"POP, NEW WAVE & ALTERNATIVE"
-Q187760,new wave,rock music,"POP, NEW WAVE & ALTERNATIVE"
-Q484641,pop rock,rock music,"POP, NEW WAVE & ALTERNATIVE"
-Q49451,progressive rock,rock music,PROGRESSIVE & THEATRICAL
-Q7354827,rock musical,rock music,PROGRESSIVE & THEATRICAL
-Q253137,rock opera,rock music,PROGRESSIVE & THEATRICAL
-Q719927,symphonic rock,rock music,PROGRESSIVE & THEATRICAL
-Q217467,art rock,rock music,PSYCHEDELIC & ART ROCK
-Q1641839,experimental rock,rock music,PSYCHEDELIC & ART ROCK
-Q1132152,math rock,rock music,PSYCHEDELIC & ART ROCK
-Q206159,psychedelic rock,rock music,PSYCHEDELIC & ART ROCK
-Q106654134,zolo,rock music,PSYCHEDELIC & ART ROCK
+Q11366,alternative rock,rock music,NEW WAVE & ALTERNATIVE
+Q187760,new wave,rock music,NEW WAVE & ALTERNATIVE
+Q753520,Christian rock,rock music,POP ROCK
+Q1391336,comedy rock,rock music,POP ROCK
+Q484641,pop rock,rock music,POP ROCK
 Q211573,garage rock,rock music,ROCK AND ROLL ERA
 Q1650296,instrumental rock,rock music,ROCK AND ROLL ERA
 Q98528293,mod,rock music,ROCK AND ROLL ERA

@@ -14,10 +14,10 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 - **L'avertissement de l'admin, lui, lit le site.** Écrans Genres, en jaune : il nomme les genres sans groupe sous une branche large, avec un lien vers chacun. C'est le seul outil qui voit l'état réel de son installation.
 
 ## Ce qui attend, par ordre de maturité
-1. **Contester les regroupements.** Maxime n'a encore contesté aucun placement. Les plus discutables sont « POP, NEW WAVE & ALTERNATIVE » sous Rock (qui mélange trois choses) et « ACROSS LATIN AMERICA » (fourre-tout). C'est du travail de données : modifier `data/build-groups.py`, rejouer `build-groups.py` puis `wikidata-build.py`, renvoyer le CSV. Aucune republication de l'extension nécessaire.
-2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. Décision à prendre : les déclarer familles, ou leur écrire une table de rattachement. `wikidata-build.py` les liste à chaque exécution.
-3. **BPM et descriptions**, jamais commencés : `bpm_min`/`bpm_max` sont vides sur les 1 630 lignes.
-4. **Six genres résiduels sur le site de Maxime**, hérités de la v0.3.0 et absents du fichier actuel : `space ambient`, `tribal ambient`, `maloya électronique` (sous Electronic Music), `mega funk`, `J-euro`, `dungeon chip`. Ils ne cassent plus rien depuis la 0.7.3 mais gonflent le compte affiché. À supprimer ou à laisser, c'est sa décision — non tranchée.
+1. **Contester les regroupements.** Les deux premiers sont traités (voir « Rock et Latin » en bas). Les autres restent ouverts à la contestation : modifier `data/build-groups.py`, rejouer `build-groups.py` puis `wikidata-build.py`, renvoyer le CSV. Aucune republication de l'extension nécessaire.
+2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. **Décidé le 23/09 : les rattacher** à un genre existant par une table, les 13 familles restent 13. Maxime relit la liste des rattachements avant import. Pas encore commencé.
+3. **BPM et descriptions**, jamais commencés : `bpm_min`/`bpm_max` sont vides sur les 1 630 lignes. **Décidé le 23/09 : après les points 1 et 2**, pour ne rien écrire sur des genres qui vont changer de place.
+4. **Six genres résiduels sur le site de Maxime**, hérités de la v0.3.0 et absents du fichier actuel : `space ambient`, `tribal ambient`, `maloya électronique` (sous Electronic Music), `mega funk`, `J-euro`, `dungeon chip`. **Décidé le 23/09 : Maxime les supprime** à la main (corbeille). Les deux ambient reviendront proprement si ambient est rattaché (point 2).
 5. **Un défaut cosmétique connu** : le titre du panneau coupe au milieu d'un mot sur les noms longs (« ALTERNATIV / E ROCK »). Défaut CSS antérieur à ces sessions, jamais corrigé.
 
 ## Ce qu'il ne faut pas réapprendre
@@ -180,3 +180,16 @@ Les trois autres (`mega funk`, `J-euro`, `dungeon chip`) sont sous des parents �
 **L'avertissement nomme maintenant les genres**, avec un lien d'édition et leur parent. Un compteur seul ne permettait pas d'agir — c'est ce qui a fait perdre un aller-retour.
 
 **À retenir.** Un site qui a connu plusieurs versions du fichier d'import peut contenir des genres qu'aucun import ne met plus à jour. Ils restent avec leur ancien parent et leurs anciennes métadonnées. Si un comportement inexplicable apparaît, comparer les identifiants Wikidata du site avec ceux du CSV courant.
+
+## Rock et Latin regroupés autrement (23/09/2026, données seules)
+Premières contestations de Maxime, toutes deux dans `build-groups.py`. Aucune nouvelle version de l'extension : il suffit de réimporter `genre-import.csv`.
+
+**Rock.** « POP, NEW WAVE & ALTERNATIVE » est coupé en « POP ROCK » (pop rock, comedy rock, Christian rock) et « NEW WAVE & ALTERNATIVE » (new wave, alternative rock). Pour rester à 8 groupes, « PSYCHEDELIC & EXPERIMENTAL » (ex-« PSYCHEDELIC & ART ROCK ») et « PROGRESSIVE & THEATRICAL » passent sous un même premier niveau, « ART & PROGRESSIVE ROCK ».
+
+**Latin.** « ACROSS LATIN AMERICA » disparaît : chacun de ses 7 genres rejoint son pays. Dembow → Puerto Rico, Hispaniola & the Coast ; bolero (cubain) → Danzón & Ballroom ; guarania et avanzada → Southern Cone (Paraguay) ; onda nueva → « COLOMBIA & VENEZUELA » (ex-« COLOMBIA ») ; tamborera (Panama) et tropicanibalismo (Mexique, pays de rattachement à confirmer) → Mexico & Central America. Ce dernier montant à 9, il reçoit un troisième segment : MEXICO / CENTRAL AMERICA.
+
+**Piège : deux genres s'appellent « bolero » sous Latin** (cubain Q15830404, espagnol Q489913). Les listes d'`OVERRIDES` acceptent désormais un identifiant Wikidata à la place d'un nom, pour viser l'un sans l'autre.
+
+**Point ouvert.** Le groupe « ROCK AND ROLL ERA » porte le mot « era » : un libellé d'époque, à la limite de la règle « jamais par date ». Proposé à Maxime, pas encore tranché.
+
+Le banc de test passe ses 16 vérifications, `check-widths.py` ne signale rien.

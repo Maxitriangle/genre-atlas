@@ -169,6 +169,7 @@ OVERRIDES = {
         ],
         'DANZÓN & BALLROOM': [
             'danzón', 'mambo', 'pachanga', 'habanera', 'Cuban charanga',
+            'Q15830404',  # the Cuban bolero; the Spanish one stays in SPAIN
         ],
         'SAMBA & BOSSA NOVA': [
             'samba', 'bossa nova', 'choro', 'maxixe',
@@ -181,15 +182,21 @@ OVERRIDES = {
             'brega', 'lambada', 'mangue bit', 'sertanejo', 'vanera',
             'bandinha',
         ],
-        'COLOMBIA': [
+        'COLOMBIA & VENEZUELA': [
             'Vallenato', 'champeta', 'currulao', 'porro', 'pasillo',
+            'onda nueva',
         ],
         'THE ANDES': [
             'coplas cajamarquinas', 'música criolla', 'pandilla',
         ],
         # Two genres the roll-up left alone in a group of their own.
         'DANCE & CARNIVAL': ['murga'],
-        'MEXICO & CENTRAL AMERICA': ['New Mexico music'],
+        'MEXICO & CENTRAL AMERICA': [
+            'New Mexico music', 'tamborera', 'tropicanibalismo',
+        ],
+        # "Across Latin America" was a catch-all: each genre goes to its country.
+        'THE SOUTHERN CONE': ['guarania', 'avanzada'],
+        'THE ISLANDS': ['Dominican dembow'],
     },
 }
 
@@ -203,7 +210,7 @@ STYLES = {
             'rock and roll', 'surf music', 'instrumental rock', 'mod',
             'garage rock',
         ],
-        'PSYCHEDELIC & ART ROCK': [
+        'PSYCHEDELIC & EXPERIMENTAL': [
             'psychedelic rock', 'art rock', 'experimental rock', 'math rock',
             'zolo',
         ],
@@ -221,10 +228,8 @@ STYLES = {
         'FOLK, COUNTRY & ACOUSTIC': [
             'folk rock', 'country rock', 'roots rock', 'acoustic rock',
         ],
-        'POP, NEW WAVE & ALTERNATIVE': [
-            'pop rock', 'new wave', 'alternative rock', 'comedy rock',
-            'Christian rock',
-        ],
+        'POP ROCK': ['pop rock', 'comedy rock', 'Christian rock'],
+        'NEW WAVE & ALTERNATIVE': ['new wave', 'alternative rock'],
         'FUSIONS': [
             'jazz rock', 'funk rock', 'rap rock', 'reggae rock',
             'electronic rock', 'dance-rock',
@@ -593,11 +598,16 @@ SUPER = {
         'THE ISLANDS': 'CUBA & THE CARIBBEAN',
         'SAMBA & BOSSA NOVA': 'BRAZIL', 'NORTHEASTERN BRAZIL': 'BRAZIL',
         'MODERN BRAZILIAN POP': 'BRAZIL',
-        'THE ANDES': 'THE ANDES & THE PACIFIC', 'COLOMBIA': 'THE ANDES & THE PACIFIC',
+        'THE ANDES': 'THE ANDES & THE PACIFIC',
+        'COLOMBIA & VENEZUELA': 'THE ANDES & THE PACIFIC',
     },
     'rock music': {
         'BLUES & SOUTHERN ROCK': 'ROOTS ROCK',
         'FOLK, COUNTRY & ACOUSTIC': 'ROOTS ROCK',
+        # Pop rock and new wave split in two, so these two share a level to
+        # keep Rock at 8.
+        'PSYCHEDELIC & EXPERIMENTAL': 'ART & PROGRESSIVE ROCK',
+        'PROGRESSIVE & THEATRICAL': 'ART & PROGRESSIVE ROCK',
     },
     'electronic dance music': {
         'DUBSTEP & BASS': 'BASS MUSIC', 'TRAP & HYPERPOP': 'BASS MUSIC',
@@ -621,10 +631,12 @@ SUPER = {
 DEEP = {
     'Latin music': {
         'HAITI & THE FRENCH CARIBBEAN': ['cadence rampa', 'konpa', 'rasin', 'twoubadou', 'biguine'],
-        'PUERTO RICO, HISPANIOLA & THE COAST': ['bomba', 'plena', 'merengue', 'cumbia'],
+        'PUERTO RICO, HISPANIOLA & THE COAST': ['bomba', 'plena', 'merengue', 'cumbia', 'Dominican dembow'],
         'BALLROOM & COUPLE DANCES': ['tango', 'salsa', 'bachata', 'cha-cha-chá'],
         'CARNIVAL & STREET': ['frevo', 'marchinha', 'murga', 'rara'],
         'SONG FORMS': ['cuplé', 'forró'],
+        'MEXICO': ['New Mexico music', 'chilena', 'merequetengue', 'regional Mexican', 'rock urbano mexicano', 'tropicanibalismo'],
+        'CENTRAL AMERICA': ['son nica', 'xuc', 'tamborera'],
     },
     'electronic dance music': {
         'DUBSTEP & GRIME': ['dubstep', 'post-dubstep', 'grime'],
@@ -718,10 +730,11 @@ def main():
                 group = next((LABEL_TO_REGION[a.lower()] for a in alts
                               if a.lower() in LABEL_TO_REGION), None)
                 assigned[c['wikidata_id']] = group or FALLBACK[branch]
-            # The finer cut wins over the region it came from.
+            # The finer cut wins over the region it came from. A name shared
+            # by two genres is given by its Wikidata ID instead.
             for group, names in OVERRIDES.get(branch, {}).items():
                 for n in names:
-                    hits = [c for c in children if c['name'] == n]
+                    hits = [c for c in children if n in (c['name'], c['wikidata_id'])]
                     if not hits:
                         problems.append('%s : « %s » introuvable parmi les enfants' % (branch, n))
                     for hit in hits:
