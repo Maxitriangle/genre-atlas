@@ -14,7 +14,8 @@
   var ROOTS = [];        // roots of the tree: genres with no parent
   var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
-  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false };
+  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false };
+  var DOS = {};          // id -> what a dossier adds to the tree, fetched on demand
 
   /* ---------- helpers ---------- */
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -98,6 +99,9 @@
       ROOTS.push(r);
     });
     (function count(list) { list.forEach(function (n) { count(n.kids); n.total = n.kids.reduce(function (t, k) { return t + 1 + k.total; }, 0); }); })(ROOTS);
+    // The genres themselves, before editorial groups stand in for them on the
+    // map: a dossier lists a genre's real subgenres.
+    tree.nodes.forEach(function (n) { n.real = n.kids.slice().sort(byName); });
     regroup();
   }
 
@@ -173,8 +177,9 @@
   }
 
   /* ---------- state / routing ---------- */
-  function select(n, centreOnIt, push) {
+  function select(n, centreOnIt, push, about) {
     S.legend = false;
+    S.about = about && n && !n.grp ? n.id : 0;
     if (!n) { S.centre = 0; S.open = 0; }
     else if (centreOnIt || isTile(n)) { S.centre = n.id; S.open = 0; }
     else { S.centre = n.dp; S.open = n.id; }
@@ -186,13 +191,38 @@
     }
     if (n) path(n).forEach(function (a) { S.expanded[a.id] = true; });
     if (push !== false && window.history && history.pushState) {
-      var u = n ? url(n) + (centreOnIt && !isTile(n) ? '#centre' : '') : CFG.base;
-      try { history.pushState({ id: n ? n.id : 0, c: !!centreOnIt }, '', u); } catch (e) { /* embedded on another URL */ }
+      var u = n ? url(n) + (S.about ? 'about/' : centreOnIt && !isTile(n) ? '#centre' : '') : CFG.base;
+      try { history.pushState({ id: n ? n.id : 0, c: !!centreOnIt, about: !!S.about }, '', u); } catch (e) { /* embedded on another URL */ }
     }
-    document.title = (n ? n.name + ' — ' : '') + (CFG.title || 'Genre');
+    document.title = (n ? n.name + (S.about ? ' — Dossier' : '') + ' — ' : '') + (CFG.title || 'Genre');
+    if (S.about) dossierData(n);
     render();
+    if (S.about) window.scrollTo(0, 0);
   }
-  window.addEventListener('popstate', function (e) { var st = e.state || {}; select(N[st.id] || null, st.c, false); });
+  // A dossier opens over the map and keeps its place: closing it goes back in
+  // history when the map is what came before, so the map returns as it was.
+  function openDossier(n) {
+    select(n, false, true, true);
+    S.fromMap = true;
+  }
+  function closeDossier() {
+    var n = N[S.about];
+    if (S.fromMap && window.history && history.length > 1) { history.back(); return; }
+    select(n, false);
+  }
+  function dossierData(n) {
+    if (DOS[n.id] || !CFG.genreUrl) return;
+    DOS[n.id] = { pending: true };
+    fetch(CFG.genreUrl + n.id).then(function (r) { return r.ok ? r.json() : {}; }).then(function (d) {
+      DOS[n.id] = d || {};
+      if (S.about === n.id) render();
+    }).catch(function () { DOS[n.id] = {}; });
+  }
+  window.addEventListener('popstate', function (e) {
+    var st = e.state || {};
+    select(N[st.id] || null, st.c, false, st.about);
+    if (!st.about) S.fromMap = false;
+  });
 
   /* ---------- shared pieces ---------- */
   function header() {
@@ -230,7 +260,8 @@
     return '<aside class="ga-panel" aria-label="Selected genre" style="--fam:' + color(n) + '"><div class="ga-panel-top"><span>LEVEL ' + pad(depth(n)) + '</span><span class="fam">' + (n.grp ? '[GROUP]' : '[SELECTED]') + '</span></div>' +
       '<div class="ga-panel-head">' + glyph(n, 120) + '<div><h1>' + esc(n.name) + '</h1>' + (lineage ? '<p class="fam">↳ ' + esc(lineage) + '</p>' : '<p class="fam">FAMILY</p>') + (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : '') + '</div></div>' +
       (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') + '<div>' + rows + '</div>' +
-      (n.kids.length && !isCentre ? '<a class="ga-cta" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>CENTRE ON ' + esc(n.name) + '</span><span>⊕</span></a>' : '') +
+      (n.grp ? '' : '<a class="ga-cta" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') +
+      (n.kids.length && !isCentre ? '<a class="ga-cta ghost" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>CENTRE ON ' + esc(n.name) + '</span><span>⊕</span></a>' : '') +
       (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — A TO Z</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + '</aside>';
   }
 
@@ -319,12 +350,77 @@
       if (on) {
         h += '<div class="ga-msub">' + (k.d ? '<p class="ga-desc">' + esc(k.d) + '</p>' : '') + '<p class="ga-micro">' + esc([k.o, k.y, k.b ? bpmText(k) : ''].filter(Boolean).join(' · ') || 'NO DATA YET') + '</p>' +
           k.kids.map(function (g) { return '<a class="ga-mrow sub" href="' + esc(url(g)) + '" data-go="' + g.id + '">' + glyph(g, 32) + '<span><b>' + esc(g.name) + '</b><i>' + esc(micro(g)) + '</i></span>' + (g.total ? '<em>+' + pad(g.total) + '</em>' : '') + '</a>'; }).join('') +
-          (k.kids.length ? '<a class="ga-cta" href="' + esc(url(k)) + '#centre" data-centre="' + k.id + '"><span>CENTRE ON ' + esc(k.name) + '</span><span>⊕</span></a>' : '') + '</div>';
+          (k.grp ? '' : '<a class="ga-cta" href="' + esc(url(k)) + 'about/" data-about="' + k.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') +
+          (k.kids.length ? '<a class="ga-cta ghost" href="' + esc(url(k)) + '#centre" data-centre="' + k.id + '"><span>CENTRE ON ' + esc(k.name) + '</span><span>⊕</span></a>' : '') + '</div>';
       }
       return h;
     }).join('');
     return '<main class="ga-mobile" style="--fam:' + color(centre) + '"><nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
-      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div></main>';
+      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad"><a class="ga-cta" href="' + esc(url(centre)) + 'about/" data-about="' + centre.id + '"><span>OPEN DOSSIER</span><span>↗</span></a></div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div></main>';
+  }
+
+  /* ---------- dossier: a full page per genre ----------
+   * Same grid for every block: a 220 px column on the left (the glyph, or the
+   * section's icon) and the content on the right, so everything starts on the
+   * same vertical line. A section with nothing to show is left out rather
+   * than drawn empty. */
+  var ICON = {
+    overview: '<rect x="3.5" y="3.5" width="17" height="17"/><path d="M7 8h10M7 11h10M7 14h7M7 17h4" stroke-opacity=".8"/><circle cx="17.5" cy="17.5" r="1.3" fill="currentColor" stroke="none"/>',
+    lineage: '<path d="M12 5v5M12 14v2M12 16l-6 3M12 16l6 3"/><path d="M12 1.8 15 4.4 12 7 9 4.4Z"/><circle cx="12" cy="12" r="2" stroke-dasharray="1.5 1.5"/><circle cx="12" cy="16" r="1.4" fill="currentColor" stroke="none"/><rect x="4.4" y="18.6" width="3" height="3"/><rect x="16.6" y="18.6" width="3" height="3"/>',
+    artists: '<rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="7"/><rect x="3.5" y="13.5" width="7" height="7"/><rect x="13.5" y="13.5" width="7" height="7"/><circle cx="7" cy="6.2" r="1.3"/><path d="M4.8 10.5c.4-1.6 1.2-2.3 2.2-2.3s1.8.7 2.2 2.3"/><circle cx="17" cy="17" r="1.3" fill="currentColor" stroke="none"/>',
+    sources: '<circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>'
+  };
+  function icon(k) { return '<span class="ga-ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1">' + ICON[k] + '</svg></span>'; }
+  function section(key, title, meta, body) {
+    return '<section class="ga-dsec" aria-labelledby="ga-d-' + key + '"><div class="ga-dhead">' + icon(key) + '<h2 id="ga-d-' + key + '">' + title + '</h2>' +
+      '<div class="ga-micro">' + meta.map(function (m) { return '<span>' + m + '</span>'; }).join('') + '</div></div><div class="ga-dbody">' + body + '</div></section>';
+  }
+  function viewDossier(n) {
+    var d = DOS[n.id] || {}, trail = path(n), fam = family(n), subs = n.real || [];
+    var crumbs = trail.map(function (a, i) {
+      return i === trail.length - 1 ? '<strong>' + esc(a.name) + '</strong>' : (a.grp ? '<span class="dim">' + esc(a.name) + '</span>' : '<a class="fam" href="' + esc(url(a)) + '" data-go="' + a.id + '">' + esc(a.name) + '</a>');
+    }).join('<span class="sep">/</span>');
+    var ids = [d.wikidata ? 'WD:' + d.wikidata : '', d.musicbrainz ? 'MB:' + d.musicbrainz.slice(0, 8) : ''].filter(Boolean).join(' · ');
+    var facts = [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['TEMPO', bpmText(n)], ['SUBGENRES', pad(subs.length)], ['DESCENDANTS', pad(n.total)]]
+      .map(function (f) { return '<div><dt>' + f[0] + '</dt><dd' + (f[1] === '—' ? ' class="none"' : '') + '>' + esc(f[1]) + '</dd></div>'; }).join('');
+    var level = isTile(n) ? 'FAMILY' : 'GENRE · LEVEL ' + pad(depth(n));
+    var html = '<main class="ga-dossier" style="--fam:' + color(n) + '" aria-label="' + esc(n.name) + ' dossier">' +
+      '<div class="ga-dbar"><a class="ga-back" href="' + esc(url(n)) + '" data-close="1"><span aria-hidden="true">←</span><span>MAP</span><span class="ga-micro">ESC</span></a>' +
+      '<nav class="ga-crumbs" aria-label="Lineage">' + crumbs + '</nav><span class="ga-micro ga-dids">' + esc(ids) + '</span></div>' +
+      '<section class="ga-dhero"><div class="ga-plate">' + glyph(n, 112) + '</div><div>' +
+      '<p class="ga-eyebrow"><span class="ga-chip">' + esc(fam.name) + '</span><span class="ga-micro">' + level + '</span></p>' +
+      '<h1>' + esc(n.name) + '</h1>' + (d.description && d.description[0] ? '<p class="ga-lede">' + esc(d.description[0]) + '</p>' : '') +
+      '<dl class="ga-facts">' + facts + '</dl></div></section>';
+
+    if (d.description && d.description.length > 1) {
+      html += section('overview', 'OVERVIEW', [],
+        '<div class="ga-prose">' + d.description.slice(1).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>');
+    }
+
+    var rows = trail.map(function (a, i) {
+      var here = i === trail.length - 1;
+      var tag = here ? 'YOU ARE HERE' : a.grp ? 'GROUP' : isTile(a) ? 'FAMILY' : 'LEVEL ' + pad(depth(a));
+      var name = here || a.grp ? '<span class="ga-lname">' + esc(a.name) + '</span>' : '<a class="ga-lname" href="' + esc(url(a)) + 'about/" data-about="' + a.id + '">' + esc(a.name) + '</a>';
+      return '<li class="ga-lin' + (here ? ' here' : '') + (a.grp ? ' grp' : '') + '"><span class="ga-rail"><span class="ga-dot"></span></span>' + name + '<span class="ga-micro">' + tag + '</span></li>';
+    }).join('');
+    var list = subs.map(function (k) { return '<li><a href="' + esc(url(k)) + 'about/" data-about="' + k.id + '"><span>' + esc(k.name) + '</span><span class="ga-micro">' + (k.y || '—') + '</span></a></li>'; }).join('');
+    html += section('lineage', 'LINEAGE', ['STRICT TREE · ONE PARENT', subs.length ? 'SUBGENRES A TO Z' : 'NO SUBGENRE'],
+      '<ol class="ga-lineage">' + rows + '</ol>' + (list ? '<ul class="ga-subs">' + list + '</ul>' : ''));
+
+    if (d.artists && d.artists.length) {
+      html += section('artists', 'KEY ARTISTS', [pad(d.artists.length) + ' / 08 ENTRIES', 'SORTED A TO Z'],
+        '<ul class="ga-artists">' + d.artists.map(function (a) { return '<li><h3>' + esc(a.name) + '</h3><span class="ga-micro">' + esc([a.start ? 'EST. ' + a.start : '', a.country].filter(Boolean).join(' · ')) + '</span></li>'; }).join('') + '</ul>');
+    }
+
+    var links = [];
+    if (d.wikidata) links.push(['WIKIDATA', d.wikidata, 'https://www.wikidata.org/wiki/' + d.wikidata]);
+    if (d.musicbrainz) links.push(['MUSICBRAINZ', d.musicbrainz.slice(0, 18) + '…', 'https://musicbrainz.org/genre/' + d.musicbrainz]);
+    if (links.length) {
+      html += section('sources', 'SOURCES', ['OPEN DATA'], '<div class="ga-links2">' + links.map(function (l) {
+        return '<a href="' + esc(l[2]) + '" target="_blank" rel="noopener"><b><span>' + l[0] + '</span><span aria-hidden="true">↗</span></b><span class="ga-micro">' + esc(l[1]) + '</span></a>';
+      }).join('') + '</div>');
+    }
+    return html + '</main>';
   }
 
   /* ---------- legend ---------- */
@@ -347,6 +443,7 @@
     var focus = document.activeElement && document.activeElement.id === 'ga-q';
     var centre = N[S.centre], open = N[S.open] || null, html = header();
     if (S.legend) html += viewLegend();
+    else if (S.about && N[S.about]) html += viewDossier(N[S.about]);
     else if (!centre) html += viewIndex();
     else if (isMobile()) html += viewMobile(centre, open);
     else {
@@ -355,6 +452,7 @@
     }
     root.innerHTML = html;
     root.classList.add('ga-ready');
+    root.classList.toggle('ga-in-dossier', !!S.about);
     var map = root.querySelector('.ga-map');
     if (map) map.innerHTML = viewMap(centre, open);   // second pass: needs the real size of the map
     if (focus) { var q = document.getElementById('ga-q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); results(); }
@@ -368,15 +466,20 @@
   }
 
   root.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-go],[data-centre],[data-view],[data-exp],[data-dial],[data-legend]');
+    var t = e.target.closest('[data-go],[data-centre],[data-view],[data-exp],[data-dial],[data-legend],[data-about],[data-close]');
     if (!t || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
-    if (t.hasAttribute('data-legend')) { S.legend = true; S.q = ''; render(); }
+    if (t.hasAttribute('data-legend')) { S.legend = true; S.q = ''; S.about = 0; render(); }
+    else if (t.hasAttribute('data-close')) { closeDossier(); }
+    else if (t.hasAttribute('data-about')) { S.q = ''; openDossier(N[t.getAttribute('data-about')]); }
     else if (t.hasAttribute('data-centre')) { S.q = ''; select(N[t.getAttribute('data-centre')], true); }
     else if (t.hasAttribute('data-go')) { S.q = ''; select(N[t.getAttribute('data-go')] || null, false); }
     else if (t.hasAttribute('data-view')) { S.view = t.getAttribute('data-view'); render(); }
     else if (t.hasAttribute('data-exp')) { var id = t.getAttribute('data-exp'); S.expanded[id] = !S.expanded[id]; render(); }
     else if (t.hasAttribute('data-dial')) { var len = N[S.centre].kids.length, w = windowSize(N[S.centre], N[S.open]); S.dial = Math.max(0, Math.min(len - w, S.dial + DIAL_STEP * t.getAttribute('data-dial'))); render(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && S.about && !(e.target && e.target.id === 'ga-q')) { e.preventDefault(); closeDossier(); }
   });
   root.addEventListener('input', function (e) { if (e.target.id === 'ga-q') { S.q = e.target.value; results(); } });
   var timer; window.addEventListener('resize', function () { clearTimeout(timer); timer = setTimeout(render, 150); });
@@ -384,7 +487,9 @@
   fetch(CFG.treeUrl).then(function (r) { return r.json(); }).then(function (tree) {
     build(tree);
     var start = N[CFG.start] || null;
-    select(start, start && location.hash === '#centre', false);
-    if (history.replaceState) { try { history.replaceState({ id: start ? start.id : 0, c: location.hash === '#centre' }, ''); } catch (e) { /* noop */ } }
+    // wp_localize_script hands every value over as a string, and "0" is truthy.
+    var about = Number(CFG.about) === 1;
+    select(start, start && location.hash === '#centre', false, about);
+    if (history.replaceState) { try { history.replaceState({ id: start ? start.id : 0, c: location.hash === '#centre', about: about }, ''); } catch (e) { /* noop */ } }
   }).catch(function () { root.classList.add('ga-error'); });
 })();

@@ -14,10 +14,10 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 - **L'avertissement de l'admin, lui, lit le site.** Écrans Genres, en jaune : il nomme les genres sans groupe sous une branche large, avec un lien vers chacun. C'est le seul outil qui voit l'état réel de son installation.
 
 ## Ce qui attend, par ordre de maturité
-1. **Contester les regroupements.** Maxime n'a encore contesté aucun placement. Les plus discutables sont « POP, NEW WAVE & ALTERNATIVE » sous Rock (qui mélange trois choses) et « ACROSS LATIN AMERICA » (fourre-tout). C'est du travail de données : modifier `data/build-groups.py`, rejouer `build-groups.py` puis `wikidata-build.py`, renvoyer le CSV. Aucune republication de l'extension nécessaire.
-2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. Décision à prendre : les déclarer familles, ou leur écrire une table de rattachement. `wikidata-build.py` les liste à chaque exécution.
-3. **BPM et descriptions**, jamais commencés : `bpm_min`/`bpm_max` sont vides sur les 1 630 lignes.
-4. **Six genres résiduels sur le site de Maxime**, hérités de la v0.3.0 et absents du fichier actuel : `space ambient`, `tribal ambient`, `maloya électronique` (sous Electronic Music), `mega funk`, `J-euro`, `dungeon chip`. Ils ne cassent plus rien depuis la 0.7.3 mais gonflent le compte affiché. À supprimer ou à laisser, c'est sa décision — non tranchée.
+1. **Contester les regroupements.** Les deux premiers sont traités (voir « Rock et Latin » en bas). Les autres restent ouverts à la contestation : modifier `data/build-groups.py`, rejouer `build-groups.py` puis `wikidata-build.py`, renvoyer le CSV. Aucune republication de l'extension nécessaire.
+2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. **Décidé le 23/09 : les rattacher** à un genre existant par une table, les 13 familles restent 13. Fait : `data/genre-attach.csv` (voir la dernière section). **En attente de la relecture de Maxime** avant qu'il importe.
+3. **BPM et descriptions**, jamais commencés : `bpm_min`/`bpm_max` sont vides sur les 1 630 lignes. **Décidé le 23/09 : après les points 1 et 2**, pour ne rien écrire sur des genres qui vont changer de place.
+4. **Six genres résiduels sur le site de Maxime**, hérités de la v0.3.0 et absents du fichier actuel : `space ambient`, `tribal ambient`, `maloya électronique` (sous Electronic Music), `mega funk`, `J-euro`, `dungeon chip`. **Décidé le 23/09 : Maxime les supprime** à la main (corbeille). Les deux ambient reviendront proprement si ambient est rattaché (point 2).
 5. **Un défaut cosmétique connu** : le titre du panneau coupe au milieu d'un mot sur les noms longs (« ALTERNATIV / E ROCK »). Défaut CSS antérieur à ces sessions, jamais corrigé.
 
 ## Ce qu'il ne faut pas réapprendre
@@ -180,3 +180,62 @@ Les trois autres (`mega funk`, `J-euro`, `dungeon chip`) sont sous des parents �
 **L'avertissement nomme maintenant les genres**, avec un lien d'édition et leur parent. Un compteur seul ne permettait pas d'agir — c'est ce qui a fait perdre un aller-retour.
 
 **À retenir.** Un site qui a connu plusieurs versions du fichier d'import peut contenir des genres qu'aucun import ne met plus à jour. Ils restent avec leur ancien parent et leurs anciennes métadonnées. Si un comportement inexplicable apparaît, comparer les identifiants Wikidata du site avec ceux du CSV courant.
+
+## Rock et Latin regroupés autrement (23/09/2026, données seules)
+Premières contestations de Maxime, toutes deux dans `build-groups.py`. Aucune nouvelle version de l'extension : il suffit de réimporter `genre-import.csv`.
+
+**Rock.** « POP, NEW WAVE & ALTERNATIVE » est coupé en « POP ROCK » (pop rock, comedy rock, Christian rock) et « NEW WAVE & ALTERNATIVE » (new wave, alternative rock). Pour rester à 8 groupes, « PSYCHEDELIC & EXPERIMENTAL » (ex-« PSYCHEDELIC & ART ROCK ») et « PROGRESSIVE & THEATRICAL » passent sous un même premier niveau, « ART & PROGRESSIVE ROCK ».
+
+**Latin.** « ACROSS LATIN AMERICA » disparaît : chacun de ses 7 genres rejoint son pays. Dembow → Puerto Rico, Hispaniola & the Coast ; bolero (cubain) → Danzón & Ballroom ; guarania et avanzada → Southern Cone (Paraguay) ; onda nueva → « COLOMBIA & VENEZUELA » (ex-« COLOMBIA ») ; tamborera (Panama) et tropicanibalismo (Mexique, pays de rattachement à confirmer) → Mexico & Central America. Ce dernier montant à 9, il reçoit un troisième segment : MEXICO / CENTRAL AMERICA.
+
+**Piège : deux genres s'appellent « bolero » sous Latin** (cubain Q15830404, espagnol Q489913). Les listes d'`OVERRIDES` acceptent désormais un identifiant Wikidata à la place d'un nom, pour viser l'un sans l'autre.
+
+**Tranché ensuite.** « ROCK AND ROLL ERA » portait un libellé d'époque : renommé « ROCK AND ROLL & GARAGE » avec l'accord de Maxime.
+
+Le banc de test passe ses 16 vérifications, `check-widths.py` ne signale rien.
+
+## Les 481 genres dehors rattachés à la main (23/09/2026, données seules)
+Décision de Maxime : pas de nouvelle famille, un parent existant pour chacun. L'atlas passe de **1 630 à 2 098 genres**, et 1 327 portent un groupe (40 branches larges).
+
+**Le tableau.** `data/genre-attach.csv`, une ligne par genre, 330 lignes : 292 `attach`, 25 `regroup` (des genres déjà présents qui changent de groupe pour faire de la place), 13 `leave out`. La colonne `reason` est en français, pour la relecture. Rattacher une racine fait entrer sa descendance, donc 302 racines suffisent pour 468 genres. `wikidata-build.py` lit le parent, `build-groups.py` lit le groupe, et le groupe du tableau l'emporte sur tout le reste. Chaîne : `wikidata-build.py`, `build-groups.py`, puis `wikidata-build.py` à nouveau.
+
+**Où c'est allé, en gros.**
+- Pop : un 8ᵉ groupe « AFRICAN POP » (Afrique de l'Ouest, centrale, de l'Est, australe, océan Indien, découpés par pays). « POP AROUND THE WORLD » est refait : Moyen-Orient et Maghreb, Asie du Sud, Asie du Sud-Est, Russie et Asie centrale. « EAST ASIAN POP » se coupe en Japon, Corée, pop sinophone.
+- Folk : genres traditionnels ; nouveaux sous-groupes NORDIC COUNTRIES, CENTRAL ASIA & THE CAUCASUS, THE MALAY WORLD, LOUISIANA, EAST AFRICA & THE HORN, et Océanie en trois.
+- Art music : trois nouveaux groupes, SACRED TRADITIONS (chrétienne, juive, islamique et soufie, hindoue-bouddhiste-taoïste), STAGE & CABARET, BANDS & MARCHES.
+- Latin : les Caraïbes non hispaniques (zouk, soca, calypso, Suriname…) sous « THE WIDER CARIBBEAN » (ex-« THE ISLANDS »), reggaeton avec Porto Rico, funk brésilien sous Brazil.
+- Reggae (ska, rocksteady, mento, dub), R&B (funk, gospel), électronique (ambient, vaporwave), jazz (ragtime, easy listening, acid jazz).
+
+**Choix discutables, signalés à Maxime.** Les Caraïbes anglophones et francophones rangées sous Latin ; le théâtre musical et les fanfares sous Art music ; les regroupements du funk brésilien (connaissance limitée) ; `puxa` sans pays chez Wikidata.
+
+**Un piège de script.** `wikidata-build.py` écrit dans `sys.argv[1]` s'il existe. Exécuté par `runpy` depuis un autre script, il écrase le premier argument de ce script. Remettre `sys.argv = ['x']` avant.
+
+Le banc de test passe ses 16 vérifications, `check-widths.py` ne signale rien.
+
+## Fiches genre : maquette validée et artistes choisis (23/09/2026)
+Maquette validée par Maxime : https://claude.ai/artifact/3dzMxxCMFJxLS3zxYeVxAX (décisions dans `docs/cadrage-mvp.md`, section « Fiche genre »). Rien n'est encore codé dans l'extension.
+
+**Artistes.** Maxime a demandé tous les genres d'un coup ; la relecture se fera en équipe à la fin du projet. `data/artists-picks.csv` : 1 462 genres sur 2 098 ont 1 à 8 artistes (456 en ont 8), 6 000 noms distincts, 636 genres vides. Choisis par dix sous-agents Claude en parallèle, de mémoire, avec consigne de laisser vide plutôt que deviner. La sélection de l'alternative rock est celle de la maquette.
+
+**Pourquoi de mémoire et pas depuis Wikidata.** Le jour même, Wikidata limitait à une requête par minute (« rule created during active wdqs outage ») : `artists-fetch.py` aurait pris ~35 h. Wikimedia refuse aussi par intermittence l'API et Commons avec des 429 (« robot policy »). Ne jamais compter sur un accès Wikimedia soutenu depuis ces sessions : cache, reprise, lenteur.
+
+**Reste à faire, dans l'ordre.**
+1. Finir `artists-verify.py`. Il écarte tout nom qui n'est pas une personne musicienne ou un groupe sur Wikidata et liste les rejets dans `artists-rejected.csv`. **Il tourne sur GitHub Actions** (`.github/workflows/artists.yml`, « Verify artists ») : depuis une session Claude, Wikimedia a fini par répondre 403 « robot policy » à toutes les requêtes. Le cache passe d'une exécution à l'autre (actions/cache) ; une exécution coupée se relance (onglet Actions → Verify artists → Re-run, ou « Run workflow » depuis `main`) et reprend. Le workflow commite lui-même `artists.csv`, `genre-artists.csv` et `artists-rejected.csv` quand il a fini.
+2. Photos : vignettes Commons en 330 px, tramées en masque 1 bit (voir la maquette), crédits via l'API Commons `extmetadata` par lots de 50.
+3. Descriptions : premier paragraphe Wikipédia (REST `page/summary`), avec User-Agent identifié.
+4. L'extension : CPT `artist`, champs de fiche, vue plein écran avec adresse propre, bouton OPEN DOSSIER.
+
+**Piège rencontré.** `pkill -f artists-verify.py` a encore tué le shell appelant, comme noté plus haut pour `php -S` — et `pgrep -f` dans une boucle `kill` aussi, pour la même raison. Mettre une classe de caractères dans le motif pour qu'il ne se reconnaisse pas lui-même : `pgrep -f "[a]rtists-verify"`.
+
+## La fiche genre dans l'extension (v0.8.0, 23/09/2026)
+Publiée sans artistes ni descriptions, à la demande de Maxime, pour voir la mise en page sur le vrai site. Ce qu'elle montre déjà : glyphe, nom, famille et niveau, origine, époque, tempo, nombre de sous-genres et de descendants, lignée (avec le groupe éditorial en pointillé), sous-genres réels A→Z, liens Wikidata et MusicBrainz. Une section sans données n'est pas affichée : Overview et Key Artists apparaîtront seules quand les données arriveront.
+
+**Adresse.** `/genre/…/alternative-rock/about/`, par une règle de réécriture placée avant celle du type de contenu (sinon « about » est lu comme un sous-genre). Les règles sont reconstruites une fois par version (`genre_atlas_rules`), parce qu'une mise à jour depuis Extensions n'est pas une activation.
+
+**Données.** Rien de plus dans l'arbre que tout visiteur télécharge : la fiche appelle `/wp-json/genre-atlas/v1/genre/<id>` (description découpée en paragraphes, identifiants, `artists` vide pour l'instant). Le premier paragraphe sert de chapeau, les suivants d'Overview.
+
+**Navigation.** OPEN DOSSIER en plein au-dessus de CENTRE ON (passé en contour) dans le panneau, et sur mobile. Retour : bouton MAP, touche Échap, ou le bouton retour du navigateur ; quand la fiche a été ouverte depuis la carte, fermer revient en arrière dans l'historique et la carte réapparaît telle quelle. Les groupes éditoriaux n'ont pas de fiche.
+
+**Piège.** `wp_localize_script` transmet toutes les valeurs en chaînes : `"0"` est vrai en JavaScript, et toutes les pages de genre s'ouvraient sur la fiche. Toujours convertir (`Number(CFG.about) === 1`).
+
+Le banc passe 23 vérifications, dont 7 sur la fiche (ordre des boutons, adresse, sous-genres, Échap, accès direct, groupe sans fiche, largeur mobile).

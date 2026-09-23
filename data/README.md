@@ -28,9 +28,13 @@ Le fichier à importer dans WordPress est **`genre-import.csv`** : Genres → Im
 | `d_country.csv` | Pays d'origine (P495). |
 | `e_mb.csv` | Identifiant MusicBrainz (P8052). |
 | `wikidata-build.py` | Construit l'arbre strict et écrit `genre-import.csv`. |
-| `build-groups.py` | Découpe les 36 branches de plus de 8 sous-genres et écrit `genre-groups.csv`. |
-| `genre-groups.csv` | Le groupe de chacun des 1 020 genres concernés. Colonne `group` du fichier d'import. Un groupe est un chemin : « EUROPE > IBERIA ». |
-| `genre-import.csv` | **Le fichier d'import.** 13 familles, 15 tuiles, 1 630 genres. |
+| `build-groups.py` | Découpe les 40 branches de plus de 8 sous-genres et écrit `genre-groups.csv`. |
+| `genre-groups.csv` | Le groupe de chacun des 1 327 genres concernés. Colonne `group` du fichier d'import. Un groupe est un chemin : « EUROPE > IBERIA ». |
+| `genre-import.csv` | **Le fichier d'import.** 13 familles, 15 tuiles, 2 098 genres. |
+| `artists-picks.csv` | **Key artists** des fiches : au plus 8 noms par genre, choisis à la main, A→Z. 636 genres vides plutôt qu'un nom deviné. |
+| `artists-verify.py` | Vérifie chaque nom sur Wikidata (personne musicienne ou groupe) et écrit `artists.csv`, `genre-artists.csv` et `artists-rejected.csv`. Reprend depuis son cache `.artists-cache.json` (non versionné). |
+| `artists-fetch.py` | Récupère les candidats Wikidata de chaque genre. Pas utilisé pour la sélection actuelle ; gardé pour un futur complément. |
+| `genre-attach.csv` | Les genres rattachés à la main, faute de parent chez Wikidata. Lu par les deux scripts. |
 | `wikidata-build-electronic.py` | L'ancien script, une famille à la fois. |
 | `genre-electronic-import.csv` | Son résultat, les 406 genres de la v0.3.0. |
 
@@ -46,7 +50,22 @@ Deux tables en haut du script portent les décisions éditoriales : `FAMILIES` (
 
 ## Ce qui reste dehors
 
-481 genres reconnus (23 %) n'entrent dans aucune famille, faute d'un parent exploitable dans Wikidata : 248 sont isolés, 233 se répartissent sous 54 racines. Parmi eux des genres bien réels — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. Le script les liste à chaque exécution. Pour les faire entrer, il faudra soit les déclarer familles, soit leur écrire une table de rattachement sur le modèle d'`OVERRIDE`.
+Wikidata ne donne aucun parent exploitable à 481 genres reconnus (funk, ska, gospel, reggaeton, ambient, K-pop, Afrobeat, klezmer, raï…). Ils pendent sous 302 racines. `genre-attach.csv` décide pour chaque racine, une ligne par genre :
+
+| Colonne | Rôle |
+|---|---|
+| `action` | `attach` : lui donner un parent. `regroup` : un genre déjà dans l'atlas change de groupe pour faire de la place. `leave out` : il reste dehors, la raison dit pourquoi. |
+| `parent` | Le nom exact d'un genre de l'atlas (ou d'un autre genre rattaché par le tableau). |
+| `group` | Son groupe sous ce parent, en chemin complet. Il l'emporte sur tout ce que calcule `build-groups.py`. |
+| `reason` | Une ligne pour le relecteur. |
+
+Rattacher une racine fait entrer toute sa descendance : `funk` ramène P-Funk, G-funk, go-go. Il reste **13 genres dehors**, tous en `leave out` : doublons (glam music, gothic music), notions trop générales (ballad, instrumental music) ou catégories fourre-tout.
+
+Après une modification du tableau, la chaîne se rejoue en trois temps, parce que `build-groups.py` lit l'arbre que le tableau vient de changer :
+
+```bash
+python3 wikidata-build.py && python3 build-groups.py && python3 wikidata-build.py
+```
 
 ## Si Wikidata bouge
 

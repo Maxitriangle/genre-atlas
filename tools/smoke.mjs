@@ -180,6 +180,42 @@ try {
 		}
 	}
 
+	// 5b. The dossier: its button leads the panel, it has its own address, and
+	// closing it gives the map back.
+	if ( ring ) {
+		await page.goto( permalink( ring.node ), { waitUntil: 'networkidle' } );
+		await page.waitForSelector( '.ga-panel', { timeout: 10000 } );
+		const ctas = await page.locator( '.ga-panel .ga-cta' ).allInnerTexts();
+		check( 'fiche : OPEN DOSSIER passe avant CENTRE ON dans le panneau',
+			ctas.length >= 1 && /OPEN DOSSIER/.test( ctas[ 0 ] ) && ctas.slice( 1 ).every( t => ! /OPEN DOSSIER/.test( t ) ),
+			ctas.map( t => t.replace( /\s+/g, ' ' ).trim() ).join( ' | ' ) );
+		await page.locator( '.ga-panel [data-about]' ).first().click();
+		await page.waitForSelector( '.ga-dossier', { timeout: 10000 } );
+		await page.waitForTimeout( 400 );
+		const title = ( await page.locator( '.ga-dossier h1' ).innerText() ).trim();
+		check( 'fiche : elle s ouvre a sa propre adresse, en /about/',
+			page.url().endsWith( '/about/' ) && title.toUpperCase() === ring.node.name.toUpperCase(),
+			`${ page.url().replace( BASE, '' ) } · ${ title }` );
+		const subs = await page.locator( '.ga-dossier .ga-subs a' ).count();
+		check( `fiche : les ${ ring.count } sous-genres reels sont listes`, subs === ring.count, `${ subs } lien(s)` );
+		await page.screenshot( { path: `${ SHOTS }/05b-fiche.png`, fullPage: true } );
+		await page.keyboard.press( 'Escape' );
+		await page.waitForTimeout( 500 );
+		check( 'fiche : Echap rend la carte', await page.locator( '.ga-map' ).count() === 1 && ! page.url().includes( '/about/' ),
+			page.url().replace( BASE, '' ) );
+
+		// Reached straight from its address, as a shared link would.
+		await page.goto( `${ permalink( ring.node ) }about/`, { waitUntil: 'networkidle' } );
+		await page.waitForSelector( '.ga-dossier', { timeout: 10000 } );
+		check( 'fiche : l adresse /about/ ouvre la fiche directement', await page.locator( '.ga-dossier h1' ).count() === 1 );
+	}
+	if ( wide ) {
+		await centre( page, wide.node );
+		await page.locator( '.ga-map .ga-node:not(.centre):not(.anc)' ).first().click();
+		await page.waitForTimeout( 400 );
+		check( 'fiche : un groupe editorial n a pas de fiche', await page.locator( '.ga-panel [data-about]' ).count() === 0 );
+	}
+
 	// 6. List view.
 	await page.locator( '[data-view="list"]' ).first().click();
 	await page.waitForTimeout( 400 );
@@ -194,6 +230,13 @@ try {
 	const vertical = await phone.locator( '.ga-mobile, .ga-mtree' ).count() > 0;
 	check( 'mobile : arbre vertical, carte radiale absente', vertical && await phone.locator( '.ga-map' ).count() === 0 );
 	await phone.screenshot( { path: `${ SHOTS }/07-mobile.png`, fullPage: true } );
+	if ( ring ) {
+		await phone.goto( `${ permalink( ring.node ) }about/`, { waitUntil: 'networkidle' } );
+		await phone.waitForSelector( '.ga-dossier', { timeout: 10000 } );
+		const width = await phone.evaluate( () => document.documentElement.scrollWidth );
+		check( 'mobile : la fiche tient dans la largeur de l ecran', width <= 390, `${ width } px` );
+		await phone.screenshot( { path: `${ SHOTS }/07b-fiche-mobile.png`, fullPage: true } );
+	}
 	await phone.close();
 
 	// 8. Import screen, behind the login.

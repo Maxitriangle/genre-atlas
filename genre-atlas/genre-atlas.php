@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.7.3
+ * Version: 0.8.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.7.3' );
+define( 'GENRE_ATLAS_VERSION', '0.8.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v1' );
@@ -93,6 +93,28 @@ function genre_atlas_register() {
 	}
 }
 
+/*
+ * The dossier of a genre lives at its own address, one segment under the genre:
+ * /genre/rock-music/alternative-rock/about/. The rule has to come before the
+ * post type's own, which would read "about" as the slug of a child genre.
+ */
+add_action( 'init', 'genre_atlas_dossier_route', 11 );
+function genre_atlas_dossier_route() {
+	add_rewrite_rule( '^genre/(.+?)/about/?$', 'index.php?genre=$matches[1]&ga_about=1', 'top' );
+	// Activation is the only time WordPress rebuilds its rules on its own, and
+	// an update from the Plugins screen is not an activation.
+	if ( get_option( 'genre_atlas_rules' ) !== GENRE_ATLAS_VERSION ) {
+		flush_rewrite_rules( false );
+		update_option( 'genre_atlas_rules', GENRE_ATLAS_VERSION );
+	}
+}
+
+add_filter( 'query_vars', 'genre_atlas_query_vars' );
+function genre_atlas_query_vars( $vars ) {
+	$vars[] = 'ga_about';
+	return $vars;
+}
+
 function genre_atlas_sanitize_int( $value ) {
 	return ( '' === $value || null === $value ) ? '' : (int) $value;
 }
@@ -120,6 +142,35 @@ function genre_atlas_rest() {
 			'callback'            => function () {
 				return rest_ensure_response( genre_atlas_tree() );
 			},
+		)
+	);
+	// What a dossier shows beyond the tree. Kept out of the tree, which every
+	// visitor downloads whole, and fetched only when a dossier opens.
+	register_rest_route(
+		'genre-atlas/v1',
+		'/genre/(?P<id>\d+)',
+		array(
+			'methods'             => 'GET',
+			'permission_callback' => '__return_true',
+			'callback'            => 'genre_atlas_dossier',
+		)
+	);
+}
+
+function genre_atlas_dossier( $request ) {
+	$post = get_post( (int) $request['id'] );
+	if ( ! $post || 'genre' !== $post->post_type || 'publish' !== $post->post_status ) {
+		return new WP_Error( 'genre_atlas_not_found', 'No such genre.', array( 'status' => 404 ) );
+	}
+	$text  = trim( wp_strip_all_tags( $post->post_content ) );
+	$paras = $text ? array_values( array_filter( array_map( 'trim', preg_split( '/\n\s*\n/', $text ) ) ) ) : array();
+	return rest_ensure_response(
+		array(
+			'id'          => (int) $post->ID,
+			'description' => $paras,
+			'wikidata'    => (string) get_post_meta( $post->ID, 'ga_wikidata_id', true ),
+			'musicbrainz' => (string) get_post_meta( $post->ID, 'ga_musicbrainz_id', true ),
+			'artists'     => array(), // filled by the artist import, next version
 		)
 	);
 }
@@ -238,10 +289,12 @@ function genre_atlas_enqueue() {
 		'genre-atlas',
 		'GENRE_ATLAS',
 		array(
-			'treeUrl' => esc_url_raw( rest_url( 'genre-atlas/v1/tree' ) ),
-			'base'    => trailingslashit( get_post_type_archive_link( 'genre' ) ),
-			'start'   => is_singular( 'genre' ) ? (int) get_queried_object_id() : 0,
-			'title'   => get_bloginfo( 'name' ),
+			'treeUrl'  => esc_url_raw( rest_url( 'genre-atlas/v1/tree' ) ),
+			'genreUrl' => esc_url_raw( rest_url( 'genre-atlas/v1/genre/' ) ),
+			'base'     => trailingslashit( get_post_type_archive_link( 'genre' ) ),
+			'start'    => is_singular( 'genre' ) ? (int) get_queried_object_id() : 0,
+			'about'    => is_singular( 'genre' ) && get_query_var( 'ga_about' ) ? 1 : 0,
+			'title'    => get_bloginfo( 'name' ),
 		)
 	);
 }

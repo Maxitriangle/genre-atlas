@@ -46,7 +46,7 @@ Le code sépare donc les deux notions. Le parent reste `post_parent`, l'arbre es
 `art music` garde son libellé Wikidata : c'est l'ombrelle qui contient le classique occidental, indien, japonais et d'Asie du Sud-Est. La renommer « Classical music » entrerait en collision avec son propre enfant `classical music` (46 sous-genres), qui est la branche occidentale.
 
 ## Questions ouvertes
-- 481 genres reconnus (23 %) restent hors de l'atlas, faute d'un parent que Wikidata donne : 248 isolés, 233 sous 54 racines. Les plus notables sont funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer et raï. Soit on les déclare familles, soit on leur écrit une table de rattachement dans `data/wikidata-build.py`, sur le modèle de la table des inversions connues.
+- ~~481 genres reconnus restent hors de l'atlas.~~ Tranché le 23/09/2026 : ils sont rattachés à des genres existants par `data/genre-attach.csv`, les familles restent 13. 13 genres restent dehors, raison à l'appui.
 
 ## Test d'import Wikidata (21/09/2026)
 Requêtes SPARQL sur query.wikidata.org, éléments `instance of (P31) = music genre (Q188451)`. À découper en requêtes légères (libellés, P279, P571, P495, P8052 séparément) : la requête unique avec le service de libellés est tronquée par le délai du serveur.
@@ -81,3 +81,16 @@ Sources dans `claude/plugin/` (plus `templates/atlas.php`, `includes/cli.php`, l
 
 ## Mise en ligne
 Hébergeur retenu : o2switch. Guide pas à pas (commande du domaine, certificat HTTPS, installation de WordPress par Softaculous, réglages, installation de Genre Atlas, import, page d'accueil, vérifications, dépannage) : https://claude.ai/code/artifact/c12fc11e-e343-4204-915b-17bc494abc80. Offre recommandée : Grow (84 € HT par an, prix stable) plutôt que Cloud (22,32 € HT la première année, puis 192 € HT).
+
+## Fiche genre (« dossier ») — décisions du 23/09/2026
+Maquette : https://claude.ai/artifact/3dzMxxCMFJxLS3zxYeVxAX (Alternative Rock, données réelles sauf l'écoute).
+- **Ouverture** : plein écran par-dessus la carte, avec sa propre adresse (partageable, indexée) ; le bouton retour du navigateur la referme et rend la carte dans son état. Une fiche par genre ; les groupes éditoriaux n'en ont pas.
+- **Glyphe** : petit cartouche (112 px) sans repères de lecture ; les informations de la fiche passent avant.
+- **Grille** : le bloc du haut suit la même grille que toutes les sections (colonne de 220 px à gauche pour le glyphe ou l'icône, contenu à droite), donc tout part de la même ligne verticale.
+- **Artistes, méthode retenue (option 1)** : Claude choisit au plus 8 artistes par genre dans les candidats Wikidata, Maxime relit un tableau par lot. Premier lot : les 15 tuiles et leurs sous-genres directs.
+- **Bouton** : dans le panneau, **au-dessus** de « CENTRE ON », en plein, parce qu'il existe sur tous les genres (feuilles comprises) et garde donc toujours la même place ; « CENTRE ON » passe en contour. Libellé proposé : OPEN DOSSIER.
+- **Description** : premier paragraphe de l'article Wikipédia anglais, source et licence (CC BY-SA) citées, remplaçable par un texte de Maxime dans WordPress.
+- **Key artists** : 8 au plus (la règle de l'anneau), triés A→Z, proposés depuis Wikidata (P136) et corrigeables. Constat : trier sur la seule notoriété (nombre de liens Wikimédia) donne de mauvais résultats (Milla Jovovich, Yoko Ono, membres en doublon de leur groupe ; Maroon 5 et Tokio Hotel remontent, Radiohead et Pixies manquent). Il faudra un meilleur signal, à trancher. La sélection de la maquette, validée par Maxime, a été faite à la main par Claude dans la liste Wikidata des groupes classés « alternative rock » : elle ne sort pas d'un calcul et ne se reproduira pas toute seule.
+- **Photos** : Wikimedia Commons uniquement (licence libre), tramées en 1 bit et colorées dans la teinte de la famille (masque PNG d'environ 2 Ko), photographe et licence toujours crédités. Les photos de Spotify et Deezer sont écartées (droits, retouche interdite). Commons limite fortement les requêtes (429, « robot policy ») : récupérer les vignettes à la taille standard 330 px, lentement, avec un User-Agent identifié.
+- **Écoute** : service non choisi (Deezer, Spotify ou YouTube). Principe retenu dans la maquette : un seul lecteur par fiche, un morceau par artiste ; un clic sur un artiste lance son morceau.
+- **Données** : préparées par la chaîne `data/` et importées, jamais chargées en direct chez le visiteur. L'artiste deviendra un contenu à part entière (CPT `artist`), une photo stockée une fois pour plusieurs genres.

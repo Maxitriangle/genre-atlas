@@ -89,7 +89,7 @@ REGIONS = {
     ],
     # Latin music
     'CUBA': ['music of cuba'],
-    'THE ISLANDS': [
+    'THE WIDER CARIBBEAN': [
         'music of haiti', 'music of the dominican republic',
         'music of puerto rico', 'french caribbean music', 'tropical music',
     ],
@@ -169,6 +169,7 @@ OVERRIDES = {
         ],
         'DANZÓN & BALLROOM': [
             'danzón', 'mambo', 'pachanga', 'habanera', 'Cuban charanga',
+            'Q15830404',  # the Cuban bolero; the Spanish one stays in SPAIN
         ],
         'SAMBA & BOSSA NOVA': [
             'samba', 'bossa nova', 'choro', 'maxixe',
@@ -181,15 +182,21 @@ OVERRIDES = {
             'brega', 'lambada', 'mangue bit', 'sertanejo', 'vanera',
             'bandinha',
         ],
-        'COLOMBIA': [
+        'COLOMBIA & VENEZUELA': [
             'Vallenato', 'champeta', 'currulao', 'porro', 'pasillo',
+            'onda nueva',
         ],
         'THE ANDES': [
             'coplas cajamarquinas', 'música criolla', 'pandilla',
         ],
         # Two genres the roll-up left alone in a group of their own.
         'DANCE & CARNIVAL': ['murga'],
-        'MEXICO & CENTRAL AMERICA': ['New Mexico music'],
+        'MEXICO & CENTRAL AMERICA': [
+            'New Mexico music', 'tamborera', 'tropicanibalismo',
+        ],
+        # "Across Latin America" was a catch-all: each genre goes to its country.
+        'THE SOUTHERN CONE': ['guarania', 'avanzada'],
+        'THE WIDER CARIBBEAN': ['Dominican dembow'],
     },
 }
 
@@ -199,11 +206,11 @@ FALLBACK = {'folk music': 'SONG & DANCE FORMS', 'Latin music': 'ACROSS LATIN AME
 # --- Editorial, style-based grouping ---------------------------------------
 STYLES = {
     'rock music': {
-        'ROCK AND ROLL ERA': [
+        'ROCK AND ROLL & GARAGE': [
             'rock and roll', 'surf music', 'instrumental rock', 'mod',
             'garage rock',
         ],
-        'PSYCHEDELIC & ART ROCK': [
+        'PSYCHEDELIC & EXPERIMENTAL': [
             'psychedelic rock', 'art rock', 'experimental rock', 'math rock',
             'zolo',
         ],
@@ -221,10 +228,8 @@ STYLES = {
         'FOLK, COUNTRY & ACOUSTIC': [
             'folk rock', 'country rock', 'roots rock', 'acoustic rock',
         ],
-        'POP, NEW WAVE & ALTERNATIVE': [
-            'pop rock', 'new wave', 'alternative rock', 'comedy rock',
-            'Christian rock',
-        ],
+        'POP ROCK': ['pop rock', 'comedy rock', 'Christian rock'],
+        'NEW WAVE & ALTERNATIVE': ['new wave', 'alternative rock'],
         'FUSIONS': [
             'jazz rock', 'funk rock', 'rap rock', 'reggae rock',
             'electronic rock', 'dance-rock',
@@ -504,7 +509,7 @@ MORE_STYLES = {
     },
     'art music': {
         'WESTERN ART MUSIC': ['classical music', 'avant-garde music', 'pìobaireachd'],
-        'EAST ASIAN COURT MUSIC': ['Japanese classical music', 'Korean court music', 'gagaku', 'guoyue', 'Vietnamese classical music'],
+        'EAST ASIAN COURT & THEATRE': ['Japanese classical music', 'Korean court music', 'gagaku', 'guoyue', 'Vietnamese classical music'],
         'OTHER CLASSICAL TRADITIONS': ['Indian classical music', 'Southeast Asian classical music', 'maqāmic music', 'kete'],
     },
     'black metal': {
@@ -559,9 +564,31 @@ MORE_STYLES = {
         'CEREMONIAL GAMELAN': ['Gamelan selunding', 'gamelan angklung', 'gamelan beleganjur', 'gamelan gong gede'],
         'THEATRE & MODERN GAMELAN': ['gamelan gender wayang', 'gamelan gong kebyar', 'gamelan jegog', 'gamelan semar pegulingan'],
     },
+    # Branches that came in with genre-attach.csv, or grew past the ring with it.
+    'reggae': {
+        'JAMAICAN ORIGINS': ['early reggae'],
+        'ROOTS & LOVERS ROCK': ['roots reggae', 'lovers rock', 'gospel reggae'],
+        'DUB, DEEJAY & DANCEHALL': ['deejay', 'dancehall'],
+        'REGGAE AROUND THE WORLD': ['Pacific reggae', 'seggae'],
+    },
+    'funk': {
+        'CLASSIC FUNK': ['P-Funk', 'deep funk', 'porn groove', 'go-go'],
+        'ELECTRO & SYNTH FUNK': ['electro funk', 'synth funk', 'G-funk'],
+        'FUNK AROUND THE WORLD': ['Afro-funk', 'Latin funk', 'Brit funk'],
+    },
+    'Brazilian funk': {
+        'FUNK CARIOCA & MELODY': ['funk carioca', 'funk melody', 'funk consciente', 'rasteirinha', 'mega funk'],
+        'NEW BEATS': ['beat bolha', 'beat fino', 'funk mandelão', 'funk de BH'],
+        'FUSIONS': ['arrocha funk', 'trapfunk'],
+    },
+    'singer-songwriter music': {
+        'IBERIA & LATIN AMERICA': ['nueva canción', 'nova cançó', 'euskal kantagintza berria', 'música de intervenção'],
+        'GERMAN & SLAVIC SONG': ['Liedermacher', 'kleinkunst', 'bard song'],
+        'FRENCH & ITALIAN SONG': ['chanson à texte', "canzone d'autore"],
+    },
     'rhythm and blues': {
         'CLASSIC R&B': ['New Orleans rhythm and blues', 'British rhythm and blues', 'doo-wop', 'boogie', 'swamp pop'],
-        'SOUL & DISCO': ['soul', 'disco', 'boogaloo', 'beach music'],
+        'SOUL, FUNK & DISCO': ['soul', 'disco', 'boogaloo', 'beach music'],
     },
 }
 STYLES.update(MORE_STYLES)
@@ -590,14 +617,19 @@ SUPER = {
         'SON & GUARACHA': 'CUBA & THE CARIBBEAN',
         'RUMBA & AFRO-CUBAN': 'CUBA & THE CARIBBEAN',
         'DANZÓN & BALLROOM': 'CUBA & THE CARIBBEAN',
-        'THE ISLANDS': 'CUBA & THE CARIBBEAN',
+        'THE WIDER CARIBBEAN': 'CUBA & THE CARIBBEAN',
         'SAMBA & BOSSA NOVA': 'BRAZIL', 'NORTHEASTERN BRAZIL': 'BRAZIL',
         'MODERN BRAZILIAN POP': 'BRAZIL',
-        'THE ANDES': 'THE ANDES & THE PACIFIC', 'COLOMBIA': 'THE ANDES & THE PACIFIC',
+        'THE ANDES': 'THE ANDES & THE PACIFIC',
+        'COLOMBIA & VENEZUELA': 'THE ANDES & THE PACIFIC',
     },
     'rock music': {
         'BLUES & SOUTHERN ROCK': 'ROOTS ROCK',
         'FOLK, COUNTRY & ACOUSTIC': 'ROOTS ROCK',
+        # Pop rock and new wave split in two, so these two share a level to
+        # keep Rock at 8.
+        'PSYCHEDELIC & EXPERIMENTAL': 'ART & PROGRESSIVE ROCK',
+        'PROGRESSIVE & THEATRICAL': 'ART & PROGRESSIVE ROCK',
     },
     'electronic dance music': {
         'DUBSTEP & BASS': 'BASS MUSIC', 'TRAP & HYPERPOP': 'BASS MUSIC',
@@ -620,11 +652,14 @@ SUPER = {
 # thing this whole mechanism exists to remove.
 DEEP = {
     'Latin music': {
-        'HAITI & THE FRENCH CARIBBEAN': ['cadence rampa', 'konpa', 'rasin', 'twoubadou', 'biguine'],
-        'PUERTO RICO, HISPANIOLA & THE COAST': ['bomba', 'plena', 'merengue', 'cumbia'],
+        'HAITI': ['cadence rampa', 'konpa', 'rasin', 'twoubadou'],
+        'FRENCH ANTILLES & GUIANA': ['biguine'],
+        'PUERTO RICO, HISPANIOLA & THE COAST': ['bomba', 'plena', 'merengue', 'cumbia', 'Dominican dembow'],
         'BALLROOM & COUPLE DANCES': ['tango', 'salsa', 'bachata', 'cha-cha-chá'],
         'CARNIVAL & STREET': ['frevo', 'marchinha', 'murga', 'rara'],
         'SONG FORMS': ['cuplé', 'forró'],
+        'MEXICO': ['New Mexico music', 'chilena', 'merequetengue', 'regional Mexican', 'rock urbano mexicano', 'tropicanibalismo'],
+        'CENTRAL AMERICA': ['son nica', 'xuc', 'tamborera'],
     },
     'electronic dance music': {
         'DUBSTEP & GRIME': ['dubstep', 'post-dubstep', 'grime'],
@@ -691,6 +726,13 @@ def main():
         if r['parent_wikidata_id']:
             kids[r['parent_wikidata_id']].append(r)
     featured = {r['wikidata_id'] for r in rows if r['featured']}
+    global TABLE
+    TABLE = {}
+    table = os.path.join(HERE, 'genre-attach.csv')
+    if os.path.exists(table):
+        for r in csv.DictReader(open(table, encoding='utf-8')):
+            if r['group']:
+                TABLE[r['wikidata_id']] = r['group']
 
     out, problems = [], []
     for branch in list(STYLES) + list(FALLBACK):
@@ -718,18 +760,15 @@ def main():
                 group = next((LABEL_TO_REGION[a.lower()] for a in alts
                               if a.lower() in LABEL_TO_REGION), None)
                 assigned[c['wikidata_id']] = group or FALLBACK[branch]
-            # The finer cut wins over the region it came from.
+            # The finer cut wins over the region it came from. A name shared
+            # by two genres is given by its Wikidata ID instead.
             for group, names in OVERRIDES.get(branch, {}).items():
                 for n in names:
-                    hits = [c for c in children if c['name'] == n]
+                    hits = [c for c in children if n in (c['name'], c['wikidata_id'])]
                     if not hits:
                         problems.append('%s : « %s » introuvable parmi les enfants' % (branch, n))
                     for hit in hits:
                         assigned[hit['wikidata_id']] = group
-
-        missing = [c for c in children if c['wikidata_id'] not in assigned]
-        for c in missing:
-            problems.append('%s : « %s » sans groupe' % (branch, c['name']))
 
         for q, g in list(assigned.items()):
             top = SUPER.get(branch, {}).get(g)
@@ -744,6 +783,16 @@ def main():
                     problems.append('%s : « %s » introuvable (DEEP)' % (branch, n))
                 for hit in hits:
                     assigned[hit['wikidata_id']] += ' > ' + seg
+
+        # genre-attach.csv has the last word: genres attached by hand, and the
+        # groups reshaped to make room for them.
+        for q in list(assigned) + [c['wikidata_id'] for c in children]:
+            g = TABLE.get(q)
+            if g:
+                assigned[q] = g
+        missing = [c for c in children if c['wikidata_id'] not in assigned]
+        for c in missing:
+            problems.append('%s : « %s » sans groupe' % (branch, c['name']))
 
         sizes = collections.Counter(a.split(' > ')[0] for a in assigned.values())
         print('%-24s %3d enfants -> %2d groupes  (le plus gros : %d)'
