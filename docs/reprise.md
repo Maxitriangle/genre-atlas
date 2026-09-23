@@ -239,3 +239,12 @@ Publiée sans artistes ni descriptions, à la demande de Maxime, pour voir la mi
 **Piège.** `wp_localize_script` transmet toutes les valeurs en chaînes : `"0"` est vrai en JavaScript, et toutes les pages de genre s'ouvraient sur la fiche. Toujours convertir (`Number(CFG.about) === 1`).
 
 Le banc passe 23 vérifications, dont 7 sur la fiche (ordre des boutons, adresse, sous-genres, Échap, accès direct, groupe sans fiche, largeur mobile).
+
+## Artistes vérifiés (23/09/2026, soir)
+Le workflow « Verify artists » a fini (deux exécutions : la première a rempli le cache, la seconde l'a terminé et a commité). Sur 6 000 noms : **5 529 confirmés** (3 134 personnes, 2 395 groupes), **451 écartés** (`data/artists-rejected.csv`), **4 074 avec une photo Commons** (74 %). 1 432 genres gardent au moins un artiste ; 30 genres ont perdu tous les leurs.
+
+Contrôle : les artistes connus pointent vers la bonne fiche (Nirvana Q11649, U2 Q396, Queen Q15862, Khaled, BTS…) et un tirage au hasard est cohérent.
+
+**Les rejets ne sont pas tous des erreurs de sélection.** Une partie sont des noms ambigus que la recherche ne départage pas (« ABC », « AZ », « 67 », « Arena »). Mais on y trouve aussi de vrais groupes (Agnostic Front, American Football, Arashi, Anti Cimex) : `kind()` est trop strict sur le type Wikidata, ou la recherche ne les a pas classés dans ses 7 premiers résultats. Seconde passe à prévoir, plus tolérante, sur les seuls rejets.
+
+L'année affichée pour une personne est le début d'activité (P2031) ou, à défaut, la naissance (P569) ; le pays, P495 puis la nationalité P27 — parfois anachronique (un musicien de 1898 « People's Republic of China »).
