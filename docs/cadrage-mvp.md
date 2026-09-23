@@ -85,7 +85,9 @@ Hébergeur retenu : o2switch. Guide pas à pas (commande du domaine, certificat 
 ## Fiche genre (« dossier ») — décisions du 23/09/2026
 Maquette : https://claude.ai/artifact/3dzMxxCMFJxLS3zxYeVxAX (Alternative Rock, données réelles sauf l'écoute).
 - **Ouverture** : plein écran par-dessus la carte, avec sa propre adresse (partageable, indexée) ; le bouton retour du navigateur la referme et rend la carte dans son état. Une fiche par genre ; les groupes éditoriaux n'en ont pas.
-- **Glyphe** : petit cartouche à côté du titre (112 px), sans repères de lecture ; les informations de la fiche passent avant.
+- **Glyphe** : petit cartouche (112 px) sans repères de lecture ; les informations de la fiche passent avant.
+- **Grille** : le bloc du haut suit la même grille que toutes les sections (colonne de 220 px à gauche pour le glyphe ou l'icône, contenu à droite), donc tout part de la même ligne verticale.
+- **Artistes, méthode retenue (option 1)** : Claude choisit au plus 8 artistes par genre dans les candidats Wikidata, Maxime relit un tableau par lot. Premier lot : les 15 tuiles et leurs sous-genres directs.
 - **Bouton** : dans le panneau, **au-dessus** de « CENTRE ON », en plein, parce qu'il existe sur tous les genres (feuilles comprises) et garde donc toujours la même place ; « CENTRE ON » passe en contour. Libellé proposé : OPEN DOSSIER.
 - **Description** : premier paragraphe de l'article Wikipédia anglais, source et licence (CC BY-SA) citées, remplaçable par un texte de Maxime dans WordPress.
 - **Key artists** : 8 au plus (la règle de l'anneau), triés A→Z, proposés depuis Wikidata (P136) et corrigeables. Constat : trier sur la seule notoriété (nombre de liens Wikimédia) donne de mauvais résultats (Milla Jovovich, Yoko Ono, membres en doublon de leur groupe ; Maroon 5 et Tokio Hotel remontent, Radiohead et Pixies manquent). Il faudra un meilleur signal, à trancher. La sélection de la maquette, validée par Maxime, a été faite à la main par Claude dans la liste Wikidata des groupes classés « alternative rock » : elle ne sort pas d'un calcul et ne se reproduira pas toute seule.
