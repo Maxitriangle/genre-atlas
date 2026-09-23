@@ -46,4 +46,6 @@ jobs:
           git add data/artists.csv data/genre-artists.csv data/artists-rejected.csv
           git diff --cached --quiet && exit 0
           git commit -m "Verified key artists against Wikidata"
-          git push
+          # Other work lands on the same branch while this runs for hours.
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
