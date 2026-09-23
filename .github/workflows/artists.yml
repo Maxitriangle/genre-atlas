@@ -6,6 +6,9 @@ name: Verify artists
 # time limit or by Wikimedia is simply started again and picks up where it was.
 on:
   push:
+    # Not on main: a merge would start a second run from an empty cache (a
+    # run on main cannot read the caches of a branch) next to the first one.
+    branches-ignore: [main]
     paths:
       - data/artists-picks.csv
       - data/artists-verify.py
