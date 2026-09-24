@@ -170,6 +170,8 @@ function genre_atlas_dossier( $request ) {
 			'description' => $paras,
 			'wikidata'    => (string) get_post_meta( $post->ID, 'ga_wikidata_id', true ),
 			'musicbrainz' => (string) get_post_meta( $post->ID, 'ga_musicbrainz_id', true ),
+			'wikipedia'   => (string) get_post_meta( $post->ID, 'ga_wikipedia', true ),
+			'textSource'  => (string) get_post_meta( $post->ID, 'ga_text_source', true ),
 			'artists'     => array(), // filled by the artist import, next version
 		)
 	);
@@ -240,7 +242,9 @@ function genre_atlas_tree() {
 		}
 		$desc = trim( wp_strip_all_tags( $p->post_content ) );
 		if ( $desc ) {
-			$node['d'] = wp_html_excerpt( $desc, 320, '…' );
+			// A teaser for the panel, loaded with the whole tree on every page:
+			// the full text is on the dossier, fetched on demand.
+			$node['d'] = wp_html_excerpt( $desc, 160, '…' );
 		}
 		$nodes[] = $node;
 	}

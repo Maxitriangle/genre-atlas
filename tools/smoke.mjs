@@ -209,6 +209,20 @@ try {
 		await page.waitForSelector( '.ga-dossier', { timeout: 10000 } );
 		check( 'fiche : l adresse /about/ ouvre la fiche directement', await page.locator( '.ga-dossier h1' ).count() === 1 );
 	}
+
+	// A text imported from Wikipedia is CC BY-SA: the dossier must credit it
+	// and link the article. Shoegaze has a lead in genre-import.csv.
+	const lead = tree.nodes.find( n => n.name === 'Shoegaze' );
+	if ( lead ) {
+		await page.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		await page.waitForSelector( '.ga-dossier', { timeout: 10000 } );
+		const lede = await page.locator( '.ga-dossier .ga-lede' ).count();
+		const credit = await page.locator( '.ga-dossier .ga-credit a[href*="en.wikipedia.org/wiki/Shoegaze"]' ).count();
+		check( 'fiche : le texte Wikipedia est affiche et credite', lede === 1 && credit === 1, `${ lede } chapeau, ${ credit } credit` );
+		await page.screenshot( { path: `${ SHOTS }/05c-fiche-wikipedia.png`, fullPage: true } );
+	} else {
+		check( 'fiche : le genre Shoegaze existe pour tester le credit Wikipedia', false );
+	}
 	if ( wide ) {
 		await centre( page, wide.node );
 		await page.locator( '.ga-map .ga-node:not(.centre):not(.anc)' ).first().click();

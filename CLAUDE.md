@@ -10,7 +10,7 @@ Projet personnel et non commercial de Maxime : un atlas des genres musicaux (sit
 
 ## Le dépôt
 - `genre-atlas/` : l'extension WordPress. PHP sans dépendance, JavaScript sans dépendance (`assets/atlas.js`), police embarquée.
-- `data/` : chaîne Wikidata rejouable — `wikidata-fetch.sh` récupère les cinq extraits SPARQL, `wikidata-build.py` en construit `genre-import.csv` (13 familles, 15 tuiles, 2 098 genres, dont 292 rattachés à la main par `genre-attach.csv`). `build-groups.py` écrit `genre-groups.csv`, le découpage éditorial des 40 branches de plus de 8 sous-genres (1 327 genres, colonne `group` du fichier d'import, sous forme de chemin « EUROPE > IBERIA > SPAIN »). Voir `data/README.md`.
+- `data/` : chaîne Wikidata rejouable — `wikidata-fetch.sh` récupère les cinq extraits SPARQL, `wikidata-build.py` en construit `genre-import.csv` (13 familles, 15 tuiles, 2 098 genres, dont 292 rattachés à la main par `genre-attach.csv`). `build-groups.py` écrit `genre-groups.csv`, le découpage éditorial des 40 branches de plus de 8 sous-genres (1 327 genres, colonne `group` du fichier d'import, sous forme de chemin « EUROPE > IBERIA > SPAIN »). `genre-descriptions.csv` (introductions Wikipedia, 1 308 genres) alimente les colonnes `wikipedia_title` et `description` : l'importeur ne remplit que les genres sans texte, et la fiche crédite Wikipedia (CC BY-SA 4.0). Voir `data/README.md`.
 - `docs/` : cadrage, note de reprise.
 - `tools/` : banc de test local — `test-local.sh` monte le site, `check-widths.py` vérifie la largeur de l'arbre entier hors navigateur, `smoke.mjs` le parcourt au navigateur.
 

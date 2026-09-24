@@ -3,11 +3,13 @@
  * CSV importer. Expected columns (header row, any order):
  * wikidata_id, musicbrainz_id, name, parent_wikidata_id, epoch_year, origin,
  * bpm_min, bpm_max, parent_choice, wikidata_parents_raw, featured,
- * family_shape, family_hue, group
+ * family_shape, family_hue, group, wikipedia_title, description
  *
  * Genres are matched on wikidata_id, so the same file can be imported again
  * safely: existing genres are updated, never duplicated. Fields already
- * reviewed by hand (status "reviewed") are left untouched.
+ * reviewed by hand (status "reviewed") are left untouched. The description
+ * (the lead of the Wikipedia article) only fills a genre that has no text:
+ * a text written or edited in WordPress is never replaced.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -76,7 +78,7 @@ class Genre_Atlas_Importer {
 			}
 		}
 
-		$stats = array( 'rows' => count( $rows ), 'created' => 0, 'updated' => 0, 'skipped_reviewed' => 0, 'parents_set' => 0, 'parents_missing' => 0 );
+		$stats = array( 'rows' => count( $rows ), 'created' => 0, 'updated' => 0, 'skipped_reviewed' => 0, 'parents_set' => 0, 'parents_missing' => 0, 'texts' => 0 );
 		$ids   = $existing;
 
 		// Pass 1: create / update the genres.
@@ -99,7 +101,9 @@ class Genre_Atlas_Importer {
 				'ga_featured'             => isset( $row['featured'] ) && '' !== $row['featured'] ? (int) $row['featured'] : '',
 				'ga_family_shape'         => isset( $row['family_shape'] ) ? $row['family_shape'] : '',
 				'ga_family_hue'           => isset( $row['family_hue'] ) && '' !== $row['family_hue'] ? (int) $row['family_hue'] : '',
+				'ga_wikipedia'            => isset( $row['wikipedia_title'] ) ? $row['wikipedia_title'] : '',
 			);
+			$lead = isset( $row['description'] ) ? $row['description'] : '';
 			if ( isset( $ids[ $qid ] ) ) {
 				$post_id = $ids[ $qid ];
 				if ( 'reviewed' === get_post_meta( $post_id, 'ga_status', true ) ) {
@@ -112,9 +116,20 @@ class Genre_Atlas_Importer {
 						update_post_meta( $post_id, $k, $v );
 					}
 				}
+				if ( '' !== $lead && '' === trim( get_post_field( 'post_content', $post_id ) ) ) {
+					$wpdb->update( $wpdb->posts, array( 'post_content' => $lead ), array( 'ID' => $post_id ) );
+					clean_post_cache( $post_id );
+					// The dossier credits Wikipedia while this mark is there.
+					update_post_meta( $post_id, 'ga_text_source', 'wikipedia' );
+					$stats['texts']++;
+				}
 				$stats['updated']++;
 			} else {
 				$meta['ga_status'] = 'imported';
+				if ( '' !== $lead ) {
+					$meta['ga_text_source'] = 'wikipedia';
+					$stats['texts']++;
+				}
 				$meta              = array_filter(
 					$meta,
 					function ( $v ) {
@@ -123,10 +138,12 @@ class Genre_Atlas_Importer {
 				);
 				$post_id           = wp_insert_post(
 					array(
-						'post_type'   => 'genre',
-						'post_status' => 'publish',
-						'post_title'  => self::nice_title( $row['name'] ),
-						'meta_input'  => $meta,
+						'post_type'    => 'genre',
+						'post_status'  => 'publish',
+						'post_title'   => self::nice_title( $row['name'] ),
+						// wp_insert_post() unslashes what it is given.
+						'post_content' => wp_slash( $lead ),
+						'meta_input'   => $meta,
 					),
 					true
 				);

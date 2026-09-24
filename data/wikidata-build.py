@@ -225,6 +225,16 @@ if os.path.exists(_gf):
         groups[_r['wikidata_id']] = _r['group']
     sys.stderr.write('groupes editoriaux : %d genres\n' % len(groups))
 
+# Lead of the genre's English Wikipedia article, written by
+# wikipedia-fetch.py. The importer only uses it for a genre without text.
+leads = {}
+_lf = os.path.join(HERE, 'genre-descriptions.csv')
+if os.path.exists(_lf):
+    for _r in csv.DictReader(io.open(_lf, encoding='utf-8')):
+        if _r['status'] == 'ok':
+            leads[_r['wikidata_id']] = (_r['wikipedia_title'], _r['text'])
+    sys.stderr.write('introductions Wikipedia : %d genres\n' % len(leads))
+
 rows = []
 
 
@@ -252,6 +262,8 @@ def emit(g, root, level):
         featured='' if i is None else i + 1,
         family_shape='' if i is None else SHAPES[i % len(SHAPES)],
         family_hue='' if i is None else (HUE_START + HUE_STEP * i) % 360,
+        wikipedia_title=leads.get(g, ('', ''))[0],
+        description=leads.get(g, ('', ''))[1],
     ))
     # Final tie-break on the Wikidata ID: two genres can share a label and
     # have no year (there are two 'bolero' under Latin music), and without

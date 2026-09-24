@@ -274,3 +274,23 @@ La première passe acceptait des erreurs. Corrigées une à une dans `artists-ve
 **Rendu jugé sur une planche de 40 masques colorés.** Les portraits et photos de scène se lisent bien. Quelques « photos » Wikidata sont en fait une pochette ou un logo (Blumfeld, une enseigne pour Kraftwerk) : à trier à la relecture d'équipe. `artist-photos.csv` permet de retirer une image sans rien relancer.
 
 **Livraison au site, prévue pour l'étape 4.** Le dépôt étant privé, les masques partiront dans l'extension (assets), avec le CPT `artist`.
+
+## Introductions Wikipedia (24/09/2026, pas encore publié)
+`data/wikipedia-fetch.py`, lancé par le workflow « Wikipedia leads » (quelques minutes). Sur 2 098 genres :
+- **1 308 textes** ;
+- 664 genres sans article anglais ;
+- 104 dont le lien renvoie à une section d'un article plus large, écartés parce que l'introduction décrirait un autre genre ;
+- 21 écartés parce qu'ils partageaient un article avec un autre genre (hard techno recevait le texte de Hardcore) : l'article va au genre qui porte son nom, sinon au plus haut dans l'arbre ;
+- 1 page d'homonymie.
+
+Les textes gardent des paragraphes entiers, 1 200 caractères au plus (médiane 633).
+
+**Dans l'extension.**
+- L'importeur lit `description` et ne remplit que les genres dont le contenu est vide ; un texte écrit à la main n'est jamais remplacé (vérifié par un réimport).
+- Il pose `ga_text_source = wikipedia` et `ga_wikipedia` (titre de l'article).
+- La fiche affiche « TEXT FROM WIKIPEDIA · CC BY-SA 4.0 » sous le dernier paragraphe, et le lien WIKIPEDIA en tête des sources.
+- Nouvelle vérification au banc : 24 au total.
+
+**Poids de l'arbre.** Chaque page charge l'arbre entier, et avec les textes il passait de ~215 à 635 Ko. L'extrait du panneau (`d`) est ramené de 320 à 160 caractères : 444 Ko, 137 Ko compressé.
+
+**À savoir.** Si Maxime réécrit entièrement un texte venu de Wikipedia, la mention de crédit reste. Elle est juste tant que le texte en est adapté ; pour la retirer, il faut supprimer le champ `ga_text_source` du genre. Une case dans l'écran du genre sera à prévoir si le cas se présente souvent.

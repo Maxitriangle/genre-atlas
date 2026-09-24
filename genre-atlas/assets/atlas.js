@@ -384,17 +384,21 @@
     var facts = [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['TEMPO', bpmText(n)], ['SUBGENRES', pad(subs.length)], ['DESCENDANTS', pad(n.total)]]
       .map(function (f) { return '<div><dt>' + f[0] + '</dt><dd' + (f[1] === '—' ? ' class="none"' : '') + '>' + esc(f[1]) + '</dd></div>'; }).join('');
     var level = isTile(n) ? 'FAMILY' : 'GENRE · LEVEL ' + pad(depth(n));
+    var wiki = d.wikipedia ? 'https://en.wikipedia.org/wiki/' + encodeURIComponent(d.wikipedia.replace(/ /g, '_')) : '';
+    // A lead imported from Wikipedia is CC BY-SA: credited under the last paragraph shown.
+    var credit = d.textSource === 'wikipedia' && wiki ? '<p class="ga-micro ga-credit">TEXT FROM <a href="' + esc(wiki) + '" target="_blank" rel="noopener">WIKIPEDIA</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a></p>' : '';
+    var desc = d.description || [];
     var html = '<main class="ga-dossier" style="--fam:' + color(n) + '" aria-label="' + esc(n.name) + ' dossier">' +
       '<div class="ga-dbar"><a class="ga-back" href="' + esc(url(n)) + '" data-close="1"><span aria-hidden="true">←</span><span>MAP</span><span class="ga-micro">ESC</span></a>' +
       '<nav class="ga-crumbs" aria-label="Lineage">' + crumbs + '</nav><span class="ga-micro ga-dids">' + esc(ids) + '</span></div>' +
       '<section class="ga-dhero"><div class="ga-plate">' + glyph(n, 112) + '</div><div>' +
       '<p class="ga-eyebrow"><span class="ga-chip">' + esc(fam.name) + '</span><span class="ga-micro">' + level + '</span></p>' +
-      '<h1>' + esc(n.name) + '</h1>' + (d.description && d.description[0] ? '<p class="ga-lede">' + esc(d.description[0]) + '</p>' : '') +
+      '<h1>' + esc(n.name) + '</h1>' + (desc[0] ? '<p class="ga-lede">' + esc(desc[0]) + '</p>' + (desc.length === 1 ? credit : '') : '') +
       '<dl class="ga-facts">' + facts + '</dl></div></section>';
 
-    if (d.description && d.description.length > 1) {
+    if (desc.length > 1) {
       html += section('overview', 'OVERVIEW', [],
-        '<div class="ga-prose">' + d.description.slice(1).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>');
+        '<div class="ga-prose">' + desc.slice(1).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>' + credit);
     }
 
     var rows = trail.map(function (a, i) {
@@ -413,6 +417,7 @@
     }
 
     var links = [];
+    if (wiki) links.push(['WIKIPEDIA', d.wikipedia, wiki]);
     if (d.wikidata) links.push(['WIKIDATA', d.wikidata, 'https://www.wikidata.org/wiki/' + d.wikidata]);
     if (d.musicbrainz) links.push(['MUSICBRAINZ', d.musicbrainz.slice(0, 18) + '…', 'https://musicbrainz.org/genre/' + d.musicbrainz]);
     if (links.length) {

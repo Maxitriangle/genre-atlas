@@ -10,7 +10,8 @@ Wikipedia (20 per request, the API's limit for leads).
 Writes genre-descriptions.csv: wikidata_id, wikipedia_title, status, text.
 Status is "ok", "no article" (no English sitelink), "section" (the sitelink
 redirects to a section of a broader article, whose lead would describe
-another genre) or "empty". The text keeps whole paragraphs, the first one
+another genre), "shared" (another genre of the atlas has the same article
+and a better claim to it) or "empty". The text keeps whole paragraphs, the first one
 always, the next ones while the total stays under MAX characters; paragraphs
 are separated by a blank line, which is how the dossier splits them.
 
@@ -109,6 +110,29 @@ def leads(titles):
     return out
 
 
+def key(name):
+    """'Hardcore (electronic dance music genre)' and 'hardcore' compare equal."""
+    name = re.sub(r'\s*\(.*?\)', '', name.lower())
+    return re.sub(r'[^a-z0-9]+', ' ', re.sub(r'\bmusic\b', '', name)).strip()
+
+
+def share(rows, genres):
+    """Several genres can lead to one article (a redirect folds 'hard techno'
+    into 'Hardcore'). The text goes to the genre named like the article, else
+    to the one highest in the tree; the others would describe a neighbour."""
+    by = {}
+    for r in rows:
+        if r['status'] == 'ok':
+            by.setdefault(r['wikipedia_title'], []).append(r)
+    for title, rs in by.items():
+        if len(rs) < 2:
+            continue
+        rs.sort(key=lambda r: (key(genres[r['wikidata_id']]['name']) != key(title),
+                               int(genres[r['wikidata_id']]['level']), r['wikidata_id']))
+        for r in rs[1:]:
+            r.update(status='shared', text='')
+
+
 def main():
     genres = list(csv.DictReader(open(os.path.join(HERE, 'genre-import.csv'), encoding='utf-8')))
     qids = [g['wikidata_id'] for g in genres]
@@ -122,6 +146,7 @@ def main():
             continue
         status, title, text = got.get(links[q], ('empty', links[q], ''))
         rows.append(dict(wikidata_id=q, wikipedia_title=title, status=status, text=text))
+    share(rows, {g['wikidata_id']: g for g in genres})
     with open(OUT, 'w', encoding='utf-8', newline='') as fh:
         w = csv.DictWriter(fh, fieldnames=['wikidata_id', 'wikipedia_title', 'status', 'text'])
         w.writeheader()
