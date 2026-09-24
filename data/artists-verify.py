@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 import time
 import urllib.parse
 import urllib.request
@@ -151,6 +152,15 @@ GROUP_CLASSES = set(GROUPS)   # grown in main() with the subclasses Wikidata use
 MUSIC_GENRES = {r['wikidata_id'] for r in csv.DictReader(open(os.path.join(HERE, 'genre-import.csv'), encoding='utf-8'))}
 
 
+def norm(name):
+    """A name as a comparison key: no accents, no punctuation, no leading
+    "the", so "Kassav'" meets "Kassav" and "The Cure" meets "Cure"."""
+    s = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode().lower()
+    s = re.sub(r'[^a-z0-9]+', ' ', s).strip()
+    # A name in another script folds to nothing: compare it as written.
+    return re.sub(r'^the ', '', s) if s else name.strip().lower()
+
+
 def kind(ent, desc='', exact=False):
     """('group' or 'person', 2 if Wikidata's own statements say so, 1 if only
     the search description does), or (None, 0)."""
@@ -199,7 +209,12 @@ def main():
         best = None
         for rank, h in enumerate(hits):
             q, e = h['id'], ents.get(h['id'], {})
-            exact = h.get('match', {}).get('text', '').lower() == name.lower()
+            # The search also returns names that merely start like the one
+            # asked for: "Jesu" found Jesús Franco, and once Jesus Christ. Only a
+            # label or an alias equal to the name counts.
+            exact = norm(h.get('match', {}).get('text', '')) == norm(name)
+            if not exact:
+                continue
             k, sure = kind(e, h.get('description', ''), exact)
             if not k:
                 continue
