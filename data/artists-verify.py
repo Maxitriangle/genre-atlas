@@ -212,7 +212,10 @@ def main():
             # The search also returns names that merely start like the one
             # asked for: "Jesu" found Jesús Franco, and once Jesus Christ. Only a
             # label or an alias equal to the name counts.
-            exact = norm(h.get('match', {}).get('text', '')) == norm(name)
+            # Compared with the result's label and aliases too: the text the
+            # search says it matched is not always the label (Beyoncé's was not).
+            names = [h.get('match', {}).get('text', ''), h.get('label', '')] + list(h.get('aliases', []))
+            exact = norm(name) in {norm(n) for n in names if n}
             if not exact:
                 continue
             k, sure = kind(e, h.get('description', ''), exact)
