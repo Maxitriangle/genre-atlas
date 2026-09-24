@@ -128,6 +128,8 @@ def credits(files):
             title = p.get('title', '')[5:]
             key = norm.get('File:' + title, 'File:' + title)[5:]
             author = strip(info.get('Artist', {}).get('value')) or strip(info.get('Credit', {}).get('value'))
+            # A template can carry the name twice, once visible, once hidden.
+            author = re.sub(r'^(.{3,}?)\1$', r'\1', author)
             out[key] = dict(author=author[:120],
                             license=strip(info.get('LicenseShortName', {}).get('value')),
                             license_url=info.get('LicenseUrl', {}).get('value', ''))

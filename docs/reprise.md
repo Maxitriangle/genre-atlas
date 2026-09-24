@@ -263,3 +263,14 @@ La première passe acceptait des erreurs. Corrigées une à une dans `artists-ve
 **Ce qui reste écarté** (`artists-rejected.csv`, chaque ligne liste ce que Wikidata proposait) : noms absents de Wikidata, noms trop ambigus (ABC, AZ, Arena), et quelques translittérations (« Ahmed Adaweya » pour Ahmad Adaweyyah). À traiter à la relecture d'équipe, pas par un assouplissement supplémentaire.
 
 **À retenir.** Toute liste d'identifiants Wikidata écrite de mémoire doit être vérifiée contre ses libellés avant usage. Et comparer une passe à la précédente (entrés / sortis, triés par notoriété) est ce qui a révélé chaque erreur.
+
+## Photos des artistes tramées (24/09/2026)
+`data/artists-photos.py`, lancé par le workflow « Artist photos » (1 h 38 sur GitHub Actions, un seul passage). Chaque photo Commons est prise en vignette 330 px, recadrée au carré (le haut pour un portrait), puis tramée en 132 px (Bayer 8×8, 1 bit). Elle est enregistrée comme masque PNG (`data/masks/<QID>.png`, 2 Ko en moyenne, 7,7 Mo pour tout le lot) que le site colorera avec la couleur de la famille.
+
+**Résultat.** 4 036 masques sur 4 081 photos. 45 sont écartées faute d'auteur ou de licence lisible, aucune image illisible. Licences : domaine public 894, CC BY-SA 3.0 737, CC BY-SA 4.0 655, CC BY 2.0 627, puis les autres CC. `data/artist-photos.csv` porte fichier, auteur, licence et lien pour la ligne de crédit.
+
+**Corrigé après coup.** 185 auteurs étaient écrits deux fois (« Unknown authorUnknown author », un modèle Commons répète le nom en caché). Dédoublonnés dans le CSV et dans le script.
+
+**Rendu jugé sur une planche de 40 masques colorés.** Les portraits et photos de scène se lisent bien. Quelques « photos » Wikidata sont en fait une pochette ou un logo (Blumfeld, une enseigne pour Kraftwerk) : à trier à la relecture d'équipe. `artist-photos.csv` permet de retirer une image sans rien relancer.
+
+**Livraison au site, prévue pour l'étape 4.** Le dépôt étant privé, les masques partiront dans l'extension (assets), avec le CPT `artist`.
