@@ -11,9 +11,10 @@ shot or studio portrait, looks like part of the same set.
     pip install pillow
     python3 data/artists-photos.py [minutes]    # resumes; stops after [minutes]
 
-Writes masks/<wikidata_id>.png, and artist-photos.csv with what the credit
-line needs: file, author, licence and its URL. A photo whose licence cannot
-be read is left out: an uncredited photo is not shown.
+Writes genre-atlas/assets/masks/<wikidata_id>.png (the plugin serves them),
+and artist-photos.csv with what the credit line needs: file, author, licence
+and its URL. A photo whose licence cannot be read is left out: an uncredited
+photo is not shown.
 
 Stops by itself after the given number of minutes (default 300) so that a
 GitHub Actions run can commit what it has before its time limit; the next run
@@ -33,7 +34,8 @@ import urllib.request
 from PIL import Image, ImageEnhance, ImageOps
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MASKS = os.path.join(HERE, 'masks')
+# Shipped with the plugin: the dossier serves them from its assets.
+MASKS = os.path.join(HERE, '..', 'genre-atlas', 'assets', 'masks')
 OUT = os.path.join(HERE, 'artist-photos.csv')
 UA = 'GenreAtlas/0.8 (personal non-commercial project; https://github.com/Maxitriangle/genre-atlas)'
 SIZE, THUMB = 132, 330

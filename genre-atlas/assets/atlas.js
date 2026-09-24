@@ -375,6 +375,16 @@
     return '<section class="ga-dsec" aria-labelledby="ga-d-' + key + '"><div class="ga-dhead">' + icon(key) + '<h2 id="ga-d-' + key + '">' + title + '</h2>' +
       '<div class="ga-micro">' + meta.map(function (m) { return '<span>' + m + '</span>'; }).join('') + '</div></div><div class="ga-dbody">' + body + '</div></section>';
   }
+  // A 1-bit screen stored as a mask, coloured with the family token; shown
+  // only with its credit, which the server leaves out along with the photo.
+  function artistCard(a) {
+    var m = a.mask ? "url('" + a.mask + "')" : '';
+    var ph = m ? '<i style="-webkit-mask-image:' + esc(m) + ';mask-image:' + esc(m) + '"></i>' : '<span class="ga-micro">NO PHOTO</span>';
+    var credit = m ? '<span class="ga-acredit">PHOTO: <a href="' + esc(a.source) + '" target="_blank" rel="noopener">' + esc(a.author) + '</a> · ' +
+      (a.licenseUrl ? '<a href="' + esc(a.licenseUrl) + '" target="_blank" rel="noopener">' + esc(a.license) + '</a>' : esc(a.license)) + '</span>' : '';
+    return '<li class="ga-art"><div class="ga-aph' + (m ? '' : ' none') + '">' + ph + '</div><div class="ga-acap"><h3>' + esc(a.name) + '</h3>' +
+      '<span class="ga-micro">' + esc([a.start ? 'SINCE ' + a.start : '', a.country ? a.country.toUpperCase() : ''].filter(Boolean).join(' · ') || '—') + '</span>' + credit + '</div></li>';
+  }
   function viewDossier(n) {
     var d = DOS[n.id] || {}, trail = path(n), fam = family(n), subs = n.real || [];
     var crumbs = trail.map(function (a, i) {
@@ -412,8 +422,9 @@
       '<ol class="ga-lineage">' + rows + '</ol>' + (list ? '<ul class="ga-subs">' + list + '</ul>' : ''));
 
     if (d.artists && d.artists.length) {
-      html += section('artists', 'KEY ARTISTS', [pad(d.artists.length) + ' / 08 ENTRIES', 'SORTED A TO Z'],
-        '<ul class="ga-artists">' + d.artists.map(function (a) { return '<li><h3>' + esc(a.name) + '</h3><span class="ga-micro">' + esc([a.start ? 'EST. ' + a.start : '', a.country].filter(Boolean).join(' · ')) + '</span></li>'; }).join('') + '</ul>');
+      var shot = d.artists.some(function (a) { return a.mask; });
+      html += section('artists', 'KEY ARTISTS', [pad(d.artists.length) + ' / 08 ENTRIES', 'SORTED A TO Z'].concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []),
+        '<ul class="ga-artists">' + d.artists.map(artistCard).join('') + '</ul>');
     }
 
     var links = [];

@@ -219,6 +219,20 @@ try {
 		const lede = await page.locator( '.ga-dossier .ga-lede' ).count();
 		const credit = await page.locator( '.ga-dossier .ga-credit a[href*="en.wikipedia.org/wiki/Shoegaze"]' ).count();
 		check( 'fiche : le texte Wikipedia est affiche et credite', lede === 1 && credit === 1, `${ lede } chapeau, ${ credit } credit` );
+
+		// Key artists: at most 8, A to Z, each photo credited and its mask served.
+		const names = await page.locator( '.ga-dossier .ga-art h3' ).allInnerTexts();
+		const key = s => s.toLowerCase().replace( /^the\s+/, '' );
+		const sorted = names.every( ( n, i ) => i === 0 || key( names[ i - 1 ] ).localeCompare( key( n ), 'en' ) <= 0 );
+		check( 'fiche : les artistes cles sont listes, 8 au plus, de A a Z', names.length > 0 && names.length <= 8 && sorted, names.join( ' · ' ) );
+		const photos = await page.locator( '.ga-dossier .ga-aph i' ).count();
+		const credits = await page.locator( '.ga-dossier .ga-acredit a[href*="commons.wikimedia.org/wiki/File:"]' ).count();
+		const mask = await page.evaluate( () => {
+			const i = document.querySelector( '.ga-dossier .ga-aph i' );
+			const m = i && getComputedStyle( i ).maskImage.match( /url\("?([^")]+)/ );
+			return m ? fetch( m[ 1 ] ).then( r => r.status ) : 0;
+		} );
+		check( 'fiche : chaque photo d artiste a son credit et son masque', photos > 0 && photos === credits && mask === 200, `${ photos } photo(s), ${ credits } credit(s), masque HTTP ${ mask }` );
 		await page.screenshot( { path: `${ SHOTS }/05c-fiche-wikipedia.png`, fullPage: true } );
 	} else {
 		check( 'fiche : le genre Shoegaze existe pour tester le credit Wikipedia', false );

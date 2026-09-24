@@ -294,3 +294,24 @@ Les textes gardent des paragraphes entiers, 1 200 caractères au plus (médiane 
 **Poids de l'arbre.** Chaque page charge l'arbre entier, et avec les textes il passait de ~215 à 635 Ko. L'extrait du panneau (`d`) est ramené de 320 à 160 caractères : 444 Ko, 137 Ko compressé.
 
 **À savoir.** Si Maxime réécrit entièrement un texte venu de Wikipedia, la mention de crédit reste. Elle est juste tant que le texte en est adapté ; pour la retirer, il faut supprimer le champ `ga_text_source` du genre. Une case dans l'écran du genre sera à prévoir si le cas se présente souvent.
+
+## Artistes clés dans l'extension (v0.9.0, 24/09/2026)
+Version unique pour les introductions Wikipedia et les artistes, décision de Maxime : un seul import à refaire.
+
+**Données.**
+- `data/artists-build.py` écrit `artist-import.csv` : 5 529 artistes, 4 036 avec photo, 7 180 liens genre → artiste, 1 437 genres servis.
+- Les masques ont quitté `data/masks` pour `genre-atlas/assets/masks` : le dépôt étant privé, l'extension les sert elle-même (zip ~8 Mo de plus). `artists-photos.py` et son workflow écrivent désormais là.
+
+**Modèle WordPress.**
+- Type `ga_artist` (préfixé pour ne pas heurter un thème qui aurait son `artist`), non public, rangé sous Genres → Artists. Champs : Wikidata, kind, start, country, et les quatre champs de crédit photo.
+- Enregistrer un artiste à la main le passe en `reviewed` : un réimport ne l'écrase plus.
+- Chaque genre porte `ga_artists` (IDs des artistes, dans l'ordre de l'import). Une boîte « Key artists » sur l'écran du genre permet de retirer (case à cocher) et d'ajouter (nom complété parmi les artistes connus ; un nom inconnu crée l'artiste). Modifier la liste pose `ga_artists_edited`, et le réimport garde alors la liste de Maxime.
+- L'écran Import CSV reconnaît le fichier d'artistes à sa colonne `genres`. Ordre : genres, puis artistes.
+
+**Fiche.**
+- Section KEY ARTISTS de la maquette : 4 colonnes (2 sur mobile), 8 au plus, de A à Z (« The » ignoré).
+- Masque coloré par `--fam`. Crédit « PHOTO: auteur · licence » avec des liens vers la page Commons et la licence.
+- Sans crédit ou sans masque, l'artiste s'affiche avec une case hachurée « NO PHOTO ».
+- Le bouton lecture et le bloc Listen de la maquette attendent le choix du service d'écoute : pas de bouton qui ne fait rien.
+
+**Banc** : 26 vérifications, dont l'import des artistes (qui fait échouer le banc s'il rate), l'ordre A → Z, et une vérification que chaque photo a son crédit et que son masque répond en 200. Vérifié aussi à la main : retrait, ajout, puis réimport qui garde la liste modifiée.
