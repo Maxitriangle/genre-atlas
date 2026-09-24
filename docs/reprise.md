@@ -1,26 +1,48 @@
-# Reprise — état au 22/09/2026 au soir
+# Reprise — état au 24/09/2026
 
-**La v0.7.3 est publiée.** Maxime a le CSV courant importé ; il lui restait à passer l'extension en 0.7.3 quand la session s'est arrêtée. **Première chose à vérifier avec lui** : la version affichée dans Extensions, et si l'avertissement jaune des écrans Genres a disparu. S'il est encore là, il nomme les genres en cause — c'est le point de départ du diagnostic.
-
-La mise à jour automatique depuis les releases GitHub est validée de bout en bout : une version publiée apparaît dans Extensions et s'installe en un clic, sans zip.
+**La v0.9.0 est publiée, installée et importée chez Maxime, qui a tout vérifié.** Son site montre, sur chaque fiche genre (`/genre/…/about/`), le texte Wikipedia crédité et jusqu'à 8 artistes clés avec leurs photos tramées. Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
 
 ## Lire d'abord
-Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Les six dernières (v0.5.0 à v0.7.3) sont celles qui décrivent le site actuel.
+Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
 
 ## Où on en est
-- **1 630 genres, 15 tuiles, 13 familles.** Metal et Punk ont leur tuile sans cesser d'être sous Rock.
-- **Plus aucun cadran, plus aucune date.** Au-delà de 8 sous-genres la carte montre des groupes éditoriaux, jamais des flèches ni des décennies. 1 020 genres portent un groupe, sous forme de chemin (« EUROPE > IBERIA > SPAIN »).
-- **`tools/check-widths.py` est le garde-fou.** Il rejoue l'algorithme de la carte sur l'arbre entier, sort en erreur si un nœud dépasse l'anneau ou si un chemin manque, et le banc de test l'exécute avant le navigateur. Attention : il lit le **CSV du dépôt**, pas le site de Maxime. Un site qui a connu plusieurs versions du fichier peut donc être dans un état que ce script déclare sain — c'est exactement ce qui est arrivé en 0.7.3.
-- **L'avertissement de l'admin, lui, lit le site.** Écrans Genres, en jaune : il nomme les genres sans groupe sous une branche large, avec un lien vers chacun. C'est le seul outil qui voit l'état réel de son installation.
+- **2 098 genres, 15 tuiles, 13 familles.** 292 genres ont été rattachés à la main (`data/genre-attach.csv`). 1 327 portent un groupe éditorial, et aucun nœud n'a plus de 8 voisins autour du centre.
+- **Fiche genre** à sa propre adresse `/about/`. Elle comporte :
+  - le texte (introduction Wikipedia pour 1 308 genres, créditée CC BY-SA 4.0 ; un texte écrit à la main n'est jamais remplacé) ;
+  - la lignée ;
+  - les artistes clés (type `ga_artist`, 5 529 artistes, 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
+  - les sources.
+- **Maxime peut tout éditer dans WordPress.** Le texte se modifie dans l'éditeur du genre. Les artistes se gèrent par la boîte « Key artists » et par Genres → Artists. Une liste ou un artiste modifié à la main survit aux réimports.
+- **Chaîne de données** (voir `data/README.md`) :
+  - genres : `wikidata-build.py` → `build-groups.py` → `wikidata-build.py` ;
+  - textes : `wikipedia-fetch.py` ;
+  - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py`.
+  Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads »), parce que Wikidata bloque l'adresse des sessions Claude.
+- **Banc de test** : `tools/test-local.sh`, 26 vérifications, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
-1. **Contester les regroupements.** Les deux premiers sont traités (voir « Rock et Latin » en bas). Les autres restent ouverts à la contestation : modifier `data/build-groups.py`, rejouer `build-groups.py` puis `wikidata-build.py`, renvoyer le CSV. Aucune republication de l'extension nécessaire.
-2. **Les 481 genres restés dehors (23 %)**, faute de parent chez Wikidata — funk, ska, gospel, reggaeton, ambient, K-pop, J-pop, Afrobeat, klezmer, raï. **Décidé le 23/09 : les rattacher** à un genre existant par une table, les 13 familles restent 13. Fait : `data/genre-attach.csv` (voir la dernière section). **En attente de la relecture de Maxime** avant qu'il importe.
-3. **BPM et descriptions**, jamais commencés : `bpm_min`/`bpm_max` sont vides sur les 1 630 lignes. **Décidé le 23/09 : après les points 1 et 2**, pour ne rien écrire sur des genres qui vont changer de place.
-4. **Six genres résiduels sur le site de Maxime**, hérités de la v0.3.0 et absents du fichier actuel : `space ambient`, `tribal ambient`, `maloya électronique` (sous Electronic Music), `mega funk`, `J-euro`, `dungeon chip`. **Décidé le 23/09 : Maxime les supprime** à la main (corbeille). Les deux ambient reviendront proprement si ambient est rattaché (point 2).
-5. **Un défaut cosmétique connu** : le titre du panneau coupe au milieu d'un mot sur les noms longs (« ALTERNATIV / E ROCK »). Défaut CSS antérieur à ces sessions, jamais corrigé.
+1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
+   - les artistes choisis (`data/artists-picks.csv`) ;
+   - les 453 écartés (`data/artists-rejected.csv`, avec les candidats Wikidata de chacun) ;
+   - quelques « photos » qui sont une pochette ou un logo (Blumfeld, Kraftwerk) ;
+   - les 45 photos écartées faute de crédit.
+2. **Écoute (Listen)** : le service n'est pas choisi. La maquette prévoit un bouton lecture sur chaque artiste et une section de 8 titres. Rien n'est codé tant que le service n'est pas choisi.
+3. **BPM** : colonnes `bpm_min`/`bpm_max` toujours vides. « Plus tard », selon Maxime.
+4. **Genres sans texte** : 790 (pas d'article anglais, ou seulement une section d'article). À écrire à la main ou à laisser vides.
+5. **Crédit Wikipedia sur un texte réécrit** : il reste affiché tant que le champ `ga_text_source` existe. Prévoir une case dans l'écran du genre si Maxime réécrit souvent.
+6. **Défaut cosmétique ancien** : le titre du panneau coupe au milieu d'un mot sur les noms longs.
+
+## Pour publier une nouvelle version (rappel)
+1. Banc vert.
+2. Monter la version (`genre-atlas.php` aux deux endroits, et `readme.txt`).
+3. Ouvrir une PR depuis la branche de session. Maxime la fusionne, puis lance Actions → Release → Run workflow.
+4. Il met à jour dans Extensions, puis réimporte `genre-import.csv` et `artist-import.csv` (Genres → Import CSV), dans cet ordre, si les données ont changé.
 
 ## Ce qu'il ne faut pas réapprendre
+- **Wikimedia bloque les sessions Claude** (429 et 403 « robot policy » sur Wikidata ; Wikipedia répond). Tout ce qui interroge Wikidata ou Commons passe par un workflow GitHub Actions qui commite son résultat sur la branche.
+- **`wp_localize_script` transmet tout en chaîne**, et `"0"` est vrai en JavaScript : comparer avec `Number(x) === 1`.
+- Pour attendre un processus, `pgrep -f "[a]rtists-verify"` : sans les crochets, le motif se trouve lui-même et tue ou bloque le shell.
+- Toute liste d'identifiants Wikidata écrite de mémoire doit être vérifiée contre ses libellés avant usage.
 - Le dépôt est **privé** : les liens de téléchargement direct vers un fichier du dépôt ne fonctionnent pas pour Maxime. Lui envoyer le fichier directement.
 - Après une modification des groupes, **deux étapes chez lui** : mettre à jour l'extension *et* réimporter le CSV. La première seule ne change rien, les libellés vivent dans les données.
 - Le dossier de captures du banc de test est **reconstruit à chaque exécution** : une capture ad hoc est perdue au passage suivant.
