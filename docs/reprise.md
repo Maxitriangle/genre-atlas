@@ -248,3 +248,18 @@ Contrôle : les artistes connus pointent vers la bonne fiche (Nirvana Q11649, U2
 **Les rejets ne sont pas tous des erreurs de sélection.** Une partie sont des noms ambigus que la recherche ne départage pas (« ABC », « AZ », « 67 », « Arena »). Mais on y trouve aussi de vrais groupes (Agnostic Front, American Football, Arashi, Anti Cimex) : `kind()` est trop strict sur le type Wikidata, ou la recherche ne les a pas classés dans ses 7 premiers résultats. Seconde passe à prévoir, plus tolérante, sur les seuls rejets.
 
 L'année affichée pour une personne est le début d'activité (P2031) ou, à défaut, la naissance (P569) ; le pays, P495 puis la nationalité P27 — parfois anachronique (un musicien de 1898 « People's Republic of China »).
+
+## Vérification des artistes, reprise en sept passes (24/09/2026)
+La première passe acceptait des erreurs. Corrigées une à une dans `artists-verify.py`, chaque passe relancée sur GitHub Actions (quelques minutes grâce au cache) :
+1. **Types « groupe » faux.** La liste écrite de mémoire contenait « record label », « musical work/composition », un orchestre, un pèlerinage et une rivière : labels et albums passaient pour des groupes. Liste vérifiée contre les libellés Wikidata, commentée ID par ID. Idem pour les métiers (peintre, graveur, danseur, dirigeant retirés).
+2. **Sous-classes de groupe** (« hardcore punk band », « idol group ») : lues via P279.
+3. **Description de recherche** (« Japanese idol group », « Cuban singer ») : acceptée, mais une fiche reconnue par ses déclarations passe toujours avant.
+4. **Genre P136** : ne compte que s'il est un des genres de l'atlas (les peintres ont un genre : Picasso via le cubisme).
+5. **Nom exact** : la recherche renvoie aussi les noms qui commencent pareil (« Jesu » → Jésus-Christ, puis Jesús Franco). Seule une égalité avec un libellé ou un alias compte, sans accents, ponctuation, apostrophes ni « The ».
+6. Le texte « matched » de la recherche n'est pas fiable : on compare aussi le libellé affiché et, pour les candidats musiciens, **tous les libellés et alias dans toutes les langues** (« Mario Bauzá » est un alias de Mario Bauzá Cárdenas).
+
+**Résultat final.** 5 529 artistes confirmés (3 115 personnes, 2 414 groupes), 453 écartés, 4 081 avec photo, 1 437 genres avec au moins un artiste (348 en ont 8). Par rapport à la première passe : même total, mais **79 fiches fausses remplacées par 79 justes** (sortis : George W. Bush, Jésus-Christ, Picasso, Warner Music Group, des chansons et albums, des acteurs ; entrés : Agnostic Front, Arashi, Boyz II Men, Bad Religion sur la bonne fiche…).
+
+**Ce qui reste écarté** (`artists-rejected.csv`, chaque ligne liste ce que Wikidata proposait) : noms absents de Wikidata, noms trop ambigus (ABC, AZ, Arena), et quelques translittérations (« Ahmed Adaweya » pour Ahmad Adaweyyah). À traiter à la relecture d'équipe, pas par un assouplissement supplémentaire.
+
+**À retenir.** Toute liste d'identifiants Wikidata écrite de mémoire doit être vérifiée contre ses libellés avant usage. Et comparer une passe à la précédente (entrés / sortis, triés par notoriété) est ce qui a révélé chaque erreur.
