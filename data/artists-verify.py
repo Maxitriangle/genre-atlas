@@ -123,6 +123,21 @@ def slim(ent):
             'sitelinks': {k: 1 for k in ent.get('sitelinks', {})}}
 
 
+def all_names(qids):
+    """Every label and alias, in every language, of the given items: a picked
+    name is often an alias ("Mario Bauzá" for Mario Bauzá Cárdenas), and the
+    search does not always say which one it matched."""
+    out = {}
+    qids = sorted(qids)
+    for i in range(0, len(qids), 50):
+        d = get({'action': 'wbgetentities', 'ids': '|'.join(qids[i:i + 50]), 'props': 'labels|aliases'})
+        for q, e in d.get('entities', {}).items():
+            names = [v.get('value', '') for v in e.get('labels', {}).values()]
+            names += [a.get('value', '') for vs in e.get('aliases', {}).values() for a in vs]
+            out[q] = {norm(n) for n in names if n}
+    return out
+
+
 def entities(qids):
     out = {}
     qids = sorted(qids)
@@ -155,7 +170,8 @@ MUSIC_GENRES = {r['wikidata_id'] for r in csv.DictReader(open(os.path.join(HERE,
 def norm(name):
     """A name as a comparison key: no accents, no punctuation, no leading
     "the", so "Kassav'" meets "Kassav" and "The Cure" meets "Cure"."""
-    s = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode().lower()
+    s = re.sub(r"['’ʼ`´]", '', name)   # D'Angelo and D’Angelo alike
+    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
     s = re.sub(r'[^a-z0-9]+', ' ', s).strip()
     # A name in another script folds to nothing: compare it as written.
     return re.sub(r'^the ', '', s) if s else name.strip().lower()
@@ -204,6 +220,16 @@ def main():
             GROUP_CLASSES.add(c)
     json.dump(cache, open(CACHE, 'w'))
 
+    # Candidates that are musicians but whose name the search result does not
+    # show as equal: read all their names before judging.
+    def shown(name, h):
+        names = [h.get('match', {}).get('text', ''), h.get('label', '')] + list(h.get('aliases', []))
+        return norm(name) in {norm(n) for n in names if n}
+    unsure = {h['id'] for name, hits in found.items() for h in hits
+              if not shown(name, h) and kind(ents.get(h['id'], {}))[0]}
+    NAMES = all_names(unsure)
+    json.dump(cache, open(CACHE, 'w'))
+
     resolved, rejected = {}, []
     for name, hits in found.items():
         best = None
@@ -214,8 +240,7 @@ def main():
             # label or an alias equal to the name counts.
             # Compared with the result's label and aliases too: the text the
             # search says it matched is not always the label (Beyoncé's was not).
-            names = [h.get('match', {}).get('text', ''), h.get('label', '')] + list(h.get('aliases', []))
-            exact = norm(name) in {norm(n) for n in names if n}
+            exact = shown(name, h) or norm(name) in NAMES.get(q, ())
             if not exact:
                 continue
             k, sure = kind(e, h.get('description', ''), exact)
