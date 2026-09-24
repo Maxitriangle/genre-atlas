@@ -36,16 +36,27 @@ API = 'https://www.wikidata.org/w/api.php?'
 CACHE = os.path.join(HERE, '.artists-cache.json')
 
 HUMAN = 'Q5'
-# Musical group and the kinds of group Wikidata types bands with.
-GROUPS = {'Q215380', 'Q5741069', 'Q2088357', 'Q9212979', 'Q216337', 'Q641066',
-          'Q281643', 'Q42998', 'Q131186', 'Q56816954', 'Q1644573', 'Q20819922',
-          'Q18127', 'Q1142850', 'Q2393701', 'Q105543609'}
-# Occupations that make a human count as a musician.
+# Musical group and the kinds of group Wikidata types bands with. Every ID
+# here was checked against its English label: an earlier list typed from
+# memory held "record label" and "musical work/composition", which let labels
+# and albums through as bands.
+GROUPS = {'Q215380',   # musical group
+          'Q2088357',  # musical ensemble
+          'Q5741069',  # rock band
+          'Q56816954', # heavy metal band
+          'Q9212979',  # musical duo
+          'Q281643',   # musical trio
+          'Q216337',   # boy band
+          'Q641066',   # girl group
+          'Q42998',    # orchestra
+          'Q131186',   # choir
+          'Q20819922'} # opera company
+# Occupations that make a human count as a musician, checked the same way.
 MUSIC_JOBS = {'Q639669', 'Q177220', 'Q36834', 'Q488205', 'Q753110', 'Q855091',
               'Q130857', 'Q386854', 'Q158852', 'Q486748', 'Q1259917', 'Q2252262',
               'Q1075651', 'Q806349', 'Q183945', 'Q584301', 'Q1198887', 'Q12800682',
-              'Q765778', 'Q1415090', 'Q2643890', 'Q5716684', 'Q3089940', 'Q1643514',
-              'Q2865819', 'Q6168364', 'Q1327329', 'Q13365770', 'Q1076502', 'Q1028181'}
+              'Q765778', 'Q1415090', 'Q2643890', 'Q1643514', 'Q2865819', 'Q6168364',
+              'Q1327329', 'Q1076502'}
 
 cache = json.load(open(CACHE)) if os.path.exists(CACHE) else {}
 
@@ -138,20 +149,22 @@ GROUP_CLASSES = set(GROUPS)   # grown in main() with the subclasses Wikidata use
 
 
 def kind(ent, desc='', exact=False):
+    """('group' or 'person', 2 if Wikidata's own statements say so, 1 if only
+    the search description does), or (None, 0)."""
     p31 = ids(ent, 'P31')
     if p31 & GROUP_CLASSES:
-        return 'group'
+        return 'group', 2
     # A music occupation, or anything only musicians carry: a genre, an
     # instrument, a record label.
     if HUMAN in p31 and (ids(ent, 'P106') & MUSIC_JOBS or ids(ent, 'P136')
                          or ids(ent, 'P1303') or ids(ent, 'P264')):
-        return 'person'
+        return 'person', 2
     if exact and desc:
         if HUMAN in p31 and MUSIC_WORDS.search(desc):
-            return 'person'
+            return 'person', 1
         if HUMAN not in p31 and GROUP_WORDS.search(desc):
-            return 'group'
-    return None
+            return 'group', 1
+    return None, 0
 
 
 def main():
@@ -184,11 +197,14 @@ def main():
         for rank, h in enumerate(hits):
             q, e = h['id'], ents.get(h['id'], {})
             exact = h.get('match', {}).get('text', '').lower() == name.lower()
-            k = kind(e, h.get('description', ''), exact)
+            k, sure = kind(e, h.get('description', ''), exact)
             if not k:
                 continue
             label = e.get('labels', {}).get('en', {}).get('value', '')
-            score = (bool(ids(e, 'P136') & wanted[name]),           # tagged with the genre
+            # A statement beats a description: "Pedro Infante" the film star is
+            # not outranked by a namesake whose only claim is "Mexican singer".
+            score = (sure,
+                     bool(ids(e, 'P136') & wanted[name]),           # tagged with the genre
                      label.lower() == name.lower(),                    # exact name
                      len(e.get('sitelinks', {})),                      # best documented
                      -rank)
