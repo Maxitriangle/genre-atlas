@@ -1,0 +1,39 @@
+name: Artist photos
+# Screens each verified artist's Commons photo into a 1-bit mask with
+# data/artists-photos.py and commits the masks and their credits. Runs here
+# for the same reason as "Verify artists": Wikimedia blocks the address Claude
+# sessions leave from. The script stops itself before the job's time limit and
+# skips the masks already committed, so a second run finishes the job.
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - data/artists-photos.py
+      - .github/workflows/artist-photos.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: artist-photos-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow
+        run: pip install --quiet pillow
+      - name: Screen the photos
+        run: python3 data/artists-photos.py 320
+      - name: Commit the masks
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add genre-atlas/assets/masks data/artist-photos.csv
+          git diff --cached --quiet && exit 0
+          git commit -m "Screened artist photos from Wikimedia Commons"
+          # Other work lands on the same branch while this runs.
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

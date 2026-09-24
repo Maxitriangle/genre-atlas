@@ -24,7 +24,9 @@ so a stopped run picks up where it left off.
 import csv
 import json
 import os
+import re
 import sys
+import unicodedata
 import time
 import urllib.parse
 import urllib.request
@@ -35,16 +37,27 @@ API = 'https://www.wikidata.org/w/api.php?'
 CACHE = os.path.join(HERE, '.artists-cache.json')
 
 HUMAN = 'Q5'
-# Musical group and the kinds of group Wikidata types bands with.
-GROUPS = {'Q215380', 'Q5741069', 'Q2088357', 'Q9212979', 'Q216337', 'Q641066',
-          'Q281643', 'Q42998', 'Q131186', 'Q56816954', 'Q1644573', 'Q20819922',
-          'Q18127', 'Q1142850', 'Q2393701', 'Q105543609'}
-# Occupations that make a human count as a musician.
+# Musical group and the kinds of group Wikidata types bands with. Every ID
+# here was checked against its English label: an earlier list typed from
+# memory held "record label" and "musical work/composition", which let labels
+# and albums through as bands.
+GROUPS = {'Q215380',   # musical group
+          'Q2088357',  # musical ensemble
+          'Q5741069',  # rock band
+          'Q56816954', # heavy metal band
+          'Q9212979',  # musical duo
+          'Q281643',   # musical trio
+          'Q216337',   # boy band
+          'Q641066',   # girl group
+          'Q42998',    # orchestra
+          'Q131186',   # choir
+          'Q20819922'} # opera company
+# Occupations that make a human count as a musician, checked the same way.
 MUSIC_JOBS = {'Q639669', 'Q177220', 'Q36834', 'Q488205', 'Q753110', 'Q855091',
               'Q130857', 'Q386854', 'Q158852', 'Q486748', 'Q1259917', 'Q2252262',
               'Q1075651', 'Q806349', 'Q183945', 'Q584301', 'Q1198887', 'Q12800682',
-              'Q765778', 'Q1415090', 'Q2643890', 'Q5716684', 'Q3089940', 'Q1643514',
-              'Q2865819', 'Q6168364', 'Q1327329', 'Q13365770', 'Q1076502', 'Q1028181'}
+              'Q765778', 'Q1415090', 'Q2643890', 'Q1643514', 'Q2865819', 'Q6168364',
+              'Q1327329', 'Q1076502'}
 
 cache = json.load(open(CACHE)) if os.path.exists(CACHE) else {}
 
@@ -98,7 +111,7 @@ def year(ent, *props):
     return ''
 
 
-KEEP = ('P31', 'P106', 'P136', 'P1303', 'P264', 'P495', 'P27', 'P740', 'P18', 'P571', 'P2031', 'P569')
+KEEP = ('P31', 'P279', 'P106', 'P136', 'P1303', 'P264', 'P495', 'P27', 'P740', 'P18', 'P571', 'P2031', 'P569')
 
 
 def slim(ent):
@@ -108,6 +121,21 @@ def slim(ent):
             'claims': {p: [{'mainsnak': c['mainsnak']} for c in cs]
                        for p, cs in ent.get('claims', {}).items() if p in KEEP},
             'sitelinks': {k: 1 for k in ent.get('sitelinks', {})}}
+
+
+def all_names(qids):
+    """Every label and alias, in every language, of the given items: a picked
+    name is often an alias ("Mario Bauzá" for Mario Bauzá Cárdenas), and the
+    search does not always say which one it matched."""
+    out = {}
+    qids = sorted(qids)
+    for i in range(0, len(qids), 50):
+        d = get({'action': 'wbgetentities', 'ids': '|'.join(qids[i:i + 50]), 'props': 'labels|aliases'})
+        for q, e in d.get('entities', {}).items():
+            names = [v.get('value', '') for v in e.get('labels', {}).values()]
+            names += [a.get('value', '') for vs in e.get('aliases', {}).values() for a in vs]
+            out[q] = {norm(n) for n in names if n}
+    return out
 
 
 def entities(qids):
@@ -123,16 +151,49 @@ def entities(qids):
     return out
 
 
-def kind(ent):
+# The one-line description a search result carries ("American hardcore punk
+# band", "Japanese idol group", "Cuban singer"). Trusted only when the name
+# matched exactly, since it is a hint and not a statement.
+GROUP_WORDS = re.compile(r'\b(band|duo|trio|quartet|quintet|sextet|ensemble|orchestra|choir|big band)\b'
+                         r'|\bmusic(al)? (group|collective|project)\b'
+                         r'|\b(pop|rock|rap|hip hop|hip-hop|girl|boy|vocal|folk|jazz|punk|metal|idol|dance|electronic) group\b', re.I)
+MUSIC_WORDS = re.compile(r'\b(musician|singer|songwriter|rapper|composer|DJ|disc jockey|guitarist|pianist|drummer|'
+                         r'bassist|violinist|cellist|saxophonist|trumpeter|percussionist|record producer|music producer|'
+                         r'vocalist|organist|conductor|accordionist|harpist|flautist|beatmaker|bandleader|griot|'
+                         r'MC|oud player|sitar player|tabla player)\b', re.I)
+GROUP_CLASSES = set(GROUPS)   # grown in main() with the subclasses Wikidata uses
+# A genre (P136) counts as a sign of a musician only if it is a music genre:
+# painters carry genres too (Pablo Picasso: cubism). The atlas's own genres.
+MUSIC_GENRES = {r['wikidata_id'] for r in csv.DictReader(open(os.path.join(HERE, 'genre-import.csv'), encoding='utf-8'))}
+
+
+def norm(name):
+    """A name as a comparison key: no accents, no punctuation, no leading
+    "the", so "Kassav'" meets "Kassav" and "The Cure" meets "Cure"."""
+    s = re.sub(r"['’ʼ`´]", '', name)   # D'Angelo and D’Angelo alike
+    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
+    s = re.sub(r'[^a-z0-9]+', ' ', s).strip()
+    # A name in another script folds to nothing: compare it as written.
+    return re.sub(r'^the ', '', s) if s else name.strip().lower()
+
+
+def kind(ent, desc='', exact=False):
+    """('group' or 'person', 2 if Wikidata's own statements say so, 1 if only
+    the search description does), or (None, 0)."""
     p31 = ids(ent, 'P31')
-    if p31 & GROUPS:
-        return 'group'
-    # A music occupation, or anything only musicians carry: a genre, an
+    if p31 & GROUP_CLASSES:
+        return 'group', 2
+    # A music occupation, or anything only musicians carry: a music genre, an
     # instrument, a record label.
-    if HUMAN in p31 and (ids(ent, 'P106') & MUSIC_JOBS or ids(ent, 'P136')
+    if HUMAN in p31 and (ids(ent, 'P106') & MUSIC_JOBS or ids(ent, 'P136') & MUSIC_GENRES
                          or ids(ent, 'P1303') or ids(ent, 'P264')):
-        return 'person'
-    return None
+        return 'person', 2
+    if exact and desc:
+        if HUMAN in p31 and MUSIC_WORDS.search(desc):
+            return 'person', 1
+        if HUMAN not in p31 and GROUP_WORDS.search(desc):
+            return 'group', 1
+    return None, 0
 
 
 def main():
@@ -147,22 +208,49 @@ def main():
     for i, name in enumerate(sorted(wanted)):
         hits = get({'action': 'wbsearchentities', 'search': name, 'language': 'en',
                     'type': 'item', 'limit': 7}).get('search', [])
-        found[name] = [h['id'] for h in hits]
+        found[name] = hits
         if i % 200 == 0:
             print('  searched %d / %d' % (i, len(wanted)), flush=True)
-    ents = entities({q for qs in found.values() for q in qs})
+    ents = entities({h['id'] for hs in found.values() for h in hs})
+    # Bands are often typed with a subclass of "musical group" ("hardcore punk
+    # band", "idol group") that no fixed list can hold: read those classes.
+    classes = {c for e in ents.values() for c in ids(e, 'P31')} - GROUP_CLASSES - {HUMAN}
+    for c, e in entities(classes).items():
+        if ids(e, 'P279') & GROUPS:
+            GROUP_CLASSES.add(c)
+    json.dump(cache, open(CACHE, 'w'))
+
+    # Candidates that are musicians but whose name the search result does not
+    # show as equal: read all their names before judging.
+    def shown(name, h):
+        names = [h.get('match', {}).get('text', ''), h.get('label', '')] + list(h.get('aliases', []))
+        return norm(name) in {norm(n) for n in names if n}
+    unsure = {h['id'] for name, hits in found.items() for h in hits
+              if not shown(name, h) and kind(ents.get(h['id'], {}))[0]}
+    NAMES = all_names(unsure)
     json.dump(cache, open(CACHE, 'w'))
 
     resolved, rejected = {}, []
-    for name, qs in found.items():
+    for name, hits in found.items():
         best = None
-        for rank, q in enumerate(qs):
-            e = ents.get(q, {})
-            k = kind(e)
+        for rank, h in enumerate(hits):
+            q, e = h['id'], ents.get(h['id'], {})
+            # The search also returns names that merely start like the one
+            # asked for: "Jesu" found Jesús Franco, and once Jesus Christ. Only a
+            # label or an alias equal to the name counts.
+            # Compared with the result's label and aliases too: the text the
+            # search says it matched is not always the label (Beyoncé's was not).
+            exact = shown(name, h) or norm(name) in NAMES.get(q, ())
+            if not exact:
+                continue
+            k, sure = kind(e, h.get('description', ''), exact)
             if not k:
                 continue
             label = e.get('labels', {}).get('en', {}).get('value', '')
-            score = (bool(ids(e, 'P136') & wanted[name]),           # tagged with the genre
+            # A statement beats a description: "Pedro Infante" the film star is
+            # not outranked by a namesake whose only claim is "Mexican singer".
+            score = (sure,
+                     bool(ids(e, 'P136') & wanted[name]),           # tagged with the genre
                      label.lower() == name.lower(),                    # exact name
                      len(e.get('sitelinks', {})),                      # best documented
                      -rank)
@@ -171,7 +259,9 @@ def main():
         if best:
             resolved[name] = (best[1], best[2])
         else:
-            rejected.append((name, 'no musician or group of that name on Wikidata'))
+            # Say what Wikidata offered, so a rejection can be judged by eye.
+            seen = '; '.join('%s %s (%s)' % (h['id'], h.get('label', ''), h.get('description', '—')) for h in hits[:3])
+            rejected.append((name, 'no musician or group of that name on Wikidata' + (' — found: ' + seen if seen else ' — no result')))
 
     arts = {}
     for name, (q, k) in resolved.items():

@@ -3,11 +3,13 @@
  * CSV importer. Expected columns (header row, any order):
  * wikidata_id, musicbrainz_id, name, parent_wikidata_id, epoch_year, origin,
  * bpm_min, bpm_max, parent_choice, wikidata_parents_raw, featured,
- * family_shape, family_hue, group
+ * family_shape, family_hue, group, wikipedia_title, description
  *
  * Genres are matched on wikidata_id, so the same file can be imported again
  * safely: existing genres are updated, never duplicated. Fields already
- * reviewed by hand (status "reviewed") are left untouched.
+ * reviewed by hand (status "reviewed") are left untouched. The description
+ * (the lead of the Wikipedia article) only fills a genre that has no text:
+ * a text written or edited in WordPress is never replaced.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -44,6 +46,11 @@ class Genre_Atlas_Importer {
 		}
 		$header[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $header[0] );
 		$header    = array_map( 'trim', $header );
+		// The artist file goes through the same screen.
+		if ( in_array( 'genres', $header, true ) && ! in_array( 'parent_wikidata_id', $header, true ) ) {
+			fclose( $handle );
+			return self::import_artists( $file );
+		}
 		foreach ( array( 'wikidata_id', 'name', 'parent_wikidata_id' ) as $required ) {
 			if ( ! in_array( $required, $header, true ) ) {
 				return new WP_Error( 'genre_atlas_columns', 'Missing column: ' . $required );
@@ -76,7 +83,7 @@ class Genre_Atlas_Importer {
 			}
 		}
 
-		$stats = array( 'rows' => count( $rows ), 'created' => 0, 'updated' => 0, 'skipped_reviewed' => 0, 'parents_set' => 0, 'parents_missing' => 0 );
+		$stats = array( 'rows' => count( $rows ), 'created' => 0, 'updated' => 0, 'skipped_reviewed' => 0, 'parents_set' => 0, 'parents_missing' => 0, 'texts' => 0 );
 		$ids   = $existing;
 
 		// Pass 1: create / update the genres.
@@ -99,7 +106,9 @@ class Genre_Atlas_Importer {
 				'ga_featured'             => isset( $row['featured'] ) && '' !== $row['featured'] ? (int) $row['featured'] : '',
 				'ga_family_shape'         => isset( $row['family_shape'] ) ? $row['family_shape'] : '',
 				'ga_family_hue'           => isset( $row['family_hue'] ) && '' !== $row['family_hue'] ? (int) $row['family_hue'] : '',
+				'ga_wikipedia'            => isset( $row['wikipedia_title'] ) ? $row['wikipedia_title'] : '',
 			);
+			$lead = isset( $row['description'] ) ? $row['description'] : '';
 			if ( isset( $ids[ $qid ] ) ) {
 				$post_id = $ids[ $qid ];
 				if ( 'reviewed' === get_post_meta( $post_id, 'ga_status', true ) ) {
@@ -112,9 +121,20 @@ class Genre_Atlas_Importer {
 						update_post_meta( $post_id, $k, $v );
 					}
 				}
+				if ( '' !== $lead && '' === trim( get_post_field( 'post_content', $post_id ) ) ) {
+					$wpdb->update( $wpdb->posts, array( 'post_content' => $lead ), array( 'ID' => $post_id ) );
+					clean_post_cache( $post_id );
+					// The dossier credits Wikipedia while this mark is there.
+					update_post_meta( $post_id, 'ga_text_source', 'wikipedia' );
+					$stats['texts']++;
+				}
 				$stats['updated']++;
 			} else {
 				$meta['ga_status'] = 'imported';
+				if ( '' !== $lead ) {
+					$meta['ga_text_source'] = 'wikipedia';
+					$stats['texts']++;
+				}
 				$meta              = array_filter(
 					$meta,
 					function ( $v ) {
@@ -123,10 +143,12 @@ class Genre_Atlas_Importer {
 				);
 				$post_id           = wp_insert_post(
 					array(
-						'post_type'   => 'genre',
-						'post_status' => 'publish',
-						'post_title'  => self::nice_title( $row['name'] ),
-						'meta_input'  => $meta,
+						'post_type'    => 'genre',
+						'post_status'  => 'publish',
+						'post_title'   => self::nice_title( $row['name'] ),
+						// wp_insert_post() unslashes what it is given.
+						'post_content' => wp_slash( $lead ),
+						'meta_input'   => $meta,
 					),
 					true
 				);
@@ -164,6 +186,128 @@ class Genre_Atlas_Importer {
 		wp_cache_flush();
 		genre_atlas_flush_cache();
 		flush_rewrite_rules( false );
+		return $stats;
+	}
+	/**
+	 * Artist file (data/artist-import.csv): wikidata_id, name, kind, start,
+	 * country, genres ("|"-separated Wikidata IDs of genres), photo_file,
+	 * photo_author, photo_license, photo_license_url. Import it after the
+	 * genres. Artists are matched on wikidata_id; an artist saved by hand
+	 * keeps its fields, and a genre whose "Key artists" list was edited by
+	 * hand keeps its list.
+	 *
+	 * @param string $file Path to the CSV.
+	 * @return array|WP_Error Stats.
+	 */
+	public static function import_artists( $file ) {
+		global $wpdb;
+		$handle    = fopen( $file, 'r' );
+		$header    = array_map( 'trim', fgetcsv( $handle, 0, ',', '"', '\\' ) );
+		$header[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $header[0] );
+		foreach ( array( 'wikidata_id', 'name', 'genres' ) as $required ) {
+			if ( ! in_array( $required, $header, true ) ) {
+				fclose( $handle );
+				return new WP_Error( 'genre_atlas_columns', 'Missing column: ' . $required );
+			}
+		}
+		$rows = array();
+		while ( ( $line = fgetcsv( $handle, 0, ',', '"', '\\' ) ) !== false ) {
+			if ( count( $line ) === count( $header ) ) {
+				$row = array_map( 'trim', array_combine( $header, $line ) );
+				if ( '' !== $row['wikidata_id'] && '' !== $row['name'] ) {
+					$rows[] = $row;
+				}
+			}
+		}
+		fclose( $handle );
+
+		if ( function_exists( 'set_time_limit' ) ) {
+			@set_time_limit( 0 ); // phpcs:ignore
+		}
+		wp_suspend_cache_invalidation( true );
+
+		// Genres and artists already there, keyed by Wikidata ID.
+		$genres  = array();
+		$artists = array();
+		$found   = $wpdb->get_results( "SELECT m.post_id, m.meta_value, p.post_type FROM {$wpdb->postmeta} m JOIN {$wpdb->posts} p ON p.ID = m.post_id WHERE m.meta_key = 'ga_wikidata_id' AND p.post_type IN ( 'genre', 'ga_artist' )" );
+		foreach ( $found as $f ) {
+			if ( 'genre' === $f->post_type ) {
+				$genres[ $f->meta_value ] = (int) $f->post_id;
+			} else {
+				$artists[ $f->meta_value ] = (int) $f->post_id;
+			}
+		}
+
+		$stats = array( 'artists' => count( $rows ), 'created' => 0, 'updated' => 0, 'kept' => 0, 'genres' => 0, 'genres_kept' => 0, 'genres_missing' => 0 );
+		$lists = array();
+		foreach ( $rows as $row ) {
+			$qid  = $row['wikidata_id'];
+			$meta = array( 'ga_wikidata_id' => $qid );
+			foreach ( array( 'kind', 'start', 'country', 'photo_file', 'photo_author', 'photo_license', 'photo_license_url' ) as $k ) {
+				$meta[ 'ga_' . $k ] = isset( $row[ $k ] ) ? $row[ $k ] : '';
+			}
+			if ( isset( $artists[ $qid ] ) ) {
+				$id = $artists[ $qid ];
+				if ( 'reviewed' === get_post_meta( $id, 'ga_status', true ) ) {
+					$stats['kept']++;
+				} else {
+					$wpdb->update( $wpdb->posts, array( 'post_title' => $row['name'] ), array( 'ID' => $id ) );
+					foreach ( $meta as $k => $v ) {
+						if ( '' === $v ) {
+							delete_post_meta( $id, $k );
+						} else {
+							update_post_meta( $id, $k, $v );
+						}
+					}
+					clean_post_cache( $id );
+					$stats['updated']++;
+				}
+			} else {
+				$meta['ga_status'] = 'imported';
+				$id                = wp_insert_post(
+					array(
+						'post_type'   => 'ga_artist',
+						'post_status' => 'publish',
+						'post_title'  => wp_slash( $row['name'] ),
+						'meta_input'  => array_filter(
+							$meta,
+							function ( $v ) {
+								return '' !== $v;
+							}
+						),
+					),
+					true
+				);
+				if ( is_wp_error( $id ) ) {
+					continue;
+				}
+				$artists[ $qid ] = (int) $id;
+				$stats['created']++;
+			}
+			foreach ( explode( '|', $row['genres'] ) as $g ) {
+				$g = trim( $g );
+				if ( '' !== $g ) {
+					$lists[ $g ][] = $artists[ $qid ];
+				}
+			}
+		}
+
+		// The artists of each genre, unless the list was edited by hand.
+		foreach ( $lists as $g => $ids ) {
+			if ( ! isset( $genres[ $g ] ) ) {
+				$stats['genres_missing']++;
+				continue;
+			}
+			if ( get_post_meta( $genres[ $g ], 'ga_artists_edited', true ) ) {
+				$stats['genres_kept']++;
+				continue;
+			}
+			update_post_meta( $genres[ $g ], 'ga_artists', implode( ',', array_slice( array_unique( $ids ), 0, GENRE_ATLAS_MAX_ARTISTS ) ) );
+			$stats['genres']++;
+		}
+
+		wp_suspend_cache_invalidation( false );
+		wp_cache_flush();
 		return $stats;
 	}
 }

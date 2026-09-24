@@ -129,12 +129,15 @@ function genre_atlas_import_page() {
 			$stats = Genre_Atlas_Importer::import( $_FILES['genre_csv']['tmp_name'] ); // phpcs:ignore
 			if ( is_wp_error( $stats ) ) {
 				echo '<div class="notice notice-error"><p>' . esc_html( $stats->get_error_message() ) . '</p></div>';
+			} elseif ( isset( $stats['artists'] ) ) {
+				echo '<div class="notice notice-success"><p>Artist import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['kept'] . ' kept (edited by hand), ' . (int) $stats['genres'] . ' genres given their key artists, ' . (int) $stats['genres_kept'] . ' genre lists kept (edited by hand), ' . (int) $stats['genres_missing'] . ' genres not found.</p></div>';
 			} else {
-				echo '<div class="notice notice-success"><p>Import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['skipped_reviewed'] . ' protected (reviewed), ' . (int) $stats['parents_set'] . ' parents set, ' . (int) $stats['parents_missing'] . ' parents not found.</p></div>';
+				echo '<div class="notice notice-success"><p>Import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['skipped_reviewed'] . ' protected (reviewed), ' . (int) $stats['parents_set'] . ' parents set, ' . (int) $stats['parents_missing'] . ' parents not found, ' . (int) $stats['texts'] . ' descriptions added from Wikipedia.</p></div>';
 			}
 		}
 	}
 	echo '<p>Upload a CSV produced by the Wikidata script. Genres are matched on their Wikidata ID: importing the same file twice never creates duplicates, and genres marked <em>Reviewed</em> are left untouched.</p>';
+	echo '<p>Two files, in this order: <code>genre-import.csv</code>, then <code>artist-import.csv</code>, which gives each genre its key artists. The screen recognises which one it is given.</p>';
 	echo '<form method="post" enctype="multipart/form-data">';
 	wp_nonce_field( 'genre_atlas_import', 'genre_atlas_import_nonce' );
 	echo '<input type="file" name="genre_csv" accept=".csv" required> ';

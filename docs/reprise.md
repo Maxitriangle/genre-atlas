@@ -239,3 +239,79 @@ Publiée sans artistes ni descriptions, à la demande de Maxime, pour voir la mi
 **Piège.** `wp_localize_script` transmet toutes les valeurs en chaînes : `"0"` est vrai en JavaScript, et toutes les pages de genre s'ouvraient sur la fiche. Toujours convertir (`Number(CFG.about) === 1`).
 
 Le banc passe 23 vérifications, dont 7 sur la fiche (ordre des boutons, adresse, sous-genres, Échap, accès direct, groupe sans fiche, largeur mobile).
+
+## Artistes vérifiés (23/09/2026, soir)
+Le workflow « Verify artists » a fini (deux exécutions : la première a rempli le cache, la seconde l'a terminé et a commité). Sur 6 000 noms : **5 529 confirmés** (3 134 personnes, 2 395 groupes), **451 écartés** (`data/artists-rejected.csv`), **4 074 avec une photo Commons** (74 %). 1 432 genres gardent au moins un artiste ; 30 genres ont perdu tous les leurs.
+
+Contrôle : les artistes connus pointent vers la bonne fiche (Nirvana Q11649, U2 Q396, Queen Q15862, Khaled, BTS…) et un tirage au hasard est cohérent.
+
+**Les rejets ne sont pas tous des erreurs de sélection.** Une partie sont des noms ambigus que la recherche ne départage pas (« ABC », « AZ », « 67 », « Arena »). Mais on y trouve aussi de vrais groupes (Agnostic Front, American Football, Arashi, Anti Cimex) : `kind()` est trop strict sur le type Wikidata, ou la recherche ne les a pas classés dans ses 7 premiers résultats. Seconde passe à prévoir, plus tolérante, sur les seuls rejets.
+
+L'année affichée pour une personne est le début d'activité (P2031) ou, à défaut, la naissance (P569) ; le pays, P495 puis la nationalité P27 — parfois anachronique (un musicien de 1898 « People's Republic of China »).
+
+## Vérification des artistes, reprise en sept passes (24/09/2026)
+La première passe acceptait des erreurs. Corrigées une à une dans `artists-verify.py`, chaque passe relancée sur GitHub Actions (quelques minutes grâce au cache) :
+1. **Types « groupe » faux.** La liste écrite de mémoire contenait « record label », « musical work/composition », un orchestre, un pèlerinage et une rivière : labels et albums passaient pour des groupes. Liste vérifiée contre les libellés Wikidata, commentée ID par ID. Idem pour les métiers (peintre, graveur, danseur, dirigeant retirés).
+2. **Sous-classes de groupe** (« hardcore punk band », « idol group ») : lues via P279.
+3. **Description de recherche** (« Japanese idol group », « Cuban singer ») : acceptée, mais une fiche reconnue par ses déclarations passe toujours avant.
+4. **Genre P136** : ne compte que s'il est un des genres de l'atlas (les peintres ont un genre : Picasso via le cubisme).
+5. **Nom exact** : la recherche renvoie aussi les noms qui commencent pareil (« Jesu » → Jésus-Christ, puis Jesús Franco). Seule une égalité avec un libellé ou un alias compte, sans accents, ponctuation, apostrophes ni « The ».
+6. Le texte « matched » de la recherche n'est pas fiable : on compare aussi le libellé affiché et, pour les candidats musiciens, **tous les libellés et alias dans toutes les langues** (« Mario Bauzá » est un alias de Mario Bauzá Cárdenas).
+
+**Résultat final.** 5 529 artistes confirmés (3 115 personnes, 2 414 groupes), 453 écartés, 4 081 avec photo, 1 437 genres avec au moins un artiste (348 en ont 8). Par rapport à la première passe : même total, mais **79 fiches fausses remplacées par 79 justes** (sortis : George W. Bush, Jésus-Christ, Picasso, Warner Music Group, des chansons et albums, des acteurs ; entrés : Agnostic Front, Arashi, Boyz II Men, Bad Religion sur la bonne fiche…).
+
+**Ce qui reste écarté** (`artists-rejected.csv`, chaque ligne liste ce que Wikidata proposait) : noms absents de Wikidata, noms trop ambigus (ABC, AZ, Arena), et quelques translittérations (« Ahmed Adaweya » pour Ahmad Adaweyyah). À traiter à la relecture d'équipe, pas par un assouplissement supplémentaire.
+
+**À retenir.** Toute liste d'identifiants Wikidata écrite de mémoire doit être vérifiée contre ses libellés avant usage. Et comparer une passe à la précédente (entrés / sortis, triés par notoriété) est ce qui a révélé chaque erreur.
+
+## Photos des artistes tramées (24/09/2026)
+`data/artists-photos.py`, lancé par le workflow « Artist photos » (1 h 38 sur GitHub Actions, un seul passage). Chaque photo Commons est prise en vignette 330 px, recadrée au carré (le haut pour un portrait), puis tramée en 132 px (Bayer 8×8, 1 bit). Elle est enregistrée comme masque PNG (`data/masks/<QID>.png`, 2 Ko en moyenne, 7,7 Mo pour tout le lot) que le site colorera avec la couleur de la famille.
+
+**Résultat.** 4 036 masques sur 4 081 photos. 45 sont écartées faute d'auteur ou de licence lisible, aucune image illisible. Licences : domaine public 894, CC BY-SA 3.0 737, CC BY-SA 4.0 655, CC BY 2.0 627, puis les autres CC. `data/artist-photos.csv` porte fichier, auteur, licence et lien pour la ligne de crédit.
+
+**Corrigé après coup.** 185 auteurs étaient écrits deux fois (« Unknown authorUnknown author », un modèle Commons répète le nom en caché). Dédoublonnés dans le CSV et dans le script.
+
+**Rendu jugé sur une planche de 40 masques colorés.** Les portraits et photos de scène se lisent bien. Quelques « photos » Wikidata sont en fait une pochette ou un logo (Blumfeld, une enseigne pour Kraftwerk) : à trier à la relecture d'équipe. `artist-photos.csv` permet de retirer une image sans rien relancer.
+
+**Livraison au site, prévue pour l'étape 4.** Le dépôt étant privé, les masques partiront dans l'extension (assets), avec le CPT `artist`.
+
+## Introductions Wikipedia (24/09/2026, pas encore publié)
+`data/wikipedia-fetch.py`, lancé par le workflow « Wikipedia leads » (quelques minutes). Sur 2 098 genres :
+- **1 308 textes** ;
+- 664 genres sans article anglais ;
+- 104 dont le lien renvoie à une section d'un article plus large, écartés parce que l'introduction décrirait un autre genre ;
+- 21 écartés parce qu'ils partageaient un article avec un autre genre (hard techno recevait le texte de Hardcore) : l'article va au genre qui porte son nom, sinon au plus haut dans l'arbre ;
+- 1 page d'homonymie.
+
+Les textes gardent des paragraphes entiers, 1 200 caractères au plus (médiane 633).
+
+**Dans l'extension.**
+- L'importeur lit `description` et ne remplit que les genres dont le contenu est vide ; un texte écrit à la main n'est jamais remplacé (vérifié par un réimport).
+- Il pose `ga_text_source = wikipedia` et `ga_wikipedia` (titre de l'article).
+- La fiche affiche « TEXT FROM WIKIPEDIA · CC BY-SA 4.0 » sous le dernier paragraphe, et le lien WIKIPEDIA en tête des sources.
+- Nouvelle vérification au banc : 24 au total.
+
+**Poids de l'arbre.** Chaque page charge l'arbre entier, et avec les textes il passait de ~215 à 635 Ko. L'extrait du panneau (`d`) est ramené de 320 à 160 caractères : 444 Ko, 137 Ko compressé.
+
+**À savoir.** Si Maxime réécrit entièrement un texte venu de Wikipedia, la mention de crédit reste. Elle est juste tant que le texte en est adapté ; pour la retirer, il faut supprimer le champ `ga_text_source` du genre. Une case dans l'écran du genre sera à prévoir si le cas se présente souvent.
+
+## Artistes clés dans l'extension (v0.9.0, 24/09/2026)
+Version unique pour les introductions Wikipedia et les artistes, décision de Maxime : un seul import à refaire.
+
+**Données.**
+- `data/artists-build.py` écrit `artist-import.csv` : 5 529 artistes, 4 036 avec photo, 7 180 liens genre → artiste, 1 437 genres servis.
+- Les masques ont quitté `data/masks` pour `genre-atlas/assets/masks` : le dépôt étant privé, l'extension les sert elle-même (zip ~8 Mo de plus). `artists-photos.py` et son workflow écrivent désormais là.
+
+**Modèle WordPress.**
+- Type `ga_artist` (préfixé pour ne pas heurter un thème qui aurait son `artist`), non public, rangé sous Genres → Artists. Champs : Wikidata, kind, start, country, et les quatre champs de crédit photo.
+- Enregistrer un artiste à la main le passe en `reviewed` : un réimport ne l'écrase plus.
+- Chaque genre porte `ga_artists` (IDs des artistes, dans l'ordre de l'import). Une boîte « Key artists » sur l'écran du genre permet de retirer (case à cocher) et d'ajouter (nom complété parmi les artistes connus ; un nom inconnu crée l'artiste). Modifier la liste pose `ga_artists_edited`, et le réimport garde alors la liste de Maxime.
+- L'écran Import CSV reconnaît le fichier d'artistes à sa colonne `genres`. Ordre : genres, puis artistes.
+
+**Fiche.**
+- Section KEY ARTISTS de la maquette : 4 colonnes (2 sur mobile), 8 au plus, de A à Z (« The » ignoré).
+- Masque coloré par `--fam`. Crédit « PHOTO: auteur · licence » avec des liens vers la page Commons et la licence.
+- Sans crédit ou sans masque, l'artiste s'affiche avec une case hachurée « NO PHOTO ».
+- Le bouton lecture et le bloc Listen de la maquette attendent le choix du service d'écoute : pas de bouton qui ne fait rien.
+
+**Banc** : 26 vérifications, dont l'import des artistes (qui fait échouer le banc s'il rate), l'ordre A → Z, et une vérification que chaque photo a son crédit et que son masque répond en 200. Vérifié aussi à la main : retrait, ajout, puis réimport qui garde la liste modifiée.

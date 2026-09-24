@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.8.0
+ * Version: 0.9.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,13 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.8.0' );
+define( 'GENRE_ATLAS_VERSION', '0.9.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v1' );
 
 require_once GENRE_ATLAS_DIR . 'includes/class-genre-atlas-importer.php';
 require_once GENRE_ATLAS_DIR . 'includes/admin.php';
+require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/updater.php';
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once GENRE_ATLAS_DIR . 'includes/cli.php';
@@ -170,7 +171,9 @@ function genre_atlas_dossier( $request ) {
 			'description' => $paras,
 			'wikidata'    => (string) get_post_meta( $post->ID, 'ga_wikidata_id', true ),
 			'musicbrainz' => (string) get_post_meta( $post->ID, 'ga_musicbrainz_id', true ),
-			'artists'     => array(), // filled by the artist import, next version
+			'wikipedia'   => (string) get_post_meta( $post->ID, 'ga_wikipedia', true ),
+			'textSource'  => (string) get_post_meta( $post->ID, 'ga_text_source', true ),
+			'artists'     => genre_atlas_dossier_artists( $post->ID ),
 		)
 	);
 }
@@ -240,7 +243,9 @@ function genre_atlas_tree() {
 		}
 		$desc = trim( wp_strip_all_tags( $p->post_content ) );
 		if ( $desc ) {
-			$node['d'] = wp_html_excerpt( $desc, 320, '…' );
+			// A teaser for the panel, loaded with the whole tree on every page:
+			// the full text is on the dossier, fetched on demand.
+			$node['d'] = wp_html_excerpt( $desc, 160, '…' );
 		}
 		$nodes[] = $node;
 	}

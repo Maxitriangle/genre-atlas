@@ -130,6 +130,10 @@ global \$wp_rewrite;
 \$stats = Genre_Atlas_Importer::import( '$REPO/data/genre-import.csv' );
 if ( is_wp_error( \$stats ) ) { fwrite( STDERR, \$stats->get_error_message() . \"\n\" ); exit( 1 ); }
 foreach ( \$stats as \$k => \$v ) { echo str_pad( \$k, 20 ) . \$v . \"\n\"; }
+// The artists go through the same entry point, after the genres they point to.
+\$stats = Genre_Atlas_Importer::import( '$REPO/data/artist-import.csv' );
+if ( is_wp_error( \$stats ) || empty( \$stats['artists'] ) ) { fwrite( STDERR, \"import des artistes en echec\n\" ); exit( 1 ); }
+foreach ( \$stats as \$k => \$v ) { echo str_pad( 'artistes ' . \$k, 20 ) . \$v . \"\n\"; }
 "
 
 # The rules have to be rebuilt in a fresh request: in the one that changed the
