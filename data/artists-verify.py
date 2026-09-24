@@ -146,6 +146,9 @@ MUSIC_WORDS = re.compile(r'\b(musician|singer|songwriter|rapper|composer|DJ|disc
                          r'vocalist|organist|conductor|accordionist|harpist|flautist|beatmaker|bandleader|griot|'
                          r'MC|oud player|sitar player|tabla player)\b', re.I)
 GROUP_CLASSES = set(GROUPS)   # grown in main() with the subclasses Wikidata uses
+# A genre (P136) counts as a sign of a musician only if it is a music genre:
+# painters carry genres too (Pablo Picasso: cubism). The atlas's own genres.
+MUSIC_GENRES = {r['wikidata_id'] for r in csv.DictReader(open(os.path.join(HERE, 'genre-import.csv'), encoding='utf-8'))}
 
 
 def kind(ent, desc='', exact=False):
@@ -154,9 +157,9 @@ def kind(ent, desc='', exact=False):
     p31 = ids(ent, 'P31')
     if p31 & GROUP_CLASSES:
         return 'group', 2
-    # A music occupation, or anything only musicians carry: a genre, an
+    # A music occupation, or anything only musicians carry: a music genre, an
     # instrument, a record label.
-    if HUMAN in p31 and (ids(ent, 'P106') & MUSIC_JOBS or ids(ent, 'P136')
+    if HUMAN in p31 and (ids(ent, 'P106') & MUSIC_JOBS or ids(ent, 'P136') & MUSIC_GENRES
                          or ids(ent, 'P1303') or ids(ent, 'P264')):
         return 'person', 2
     if exact and desc:
