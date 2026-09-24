@@ -33,6 +33,7 @@ Le fichier à importer dans WordPress est **`genre-import.csv`** : Genres → Im
 | `genre-import.csv` | **Le fichier d'import.** 13 familles, 15 tuiles, 2 098 genres. |
 | `artists-picks.csv` | **Key artists** des fiches : au plus 8 noms par genre, choisis à la main, A→Z. 636 genres vides plutôt qu'un nom deviné. |
 | `artists-verify.py` | Vérifie chaque nom sur Wikidata (personne musicienne ou groupe) et écrit `artists.csv`, `genre-artists.csv` et `artists-rejected.csv`. Reprend depuis son cache `.artists-cache.json` (non versionné). |
+| `artists-photos.py` | Récupère la photo Commons de chaque artiste vérifié, la trame en masque 1 bit (`masks/<QID>.png`, ~2 Ko) et note photographe et licence dans `artist-photos.csv`. Une photo sans crédit lisible est écartée. Tourne sur GitHub Actions (« Artist photos »). |
 | `artists-fetch.py` | Récupère les candidats Wikidata de chaque genre. Pas utilisé pour la sélection actuelle ; gardé pour un futur complément. |
 | `genre-attach.csv` | Les genres rattachés à la main, faute de parent chez Wikidata. Lu par les deux scripts. |
 | `wikidata-build-electronic.py` | L'ancien script, une famille à la fois. |
