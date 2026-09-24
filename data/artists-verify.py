@@ -24,6 +24,7 @@ so a stopped run picks up where it left off.
 import csv
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -98,7 +99,7 @@ def year(ent, *props):
     return ''
 
 
-KEEP = ('P31', 'P106', 'P136', 'P1303', 'P264', 'P495', 'P27', 'P740', 'P18', 'P571', 'P2031', 'P569')
+KEEP = ('P31', 'P279', 'P106', 'P136', 'P1303', 'P264', 'P495', 'P27', 'P740', 'P18', 'P571', 'P2031', 'P569')
 
 
 def slim(ent):
@@ -123,15 +124,33 @@ def entities(qids):
     return out
 
 
-def kind(ent):
+# The one-line description a search result carries ("American hardcore punk
+# band", "Japanese idol group", "Cuban singer"). Trusted only when the name
+# matched exactly, since it is a hint and not a statement.
+GROUP_WORDS = re.compile(r'\b(band|duo|trio|quartet|quintet|sextet|ensemble|orchestra|choir|big band)\b'
+                         r'|\bmusic(al)? (group|collective|project)\b'
+                         r'|\b(pop|rock|rap|hip hop|hip-hop|girl|boy|vocal|folk|jazz|punk|metal|idol|dance|electronic) group\b', re.I)
+MUSIC_WORDS = re.compile(r'\b(musician|singer|songwriter|rapper|composer|DJ|disc jockey|guitarist|pianist|drummer|'
+                         r'bassist|violinist|cellist|saxophonist|trumpeter|percussionist|record producer|music producer|'
+                         r'vocalist|organist|conductor|accordionist|harpist|flautist|beatmaker|bandleader|griot|'
+                         r'MC|oud player|sitar player|tabla player)\b', re.I)
+GROUP_CLASSES = set(GROUPS)   # grown in main() with the subclasses Wikidata uses
+
+
+def kind(ent, desc='', exact=False):
     p31 = ids(ent, 'P31')
-    if p31 & GROUPS:
+    if p31 & GROUP_CLASSES:
         return 'group'
     # A music occupation, or anything only musicians carry: a genre, an
     # instrument, a record label.
     if HUMAN in p31 and (ids(ent, 'P106') & MUSIC_JOBS or ids(ent, 'P136')
                          or ids(ent, 'P1303') or ids(ent, 'P264')):
         return 'person'
+    if exact and desc:
+        if HUMAN in p31 and MUSIC_WORDS.search(desc):
+            return 'person'
+        if HUMAN not in p31 and GROUP_WORDS.search(desc):
+            return 'group'
     return None
 
 
@@ -147,18 +166,25 @@ def main():
     for i, name in enumerate(sorted(wanted)):
         hits = get({'action': 'wbsearchentities', 'search': name, 'language': 'en',
                     'type': 'item', 'limit': 7}).get('search', [])
-        found[name] = [h['id'] for h in hits]
+        found[name] = hits
         if i % 200 == 0:
             print('  searched %d / %d' % (i, len(wanted)), flush=True)
-    ents = entities({q for qs in found.values() for q in qs})
+    ents = entities({h['id'] for hs in found.values() for h in hs})
+    # Bands are often typed with a subclass of "musical group" ("hardcore punk
+    # band", "idol group") that no fixed list can hold: read those classes.
+    classes = {c for e in ents.values() for c in ids(e, 'P31')} - GROUP_CLASSES - {HUMAN}
+    for c, e in entities(classes).items():
+        if ids(e, 'P279') & GROUPS:
+            GROUP_CLASSES.add(c)
     json.dump(cache, open(CACHE, 'w'))
 
     resolved, rejected = {}, []
-    for name, qs in found.items():
+    for name, hits in found.items():
         best = None
-        for rank, q in enumerate(qs):
-            e = ents.get(q, {})
-            k = kind(e)
+        for rank, h in enumerate(hits):
+            q, e = h['id'], ents.get(h['id'], {})
+            exact = h.get('match', {}).get('text', '').lower() == name.lower()
+            k = kind(e, h.get('description', ''), exact)
             if not k:
                 continue
             label = e.get('labels', {}).get('en', {}).get('value', '')
@@ -171,7 +197,9 @@ def main():
         if best:
             resolved[name] = (best[1], best[2])
         else:
-            rejected.append((name, 'no musician or group of that name on Wikidata'))
+            # Say what Wikidata offered, so a rejection can be judged by eye.
+            seen = '; '.join('%s %s (%s)' % (h['id'], h.get('label', ''), h.get('description', '—')) for h in hits[:3])
+            rejected.append((name, 'no musician or group of that name on Wikidata' + (' — found: ' + seen if seen else ' — no result')))
 
     arts = {}
     for name, (q, k) in resolved.items():
