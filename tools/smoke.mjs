@@ -233,6 +233,25 @@ try {
 			return m ? fetch( m[ 1 ] ).then( r => r.status ) : 0;
 		} );
 		check( 'fiche : chaque photo d artiste a son credit et son masque', photos > 0 && photos === credits && mask === 200, `${ photos } photo(s), ${ credits } credit(s), masque HTTP ${ mask }` );
+
+		// Listen: one song per key artist, in the artists' order. Nothing is
+		// asked of YouTube before PLAY ALL; then the player chains the list.
+		const tracks = await page.locator( '.ga-dossier .ga-track .ga-tname .ga-micro' ).allInnerTexts();
+		const upper = names.map( n => n.toUpperCase() );
+		let at = 0;
+		const inOrder = tracks.every( t => ( at = upper.indexOf( t, at ) + 1 ) > 0 );
+		const spotify = await page.locator( '.ga-dossier .ga-track a[href^="https://open.spotify.com/search/"]' ).count();
+		check( 'ecoute : un titre par artiste cle, dans le meme ordre, chacun avec Spotify', tracks.length > 0 && tracks.length <= names.length && inOrder && spotify === tracks.length,
+			`${ tracks.length } titre(s), ${ spotify } lien(s) Spotify` );
+		const before = await page.locator( '.ga-dossier .ga-player iframe' ).count();
+		await page.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
+		await page.locator( '.ga-dossier .ga-lhead [data-play]' ).click();
+		const src = await page.locator( '.ga-dossier .ga-player iframe' ).getAttribute( 'src' ).catch( () => '' );
+		const chained = ( src || '' ).match( /embed\/([\w-]{11})\?.*?(?:playlist=([\w,-]+))?$/ );
+		const count = chained ? 1 + ( chained[ 2 ] ? chained[ 2 ].split( ',' ).length : 0 ) : 0;
+		check( 'ecoute : le lecteur YouTube ne se charge qu au clic, puis enchaine la liste', before === 0 && /^https:\/\/www\.youtube-nocookie\.com\/embed\//.test( src || '' ) && count > 1,
+			`${ before } lecteur avant, ${ count } video(s) apres` );
+		await page.unroute( /youtube(-nocookie)?\.com/ );
 		await page.screenshot( { path: `${ SHOTS }/05c-fiche-wikipedia.png`, fullPage: true } );
 	} else {
 		check( 'fiche : le genre Shoegaze existe pour tester le credit Wikipedia', false );
@@ -264,6 +283,13 @@ try {
 		const width = await phone.evaluate( () => document.documentElement.scrollWidth );
 		check( 'mobile : la fiche tient dans la largeur de l ecran', width <= 390, `${ width } px` );
 		await phone.screenshot( { path: `${ SHOTS }/07b-fiche-mobile.png`, fullPage: true } );
+	}
+	if ( lead ) {
+		await phone.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		await phone.waitForSelector( '.ga-dossier .ga-track', { timeout: 10000 } );
+		const width = await phone.evaluate( () => document.documentElement.scrollWidth );
+		check( 'mobile : la section Listen tient dans la largeur de l ecran', width <= 390, `${ width } px` );
+		await phone.screenshot( { path: `${ SHOTS }/07c-ecoute-mobile.png`, fullPage: true } );
 	}
 	await phone.close();
 

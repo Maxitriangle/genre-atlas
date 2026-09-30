@@ -368,6 +368,7 @@
     overview: '<rect x="3.5" y="3.5" width="17" height="17"/><path d="M7 8h10M7 11h10M7 14h7M7 17h4" stroke-opacity=".8"/><circle cx="17.5" cy="17.5" r="1.3" fill="currentColor" stroke="none"/>',
     lineage: '<path d="M12 5v5M12 14v2M12 16l-6 3M12 16l6 3"/><path d="M12 1.8 15 4.4 12 7 9 4.4Z"/><circle cx="12" cy="12" r="2" stroke-dasharray="1.5 1.5"/><circle cx="12" cy="16" r="1.4" fill="currentColor" stroke="none"/><rect x="4.4" y="18.6" width="3" height="3"/><rect x="16.6" y="18.6" width="3" height="3"/>',
     artists: '<rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="7"/><rect x="3.5" y="13.5" width="7" height="7"/><rect x="13.5" y="13.5" width="7" height="7"/><circle cx="7" cy="6.2" r="1.3"/><path d="M4.8 10.5c.4-1.6 1.2-2.3 2.2-2.3s1.8.7 2.2 2.3"/><circle cx="17" cy="17" r="1.3" fill="currentColor" stroke="none"/>',
+    listen: '<rect x="3.5" y="3.5" width="17" height="17"/><path d="M10 8.5v7l5.5-3.5Z" fill="currentColor" stroke="none"/><path d="M6.5 7v10M18 7v10" stroke-opacity=".5"/>',
     sources: '<circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>'
   };
   function icon(k) { return '<span class="ga-ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1">' + ICON[k] + '</svg></span>'; }
@@ -384,6 +385,28 @@
       (a.licenseUrl ? '<a href="' + esc(a.licenseUrl) + '" target="_blank" rel="noopener">' + esc(a.license) + '</a>' : esc(a.license)) + '</span>' : '';
     return '<li class="ga-art"><div class="ga-aph' + (m ? '' : ' none') + '">' + ph + '</div><div class="ga-acap"><h3>' + esc(a.name) + '</h3>' +
       '<span class="ga-micro">' + esc([a.start ? 'SINCE ' + a.start : '', a.country ? a.country.toUpperCase() : ''].filter(Boolean).join(' · ') || '—') + '</span>' + credit + '</div></li>';
+  }
+  // One song per key artist, in the same A-to-Z order. YouTube plays the whole
+  // list in one embedded player, loaded only when asked for (nothing reaches
+  // YouTube before the click); Spotify and Deezer open the song in their app.
+  function listenRow(a, i) {
+    var s = a.song, play = s.youtube ? '<button type="button" class="ga-play" data-play="' + i + '" aria-label="Play ' + esc(s.title) + '"><span aria-hidden="true">▶</span></button>' : '<span class="ga-play none" aria-hidden="true"></span>';
+    var out = [['SPOTIFY', s.spotify], ['DEEZER', s.deezer], ['YOUTUBE', s.youtube ? 'https://www.youtube.com/watch?v=' + s.youtube : '']]
+      .filter(function (l) { return l[1]; })
+      .map(function (l) { return '<a href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + l[0] + '<span aria-hidden="true">↗</span></a>'; }).join('');
+    return '<li class="ga-track"><span class="ga-micro ga-tno">' + pad(i + 1) + '</span>' + play +
+      '<span class="ga-tname"><b>' + esc(s.title) + '</b><span class="ga-micro">' + esc(a.name.toUpperCase()) + '</span></span><span class="ga-tout">' + out + '</span></li>';
+  }
+  function listenPlay(i) {
+    var n = N[S.about], d = n && DOS[n.id], box = root.querySelector('.ga-player');
+    if (!d || !box) return;
+    var ids = d.artists.filter(function (a) { return a.song; }).map(function (a) { return a.song.youtube || ''; });
+    var from = ids.slice(i).concat(ids.slice(0, i)).filter(Boolean); // from the clicked song, then round
+    if (!from.length) return;
+    box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(from[0]) + '?autoplay=1&rel=0' +
+      (from.length > 1 ? '&playlist=' + from.slice(1).map(encodeURIComponent).join(',') : '') +
+      '" title="' + esc(n.name) + ' playlist on YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+    box.hidden = false;
   }
   function viewDossier(n) {
     var d = DOS[n.id] || {}, trail = path(n), fam = family(n), subs = n.real || [];
@@ -425,6 +448,14 @@
       var shot = d.artists.some(function (a) { return a.mask; });
       html += section('artists', 'KEY ARTISTS', [pad(d.artists.length) + ' / 08 ENTRIES', 'SORTED A TO Z'].concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []),
         '<ul class="ga-artists">' + d.artists.map(artistCard).join('') + '</ul>');
+      var songs = d.artists.filter(function (a) { return a.song; });
+      if (songs.length) {
+        var yt = songs.some(function (a) { return a.song.youtube; });
+        html += section('listen', 'LISTEN', [pad(songs.length) + ' / 08 TRACKS', 'ONE PER KEY ARTIST', 'MOST PLAYED ON DEEZER'],
+          (yt ? '<div class="ga-lhead"><button type="button" class="ga-cta" data-play="' + songs.map(function (a) { return !!a.song.youtube; }).indexOf(true) + '"><span>PLAY ALL ON YOUTUBE</span><span aria-hidden="true">▶</span></button>' +
+            '<span class="ga-micro">THE PLAYER LOADS FROM YOUTUBE WHEN YOU PRESS PLAY</span></div><div class="ga-player" hidden></div>' : '') +
+          '<ol class="ga-tracks">' + songs.map(listenRow).join('') + '</ol>');
+      }
     }
 
     var links = [];
@@ -482,6 +513,8 @@
   }
 
   root.addEventListener('click', function (e) {
+    var p = e.target.closest('[data-play]');
+    if (p && root.contains(p)) { e.preventDefault(); listenPlay(Number(p.getAttribute('data-play'))); return; }
     var t = e.target.closest('[data-go],[data-centre],[data-view],[data-exp],[data-dial],[data-legend],[data-about],[data-close]');
     if (!t || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
