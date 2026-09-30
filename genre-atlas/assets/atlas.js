@@ -452,7 +452,7 @@
       if (songs.length) {
         var yt = songs.some(function (a) { return a.song.youtube; });
         html += section('listen', 'LISTEN', [pad(songs.length) + ' / 08 TRACKS', 'ONE PER KEY ARTIST', 'MOST PLAYED ON DEEZER'],
-          (yt ? '<div class="ga-lhead"><button type="button" class="ga-cta" data-play="' + songs.map(function (a) { return !!a.song.youtube; }).indexOf(true) + '"><span>PLAY ALL ON YOUTUBE</span><span aria-hidden="true">▶</span></button>' +
+          (yt ? '<div class="ga-listen-head"><button type="button" class="ga-cta" data-play="' + songs.map(function (a) { return !!a.song.youtube; }).indexOf(true) + '"><span>PLAY ALL ON YOUTUBE</span><span aria-hidden="true">▶</span></button>' +
             '<span class="ga-micro">THE PLAYER LOADS FROM YOUTUBE WHEN YOU PRESS PLAY</span></div><div class="ga-player" hidden></div>' : '') +
           '<ol class="ga-tracks">' + songs.map(listenRow).join('') + '</ol>');
       }

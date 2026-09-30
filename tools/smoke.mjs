@@ -244,8 +244,9 @@ try {
 		check( 'ecoute : un titre par artiste cle, dans le meme ordre, chacun avec Spotify', tracks.length > 0 && tracks.length <= names.length && inOrder && spotify === tracks.length,
 			`${ tracks.length } titre(s), ${ spotify } lien(s) Spotify` );
 		const before = await page.locator( '.ga-dossier .ga-player iframe' ).count();
+		await page.locator( '.ga-dsec:has(.ga-tracks)' ).screenshot( { path: `${ SHOTS }/05d-ecoute.png` } ).catch( () => {} );
 		await page.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
-		await page.locator( '.ga-dossier .ga-lhead [data-play]' ).click();
+		await page.locator( '.ga-dossier .ga-listen-head [data-play]' ).click();
 		const src = await page.locator( '.ga-dossier .ga-player iframe' ).getAttribute( 'src' ).catch( () => '' );
 		const chained = ( src || '' ).match( /embed\/([\w-]{11})\?.*?(?:playlist=([\w,-]+))?$/ );
 		const count = chained ? 1 + ( chained[ 2 ] ? chained[ 2 ].split( ',' ).length : 0 ) : 0;
