@@ -1,9 +1,6 @@
 # Reprise — état au 30/09/2026
 
-**La v0.10.0 (section Listen) est publiée sur GitHub, mais pas encore vérifiée chez Maxime.** Première chose à faire en reprenant : lui demander s'il a
-1. mis à jour l'extension (Extensions ; au besoin « Vérifier à nouveau » dans Mises à jour) ;
-2. réimporté `artist-import.csv` (Genres → Import CSV). Sans ce réimport, aucune fiche n'a de section Listen ;
-3. vérifié la section sur une fiche, par exemple Shoegaze.
+**La v0.10.0 (section Listen) est publiée, installée et importée chez Maxime, qui l'a vérifiée : ça fonctionne.** Il a remarqué **une petite erreur**, sans la décrire, à traiter plus tard : en reprenant, lui demander laquelle (fiche concernée, ce qu'il voit, ce qu'il attendait).
 
 La v0.9.0 (textes Wikipedia, artistes clés et photos) est installée et vérifiée chez lui. `main` contient tout le travail ; la branche de session `claude/happy-lamport-wzee1o` a été repartie de `main` après la fusion de la PR #13.
 
@@ -27,6 +24,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 - **Banc de test** : `tools/test-local.sh`, 29 vérifications, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
+0. **La petite erreur vue par Maxime après la v0.10.0** : non décrite, à lui demander en premier.
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
    - les artistes choisis (`data/artists-picks.csv`) ;
    - les 453 écartés (`data/artists-rejected.csv`, avec les candidats Wikidata de chacun) ;
@@ -344,7 +342,7 @@ Version unique pour les introductions Wikipedia et les artistes, décision de Ma
 
 **Banc** : 26 vérifications, dont l'import des artistes (qui fait échouer le banc s'il rate), l'ordre A → Z, et une vérification que chaque photo a son crédit et que son masque répond en 200. Vérifié aussi à la main : retrait, ajout, puis réimport qui garde la liste modifiée.
 
-## Section Listen (v0.10.0, 30/09/2026, publiée le jour même via la PR #13)
+## Section Listen (v0.10.0, 30/09/2026, publiée via la PR #13, vérifiée chez Maxime)
 Choix de Maxime : une section sous KEY ARTISTS, une chanson par artiste clé (8 au plus), lecture de toute la liste sur YouTube, et un lien Spotify, Deezer et YouTube sur chaque titre. La chanson est choisie automatiquement : le titre le plus écouté de l'artiste sur Deezer. Elle reste modifiable à la main.
 
 **Pourquoi pas de vraies playlists Spotify ou Deezer.** Il en faudrait une par genre (~1 400 par service), créées sur un compte par leur API et tenues à jour. De plus, Spotify a restreint son API pour les petits projets. YouTube, lui, sait enchaîner une liste de vidéos dans un lecteur intégré sans aucun compte : c'est le seul « tout lire » possible sans compte.
