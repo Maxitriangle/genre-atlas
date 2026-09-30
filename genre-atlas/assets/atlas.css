@@ -223,6 +223,20 @@
 .ga-acredit{font-size:9px;color:var(--faint);text-transform:none;letter-spacing:.02em;line-height:1.4;overflow-wrap:anywhere}
 .ga-acredit a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .ga-acredit a:hover{color:var(--fam)}
+.ga-listen-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+#genre-atlas .ga-listen-head .ga-cta{gap:24px;background:var(--fam);font-weight:700}
+.ga-player{position:relative;aspect-ratio:16/9;max-width:720px;margin-bottom:16px;background:var(--panel);border:1px solid var(--line)}
+.ga-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ga-tracks{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.ga-track{display:grid;grid-template-columns:28px 44px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:56px;border-bottom:1px solid var(--line2)}
+#genre-atlas .ga-play{width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid var(--fam);color:var(--fam);font-size:11px}
+#genre-atlas .ga-play:hover{background:var(--fam);color:var(--bg)}
+#genre-atlas .ga-play.none{border:1px dashed var(--line)}
+.ga-tname{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ga-tname b{font-size:13px;font-weight:600;letter-spacing:.04em;overflow-wrap:anywhere}
+.ga-tout{display:flex;gap:1px;background:var(--line);border:1px solid var(--line)}
+.ga-tout a{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 10px;background:var(--bg);font-size:10px;letter-spacing:.08em}
+.ga-tout a:hover{color:var(--fam)}
 .ga-links2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
 .ga-links2 a{background:var(--bg);padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .ga-links2 b{display:flex;justify-content:space-between;gap:8px;font-size:12px}
@@ -239,5 +253,9 @@
   .ga-subs{margin-left:0}
   .ga-artists{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ga-links2{grid-template-columns:1fr}
+  .ga-track{grid-template-columns:44px minmax(0,1fr);row-gap:8px;padding:10px 0}
+  .ga-tno{display:none}
+  .ga-tout{grid-column:1 / -1}
+  .ga-tout a{flex:1;justify-content:center}
   .ga-artists{grid-template-columns:repeat(2,minmax(0,1fr))}
 }

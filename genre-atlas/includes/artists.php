@@ -10,6 +10,11 @@
  *
  * Photos are 1-bit masks shipped in assets/masks/<wikidata_id>.png, coloured
  * by the family in CSS. A photo is shown only with its credit.
+ *
+ * Each artist also carries one song, its most played track on Deezer, which
+ * the dossier's Listen section lists: a Deezer track ID and a YouTube video
+ * ID. Spotify gets a search for artist and title, since no identifier is
+ * needed for that.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,6 +32,9 @@ function genre_atlas_artist_fields() {
 		'ga_photo_author'      => 'Photo: author',
 		'ga_photo_license'     => 'Photo: licence',
 		'ga_photo_license_url' => 'Photo: licence URL',
+		'ga_song_title'        => 'Song: title',
+		'ga_song_deezer'       => 'Song: Deezer track (link or ID)',
+		'ga_song_youtube'      => 'Song: YouTube video (link or ID)',
 	);
 }
 
@@ -91,6 +99,10 @@ function genre_atlas_dossier_artists( $genre_id ) {
 			$a['licenseUrl'] = (string) get_post_meta( $id, 'ga_photo_license_url', true );
 			$a['source']     = 'https://commons.wikimedia.org/wiki/File:' . rawurlencode( str_replace( ' ', '_', $file ) );
 		}
+		$song = genre_atlas_artist_song( $id, $a['name'] );
+		if ( $song ) {
+			$a['song'] = $song;
+		}
 		$out[] = $a;
 	}
 	usort(
@@ -100,6 +112,41 @@ function genre_atlas_dossier_artists( $genre_id ) {
 		}
 	);
 	return array_slice( $out, 0, GENRE_ATLAS_MAX_ARTISTS );
+}
+
+/** The artist's song for the Listen section, or null without a title. */
+function genre_atlas_artist_song( $id, $name ) {
+	$title = (string) get_post_meta( $id, 'ga_song_title', true );
+	if ( '' === $title ) {
+		return null;
+	}
+	$deezer  = (string) get_post_meta( $id, 'ga_song_deezer', true );
+	$youtube = (string) get_post_meta( $id, 'ga_song_youtube', true );
+	$song    = array(
+		'title'   => $title,
+		'spotify' => 'https://open.spotify.com/search/' . rawurlencode( $name . ' ' . $title ),
+	);
+	if ( preg_match( '/^\d+$/', $deezer ) ) {
+		$song['deezer'] = 'https://www.deezer.com/track/' . $deezer;
+	}
+	if ( preg_match( '/^[\w-]{11}$/', $youtube ) ) {
+		$song['youtube'] = $youtube;
+	}
+	return $song;
+}
+
+/**
+ * A pasted link is kept as its identifier: "https://www.deezer.com/fr/track/123"
+ * as 123, "https://youtu.be/abc" or "…watch?v=abc" as abc.
+ */
+function genre_atlas_song_id( $key, $value ) {
+	if ( 'ga_song_deezer' === $key && preg_match( '~track/(\d+)~', $value, $m ) ) {
+		return $m[1];
+	}
+	if ( 'ga_song_youtube' === $key && preg_match( '~(?:v=|youtu\.be/|embed/|shorts/)([\w-]{11})~', $value, $m ) ) {
+		return $m[1];
+	}
+	return $value;
 }
 
 /* ---- "Key artists" box on the genre edit screen --------------------------- */
@@ -186,7 +233,7 @@ function genre_atlas_render_artist_box( $post ) {
 	foreach ( genre_atlas_artist_fields() as $key => $label ) {
 		echo '<tr><th scope="row"><label for="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</label></th><td><input class="regular-text" type="text" id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" value="' . esc_attr( get_post_meta( $post->ID, $key, true ) ) . '"></td></tr>';
 	}
-	echo '</tbody></table><p class="description">The photo shows only when it has an author and a licence, and when the plugin ships its screened version. Emptying the file name hides it.</p>';
+	echo '</tbody></table><p class="description">The photo shows only when it has an author and a licence, and when the plugin ships its screened version. Emptying the file name hides it.</p><p class="description">The song is the artist\'s line in the Listen section of each of its genres. Paste a Deezer or YouTube link, or just its ID; Spotify is searched by artist and title. Without a title, the artist has no song.</p>';
 }
 
 add_action( 'save_post_ga_artist', 'genre_atlas_save_artist_box' );
@@ -201,7 +248,7 @@ function genre_atlas_save_artist_box( $post_id ) {
 		if ( ! isset( $_POST[ $key ] ) ) {
 			continue;
 		}
-		$value = 'ga_photo_license_url' === $key ? esc_url_raw( wp_unslash( $_POST[ $key ] ) ) : sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+		$value = 'ga_photo_license_url' === $key ? esc_url_raw( wp_unslash( $_POST[ $key ] ) ) : genre_atlas_song_id( $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
 		if ( '' === $value ) {
 			delete_post_meta( $post_id, $key );
 		} else {

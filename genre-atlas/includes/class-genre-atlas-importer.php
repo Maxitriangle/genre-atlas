@@ -191,10 +191,11 @@ class Genre_Atlas_Importer {
 	/**
 	 * Artist file (data/artist-import.csv): wikidata_id, name, kind, start,
 	 * country, genres ("|"-separated Wikidata IDs of genres), photo_file,
-	 * photo_author, photo_license, photo_license_url. Import it after the
-	 * genres. Artists are matched on wikidata_id; an artist saved by hand
-	 * keeps its fields, and a genre whose "Key artists" list was edited by
-	 * hand keeps its list.
+	 * photo_author, photo_license, photo_license_url, song_title,
+	 * song_deezer, song_youtube. Import it after the genres. Artists are
+	 * matched on wikidata_id; an artist saved by hand keeps its fields (it
+	 * only receives a song if it has none yet), and a genre whose "Key
+	 * artists" list was edited by hand keeps its list.
 	 *
 	 * @param string $file Path to the CSV.
 	 * @return array|WP_Error Stats.
@@ -243,12 +244,20 @@ class Genre_Atlas_Importer {
 		foreach ( $rows as $row ) {
 			$qid  = $row['wikidata_id'];
 			$meta = array( 'ga_wikidata_id' => $qid );
-			foreach ( array( 'kind', 'start', 'country', 'photo_file', 'photo_author', 'photo_license', 'photo_license_url' ) as $k ) {
+			foreach ( array( 'kind', 'start', 'country', 'photo_file', 'photo_author', 'photo_license', 'photo_license_url', 'song_title', 'song_deezer', 'song_youtube' ) as $k ) {
 				$meta[ 'ga_' . $k ] = isset( $row[ $k ] ) ? $row[ $k ] : '';
 			}
 			if ( isset( $artists[ $qid ] ) ) {
 				$id = $artists[ $qid ];
 				if ( 'reviewed' === get_post_meta( $id, 'ga_status', true ) ) {
+					// Saved by hand before songs existed: it gets one, once.
+					if ( '' !== $meta['ga_song_title'] && '' === (string) get_post_meta( $id, 'ga_song_title', true ) && '' === (string) get_post_meta( $id, 'ga_song_deezer', true ) && '' === (string) get_post_meta( $id, 'ga_song_youtube', true ) ) {
+						foreach ( array( 'ga_song_title', 'ga_song_deezer', 'ga_song_youtube' ) as $k ) {
+							if ( '' !== $meta[ $k ] ) {
+								update_post_meta( $id, $k, $meta[ $k ] );
+							}
+						}
+					}
 					$stats['kept']++;
 				} else {
 					$wpdb->update( $wpdb->posts, array( 'post_title' => $row['name'] ), array( 'ID' => $id ) );

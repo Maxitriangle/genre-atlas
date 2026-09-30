@@ -1,4 +1,4 @@
-# Reprise — état au 24/09/2026
+# Reprise — état au 30/09/2026
 
 **La v0.9.0 est publiée, installée et importée chez Maxime, qui a tout vérifié.** Son site montre, sur chaque fiche genre (`/genre/…/about/`), le texte Wikipedia crédité et jusqu'à 8 artistes clés avec leurs photos tramées. Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
 
@@ -26,7 +26,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - les 453 écartés (`data/artists-rejected.csv`, avec les candidats Wikidata de chacun) ;
    - quelques « photos » qui sont une pochette ou un logo (Blumfeld, Kraftwerk) ;
    - les 45 photos écartées faute de crédit.
-2. **Écoute (Listen)** : le service n'est pas choisi. La maquette prévoit un bouton lecture sur chaque artiste et une section de 8 titres. Rien n'est codé tant que le service n'est pas choisi.
+2. **Écoute (Listen)** : codée en v0.10.0 (voir la dernière section), pas encore publiée. À relire en équipe : les 193 artistes trouvés parmi des homonymes (`match = name-ambiguous` dans `data/artist-songs.csv`), et les artistes très actifs dont le titre retenu est un succès récent.
 3. **BPM** : colonnes `bpm_min`/`bpm_max` toujours vides. « Plus tard », selon Maxime.
 4. **Genres sans texte** : 790 (pas d'article anglais, ou seulement une section d'article). À écrire à la main ou à laisser vides.
 5. **Crédit Wikipedia sur un texte réécrit** : il reste affiché tant que le champ `ga_text_source` existe. Prévoir une case dans l'écran du genre si Maxime réécrit souvent.
@@ -337,3 +337,33 @@ Version unique pour les introductions Wikipedia et les artistes, décision de Ma
 - Le bouton lecture et le bloc Listen de la maquette attendent le choix du service d'écoute : pas de bouton qui ne fait rien.
 
 **Banc** : 26 vérifications, dont l'import des artistes (qui fait échouer le banc s'il rate), l'ordre A → Z, et une vérification que chaque photo a son crédit et que son masque répond en 200. Vérifié aussi à la main : retrait, ajout, puis réimport qui garde la liste modifiée.
+
+## Section Listen (v0.10.0, 30/09/2026, pas encore publiée)
+Choix de Maxime : une section sous KEY ARTISTS, une chanson par artiste clé (8 au plus), lecture de toute la liste sur YouTube, et un lien Spotify, Deezer et YouTube sur chaque titre. La chanson est choisie automatiquement : le titre le plus écouté de l'artiste sur Deezer. Elle reste modifiable à la main.
+
+**Pourquoi pas de vraies playlists Spotify ou Deezer.** Il en faudrait une par genre (~1 400 par service), créées sur un compte par leur API et tenues à jour. De plus, Spotify a restreint son API pour les petits projets. YouTube, lui, sait enchaîner une liste de vidéos dans un lecteur intégré sans aucun compte : c'est le seul « tout lire » possible sans compte.
+
+**Données.**
+- `listen-ids.py` (GitHub Actions « Listen IDs ») lit sur Wikidata l'identifiant Deezer (P2722), Spotify (P1902) et de chaîne YouTube (P2397) de chaque artiste → `artist-streaming.csv`. Deezer est connu pour 2 527 artistes sur 5 529.
+- `listen-tracks.py` tourne dans la session : l'API Deezer et la recherche YouTube y répondent. Il faut environ 2 h 15 à 4 fils ; le cache `.listen-cache.json` permet de reprendre après la limite de 2 h d'une tâche de fond. Il écrit `artist-songs.csv`.
+- **Règles**, chacune ajoutée après une erreur vue sur un échantillon :
+  - l'artiste Deezer est celui de Wikidata, sinon le nom exact ;
+  - la chanson est celle au meilleur `rank` Deezer, un score de fond. L'ordre de la liste « top » suit les écoutes de la semaine : Madonna sortait « Danceteria Afterhours », elle sort maintenant « La Isla Bonita » ;
+  - pas de live, remix, démo, karaoké, ni de titre de plus de 80 caractères (les compilations classiques du genre « …Great for Baby's Brain ») ;
+  - le nom du compositeur est retiré en tête de titre ;
+  - parmi des homonymes Deezer, la chanson n'est gardée que si YouTube l'a sur la chaîne même de l'artiste (Spazz sortait « Sweet Home Alabama ») ;
+  - la vidéo YouTube doit contenir le titre, venir de l'artiste (sa chaîne Wikidata, ou une chaîne à son nom, dont « - Topic » et VEVO) ou le nommer, et être intégrable (oEmbed répond 200). La chaîne de l'artiste passe avant les autres.
+- **Résultat** : 4 171 artistes ont une chanson (2 417 par Wikidata, 1 561 par le nom, 193 parmi des homonymes), dont 3 760 jouables sur YouTube. Bach, Wagner, Verdi et d'autres compositeurs n'en ont pas : leurs « titres » Deezer sont des enregistrements d'autres interprètes, qu'aucune vidéo ne confirme.
+- `artists-build.py` ajoute `song_title`, `song_deezer` et `song_youtube` à `artist-import.csv`.
+
+**Extension.**
+- Trois champs de plus sur l'artiste (écran Artist data). On peut y coller un lien Deezer ou YouTube entier : seul l'identifiant est gardé. Sans titre, l'artiste n'a pas de chanson.
+- Spotify n'a pas d'identifiant : le lien ouvre une recherche « artiste titre ».
+- Un réimport n'écrase pas un artiste modifié à la main, mais lui donne une chanson s'il n'en a aucune. Conséquence : une chanson vidée volontairement (les trois champs) revient au réimport suivant ; pour retirer un titre, vider seulement le champ YouTube ou mettre un autre titre.
+- La fiche affiche la section LISTEN sous KEY ARTISTS, dans le même ordre A → Z. Le bouton PLAY ALL ON YOUTUBE charge `youtube-nocookie.com` **seulement au clic** : aucune requête vers YouTube avant. ▶ sur une ligne lance le lecteur à ce titre, puis enchaîne la suite. Un titre sans vidéo a une case pointillée et seulement Spotify et Deezer.
+
+**Piège rencontré.** La classe `.ga-lhead` existait déjà (en-tête de la vue liste, hauteur fixe de 36 px) : sur mobile, la mention sous le bouton chevauchait le premier titre. La section utilise `.ga-listen-head`.
+
+**Banc** : 29 vérifications, dont un titre par artiste dans l'ordre des artistes avec son lien Spotify, aucun lecteur avant le clic puis une liste enchaînée après (YouTube est simulé dans le banc), et la largeur mobile de la section. Capture `05d-ecoute.png`.
+
+**Chez Maxime, après la mise à jour** : réimporter `artist-import.csv` seulement ; le fichier des genres n'a pas changé.
