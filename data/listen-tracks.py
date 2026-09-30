@@ -6,9 +6,13 @@ measure rather than a title typed from memory. The artist is the one Wikidata
 links to (artist-streaming.csv, from listen-ids.py); only an artist without
 that link is searched by name, and marked so for review.
 
-On Deezer's top list the first track is kept whose main artist is the artist
-itself and which is not a live take, a remix, a demo or a karaoke version.
+From Deezer's top list, the track with the best long-run rank is kept among
+those whose main artist is the artist itself and which are not a live take,
+a remix, a demo or a karaoke version.
 Its title is shown without "(Remastered 2011)" and the like.
+
+An artist found by name among namesakes keeps its song only if YouTube has
+it on the artist's own channel; otherwise the song may be a namesake's.
 
 The same song is then looked up on YouTube, so the dossier can play the
 whole list in one embedded player. A video is kept only if its title holds
@@ -123,16 +127,22 @@ def deezer_artist_by_name(name):
     return str(max(same, key=lambda a: a.get('nb_fan', 0))['id']), 'name' if len(same) == 1 else 'name-ambiguous'
 
 
-def deezer_song(artist_id):
+def deezer_song(artist_id, name):
+    """The track with the best Deezer rank, a long-run score: the top list
+    itself is ordered by this week's plays, which puts a new single first."""
     res = fetch('https://api.deezer.com/artist/%s/top?limit=25' % artist_id, pause=0.12) or {}
+    best = None
     for t in res.get('data', []):
         if str(t.get('artist', {}).get('id')) != str(artist_id):
             continue                                   # a feature on someone else's track
         title = clean_title(t.get('title', ''))
-        if not title or is_other_take(t.get('title', '')) or is_other_take(t.get('album', {}).get('title', ''), title):
-            continue
-        return title, str(t['id'])
-    return '', ''
+        # "Verdi: La Traviata…": a composer's name in front of the work.
+        title = re.sub(r'^(%s|%s)\s*:\s*' % (re.escape(name), re.escape(name.split()[-1])), '', title, flags=re.I)
+        if not title or len(title) > 80 or is_other_take(t.get('title', '')) or is_other_take(t.get('album', {}).get('title', ''), title):
+            continue                                   # > 80: a compilation's sales pitch
+        if not best or t.get('rank', 0) > best[2]:
+            best = (title, str(t['id']), t.get('rank', 0))
+    return best[:2] if best else ('', '')
 
 
 # ---- YouTube ----------------------------------------------------------------
@@ -176,11 +186,10 @@ def youtube_video(artist, title, channels):
         elif a and a in norm(vt):
             named.append(v)                            # a label's or a fan's upload
     for v in own + named:                              # the artist's own channel first
-        ch = v['channel']
         ok = fetch('https://www.youtube.com/oembed?format=json&url=' + urllib.parse.quote('https://www.youtube.com/watch?v=' + v['id']), pause=0.2)
         if ok and 'status' not in ok:
-            return v['id'], ch
-    return '', ''
+            return v['id'], v['channel'], v in own
+    return '', '', False
 
 
 # ---- main -------------------------------------------------------------------
@@ -191,8 +200,12 @@ def one(row, ids):
     dz, match = (s.get('deezer') or '').split('|')[0], 'wikidata'
     if not dz:
         dz, match = deezer_artist_by_name(name)
-    title, track = deezer_song(dz) if dz else ('', '')
-    yt, ch = youtube_video(name, title, set((s.get('youtube_channel') or '').split('|')) - {''}) if title else ('', '')
+    title, track = deezer_song(dz, name) if dz else ('', '')
+    yt, ch, own = youtube_video(name, title, set((s.get('youtube_channel') or '').split('|')) - {''}) if title else ('', '', False)
+    if match == 'name-ambiguous' and not own:
+        # Among namesakes, only the artist's own YouTube channel settles which
+        # one Deezer gave: without it the song may be someone else's.
+        title = track = yt = ch = ''
     return {'wikidata_id': q, 'artist': name, 'song_title': title, 'deezer_track': track,
             'youtube': yt, 'match': match if track else '', 'youtube_channel': ch}
 
