@@ -1,6 +1,6 @@
-# Reprise — état au 30/09/2026
+# Reprise — état au 05/10/2026
 
-**La v0.9.0 est publiée, installée et importée chez Maxime, qui a tout vérifié.** Son site montre, sur chaque fiche genre (`/genre/…/about/`), le texte Wikipedia crédité et jusqu'à 8 artistes clés avec leurs photos tramées. Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
+**La v0.10.0 est publiée (30/09/2026), installée chez Maxime, et `artist-import.csv` y est réimporté.** Son site montre, sur chaque fiche genre (`/genre/…/about/`), le texte Wikipedia crédité, jusqu'à 8 artistes clés avec leurs photos tramées, et la section LISTEN (une chanson par artiste clé, lecture enchaînée sur YouTube, liens Spotify et Deezer). Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -11,14 +11,16 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - le texte (introduction Wikipedia pour 1 308 genres, créditée CC BY-SA 4.0 ; un texte écrit à la main n'est jamais remplacé) ;
   - la lignée ;
   - les artistes clés (type `ga_artist`, 5 529 artistes, 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
+  - l'écoute (LISTEN) : une chanson pour 4 171 artistes, dont 3 760 jouables sur YouTube ;
   - les sources.
 - **Maxime peut tout éditer dans WordPress.** Le texte se modifie dans l'éditeur du genre. Les artistes se gèrent par la boîte « Key artists » et par Genres → Artists. Une liste ou un artiste modifié à la main survit aux réimports.
 - **Chaîne de données** (voir `data/README.md`) :
   - genres : `wikidata-build.py` → `build-groups.py` → `wikidata-build.py` ;
   - textes : `wikipedia-fetch.py` ;
-  - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py`.
-  Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 26 vérifications, à faire passer avant toute version.
+  - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
+  - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
+  Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
+- **Banc de test** : `tools/test-local.sh`, 29 vérifications, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -26,7 +28,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - les 453 écartés (`data/artists-rejected.csv`, avec les candidats Wikidata de chacun) ;
    - quelques « photos » qui sont une pochette ou un logo (Blumfeld, Kraftwerk) ;
    - les 45 photos écartées faute de crédit.
-2. **Écoute (Listen)** : codée en v0.10.0 (voir la dernière section), pas encore publiée. À relire en équipe : les 193 artistes trouvés parmi des homonymes (`match = name-ambiguous` dans `data/artist-songs.csv`), et les artistes très actifs dont le titre retenu est un succès récent.
+2. **Écoute (Listen)** : publiée en v0.10.0 (voir la dernière section). À relire en équipe : les 193 artistes trouvés parmi des homonymes (`match = name-ambiguous` dans `data/artist-songs.csv`), et les artistes très actifs dont le titre retenu est un succès récent.
 3. **BPM** : colonnes `bpm_min`/`bpm_max` toujours vides. « Plus tard », selon Maxime.
 4. **Genres sans texte** : 790 (pas d'article anglais, ou seulement une section d'article). À écrire à la main ou à laisser vides.
 5. **Crédit Wikipedia sur un texte réécrit** : il reste affiché tant que le champ `ga_text_source` existe. Prévoir une case dans l'écran du genre si Maxime réécrit souvent.
@@ -338,7 +340,7 @@ Version unique pour les introductions Wikipedia et les artistes, décision de Ma
 
 **Banc** : 26 vérifications, dont l'import des artistes (qui fait échouer le banc s'il rate), l'ordre A → Z, et une vérification que chaque photo a son crédit et que son masque répond en 200. Vérifié aussi à la main : retrait, ajout, puis réimport qui garde la liste modifiée.
 
-## Section Listen (v0.10.0, 30/09/2026, pas encore publiée)
+## Section Listen (v0.10.0, publiée le 30/09/2026)
 Choix de Maxime : une section sous KEY ARTISTS, une chanson par artiste clé (8 au plus), lecture de toute la liste sur YouTube, et un lien Spotify, Deezer et YouTube sur chaque titre. La chanson est choisie automatiquement : le titre le plus écouté de l'artiste sur Deezer. Elle reste modifiable à la main.
 
 **Pourquoi pas de vraies playlists Spotify ou Deezer.** Il en faudrait une par genre (~1 400 par service), créées sur un compte par leur API et tenues à jour. De plus, Spotify a restreint son API pour les petits projets. YouTube, lui, sait enchaîner une liste de vidéos dans un lecteur intégré sans aucun compte : c'est le seul « tout lire » possible sans compte.
@@ -366,4 +368,4 @@ Choix de Maxime : une section sous KEY ARTISTS, une chanson par artiste clé (8 
 
 **Banc** : 29 vérifications, dont un titre par artiste dans l'ordre des artistes avec son lien Spotify, aucun lecteur avant le clic puis une liste enchaînée après (YouTube est simulé dans le banc), et la largeur mobile de la section. Capture `05d-ecoute.png`.
 
-**Chez Maxime, après la mise à jour** : réimporter `artist-import.csv` seulement ; le fichier des genres n'a pas changé.
+**Chez Maxime** : extension mise à jour et `artist-import.csv` réimporté (confirmé le 05/10/2026) ; le fichier des genres n'avait pas changé.
