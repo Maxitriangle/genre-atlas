@@ -217,6 +217,7 @@ function genre_atlas_save_artists_box( $post_id ) {
 	if ( $new_ids !== $ids ) {
 		update_post_meta( $post_id, 'ga_artists', implode( ',', $new_ids ) );
 		update_post_meta( $post_id, 'ga_artists_edited', 1 );
+		genre_atlas_flush_cache(); // the tree says which genres have artists.
 	}
 }
 

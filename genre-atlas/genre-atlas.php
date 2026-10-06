@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.10.1
+ * Version: 0.11.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.10.1' );
+define( 'GENRE_ATLAS_VERSION', '0.11.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
-define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v1' );
+define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v2' );
 
 require_once GENRE_ATLAS_DIR . 'includes/class-genre-atlas-importer.php';
 require_once GENRE_ATLAS_DIR . 'includes/admin.php';
@@ -102,6 +102,8 @@ function genre_atlas_register() {
 add_action( 'init', 'genre_atlas_dossier_route', 11 );
 function genre_atlas_dossier_route() {
 	add_rewrite_rule( '^genre/(.+?)/about/?$', 'index.php?genre=$matches[1]&ga_about=1', 'top' );
+	// The random draw has its own page, on the archive: /genre/random/.
+	add_rewrite_rule( '^genre/random/?$', 'index.php?post_type=genre&ga_random=1', 'top' );
 	// Activation is the only time WordPress rebuilds its rules on its own, and
 	// an update from the Plugins screen is not an activation.
 	if ( get_option( 'genre_atlas_rules' ) !== GENRE_ATLAS_VERSION ) {
@@ -113,6 +115,7 @@ function genre_atlas_dossier_route() {
 add_filter( 'query_vars', 'genre_atlas_query_vars' );
 function genre_atlas_query_vars( $vars ) {
 	$vars[] = 'ga_about';
+	$vars[] = 'ga_random';
 	return $vars;
 }
 
@@ -247,6 +250,10 @@ function genre_atlas_tree() {
 			// the full text is on the dossier, fetched on demand.
 			$node['d'] = wp_html_excerpt( $desc, 160, '…' );
 		}
+		// Whether the dossier lists artists: the random draw skips sparse dossiers.
+		if ( get_post_meta( $p->ID, 'ga_artists', true ) ) {
+			$node['a'] = 1;
+		}
 		$nodes[] = $node;
 	}
 	$tree = array(
@@ -299,6 +306,7 @@ function genre_atlas_enqueue() {
 			'base'     => trailingslashit( get_post_type_archive_link( 'genre' ) ),
 			'start'    => is_singular( 'genre' ) ? (int) get_queried_object_id() : 0,
 			'about'    => is_singular( 'genre' ) && get_query_var( 'ga_about' ) ? 1 : 0,
+			'random'   => is_post_type_archive( 'genre' ) && get_query_var( 'ga_random' ) ? 1 : 0,
 			'title'    => get_bloginfo( 'name' ),
 		)
 	);

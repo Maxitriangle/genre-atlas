@@ -1,4 +1,4 @@
-# Reprise — état au 05/10/2026
+# Reprise — état au 06/10/2026
 
 **La v0.10.0 est publiée (30/09/2026), installée chez Maxime, et `artist-import.csv` y est réimporté.** Son site montre, sur chaque fiche genre (`/genre/…/about/`), le texte Wikipedia crédité, jusqu'à 8 artistes clés avec leurs photos tramées, et la section LISTEN (une chanson par artiste clé, lecture enchaînée sur YouTube, liens Spotify et Deezer). Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
 
@@ -13,6 +13,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - les artistes clés (type `ga_artist`, 5 529 artistes, 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
   - l'écoute (LISTEN) : une chanson pour 4 171 artistes, dont 3 760 jouables sur YouTube ;
   - les sources.
+- **Page RANDOM** (`/genre/random/`, v0.11.0 en cours) : un genre tiré au hasard, avec un filtre par branche.
 - **Maxime peut tout éditer dans WordPress.** Le texte se modifie dans l'éditeur du genre. Les artistes se gèrent par la boîte « Key artists » et par Genres → Artists. Une liste ou un artiste modifié à la main survit aux réimports.
 - **Chaîne de données** (voir `data/README.md`) :
   - genres : `wikidata-build.py` → `build-groups.py` → `wikidata-build.py` ;
@@ -20,7 +21,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
   - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 30 vérifications, à faire passer avant toute version.
+- **Banc de test** : `tools/test-local.sh`, 36 vérifications, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -377,4 +378,38 @@ Vu par Maxime sur Rock Music : PLAY ALL lançait le deuxième titre (Chuck Berry
 
 **Banc** : 30 vérifications. La vérification du lecteur compare maintenant la liste envoyée aux titres affichés, dans l'ordre, et une nouvelle vérification clique ▶ sur le deuxième titre et s'assure que la liste commence par lui. YouTube restant simulé dans le banc, et injoignable depuis le navigateur des sessions, le comportement réel du lecteur n'y est pas testé : à vérifier sur le site après chaque changement de ce côté.
 
-**Chez Maxime** : mise à jour de l'extension seulement, aucun réimport.
+**Chez Maxime** : publiée et vérifiée sur Rock Music le 06/10/2026.
+
+## Page RANDOM (v0.11.0, 06/10/2026, pas encore publiée)
+Idée de Maxime, cadrée avec lui : une entrée RANDOM dans le menu, une page dédiée, un bouton qui ouvre la fiche d'un genre tiré au hasard, avec un filtre.
+
+**Page** `/genre/random/` (règle de réécriture sur l'archive, `ga_random`, transmis au script comme `CFG.random`).
+- WITHIN : ALL GENRES, les 15 tuiles en boutons, ou n'importe quel genre qui a des sous-genres, tapé au clavier.
+- Deux cases : ONLY GENRES WITH SUBGENRES, et INCLUDE SPARSE DOSSIERS (décochée).
+- Le compteur IN THE DRAW donne la taille du tirage : 1 009 sur tout l'atlas par défaut.
+- SPIN fait défiler les glyphes une seconde environ (rien si le système demande moins d'animations), puis ouvre la fiche à son adresse normale.
+
+**Règles du tirage.**
+- Par défaut, seulement les **fiches complètes** : un texte (`d` dans l'arbre) et des artistes clés. Pour cela, l'arbre porte maintenant `a: 1` quand un genre a des artistes ; la clé du cache de l'arbre passe à `genre_atlas_tree_v2`, et l'import des artistes comme la boîte « Key artists » vident ce cache.
+- **Une tuile ferme la lignée** : tirer dans Rock exclut Metal et Punk, qui ont leur propre tuile. Tirer dans Metal reste possible par sa tuile.
+- Pas deux fois le même genre dans une visite. Quand tout le tirage a été vu, il recommence.
+- Le genre de départ n'est jamais tiré lui-même.
+
+**Sur la fiche tirée.** Un bouton ↻ ANOTHER ONE, avec le filtre en micro-texte (« IN METAL MUSIC »), relance sans repasser par la page. Il n'apparaît que sur une fiche venue du tirage. MAP mène alors à la carte du genre, pas à la page RANDOM. Les identifiants WD/MB de la barre sont masqués quand ce bouton est là, pour laisser la place au fil d'Ariane (ils restent dans Sources).
+
+**Adresse partageable** : le filtre est dans l'adresse (`/genre/random/?within=rock-music/metal-music&sub=1&all=1`), le chemin complet du genre faisant foi parce que deux genres peuvent porter le même slug sous des parents différents.
+
+**Mobile** : le menu ne garde que RANDOM (le logo mène à l'index), et la machine à sous passe au-dessus des filtres.
+
+**Banc** : 36 vérifications, dont 6 sur le hasard. Elles contrôlent :
+- le compte du tirage, comparé à l'arbre ;
+- le filtre Metal, qui compte exactement ses genres hors tuiles ;
+- SPIN puis ANOTHER ONE, qui restent dans la branche ;
+- l'adresse avec filtre et « with subgenres » ;
+- la largeur mobile.
+
+Captures `08-hasard.png`, `08b-hasard-fiche.png`, `08c-hasard-mobile.png`.
+
+**Chez Maxime, après la mise à jour** : aucun réimport. L'arbre se reconstruit seul, grâce à sa nouvelle clé de cache.
+
+**Pour plus tard** (proposé, pas fait) : un bouton « RANDOM IN … » directement sur la fiche ou dans le panneau de la carte.

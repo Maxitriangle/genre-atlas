@@ -14,7 +14,9 @@
   var ROOTS = [];        // roots of the tree: genres with no parent
   var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
-  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false };
+  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '' };
+  var R = { within: 0, sub: false, all: false }; // the random draw's filter
+  var DRAWN = {};        // ids drawn this visit: not drawn again until the pool runs out
   var DOS = {};          // id -> what a dossier adds to the tree, fetched on demand
 
   /* ---------- helpers ---------- */
@@ -179,6 +181,7 @@
   /* ---------- state / routing ---------- */
   function select(n, centreOnIt, push, about) {
     S.legend = false;
+    S.random = false;
     S.about = about && n && !n.grp ? n.id : 0;
     if (!n) { S.centre = 0; S.open = 0; }
     else if (centreOnIt || isTile(n)) { S.centre = n.id; S.open = 0; }
@@ -220,6 +223,7 @@
   }
   window.addEventListener('popstate', function (e) {
     var st = e.state || {};
+    if (st.random) { readRandom(); showRandom(false); return; }
     select(N[st.id] || null, st.c, false, st.about);
     if (!st.about) S.fromMap = false;
   });
@@ -227,7 +231,8 @@
   /* ---------- shared pieces ---------- */
   function header() {
     return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
-      '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a></nav>' +
+      '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
+      '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a></nav>' +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
   function subbar(sel) {
@@ -425,6 +430,7 @@
     var desc = d.description || [];
     var html = '<main class="ga-dossier" style="--fam:' + color(n) + '" aria-label="' + esc(n.name) + ' dossier">' +
       '<div class="ga-dbar"><a class="ga-back" href="' + esc(url(n)) + '" data-close="1"><span aria-hidden="true">←</span><span>MAP</span><span class="ga-micro">ESC</span></a>' +
+      (DRAWN[n.id] ? '<a class="ga-back ga-another" href="' + esc(randomUrl()) + '" data-another="1"><span aria-hidden="true">↻</span><span>ANOTHER ONE</span><span class="ga-micro">' + esc(withinLabel()) + '</span></a>' : '') +
       '<nav class="ga-crumbs" aria-label="Lineage">' + crumbs + '</nav><span class="ga-micro ga-dids">' + esc(ids) + '</span></div>' +
       '<section class="ga-dhero"><div class="ga-plate">' + glyph(n, 112) + '</div><div>' +
       '<p class="ga-eyebrow"><span class="ga-chip">' + esc(fam.name) + '</span><span class="ga-micro">' + level + '</span></p>' +
@@ -472,6 +478,112 @@
     return html + '</main>';
   }
 
+  /* ---------- random ---------- */
+  // A genre drawn at random, within a branch or anywhere. A tile closes the
+  // lineage it shows, so drawing within Rock leaves out Metal and Punk, which
+  // have their own tiles. By default only full dossiers are drawn: a text and
+  // key artists.
+  function descendants(n) {
+    var out = [];
+    (function walk(list) { list.forEach(function (k) { if (k.f) return; out.push(k); walk(k.real); }); })(n.real);
+    return out;
+  }
+  function pool(opts) {
+    var o = opts || R, w = N[o.within];
+    var list = w ? descendants(w) : Object.keys(N).map(function (id) { return N[id]; }).filter(function (n) { return !n.grp; });
+    return list.filter(function (n) { return (!o.sub || n.real.length) && (o.all || (n.d && n.a)); });
+  }
+  function draw() {
+    var all = pool(), fresh = all.filter(function (n) { return !DRAWN[n.id] && n.id !== S.about; });
+    if (!fresh.length) { // the pool has run out: start over, still avoiding the genre on screen
+      all.forEach(function (n) { delete DRAWN[n.id]; });
+      fresh = all.filter(function (n) { return n.id !== S.about; });
+      if (!fresh.length) fresh = all;
+    }
+    return fresh.length ? fresh[Math.floor(Math.random() * fresh.length)] : null;
+  }
+  function openDrawn(n) {
+    DRAWN[n.id] = true;
+    select(n, false, true, true);
+    S.fromMap = false; // MAP shows the genre drawn on the map, not the draw page
+  }
+  function withinLabel() { return N[R.within] ? 'IN ' + N[R.within].name : 'ALL GENRES'; }
+  function slugPath(n) { return realPath(n).map(function (x) { return x.slug; }).join('/'); }
+  function randomUrl() {
+    var q = [];
+    if (N[R.within]) q.push('within=' + slugPath(N[R.within]));
+    if (R.sub) q.push('sub=1');
+    if (R.all) q.push('all=1');
+    return CFG.base + 'random/' + (q.length ? '?' + q.join('&') : '');
+  }
+  function readRandom() {
+    var p = {};
+    location.search.replace(/^\?/, '').split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) p[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1)); });
+    var w = 0;
+    if (p.within) Object.keys(N).some(function (id) { if (!N[id].grp && slugPath(N[id]) === p.within) { w = N[id].id; return true; } return false; });
+    R = { within: w, sub: p.sub === '1', all: p.all === '1' };
+  }
+  function showRandom(push) {
+    S.random = true; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
+    if (push !== false && window.history && history.pushState) { try { history.pushState({ random: true }, '', randomUrl()); } catch (e) { /* noop */ } }
+    document.title = 'Random genre — ' + (CFG.title || 'Genre');
+    render();
+  }
+  function setRandom(k, v) {
+    R[k] = v; S.rq = '';
+    if (window.history && history.replaceState) { try { history.replaceState({ random: true }, '', randomUrl()); } catch (e) { /* noop */ } }
+    render();
+  }
+  function viewRandom() {
+    var w = N[R.within], count = pool().length;
+    var chip = function (n, label) {
+      var on = (n ? n.id : 0) === R.within;
+      return '<button type="button" class="ga-rchip' + (on ? ' on' : '') + '" data-within="' + (n ? n.id : 0) + '" aria-pressed="' + on + '"' + (n ? ' style="--fam:' + color(n) + '"' : '') + '>' +
+        (n ? glyph(n, 20) : '') + '<span>' + esc(label) + '</span></button>';
+    };
+    var chips = chip(null, 'ALL GENRES') + TILES.map(function (t) { return chip(t, t.name); }).join('') + (w && TILES.indexOf(w) < 0 ? chip(w, w.name) : '');
+    var opt = function (k, label, note) {
+      return '<label class="ga-ropt"><input type="checkbox" data-ropt="' + k + '"' + (R[k] ? ' checked' : '') + '><span class="ga-box" aria-hidden="true"></span><span><b>' + label + '</b><i class="ga-micro">' + note + '</i></span></label>';
+    };
+    return '<main class="ga-random"' + (w ? ' style="--fam:' + color(w) + '"' : '') + '>' +
+      '<div class="ga-hero"><div><p class="ga-micro">[RANDOM] DISCOVER A GENRE</p><h1>One genre.<br>Picked for you.</h1></div>' +
+      '<dl class="ga-stats"><div><dt>IN THE DRAW</dt><dd>' + pad(count, 4) + '</dd></div></dl></div>' +
+      '<div class="ga-rgrid"><div class="ga-rform">' +
+      '<section><h2 class="ga-micro">01 // WITHIN</h2><div class="ga-rchips">' + chips + '</div>' +
+      '<div class="ga-rpick"><label class="ga-sr" for="ga-rq">Draw within a genre</label><input id="ga-rq" type="search" autocomplete="off" placeholder="OR TYPE ANY GENRE" value="' + esc(S.rq) + '"><div class="ga-results" id="ga-rresults"></div></div></section>' +
+      '<section><h2 class="ga-micro">02 // OPTIONS</h2>' +
+      opt('sub', 'Only genres with subgenres', 'GOOD STARTING POINTS FOR THE MAP') +
+      opt('all', 'Include sparse dossiers', 'GENRES WITH NO TEXT OR NO KEY ARTISTS') + '</section></div>' +
+      '<div class="ga-slot"><div class="ga-plate" id="ga-slot-glyph">' + (w ? glyph(w, 112) : '<span class="ga-qmark" aria-hidden="true">?</span>') + '</div>' +
+      '<p class="ga-slot-name" id="ga-slot-name" aria-live="polite">' + esc(withinLabel()) + '</p>' +
+      (count ? '<button type="button" class="ga-cta" data-spin="1"><span>SPIN</span><span aria-hidden="true">↻</span></button>'
+        : '<p class="ga-micro">NO GENRE MATCHES. TRY INCLUDING SPARSE DOSSIERS.</p>') +
+      '</div></div></main>';
+  }
+  // A short shuffle through the pool's glyphs, then the dossier of the genre drawn.
+  var spinning = false;
+  function spin() {
+    var n = draw(); if (!n || spinning) return;
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var plate = document.getElementById('ga-slot-glyph'), name = document.getElementById('ga-slot-name'), list = pool();
+    if (still || !plate || !name) { openDrawn(n); return; }
+    spinning = true;
+    var t = 0, show = function (k) { plate.innerHTML = glyph(k, 112); plate.style.setProperty('--fam', color(k)); name.textContent = k.name; };
+    var timer = setInterval(function () {
+      t += 1;
+      if (t < 12) { show(list[Math.floor(Math.random() * list.length)]); return; }
+      clearInterval(timer); show(n);
+      setTimeout(function () { spinning = false; if (S.random) openDrawn(n); }, 260);
+    }, 60);
+  }
+  function randomResults() {
+    var box = document.getElementById('ga-rresults'), q = S.rq.trim().toLowerCase(); if (!box) return;
+    if (q.length < 2) { box.innerHTML = ''; return; }
+    var hits = Object.keys(N).map(function (id) { return N[id]; }).filter(function (n) { return !n.grp && n.real.length && n.name.toLowerCase().indexOf(q) >= 0; })
+      .sort(function (a, b) { return a.name.toLowerCase().indexOf(q) - b.name.toLowerCase().indexOf(q) || b.total - a.total; }).slice(0, 8);
+    box.innerHTML = hits.length ? hits.map(function (n) { return '<button type="button" data-within="' + n.id + '" style="--fam:' + color(n) + '">' + glyph(n, 28) + '<span><b>' + esc(n.name) + '</b><i>' + pad(descendants(n).length) + ' GENRES BELOW</i></span></button>'; }).join('') : '<p class="ga-micro">NO GENRE WITH SUBGENRES MATCHES</p>';
+  }
+
   /* ---------- legend ---------- */
   function viewLegend() {
     var r = TILES[0]; if (!r) return '';
@@ -492,6 +604,7 @@
     var focus = document.activeElement && document.activeElement.id === 'ga-q';
     var centre = N[S.centre], open = N[S.open] || null, html = header();
     if (S.legend) html += viewLegend();
+    else if (S.random) html += viewRandom();
     else if (S.about && N[S.about]) html += viewDossier(N[S.about]);
     else if (!centre) html += viewIndex();
     else if (isMobile()) html += viewMobile(centre, open);
@@ -517,6 +630,15 @@
   root.addEventListener('click', function (e) {
     var p = e.target.closest('[data-play]');
     if (p && root.contains(p)) { e.preventDefault(); listenPlay(Number(p.getAttribute('data-play'))); return; }
+    var r = e.target.closest('[data-random],[data-another],[data-spin],[data-within]');
+    if (r && root.contains(r) && !e.metaKey && !e.ctrlKey) {
+      e.preventDefault();
+      if (r.hasAttribute('data-random')) showRandom();
+      else if (r.hasAttribute('data-spin')) spin();
+      else if (r.hasAttribute('data-within')) setRandom('within', Number(r.getAttribute('data-within')));
+      else { var n = draw(); if (n) openDrawn(n); }
+      return;
+    }
     var t = e.target.closest('[data-go],[data-centre],[data-view],[data-exp],[data-dial],[data-legend],[data-about],[data-close]');
     if (!t || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
@@ -532,11 +654,20 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && S.about && !(e.target && e.target.id === 'ga-q')) { e.preventDefault(); closeDossier(); }
   });
-  root.addEventListener('input', function (e) { if (e.target.id === 'ga-q') { S.q = e.target.value; results(); } });
+  root.addEventListener('input', function (e) {
+    if (e.target.id === 'ga-q') { S.q = e.target.value; results(); }
+    else if (e.target.id === 'ga-rq') { S.rq = e.target.value; randomResults(); }
+  });
+  root.addEventListener('change', function (e) { var k = e.target.getAttribute && e.target.getAttribute('data-ropt'); if (k) setRandom(k, e.target.checked); });
   var timer; window.addEventListener('resize', function () { clearTimeout(timer); timer = setTimeout(render, 150); });
 
   fetch(CFG.treeUrl).then(function (r) { return r.json(); }).then(function (tree) {
     build(tree);
+    if (Number(CFG.random) === 1) {
+      readRandom(); showRandom(false);
+      if (history.replaceState) { try { history.replaceState({ random: true }, ''); } catch (e) { /* noop */ } }
+      return;
+    }
     var start = N[CFG.start] || null;
     // wp_localize_script hands every value over as a string, and "0" is truthy.
     var about = Number(CFG.about) === 1;

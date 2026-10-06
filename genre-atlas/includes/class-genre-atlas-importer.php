@@ -317,6 +317,7 @@ class Genre_Atlas_Importer {
 
 		wp_suspend_cache_invalidation( false );
 		wp_cache_flush();
+		genre_atlas_flush_cache(); // the tree says which genres have artists.
 		return $stats;
 	}
 }
