@@ -273,6 +273,61 @@ try {
 		check( 'fiche : un groupe editorial n a pas de fiche', await page.locator( '.ga-panel [data-about]' ).count() === 0 );
 	}
 
+	// 5b. Random: the draw page, a branch filter, then dossier after dossier.
+	{
+		const children = new Map();
+		for ( const n of tree.nodes ) {
+			if ( n.p ) { children.set( n.p, [ ...( children.get( n.p ) || [] ), n ] ); }
+		}
+		// A tile closes the lineage it shows: drawing within Rock leaves Metal out.
+		const below = n => ( children.get( n.id ) || [] ).filter( k => ! k.f ).flatMap( k => [ k, ...below( k ) ] );
+		const full = n => n.d && n.a;
+		const rnd = await newPage( 1440, 900 );
+		await rnd.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await rnd.locator( '.ga-nav [data-random]' ).click();
+		await rnd.waitForSelector( '.ga-random', { timeout: 10000 } );
+		const everything = Number( await rnd.locator( '.ga-random .ga-stats dd' ).innerText() );
+		const expected = tree.nodes.filter( full ).length;
+		check( 'hasard : le menu RANDOM ouvre la page du tirage, fiches completes seulement', new URL( rnd.url() ).pathname === '/genre/random/' && everything === expected,
+			`${ new URL( rnd.url() ).pathname } · ${ everything } genre(s) au tirage pour ${ expected } attendu(s)` );
+		await rnd.screenshot( { path: `${ SHOTS }/08-hasard.png`, fullPage: true } );
+		if ( territory ) {
+			const inside = new Set( below( territory ).map( n => n.id ) );
+			await rnd.locator( `.ga-rchip[data-within="${ territory.id }"]` ).click();
+			const count = Number( await rnd.locator( '.ga-random .ga-stats dd' ).innerText() );
+			const want = below( territory ).filter( full ).length;
+			check( `hasard : le filtre « ${ territory.name } » compte ses seuls genres, ni plus ni moins`, count === want && rnd.url().includes( 'within=' ),
+				`${ count } genre(s) pour ${ want } attendu(s) · ${ rnd.url().replace( BASE, '' ) }` );
+			const drawn = async () => {
+				await rnd.waitForURL( /\/about\/$/, { timeout: 10000 } );
+				await rnd.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
+				const path = new URL( rnd.url() ).pathname.replace( /about\/$/, '' );
+				return tree.nodes.find( n => new URL( permalink( n ) ).pathname === path );
+			};
+			await rnd.locator( '[data-spin]' ).click();
+			const first = await drawn();
+			check( 'hasard : SPIN ouvre la fiche d un genre de la branche choisie', !! first && inside.has( first.id ) && full( first ) && await rnd.locator( '.ga-dbar [data-another]' ).count() === 1,
+				first ? first.name : rnd.url() );
+			await rnd.screenshot( { path: `${ SHOTS }/08b-hasard-fiche.png`, fullPage: false } );
+			await rnd.locator( '.ga-dbar [data-another]' ).click();
+			await rnd.waitForFunction( u => location.href !== u, rnd.url(), { timeout: 10000 } ).catch( () => {} );
+			const second = await drawn();
+			check( 'hasard : ANOTHER ONE tire un autre genre, dans la meme branche', !! second && second.id !== first?.id && inside.has( second.id ),
+				second ? second.name : rnd.url() );
+			// The address carries the filter: it can be shared, and it comes back as it was.
+			const branch = permalink( territory ).replace( `${ BASE }/genre/`, '' ).replace( /\/$/, '' );
+			await rnd.goto( `${ BASE }/genre/random/?within=${ branch }&sub=1`, { waitUntil: 'networkidle' } );
+			await rnd.waitForSelector( '.ga-random', { timeout: 10000 } );
+			const on = await rnd.locator( `.ga-rchip.on[data-within="${ territory.id }"]` ).count();
+			const sub = await rnd.locator( '[data-ropt="sub"]' ).isChecked();
+			await rnd.locator( '[data-spin]' ).click();
+			const parent = await drawn();
+			check( 'hasard : l adresse garde le filtre, et « with subgenres » ne tire que des genres qui en ont', on === 1 && sub && !! parent && inside.has( parent.id ) && ( children.get( parent.id ) || [] ).length > 0,
+				parent ? `${ parent.name }, ${ ( children.get( parent.id ) || [] ).length } sous-genre(s)` : rnd.url() );
+		}
+		await rnd.close();
+	}
+
 	// 6. List view.
 	await page.locator( '[data-view="list"]' ).first().click();
 	await page.waitForTimeout( 400 );
@@ -300,6 +355,14 @@ try {
 		const width = await phone.evaluate( () => document.documentElement.scrollWidth );
 		check( 'mobile : la section Listen tient dans la largeur de l ecran', width <= 390, `${ width } px` );
 		await phone.screenshot( { path: `${ SHOTS }/07c-ecoute-mobile.png`, fullPage: true } );
+	}
+	await phone.goto( `${ BASE }/genre/random/`, { waitUntil: 'networkidle' } );
+	await phone.waitForSelector( '.ga-random', { timeout: 10000 } );
+	{
+		const width = await phone.evaluate( () => document.documentElement.scrollWidth );
+		const menu = await phone.locator( '.ga-nav [data-random]' ).isVisible();
+		check( 'mobile : la page RANDOM tient dans la largeur, et son entree reste dans le menu', width <= 390 && menu, `${ width } px` );
+		await phone.screenshot( { path: `${ SHOTS }/08c-hasard-mobile.png`, fullPage: true } );
 	}
 	await phone.close();
 

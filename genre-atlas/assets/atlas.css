@@ -154,7 +154,8 @@
 @media (max-width:899px){
   .ga-header{height:56px;padding:0 12px 0 16px;gap:12px}
   .ga-logo{font-size:17px}
-  .ga-nav{display:none}
+  .ga-nav{gap:0}
+  .ga-nav a:not(.ga-nav-rnd){display:none}
   .ga-search{width:auto;flex-grow:1;max-width:240px}
   .ga-index{padding:24px 16px}
   .ga-legend{grid-template-columns:1fr;padding:24px 16px;gap:24px}
@@ -258,4 +259,43 @@
   .ga-tout{grid-column:1 / -1}
   .ga-tout a{flex:1;justify-content:center}
   .ga-artists{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* random: a draw within a branch or anywhere, then the dossier of the genre drawn */
+.ga-random{padding:40px;display:flex;flex-direction:column;gap:36px;width:100%;max-width:1260px;margin:0 auto}
+.ga-rgrid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:56px;align-items:start}
+.ga-rform{display:flex;flex-direction:column;gap:28px}
+.ga-rform section{display:flex;flex-direction:column;gap:14px;padding-top:18px;border-top:1px solid var(--line)}
+.ga-rform h2{font-weight:400}
+.ga-rchips{display:flex;flex-wrap:wrap;gap:8px}
+#genre-atlas .ga-rchip{text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--line);font-size:11px;font-weight:600;text-align:left}
+#genre-atlas .ga-rchip:hover{border-color:var(--fam)}
+#genre-atlas .ga-rchip.on{border-color:var(--fam);background:var(--fam);color:var(--bg)}
+.ga-rpick{position:relative;max-width:420px}
+.ga-rpick input{width:100%;height:44px;padding:0 14px;background:transparent;border:1px solid var(--line);color:var(--ink);font:inherit;letter-spacing:inherit;text-transform:uppercase}
+#genre-atlas .ga-rpick .ga-results button{text-transform:uppercase;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 12px;border-bottom:1px solid var(--line);text-align:left;width:100%}
+#genre-atlas .ga-rpick .ga-results button:hover{color:#fff;background:var(--bg)}
+.ga-ropt{display:flex;align-items:center;gap:14px;min-height:48px;cursor:pointer}
+.ga-ropt input{position:absolute;opacity:0;width:1px;height:1px}
+.ga-box{width:20px;height:20px;flex-shrink:0;border:1px solid var(--dim);display:grid;place-items:center}
+.ga-ropt input:checked+.ga-box{border-color:var(--fam);background:var(--fam)}
+.ga-ropt input:checked+.ga-box::after{content:"";width:8px;height:8px;background:var(--bg)}
+.ga-ropt input:focus-visible+.ga-box{outline:2px solid var(--ink);outline-offset:2px}
+.ga-ropt b{display:block;font-weight:600}
+.ga-ropt i{display:block;font-style:normal;margin-top:4px}
+.ga-slot{display:flex;flex-direction:column;align-items:center;gap:18px;padding:32px 24px;border:1px solid var(--line);background:var(--panel)}
+.ga-slot .ga-plate{width:160px;height:160px;display:grid;place-items:center;margin:0}
+.ga-qmark{font-size:56px;font-weight:300;color:var(--fam)}
+.ga-slot-name{min-height:2.6em;font-size:16px;font-weight:700;letter-spacing:.06em;text-align:center;color:var(--fam);overflow-wrap:anywhere}
+#genre-atlas .ga-slot .ga-cta{width:100%;max-width:280px;background:var(--fam)}
+.ga-another{border-color:var(--fam)!important;color:var(--fam)}
+.ga-another~.ga-dids{display:none}
+.ga-another .ga-micro{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:899px){
+  .ga-random{padding:24px 16px;gap:24px}
+  .ga-rgrid{grid-template-columns:1fr;gap:24px}
+  .ga-slot{order:-1;padding:20px 16px}
+  .ga-slot .ga-plate{width:120px;height:120px}
+  .ga-slot .ga-plate .ga-glyph{width:112px;height:112px}
+  .ga-another .ga-micro{display:none}
 }
