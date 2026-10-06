@@ -1,6 +1,10 @@
 # Reprise — état au 06/10/2026
 
-**La v0.10.0 est publiée (30/09/2026), installée chez Maxime, et `artist-import.csv` y est réimporté.** Son site montre, sur chaque fiche genre (`/genre/…/about/`), le texte Wikipedia crédité, jusqu'à 8 artistes clés avec leurs photos tramées, et la section LISTEN (une chanson par artiste clé, lecture enchaînée sur YouTube, liens Spotify et Deezer). Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
+**La v0.11.0 est publiée, installée et vérifiée chez Maxime (06/10/2026).** Son site montre :
+- sur chaque fiche genre (`/genre/…/about/`) : le texte Wikipedia crédité, jusqu'à 8 artistes clés avec leurs photos tramées, et la section LISTEN (une chanson par artiste clé, lecture enchaînée sur YouTube depuis le titre cliqué, liens Spotify et Deezer) ;
+- la page RANDOM (`/genre/random/`), qui tire un genre au hasard.
+
+Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -13,7 +17,8 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - les artistes clés (type `ga_artist`, 5 529 artistes, 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
   - l'écoute (LISTEN) : une chanson pour 4 171 artistes, dont 3 760 jouables sur YouTube ;
   - les sources.
-- **Page RANDOM** (`/genre/random/`, v0.11.0 en cours) : un genre tiré au hasard, avec un filtre par branche.
+- **Page RANDOM** (`/genre/random/`, v0.11.0) : un genre tiré au hasard, avec un filtre par branche, et ↻ ANOTHER ONE sur la fiche tirée.
+- **Mesure d'audience** : extension WordPress **Matomo Analytics** installée par Maxime le 06/10/2026, réglée sans cookies (mode « Auto », « Disable cookies » coché), donc sans bandeau. Rien dans le code de l'atlas. Limite connue : la carte change d'adresse sans recharger la page, donc Matomo compte les arrivées sur le site, pas chaque genre consulté.
 - **Maxime peut tout éditer dans WordPress.** Le texte se modifie dans l'éditeur du genre. Les artistes se gèrent par la boîte « Key artists » et par Genres → Artists. Une liste ou un artiste modifié à la main survit aux réimports.
 - **Chaîne de données** (voir `data/README.md`) :
   - genres : `wikidata-build.py` → `build-groups.py` → `wikidata-build.py` ;
@@ -24,6 +29,10 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 - **Banc de test** : `tools/test-local.sh`, 36 vérifications, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
+0. **Petites suites possibles, proposées à Maxime et pas encore faites** :
+   - Matomo : exclure ses propres visites (onglet Exclusions, rôle administrateur) et vérifier que les adresses IP sont anonymisées (onglet Privacy). Ces réglages ne touchent pas au code.
+   - Compter les genres consultés dans Matomo : envoyer une page vue à chaque changement d'adresse de la carte (`_paq.push(['trackPageView'])` dans `select()`, seulement si `window._paq` existe).
+   - Un bouton « RANDOM IN … » sur la fiche ou dans le panneau de la carte.
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
    - les artistes choisis (`data/artists-picks.csv`) ;
    - les 453 écartés (`data/artists-rejected.csv`, avec les candidats Wikidata de chacun) ;
@@ -380,7 +389,7 @@ Vu par Maxime sur Rock Music : PLAY ALL lançait le deuxième titre (Chuck Berry
 
 **Chez Maxime** : publiée et vérifiée sur Rock Music le 06/10/2026.
 
-## Page RANDOM (v0.11.0, 06/10/2026, pas encore publiée)
+## Page RANDOM (v0.11.0, publiée le 06/10/2026)
 Idée de Maxime, cadrée avec lui : une entrée RANDOM dans le menu, une page dédiée, un bouton qui ouvre la fiche d'un genre tiré au hasard, avec un filtre.
 
 **Page** `/genre/random/` (règle de réécriture sur l'archive, `ga_random`, transmis au script comme `CFG.random`).
@@ -410,6 +419,6 @@ Idée de Maxime, cadrée avec lui : une entrée RANDOM dans le menu, une page d�
 
 Captures `08-hasard.png`, `08b-hasard-fiche.png`, `08c-hasard-mobile.png`.
 
-**Chez Maxime, après la mise à jour** : aucun réimport. L'arbre se reconstruit seul, grâce à sa nouvelle clé de cache.
+**Chez Maxime** : publiée, installée et vérifiée le 06/10/2026 (tirage, filtre Metal, ANOTHER ONE, mobile). Aucun réimport : l'arbre s'est reconstruit seul, grâce à sa nouvelle clé de cache.
 
 **Pour plus tard** (proposé, pas fait) : un bouton « RANDOM IN … » directement sur la fiche ou dans le panneau de la carte.
