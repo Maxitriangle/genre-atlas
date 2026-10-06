@@ -246,12 +246,21 @@ try {
 		const before = await page.locator( '.ga-dossier .ga-player iframe' ).count();
 		await page.locator( '.ga-dsec:has(.ga-tracks)' ).screenshot( { path: `${ SHOTS }/05d-ecoute.png` } ).catch( () => {} );
 		await page.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
-		await page.locator( '.ga-dossier .ga-listen-head [data-play]' ).click();
-		const src = await page.locator( '.ga-dossier .ga-player iframe' ).getAttribute( 'src' ).catch( () => '' );
-		const chained = ( src || '' ).match( /embed\/([\w-]{11})\?.*?(?:playlist=([\w,-]+))?$/ );
-		const count = chained ? 1 + ( chained[ 2 ] ? chained[ 2 ].split( ',' ).length : 0 ) : 0;
-		check( 'ecoute : le lecteur YouTube ne se charge qu au clic, puis enchaine la liste', before === 0 && /^https:\/\/www\.youtube-nocookie\.com\/embed\//.test( src || '' ) && count > 1,
-			`${ before } lecteur avant, ${ count } video(s) apres` );
+		// YouTube plays the playlist parameter from its start and skips the
+		// video in the path: the list must open on the song clicked.
+		const videos = await page.locator( '.ga-dossier .ga-track a[href^="https://www.youtube.com/watch?v="]' ).evaluateAll( l => l.map( a => a.href.split( 'v=' )[ 1 ] ) );
+		const playlist = async sel => {
+			await page.locator( sel ).click();
+			const src = await page.locator( '.ga-dossier .ga-player iframe' ).getAttribute( 'src' ).catch( () => '' );
+			const m = ( src || '' ).match( /^https:\/\/www\.youtube-nocookie\.com\/embed\/([\w-]{11})\?.*playlist=([\w,-]+)/ );
+			return m && m[ 2 ].split( ',' )[ 0 ] === m[ 1 ] ? m[ 2 ].split( ',' ) : [];
+		};
+		const all = await playlist( '.ga-dossier .ga-listen-head [data-play]' );
+		check( 'ecoute : le lecteur YouTube ne se charge qu au clic, puis enchaine la liste depuis le premier titre', before === 0 && all.length > 1 && all.join() === videos.join(),
+			`${ before } lecteur avant, ${ all.length } video(s) apres, premiere ${ all[ 0 ] || '-' } pour ${ videos[ 0 ] || '-' }` );
+		const second = videos.length > 1 ? await playlist( '.ga-dossier .ga-track:has(a[href*="' + videos[ 1 ] + '"]) .ga-play' ) : [];
+		check( 'ecoute : le bouton d un titre lance ce titre, puis la suite', second[ 0 ] === videos[ 1 ] && second.length === videos.length,
+			`premiere ${ second[ 0 ] || '-' } pour ${ videos[ 1 ] || '-' }` );
 		await page.unroute( /youtube(-nocookie)?\.com/ );
 		await page.screenshot( { path: `${ SHOTS }/05c-fiche-wikipedia.png`, fullPage: true } );
 	} else {

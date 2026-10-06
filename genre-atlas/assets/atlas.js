@@ -403,8 +403,10 @@
     var ids = d.artists.filter(function (a) { return a.song; }).map(function (a) { return a.song.youtube || ''; });
     var from = ids.slice(i).concat(ids.slice(0, i)).filter(Boolean); // from the clicked song, then round
     if (!from.length) return;
+    // The embed now plays the playlist parameter from its start and skips the
+    // video in the path, so the list carries every song, the first included.
     box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(from[0]) + '?autoplay=1&rel=0' +
-      (from.length > 1 ? '&playlist=' + from.slice(1).map(encodeURIComponent).join(',') : '') +
+      '&playlist=' + from.map(encodeURIComponent).join(',') +
       '" title="' + esc(n.name) + ' playlist on YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
     box.hidden = false;
   }
