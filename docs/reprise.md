@@ -20,7 +20,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
   - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 29 vérifications, à faire passer avant toute version.
+- **Banc de test** : `tools/test-local.sh`, 30 vérifications, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -369,3 +369,12 @@ Choix de Maxime : une section sous KEY ARTISTS, une chanson par artiste clé (8 
 **Banc** : 29 vérifications, dont un titre par artiste dans l'ordre des artistes avec son lien Spotify, aucun lecteur avant le clic puis une liste enchaînée après (YouTube est simulé dans le banc), et la largeur mobile de la section. Capture `05d-ecoute.png`.
 
 **Chez Maxime** : extension mise à jour et `artist-import.csv` réimporté (confirmé le 05/10/2026) ; le fichier des genres n'avait pas changé.
+
+## Lecture YouTube décalée d'un titre (v0.10.1, 06/10/2026)
+Vu par Maxime sur Rock Music : PLAY ALL lançait le deuxième titre (Chuck Berry au lieu des Beatles), et ▶ sur une ligne lançait la suivante. L'ordre envoyé par l'atlas était juste : c'est le lecteur YouTube intégré qui, quand l'adresse porte un paramètre `playlist`, joue cette liste depuis son début et **ignore la vidéo placée dans l'adresse** (`/embed/<vidéo>`), contrairement à ce que dit sa documentation. L'atlas mettait le premier titre dans l'adresse et seulement la suite dans `playlist`.
+
+**Correction.** `playlist` porte désormais tous les titres, le premier compris (et la vidéo de l'adresse reste la même que le premier).
+
+**Banc** : 30 vérifications. La vérification du lecteur compare maintenant la liste envoyée aux titres affichés, dans l'ordre, et une nouvelle vérification clique ▶ sur le deuxième titre et s'assure que la liste commence par lui. YouTube restant simulé dans le banc, et injoignable depuis le navigateur des sessions, le comportement réel du lecteur n'y est pas testé : à vérifier sur le site après chaque changement de ce côté.
+
+**Chez Maxime** : mise à jour de l'extension seulement, aucun réimport.
