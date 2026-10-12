@@ -1,6 +1,6 @@
 # Reprise — état au 12/10/2026
 
-**La v0.11.0 (page RANDOM) est publiée et installée chez Maxime.** La **v0.12.0 (formulaire de contact) est prête sur la branche de session, pas encore publiée** : voir la dernière section, qui liste aussi ce que Maxime doit régler chez o2switch et dans Gmail.
+**La v0.12.0 (formulaire de contact) est publiée, installée chez Maxime, et la réception fonctionne de bout en bout** : un message envoyé depuis `/contact/` arrive dans son Gmail (vérifié le 12/10/2026). Rien n'est en attente de son côté, sauf une étape facultative (voir la dernière section). `main` contient tout le travail, la branche de session aussi.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -415,7 +415,7 @@ Captures `08-hasard.png`, `08b-hasard-fiche.png`, `08c-hasard-mobile.png`.
 
 **Pour plus tard** (proposé, pas fait) : un bouton « RANDOM IN … » directement sur la fiche ou dans le panneau de la carte.
 
-## Formulaire de contact (v0.12.0, 12/10/2026, pas encore publiée)
+## Formulaire de contact (v0.12.0, publiée le 12/10/2026)
 Demande de Maxime : un formulaire pour les retours des visiteurs, une entrée CONTACT au menu, des messages qui arrivent dans son Gmail sous une adresse du domaine (contact@every-genre.com). Choix faits avec lui : champs complets, lien SUGGEST A CORRECTION sur chaque fiche, copie des messages dans WordPress. Le site tourne sur every-genre.com, chez o2switch.
 
 **Page** `/contact/` (règle de réécriture à la racine vers l'archive, `ga_contact`, transmise au script comme `CFG.contact`). Même grille que RANDOM :
@@ -445,14 +445,28 @@ Le brouillon vit dans `C` : rien de ce qui est tapé ne se perd au rendu ni en c
 - la largeur mobile tient.
 Les courriels sont interceptés par un mu-plugin (`pre_wp_mail` → `wp-content/mail.log`) et relus par `test-local.sh` : destinataire, Reply-To, genre dans le sujet. Captures `09-contact.png` à `09d-messages.png`. La version sans JavaScript a été vérifiée à la main (curl).
 
-**Chez Maxime, dans l'ordre** (à guider pas à pas, une étape à la fois) :
-1. cPanel o2switch → Comptes de messagerie : créer la boîte `contact@every-genre.com` (une vraie boîte, pas un simple renvoi, pour l'étape 3) ;
-2. cPanel → Redirecteurs : faire suivre `contact@every-genre.com` vers son Gmail ;
-3. facultatif, Gmail → Paramètres → Comptes → « Envoyer des e-mails en tant que » : `contact@every-genre.com`, avec le serveur SMTP d'o2switch. Il tape lui-même le mot de passe dans Gmail ;
-4. cPanel → Délivrabilité des e-mails : SPF et DKIM au vert ;
-5. mettre à jour l'extension, puis Genres → Settings → « Send messages to » : `contact@every-genre.com` ;
-6. envoyer un message d'essai depuis `/contact/` et vérifier qu'il arrive dans Gmail et dans Messages.
-Aucun réimport.
+**Chez Maxime : fait le 12/10/2026.**
+- Extension mise à jour, sans réimport.
+- Boîte `contact@every-genre.com` créée chez o2switch : c'est une vraie boîte, pas un simple renvoi, pour pouvoir un jour écrire depuis Gmail sous ce nom.
+- Redirecteur cPanel de `contact@` vers son Gmail.
+- Genres → Settings → « Send messages to » : `contact@every-genre.com`. Le formulaire écrit donc de `contact@` à `contact@`, et la redirection le porte dans Gmail.
+- Message d'essai depuis `/contact/` reçu dans Gmail.
+
+**Le domaine, vu de l'extérieur (DNS, 12/10/2026)** : tout pointe sur o2switch.
+- MX `mail.every-genre.com` → 109.234.167.99, la même machine que le site ;
+- SPF : `v=spf1 ip4:109.234.167.99 +a +mx +include:spf.jabatus.fr ~all` ;
+- DKIM `default._domainkey` présent ;
+- DMARC `p=none`.
+
+**Reste facultatif** : dans Gmail → Paramètres → Comptes → « Envoyer des e-mails en tant que », ajouter `contact@every-genre.com` avec le serveur SMTP d'o2switch, pour répondre sous ce nom plutôt que sous son adresse Gmail. Maxime tape lui-même le mot de passe dans Gmail, jamais dans la conversation.
+
+**Piège rencontré pendant les essais.**
+- Avant le réglage dans Settings, le formulaire écrivait à l'adresse administrateur de WordPress (`admin@every-genre.com`), et rien n'arrivait dans Gmail. C'est le comportement prévu quand le champ est vide ; les messages restaient visibles dans Messages.
+- Un premier essai à la main vers `contact@` a semblé perdu, puis un second est bien arrivé. Pour trancher un « je n'ai rien reçu », vérifier dans cet ordre :
+  - les envoyés de l'expéditeur (adresse exacte, retour d'erreur ou non) ;
+  - le suivi de la livraison dans cPanel ;
+  - le dossier Spam du webmail et de Gmail.
+  Le connecteur Gmail de la session donne accès à la boîte pro de Maxime (`maxime@agencecinq.com`) : il permet de vérifier ses envois et d'envoyer un test.
 
 **Points d'attention** :
 - une page WordPress nommée « contact » serait masquée par la règle `^contact/?$` ;
