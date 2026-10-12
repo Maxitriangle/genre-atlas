@@ -1,6 +1,8 @@
 # Reprise — état au 12/10/2026
 
-**La v0.12.0 (formulaire de contact) est publiée, installée chez Maxime, et la réception fonctionne de bout en bout.** **La v0.13.0 (propositions de la communauté) est prête sur la branche de session, pas encore publiée** : voir la dernière section.
+**La v0.13.0 (propositions de la communauté) est publiée, installée chez Maxime et vérifiée sur son site le 12/10/2026.** Le formulaire de contact (v0.12.0) fonctionne de bout en bout jusqu'à son Gmail. Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
+
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les deux dernières sections (contact, propositions).
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -36,6 +38,11 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 4. **Genres sans texte** : 790 (pas d'article anglais, ou seulement une section d'article). À écrire à la main ou à laisser vides.
 5. **Crédit Wikipedia sur un texte réécrit** : il reste affiché tant que le champ `ga_text_source` existe. Prévoir une case dans l'écran du genre si Maxime réécrit souvent.
 6. **Défaut cosmétique ancien** : le titre du panneau coupe au milieu d'un mot sur les noms longs.
+7. **Propositions de la communauté, suites possibles** (proposées, pas décidées) :
+   - remplir le nom tout seul à partir du lien collé ;
+   - transformer un artiste proposé en artiste clé en un clic ;
+   - vérifier de temps en temps que les liens validés répondent encore.
+8. **Contact, facultatif** : répondre depuis Gmail sous le nom `contact@every-genre.com` (Gmail → « Envoyer des e-mails en tant que », avec le serveur SMTP d'o2switch).
 
 ## Pour publier une nouvelle version (rappel)
 1. Banc vert.
@@ -473,7 +480,7 @@ Les courriels sont interceptés par un mu-plugin (`pre_wp_mail` → `wp-content/
 - une page WordPress nommée « contact » serait masquée par la règle `^contact/?$` ;
 - le compteur de 5 messages par heure peut gêner un visiteur derrière une connexion partagée (bureau, école). À relever si Maxime s'en plaint.
 
-## Propositions de la communauté (v0.13.0, 12/10/2026, pas encore publiée)
+## Propositions de la communauté (v0.13.0, publiée le 12/10/2026)
 Idée de Maxime : que les visiteurs proposent des artistes ou des playlists sur chaque fiche, validés à la main, pour donner de la profondeur aux sous-genres. Choix faits avec lui :
 - la section se place **après LISTEN**, qui joue les artistes clés et reste donc collée à KEY ARTISTS ;
 - le contributeur donne un **pseudo facultatif** et pas d'e-mail ;
@@ -512,7 +519,7 @@ Idée de Maxime : que les visiteurs proposent des artistes ou des playlists sur 
 - la largeur mobile tient.
 Captures `10-propositions-formulaire.png`, `10b-suggestions.png` et `10c-propositions-fiche.png`.
 
-**Chez Maxime, après la mise à jour** : aucun réimport ni réglage. Le menu Suggestions apparaît.
+**Chez Maxime** : la version a été publiée et installée, sans réimport ni réglage. Le parcours entier a été vérifié sur son site le 12/10/2026 : proposition depuis une fiche, pastille dans Suggestions, Approve, affichage sur la fiche.
 
 **Pour plus tard** (proposé, pas fait) :
 - remplir le nom tout seul à partir du lien collé ;
