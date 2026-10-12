@@ -14,10 +14,12 @@
   var ROOTS = [];        // roots of the tree: genres with no parent
   var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
-  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '' };
+  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false };
   var R = { within: 0, sub: false, all: false }; // the random draw's filter
   var DRAWN = {};        // ids drawn this visit: not drawn again until the pool runs out
   var DOS = {};          // id -> what a dossier adds to the tree, fetched on demand
+  // The contact form's draft: kept across renders and pages, so nothing typed is lost.
+  var C = { topic: 'feedback', genre: 0, name: '', email: '', message: '', gq: '', errors: {}, error: '', sent: false, sending: false };
 
   /* ---------- helpers ---------- */
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -182,6 +184,7 @@
   function select(n, centreOnIt, push, about) {
     S.legend = false;
     S.random = false;
+    S.contact = false;
     S.about = about && n && !n.grp ? n.id : 0;
     if (!n) { S.centre = 0; S.open = 0; }
     else if (centreOnIt || isTile(n)) { S.centre = n.id; S.open = 0; }
@@ -224,6 +227,7 @@
   window.addEventListener('popstate', function (e) {
     var st = e.state || {};
     if (st.random) { readRandom(); showRandom(false); return; }
+    if (st.contact) { readContact(); showContact(false); return; }
     select(N[st.id] || null, st.c, false, st.about);
     if (!st.about) S.fromMap = false;
   });
@@ -231,8 +235,9 @@
   /* ---------- shared pieces ---------- */
   function header() {
     return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
-      '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
-      '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a></nav>' +
+      '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.contact && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
+      '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a>' +
+      '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a></nav>' +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
   function subbar(sel) {
@@ -374,6 +379,7 @@
     lineage: '<path d="M12 5v5M12 14v2M12 16l-6 3M12 16l6 3"/><path d="M12 1.8 15 4.4 12 7 9 4.4Z"/><circle cx="12" cy="12" r="2" stroke-dasharray="1.5 1.5"/><circle cx="12" cy="16" r="1.4" fill="currentColor" stroke="none"/><rect x="4.4" y="18.6" width="3" height="3"/><rect x="16.6" y="18.6" width="3" height="3"/>',
     artists: '<rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="7"/><rect x="3.5" y="13.5" width="7" height="7"/><rect x="13.5" y="13.5" width="7" height="7"/><circle cx="7" cy="6.2" r="1.3"/><path d="M4.8 10.5c.4-1.6 1.2-2.3 2.2-2.3s1.8.7 2.2 2.3"/><circle cx="17" cy="17" r="1.3" fill="currentColor" stroke="none"/>',
     listen: '<rect x="3.5" y="3.5" width="17" height="17"/><path d="M10 8.5v7l5.5-3.5Z" fill="currentColor" stroke="none"/><path d="M6.5 7v10M18 7v10" stroke-opacity=".5"/>',
+    correct: '<path d="M5 18.5 6.6 13.6 15.8 4.4 19.6 8.2 10.4 17.4Z"/><path d="M13.6 6.6l3.8 3.8" stroke-opacity=".6"/><path d="M3.5 21h17" stroke-opacity=".5"/><circle cx="5.6" cy="18.4" r="1.2" fill="currentColor" stroke="none"/>',
     sources: '<circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>'
   };
   function icon(k) { return '<span class="ga-ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1">' + ICON[k] + '</svg></span>'; }
@@ -475,6 +481,9 @@
         return '<a href="' + esc(l[2]) + '" target="_blank" rel="noopener"><b><span>' + l[0] + '</span><span aria-hidden="true">↗</span></b><span class="ga-micro">' + esc(l[1]) + '</span></a>';
       }).join('') + '</div>');
     }
+    html += section('correct', 'CORRECTIONS', ['READ BY A PERSON'],
+      '<p class="ga-prose">Something wrong or missing on this page: a parent, an origin, the text, an artist, a song?</p>' +
+      '<a class="ga-cta ghost ga-cfix" href="' + esc(contactUrl(n.id)) + '" data-contact="' + n.id + '"><span>SUGGEST A CORRECTION</span><span aria-hidden="true">→</span></a>');
     return html + '</main>';
   }
 
@@ -516,15 +525,23 @@
     if (R.all) q.push('all=1');
     return CFG.base + 'random/' + (q.length ? '?' + q.join('&') : '');
   }
-  function readRandom() {
+  function query() {
     var p = {};
-    location.search.replace(/^\?/, '').split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) p[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1)); });
-    var w = 0;
-    if (p.within) Object.keys(N).some(function (id) { if (!N[id].grp && slugPath(N[id]) === p.within) { w = N[id].id; return true; } return false; });
-    R = { within: w, sub: p.sub === '1', all: p.all === '1' };
+    location.search.replace(/^\?/, '').split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) p[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, ' ')); });
+    return p;
+  }
+  // Two genres can share a slug under different parents: the full path decides.
+  function byPath(sp) {
+    var hit = 0;
+    if (sp) Object.keys(N).some(function (id) { if (!N[id].grp && slugPath(N[id]) === sp) { hit = N[id].id; return true; } return false; });
+    return hit;
+  }
+  function readRandom() {
+    var p = query();
+    R = { within: byPath(p.within), sub: p.sub === '1', all: p.all === '1' };
   }
   function showRandom(push) {
-    S.random = true; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
+    S.random = true; S.contact = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
     if (push !== false && window.history && history.pushState) { try { history.pushState({ random: true }, '', randomUrl()); } catch (e) { /* noop */ } }
     document.title = 'Random genre — ' + (CFG.title || 'Genre');
     render();
@@ -584,6 +601,126 @@
     box.innerHTML = hits.length ? hits.map(function (n) { return '<button type="button" data-within="' + n.id + '" style="--fam:' + color(n) + '">' + glyph(n, 28) + '<span><b>' + esc(n.name) + '</b><i>' + pad(descendants(n).length) + ' GENRES BELOW</i></span></button>'; }).join('') : '<p class="ga-micro">NO GENRE WITH SUBGENRES MATCHES</p>';
   }
 
+  /* ---------- contact ---------- */
+  // A message to the person behind the atlas. Opened from a dossier, it comes
+  // with the genre already named. The draft lives in C, so a render (or a
+  // trip to another page and back) never loses what was typed.
+  var TOPICS = [
+    ['feedback', 'FEEDBACK', 'WHAT WORKS, WHAT DOES NOT, WHAT YOU WOULD ADD'],
+    ['correction', 'CORRECTION', 'A WRONG PARENT, ORIGIN, TEXT, ARTIST OR SONG'],
+    ['missing', 'MISSING GENRE', 'A GENRE THE ATLAS DOES NOT HAVE YET: SAY WHERE IT BELONGS'],
+    ['other', 'OTHER', 'ANYTHING ELSE']
+  ];
+  var MSG_MAX = 5000;
+  function topicOf(k) { return TOPICS.filter(function (t) { return t[0] === k; })[0] || TOPICS[0]; }
+  function contactUrl(id) { var g = N[id]; return (CFG.contactUrl || CFG.base + 'contact/') + (g ? '?genre=' + slugPath(g) : ''); }
+  function readContact() {
+    var p = query();
+    if (p.genre) { C.genre = byPath(p.genre); if (C.genre) C.topic = 'correction'; }
+    if (p.sent === '1') C.sent = true;
+    if (p.error) C.error = p.error;
+  }
+  function showContact(push) {
+    S.contact = true; S.random = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    if (push !== false && window.history && history.pushState) { try { history.pushState({ contact: true }, '', contactUrl(C.genre)); } catch (e) { /* noop */ } }
+    document.title = 'Contact — ' + (CFG.title || 'Genre');
+    render();
+    window.scrollTo(0, 0);
+  }
+  // From a dossier: about that genre, as a correction. From the menu: the draft as it was.
+  function openContact(id) {
+    if (id && N[id]) { C.genre = id; C.topic = 'correction'; }
+    C.sent = false; C.errors = {}; C.error = '';
+    showContact();
+  }
+  function setGenre(id) {
+    C.genre = id; C.gq = '';
+    if (window.history && history.replaceState) { try { history.replaceState({ contact: true }, '', contactUrl(id)); } catch (e) { /* noop */ } }
+    render();
+    var next = document.getElementById(id ? 'ga-cmsg' : 'ga-cq'); if (next) next.focus();
+  }
+  function field(id, label, note, input) {
+    var err = C.errors[id];
+    return '<div class="ga-cfield' + (err ? ' bad' : '') + '"><label for="ga-c' + id + '"><b>' + label + '</b>' + (note ? '<i class="ga-micro">' + note + '</i>' : '') + '</label>' + input +
+      (err ? '<p class="ga-cerr" id="ga-cerr-' + id + '">' + esc(err) + '</p>' : '') + '</div>';
+  }
+  function attrs(id) { return ' id="ga-c' + id + '"' + (C.errors[id] ? ' aria-invalid="true" aria-describedby="ga-cerr-' + id + '"' : ''); }
+  function ticket() {
+    var g = N[C.genre];
+    return [['TO', 'THE ATLAS'], ['RE', topicOf(C.topic)[1], 're'], ['GENRE', g ? g.name : '—', 'genre'], ['LENGTH', pad(C.message.trim().length, 4) + ' / ' + MSG_MAX, 'len'], ['REPLY TO', C.email.trim() || '—', 'reply']]
+      .map(function (r) { return '<div class="ga-row"><span>' + r[0] + '</span><span' + (r[2] ? ' id="ga-ct-' + r[2] + '"' : '') + '>' + esc(r[1]) + '</span></div>'; }).join('');
+  }
+  function updateTicket() {
+    var set = function (k, v) { var el = document.getElementById('ga-ct-' + k); if (el) el.textContent = v; };
+    set('re', topicOf(C.topic)[1]);
+    set('len', pad(C.message.trim().length, 4) + ' / ' + MSG_MAX);
+    set('reply', C.email.trim() || '—');
+    var hint = document.getElementById('ga-chint'); if (hint) hint.textContent = topicOf(C.topic)[2];
+  }
+  function viewContact() {
+    var g = N[C.genre], seal = g ? glyph(g, 112) : TILES[0] ? glyph(TILES[0], 112, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '';
+    var html = '<main class="ga-contact"' + (g ? ' style="--fam:' + color(g) + '"' : '') + '>' +
+      '<div class="ga-hero"><div><p class="ga-micro">[CONTACT] WRITE TO THE ATLAS</p><h1>A gap, an error,<br>an idea?</h1></div>' +
+      '<dl class="ga-stats"><div><dt>READ BY</dt><dd>01 PERSON</dd></div></dl></div>';
+    if (C.sent) {
+      return html + '<section class="ga-csent" aria-live="polite"><div class="ga-plate">' + seal + '</div><div>' +
+        '<p class="ga-micro">[SENT] MESSAGE RECEIVED</p><h2>Thank you.</h2>' +
+        '<p class="ga-lede">Your message has reached a real inbox and will be read by a person. If it calls for an answer, the reply will come to the address you gave' + (C.email ? ': <b>' + esc(C.email) + '</b>' : '') + '.</p>' +
+        '<div class="ga-cactions">' + (g ? '<a class="ga-cta" href="' + esc(url(g)) + 'about/" data-about="' + g.id + '"><span>BACK TO ' + esc(g.name) + '</span><span aria-hidden="true">←</span></a>' : '<a class="ga-cta" href="' + esc(CFG.base) + '" data-go="0"><span>BACK TO THE ATLAS</span><span aria-hidden="true">←</span></a>') +
+        '<button type="button" class="ga-cta ghost" data-cnew="1"><span>WRITE ANOTHER</span><span aria-hidden="true">+</span></button></div></div></section></main>';
+    }
+    var topics = TOPICS.map(function (t) {
+      return '<label class="ga-ctopic"><input type="radio" name="topic" value="' + t[0] + '"' + (C.topic === t[0] ? ' checked' : '') + '><span>' + t[1] + '</span></label>';
+    }).join('');
+    var about = g
+      ? '<div class="ga-cgenre" style="--fam:' + color(g) + '">' + glyph(g, 28) + '<span><b>' + esc(g.name) + '</b><i class="ga-micro">' + esc(path(g).slice(0, -1).map(function (a) { return a.name; }).join(' / ') || 'FAMILY') + '</i></span>' +
+        '<button type="button" data-cgenre="0" aria-label="Remove ' + esc(g.name) + '">×</button></div>'
+      : '<div class="ga-rpick"><label class="ga-sr" for="ga-cq">About a genre</label><input id="ga-cq" type="search" autocomplete="off" placeholder="TYPE A GENRE — OPTIONAL" value="' + esc(C.gq) + '"><div class="ga-results" id="ga-cresults"></div></div>';
+    return html + '<div class="ga-rgrid"><form class="ga-rform ga-cform" novalidate>' +
+      (C.error ? '<p class="ga-cerr ga-cerr-all" role="alert">' + esc(C.error) + '</p>' : '') +
+      '<section><h2 class="ga-micro">01 // TOPIC</h2><fieldset class="ga-ctopics"><legend class="ga-sr">Topic</legend>' + topics + '</fieldset><p class="ga-micro" id="ga-chint">' + topicOf(C.topic)[2] + '</p></section>' +
+      '<section><h2 class="ga-micro">02 // GENRE</h2>' + about + '</section>' +
+      '<section><h2 class="ga-micro">03 // MESSAGE</h2>' +
+      field('msg', 'Your message', 'A SOURCE HELPS: WIKIPEDIA, MUSICBRAINZ, DISCOGS, A BOOK', '<textarea' + attrs('msg') + ' name="message" rows="8" maxlength="' + MSG_MAX + '" required>' + esc(C.message) + '</textarea>') + '</section>' +
+      '<section><h2 class="ga-micro">04 // YOU</h2><div class="ga-cpair">' +
+      field('name', 'Name', 'OPTIONAL', '<input' + attrs('name') + ' name="name" autocomplete="name" maxlength="100" value="' + esc(C.name) + '">') +
+      field('email', 'E-mail', 'ONLY USED TO REPLY', '<input' + attrs('email') + ' type="email" name="email" autocomplete="email" required value="' + esc(C.email) + '">') + '</div>' +
+      '<div class="ga-hp" aria-hidden="true"><label for="ga-cwebsite">Leave this field empty</label><input id="ga-cwebsite" name="website" tabindex="-1" autocomplete="off"></div></section>' +
+      '<button type="submit" class="ga-cta ga-csend"' + (C.sending ? ' disabled' : '') + '><span>' + (C.sending ? 'SENDING…' : 'SEND MESSAGE') + '</span><span aria-hidden="true">→</span></button>' +
+      '</form><aside class="ga-slot ga-cticket" aria-label="Summary"><div class="ga-plate">' + seal + '</div><div class="ga-ctrows">' + ticket() + '</div>' +
+      '<p class="ga-micro">NO NEWSLETTER, NO TRACKING. YOUR ADDRESS IS USED TO REPLY, AND FOR NOTHING ELSE.</p></aside></div></main>';
+  }
+  function contactResults() {
+    var box = document.getElementById('ga-cresults'), q = C.gq.trim().toLowerCase(); if (!box) return;
+    if (q.length < 2) { box.innerHTML = ''; return; }
+    var hits = Object.keys(N).map(function (id) { return N[id]; }).filter(function (n) { return !n.grp && n.name.toLowerCase().indexOf(q) >= 0; })
+      .sort(function (a, b) { return a.name.toLowerCase().indexOf(q) - b.name.toLowerCase().indexOf(q) || b.total - a.total; }).slice(0, 8);
+    box.innerHTML = hits.length ? hits.map(function (n) { return '<button type="button" data-cgenre="' + n.id + '" style="--fam:' + color(n) + '">' + glyph(n, 28) + '<span><b>' + esc(n.name) + '</b><i>' + esc(path(n).slice(0, -1).map(function (a) { return a.name; }).join(' / ') || 'FAMILY') + '</i></span></button>'; }).join('') : '<p class="ga-micro">NO MATCH — NAME IT IN THE MESSAGE</p>';
+  }
+  function sendContact() {
+    if (C.sending) return;
+    var hp = document.getElementById('ga-cwebsite');
+    C.errors = {}; C.error = '';
+    if (C.message.trim().length < 10) C.errors.msg = 'WRITE A LITTLE MORE: TEN CHARACTERS AT LEAST.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(C.email.trim())) C.errors.email = 'ENTER A VALID E-MAIL ADDRESS, SO THE REPLY CAN REACH YOU.';
+    var bad = ['msg', 'email'].filter(function (k) { return C.errors[k]; })[0];
+    if (bad) { render(); var el = document.getElementById('ga-c' + bad); if (el) el.focus(); return; }
+    C.sending = true; render();
+    var fail = function (msg, fieldName) {
+      C.sending = false;
+      if (fieldName) C.errors[fieldName === 'message' ? 'msg' : fieldName] = msg; else C.error = msg;
+      render();
+    };
+    fetch(CFG.contactApi, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic: C.topic, genre: C.genre, name: C.name, email: C.email.trim(), message: C.message, token: CFG.contactToken, website: hp ? hp.value : '' })
+    }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d || {} }; }); }).then(function (res) {
+      if (!res.ok) { fail(String(res.d.message || 'The message could not be sent.').toUpperCase(), res.d.data && res.d.data.field); return; }
+      C.sending = false; C.sent = true; C.message = '';
+      render(); window.scrollTo(0, 0);
+    }).catch(function () { fail('THE MESSAGE COULD NOT BE SENT. CHECK YOUR CONNECTION AND TRY AGAIN.'); });
+  }
+
   /* ---------- legend ---------- */
   function viewLegend() {
     var r = TILES[0]; if (!r) return '';
@@ -605,6 +742,7 @@
     var centre = N[S.centre], open = N[S.open] || null, html = header();
     if (S.legend) html += viewLegend();
     else if (S.random) html += viewRandom();
+    else if (S.contact) html += viewContact();
     else if (S.about && N[S.about]) html += viewDossier(N[S.about]);
     else if (!centre) html += viewIndex();
     else if (isMobile()) html += viewMobile(centre, open);
@@ -628,6 +766,14 @@
   }
 
   root.addEventListener('click', function (e) {
+    var c = e.target.closest('[data-contact],[data-cgenre],[data-cnew]');
+    if (c && root.contains(c) && !e.metaKey && !e.ctrlKey) {
+      e.preventDefault();
+      if (c.hasAttribute('data-contact')) openContact(Number(c.getAttribute('data-contact')));
+      else if (c.hasAttribute('data-cgenre')) setGenre(Number(c.getAttribute('data-cgenre')));
+      else { C.sent = false; render(); var m = document.getElementById('ga-cmsg'); if (m) m.focus(); }
+      return;
+    }
     var p = e.target.closest('[data-play]');
     if (p && root.contains(p)) { e.preventDefault(); listenPlay(Number(p.getAttribute('data-play'))); return; }
     var r = e.target.closest('[data-random],[data-another],[data-spin],[data-within]');
@@ -642,7 +788,7 @@
     var t = e.target.closest('[data-go],[data-centre],[data-view],[data-exp],[data-dial],[data-legend],[data-about],[data-close]');
     if (!t || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
-    if (t.hasAttribute('data-legend')) { S.legend = true; S.q = ''; S.about = 0; render(); }
+    if (t.hasAttribute('data-legend')) { S.legend = true; S.random = false; S.contact = false; S.q = ''; S.about = 0; render(); }
     else if (t.hasAttribute('data-close')) { closeDossier(); }
     else if (t.hasAttribute('data-about')) { S.q = ''; openDossier(N[t.getAttribute('data-about')]); }
     else if (t.hasAttribute('data-centre')) { S.q = ''; select(N[t.getAttribute('data-centre')], true); }
@@ -657,15 +803,32 @@
   root.addEventListener('input', function (e) {
     if (e.target.id === 'ga-q') { S.q = e.target.value; results(); }
     else if (e.target.id === 'ga-rq') { S.rq = e.target.value; randomResults(); }
+    else if (e.target.id === 'ga-cq') { C.gq = e.target.value; contactResults(); }
+    else if (e.target.id === 'ga-cmsg' || e.target.id === 'ga-cname' || e.target.id === 'ga-cemail') {
+      C[{ 'ga-cmsg': 'message', 'ga-cname': 'name', 'ga-cemail': 'email' }[e.target.id]] = e.target.value;
+      updateTicket();
+    }
   });
-  root.addEventListener('change', function (e) { var k = e.target.getAttribute && e.target.getAttribute('data-ropt'); if (k) setRandom(k, e.target.checked); });
-  var timer; window.addEventListener('resize', function () { clearTimeout(timer); timer = setTimeout(render, 150); });
+  root.addEventListener('submit', function (e) { if (e.target.classList.contains('ga-cform')) { e.preventDefault(); sendContact(); } });
+  root.addEventListener('change', function (e) {
+    if (e.target.name === 'topic' && S.contact) { C.topic = e.target.value; updateTicket(); return; }
+    var k = e.target.getAttribute && e.target.getAttribute('data-ropt'); if (k) setRandom(k, e.target.checked);
+  });
+  // The contact page lays itself out in CSS, and re-rendering it would take the
+  // focus out of the field being typed in: a phone's keyboard resizes the window.
+  var timer; window.addEventListener('resize', function () { if (S.contact) return; clearTimeout(timer); timer = setTimeout(render, 150); });
 
   fetch(CFG.treeUrl).then(function (r) { return r.json(); }).then(function (tree) {
     build(tree);
     if (Number(CFG.random) === 1) {
       readRandom(); showRandom(false);
       if (history.replaceState) { try { history.replaceState({ random: true }, ''); } catch (e) { /* noop */ } }
+      return;
+    }
+    if (Number(CFG.contact) === 1) {
+      readContact(); showContact(false);
+      // The address keeps the genre only: sent= and error= are one-off.
+      if (history.replaceState) { try { history.replaceState({ contact: true }, '', contactUrl(C.genre)); } catch (e) { /* noop */ } }
       return;
     }
     var start = N[CFG.start] || null;

@@ -154,8 +154,8 @@
 @media (max-width:899px){
   .ga-header{height:56px;padding:0 12px 0 16px;gap:12px}
   .ga-logo{font-size:17px}
-  .ga-nav{gap:0}
-  .ga-nav a:not(.ga-nav-rnd){display:none}
+  .ga-nav{gap:14px}
+  .ga-nav a:not(.ga-nav-rnd):not(.ga-nav-ct){display:none}
   .ga-search{width:auto;flex-grow:1;max-width:240px}
   .ga-index{padding:24px 16px}
   .ga-legend{grid-template-columns:1fr;padding:24px 16px;gap:24px}
@@ -298,4 +298,63 @@
   .ga-slot .ga-plate{width:120px;height:120px}
   .ga-slot .ga-plate .ga-glyph{width:112px;height:112px}
   .ga-another .ga-micro{display:none}
+}
+
+/* contact: a message to the person behind the atlas, on the random page's grid */
+.ga-contact{padding:40px;display:flex;flex-direction:column;gap:36px;width:100%;max-width:1260px;margin:0 auto}
+.ga-cform fieldset{margin:0;padding:0;border:0;display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.ga-ctopic{position:relative;cursor:pointer}
+.ga-ctopic input{position:absolute;opacity:0;width:1px;height:1px}
+.ga-ctopic span{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px solid var(--line);font-size:11px;font-weight:600}
+.ga-ctopic:hover span{border-color:var(--fam)}
+.ga-ctopic input:checked+span{border-color:var(--fam);background:var(--fam);color:var(--bg)}
+.ga-ctopic input:focus-visible+span{outline:2px solid var(--ink);outline-offset:2px}
+.ga-cgenre{display:flex;align-items:center;gap:12px;max-width:420px;min-height:52px;padding:4px 4px 4px 12px;border:1px solid var(--fam)}
+.ga-cgenre>span{flex-grow:1;min-width:0}
+.ga-cgenre b{display:block;font-weight:600;color:var(--fam);overflow-wrap:anywhere}
+.ga-cgenre i{display:block;font-style:normal;margin-top:3px}
+#genre-atlas .ga-cgenre button{width:44px;height:44px;flex-shrink:0;font-size:18px;color:var(--dim)}
+#genre-atlas .ga-cgenre button:hover{color:#fff}
+#genre-atlas .ga-cform .ga-results button{text-transform:uppercase;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 12px;border-bottom:1px solid var(--line);text-align:left;width:100%}
+#genre-atlas .ga-cform .ga-results button:hover{color:#fff;background:var(--bg)}
+.ga-cfield{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ga-cfield label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ga-cfield label b{font-weight:600}
+.ga-cfield label i{font-style:normal}
+.ga-cfield input,.ga-cfield textarea{width:100%;padding:12px 14px;background:transparent;border:1px solid var(--line);color:var(--ink);font:inherit;font-size:14px;line-height:1.6;letter-spacing:.01em;text-transform:none;border-radius:0}
+.ga-cfield input{height:48px}
+.ga-cfield textarea{min-height:200px;resize:vertical}
+.ga-cfield input:hover,.ga-cfield textarea:hover{border-color:var(--dim)}
+.ga-cfield input:focus,.ga-cfield textarea:focus{border-color:var(--fam);outline:none;background:var(--panel)}
+.ga-cfield.bad input,.ga-cfield.bad textarea{border-color:#FF8A80}
+.ga-cerr{font-size:10px;color:#FF8A80}
+.ga-cerr-all{padding:12px 14px;border:1px solid #FF8A80}
+.ga-cpair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.ga-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+#genre-atlas .ga-csend{align-self:flex-start;min-width:280px;gap:32px;background:var(--fam);font-weight:700}
+#genre-atlas .ga-cactions .ga-cta.ghost{border:1px solid var(--fam);font-weight:700}
+#genre-atlas .ga-csent .ga-lede{margin-top:18px}
+#genre-atlas .ga-csend:disabled{opacity:.6;cursor:progress}
+.ga-cticket{align-items:stretch;position:sticky;top:24px}
+.ga-cticket .ga-plate{align-self:center}
+.ga-ctrows{display:flex;flex-direction:column}
+.ga-ctrows .ga-row span:last-child{min-width:0;overflow-wrap:anywhere}
+#ga-ct-reply{text-transform:none}
+.ga-cticket>.ga-micro{line-height:1.6}
+.ga-csent{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;padding:36px 0;border-top:1px solid var(--line)}
+.ga-csent .ga-plate{display:grid;place-items:center;width:160px;height:160px}
+.ga-csent h2{margin-top:14px!important;font-size:clamp(28px,3.6vw,44px);font-weight:600;line-height:1.05}
+.ga-csent .ga-lede b{font-weight:600;overflow-wrap:anywhere}
+.ga-cactions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+#genre-atlas .ga-cactions .ga-cta{min-width:240px;gap:24px}
+#genre-atlas .ga-cfix{display:inline-flex;gap:32px;margin-top:18px}
+@media (max-width:899px){
+  .ga-contact{padding:24px 16px;gap:24px}
+  .ga-cpair{grid-template-columns:1fr}
+  .ga-cfield input,.ga-cfield textarea{font-size:16px} /* below 16 px, phones zoom in on focus */
+  .ga-cticket{order:0;position:static}
+  #genre-atlas .ga-csend{align-self:stretch;min-width:0}
+  .ga-csent{grid-template-columns:1fr;gap:20px}
+  .ga-csent .ga-plate{width:120px;height:120px}
+  #genre-atlas .ga-cactions .ga-cta{flex:1 1 100%;min-width:0}
 }

@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.11.0
+Stable tag: 0.12.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -26,6 +26,10 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   gives a genre a tile and its own colour, whatever its parent: Metal keeps Rock as its parent in the tree and
   still opens the atlas from its own tile, which reads "FAMILY": a tile closes the displayed lineage, so nothing
   under Metal shows Rock above it, while the address stays /genre/rock-music/metal-music/.
+* Contact: /contact/ (menu CONTACT, and SUGGEST A CORRECTION at the foot of every dossier, which names the genre).
+  Messages go to the address set in Genres > Settings, which visitors never see, with the visitor in Reply-To,
+  and a copy is kept in Messages. No captcha and no outside service: a hidden field, a minimum of 3 seconds
+  between loading and sending, and 5 messages an hour per connection.
 * WP-CLI: wp genre-atlas import file.csv
 * The font (Azeret Mono, SIL Open Font License) is bundled: no call to Google Fonts.
 * Updates: new versions published as GitHub releases appear in Plugins like any other update.

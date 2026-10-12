@@ -1,6 +1,6 @@
-# Reprise — état au 06/10/2026
+# Reprise — état au 12/10/2026
 
-**La v0.10.0 est publiée (30/09/2026), installée chez Maxime, et `artist-import.csv` y est réimporté.** Son site montre, sur chaque fiche genre (`/genre/…/about/`), le texte Wikipedia crédité, jusqu'à 8 artistes clés avec leurs photos tramées, et la section LISTEN (une chanson par artiste clé, lecture enchaînée sur YouTube, liens Spotify et Deezer). Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
+**La v0.11.0 (page RANDOM) est publiée et installée chez Maxime.** La **v0.12.0 (formulaire de contact) est prête sur la branche de session, pas encore publiée** : voir la dernière section, qui liste aussi ce que Maxime doit régler chez o2switch et dans Gmail.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -13,7 +13,8 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - les artistes clés (type `ga_artist`, 5 529 artistes, 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
   - l'écoute (LISTEN) : une chanson pour 4 171 artistes, dont 3 760 jouables sur YouTube ;
   - les sources.
-- **Page RANDOM** (`/genre/random/`, v0.11.0 en cours) : un genre tiré au hasard, avec un filtre par branche.
+- **Page RANDOM** (`/genre/random/`, v0.11.0) : un genre tiré au hasard, avec un filtre par branche.
+- **Contact** (`/contact/`, v0.12.0) : formulaire, entrée CONTACT au menu, bloc SUGGEST A CORRECTION au pied de chaque fiche. Les messages partent vers l'adresse réglée dans Genres → Settings et sont gardés dans Messages.
 - **Maxime peut tout éditer dans WordPress.** Le texte se modifie dans l'éditeur du genre. Les artistes se gèrent par la boîte « Key artists » et par Genres → Artists. Une liste ou un artiste modifié à la main survit aux réimports.
 - **Chaîne de données** (voir `data/README.md`) :
   - genres : `wikidata-build.py` → `build-groups.py` → `wikidata-build.py` ;
@@ -21,7 +22,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
   - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 36 vérifications, à faire passer avant toute version.
+- **Banc de test** : `tools/test-local.sh`, 43 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -380,7 +381,7 @@ Vu par Maxime sur Rock Music : PLAY ALL lançait le deuxième titre (Chuck Berry
 
 **Chez Maxime** : publiée et vérifiée sur Rock Music le 06/10/2026.
 
-## Page RANDOM (v0.11.0, 06/10/2026, pas encore publiée)
+## Page RANDOM (v0.11.0, publiée le 06/10/2026)
 Idée de Maxime, cadrée avec lui : une entrée RANDOM dans le menu, une page dédiée, un bouton qui ouvre la fiche d'un genre tiré au hasard, avec un filtre.
 
 **Page** `/genre/random/` (règle de réécriture sur l'archive, `ga_random`, transmis au script comme `CFG.random`).
@@ -413,3 +414,46 @@ Captures `08-hasard.png`, `08b-hasard-fiche.png`, `08c-hasard-mobile.png`.
 **Chez Maxime, après la mise à jour** : aucun réimport. L'arbre se reconstruit seul, grâce à sa nouvelle clé de cache.
 
 **Pour plus tard** (proposé, pas fait) : un bouton « RANDOM IN … » directement sur la fiche ou dans le panneau de la carte.
+
+## Formulaire de contact (v0.12.0, 12/10/2026, pas encore publiée)
+Demande de Maxime : un formulaire pour les retours des visiteurs, une entrée CONTACT au menu, des messages qui arrivent dans son Gmail sous une adresse du domaine (contact@every-genre.com). Choix faits avec lui : champs complets, lien SUGGEST A CORRECTION sur chaque fiche, copie des messages dans WordPress. Le site tourne sur every-genre.com, chez o2switch.
+
+**Page** `/contact/` (règle de réécriture à la racine vers l'archive, `ga_contact`, transmise au script comme `CFG.contact`). Même grille que RANDOM :
+- à gauche le formulaire : 01 TOPIC (FEEDBACK, CORRECTION, MISSING GENRE, OTHER), 02 GENRE (facultatif, choisi au clavier ou déjà rempli), 03 MESSAGE, 04 YOU (nom facultatif, e-mail) ;
+- à droite une fiche récapitulative qui se met à jour pendant la saisie : sujet, genre, longueur, adresse de réponse.
+Le brouillon vit dans `C` : rien de ce qui est tapé ne se perd au rendu ni en changeant de page. La page ne se redessine pas au redimensionnement, parce que le clavier d'un téléphone redimensionne la fenêtre et ferait perdre le champ en cours.
+
+**Sur chaque fiche**, un bloc CORRECTIONS en bas : SUGGEST A CORRECTION ouvre `/contact/?genre=chemin/complet` avec le genre et le sujet CORRECTION déjà choisis.
+
+**Envoi** (`includes/contact.php`) :
+- le script poste sur `/wp-json/genre-atlas/v1/contact`. Sans JavaScript, la page de secours poste sur `admin-post.php`, qui renvoie sur `/contact/?sent=1` ou `?error=…`. Les deux passent par `genre_atlas_contact_submit()` ;
+- **antispam sans captcha ni service extérieur** :
+  - un champ caché que seuls les robots remplissent ;
+  - au moins 3 s entre le chargement de la page et l'envoi : un jeton horodaté et signé, qui n'expire pas, donc une page en cache marche toujours ;
+  - 5 messages par heure et par connexion, l'adresse IP n'étant gardée qu'en empreinte salée pendant une heure.
+  Un robot repéré reçoit « envoyé » et rien n'est gardé ;
+- le courriel part vers l'adresse de Genres → Settings (à défaut, celle de l'administrateur). Le visiteur est en Reply-To : « Répondre » dans Gmail lui écrit. Quand cette adresse est sur le domaine du site, elle est aussi l'expéditrice, ce qui évite le dossier spam. Le sujet et le corps nomment le genre et donnent le lien de sa fiche ;
+- **copie dans WordPress** : type `ga_message`, menu « Messages » (on ne peut pas en créer à la main), avec un extrait, l'expéditeur, le genre et une colonne E-mail Sent / Not sent. Si le courriel échoue, le message reste là.
+
+**Banc** : 43 vérifications au navigateur, dont 7 sur le contact :
+- le menu ouvre `/contact/` ;
+- un envoi vide est arrêté sans requête ;
+- SUGGEST A CORRECTION remplit le genre ;
+- le message part et la confirmation s'affiche ;
+- le piège est muet et la 6e requête reçoit 429 ;
+- les 5 messages sont gardés dans WordPress ;
+- la largeur mobile tient.
+Les courriels sont interceptés par un mu-plugin (`pre_wp_mail` → `wp-content/mail.log`) et relus par `test-local.sh` : destinataire, Reply-To, genre dans le sujet. Captures `09-contact.png` à `09d-messages.png`. La version sans JavaScript a été vérifiée à la main (curl).
+
+**Chez Maxime, dans l'ordre** (à guider pas à pas, une étape à la fois) :
+1. cPanel o2switch → Comptes de messagerie : créer la boîte `contact@every-genre.com` (une vraie boîte, pas un simple renvoi, pour l'étape 3) ;
+2. cPanel → Redirecteurs : faire suivre `contact@every-genre.com` vers son Gmail ;
+3. facultatif, Gmail → Paramètres → Comptes → « Envoyer des e-mails en tant que » : `contact@every-genre.com`, avec le serveur SMTP d'o2switch. Il tape lui-même le mot de passe dans Gmail ;
+4. cPanel → Délivrabilité des e-mails : SPF et DKIM au vert ;
+5. mettre à jour l'extension, puis Genres → Settings → « Send messages to » : `contact@every-genre.com` ;
+6. envoyer un message d'essai depuis `/contact/` et vérifier qu'il arrive dans Gmail et dans Messages.
+Aucun réimport.
+
+**Points d'attention** :
+- une page WordPress nommée « contact » serait masquée par la règle `^contact/?$` ;
+- le compteur de 5 messages par heure peut gêner un visiteur derrière une connexion partagée (bureau, école). À relever si Maxime s'en plaint.
