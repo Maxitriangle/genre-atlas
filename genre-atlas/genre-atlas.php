@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.12.0
+ * Version: 0.13.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.12.0' );
+define( 'GENRE_ATLAS_VERSION', '0.13.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v2' );
@@ -23,6 +23,7 @@ require_once GENRE_ATLAS_DIR . 'includes/class-genre-atlas-importer.php';
 require_once GENRE_ATLAS_DIR . 'includes/admin.php';
 require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
+require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/updater.php';
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once GENRE_ATLAS_DIR . 'includes/cli.php';
@@ -178,6 +179,7 @@ function genre_atlas_dossier( $request ) {
 			'wikipedia'   => (string) get_post_meta( $post->ID, 'ga_wikipedia', true ),
 			'textSource'  => (string) get_post_meta( $post->ID, 'ga_text_source', true ),
 			'artists'     => genre_atlas_dossier_artists( $post->ID ),
+			'picks'       => genre_atlas_dossier_picks( $post->ID ),
 		)
 	);
 }
@@ -312,6 +314,7 @@ function genre_atlas_enqueue() {
 			'contactUrl'   => home_url( '/contact/' ),
 			'contactApi'   => esc_url_raw( rest_url( 'genre-atlas/v1/contact' ) ),
 			'contactToken' => genre_atlas_contact_token(),
+			'pickApi'      => esc_url_raw( rest_url( 'genre-atlas/v1/pick' ) ),
 			'title'        => get_bloginfo( 'name' ),
 		)
 	);

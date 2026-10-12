@@ -425,6 +425,51 @@ try {
 		await phone2.close();
 	}
 
+	// 8b. Community picks: suggested from a dossier, refused off the list of
+	// platforms or twice, then approved in the admin below and shown.
+	const pickName = 'Smoke Pick Artist';
+	const pickUrl = 'https://open.spotify.com/artist/0oSGxfWSnnOXhD2fKuz2Gy';
+	if ( lead ) {
+		const pk = await newPage( 1440, 900 );
+		const api = [];
+		pk.on( 'request', r => r.url().includes( '/genre-atlas/v1/pick' ) && api.push( r.url() ) );
+		await pk.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		const loaded = Date.now();
+		await pk.waitForSelector( '.ga-dossier [data-popen]', { timeout: 10000 } );
+		const order = await pk.locator( '.ga-dsec h2' ).allInnerTexts();
+		const empty = await pk.locator( '.ga-pempty' ).count();
+		check( 'propositions : la section COMMUNITY PICKS suit LISTEN et invite a proposer', order.indexOf( 'COMMUNITY PICKS' ) === order.indexOf( 'LISTEN' ) + 1 && empty === 1, order.join( ' · ' ) );
+		await pk.locator( '[data-popen]' ).click();
+		await pk.fill( '#ga-purl', 'https://example.com/some-artist' );
+		await pk.fill( '#ga-pname', pickName );
+		await pk.locator( '.ga-pform .ga-csend' ).click();
+		const refused = await pk.locator( '#ga-perr-url' ).count();
+		check( 'propositions : un lien hors des plateformes est refuse avant l envoi', refused === 1 && api.length === 0, `${ api.length } requete(s)` );
+		await pk.fill( '#ga-purl', `${ pickUrl }?si=tracking123` );
+		const detected = ( await pk.locator( '#ga-pnote-url' ).innerText() ).trim();
+		const cleared = await pk.locator( '#ga-perr-url' ).count() === 0;
+		await pk.fill( '#ga-pby', 'Smoke' );
+		await pk.fill( '#ga-pnote', 'The band that started it all, for me.' );
+		await pk.screenshot( { path: `${ SHOTS }/10-propositions-formulaire.png`, fullPage: false, clip: await pk.locator( '.ga-dsec', { hasText: 'COMMUNITY PICKS' } ).boundingBox() } );
+		await pk.waitForTimeout( Math.max( 0, 3300 - ( Date.now() - loaded ) ) );
+		await pk.locator( '.ga-pform .ga-csend' ).click();
+		await pk.waitForSelector( '.ga-pdone', { timeout: 10000 } );
+		check( 'propositions : la plateforme est reconnue et la proposition part en attente', detected === 'DETECTED: SPOTIFY' && cleared && api.length === 1 && await pk.locator( '.ga-pick' ).count() === 0, detected );
+		const token = await pk.evaluate( () => window.GENRE_ATLAS.contactToken );
+		const twice = await fetch( `${ BASE }/wp-json/genre-atlas/v1/pick`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify( { token, genre: lead.id, kind: 'artist', url: pickUrl, name: pickName } ) } );
+		check( 'propositions : le meme lien pour le meme genre est refuse', twice.status === 409, `HTTP ${ twice.status }` );
+		await pk.close();
+
+		const phone3 = await newPage( 390, 844 );
+		await phone3.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		await phone3.waitForSelector( '.ga-dossier [data-popen]', { timeout: 10000 } );
+		await phone3.locator( '[data-popen]' ).click();
+		const width = await phone3.evaluate( () => document.documentElement.scrollWidth );
+		check( 'mobile : le formulaire de proposition tient dans la largeur', width <= 390, `${ width } px` );
+		await phone3.close();
+	}
+
 	// 9. Import screen, behind the login.
 	const admin = await newPage( 1440, 900 );
 	await admin.goto( `${ BASE }/wp-login.php`, { waitUntil: 'networkidle' } );
@@ -450,6 +495,25 @@ try {
 	// One sent from the page and four through the API; the trapped one is not kept.
 	check( 'contact : les messages sont gardes dans WordPress, sauf celui du piege', kept === 5, `${ kept } message(s)` );
 	await admin.screenshot( { path: `${ SHOTS }/09d-messages.png`, fullPage: true } );
+	if ( lead ) {
+		await admin.goto( `${ BASE }/wp-admin/edit.php?post_type=ga_pick`, { waitUntil: 'networkidle' } );
+		const badge = ( await admin.locator( '#menu-posts-ga_pick .awaiting-mod' ).innerText() ).trim();
+		const row = admin.locator( '#the-list tr', { hasText: pickName } );
+		check( 'propositions : en attente dans Suggestions, avec le compteur au menu', badge === '1' && await row.count() === 1 && /Waiting/.test( await row.innerText() ), `pastille « ${ badge } »` );
+		await admin.screenshot( { path: `${ SHOTS }/10b-suggestions.png`, fullPage: true } );
+		// Row actions only show on hover: follow the link itself, with its nonce.
+		const approve = await row.locator( 'a', { hasText: 'Approve' } ).getAttribute( 'href' );
+		await admin.goto( new URL( approve, `${ BASE }/wp-admin/` ).href.replace( /&amp;/g, '&' ), { waitUntil: 'networkidle', referer: admin.url() } );
+		await admin.goto( `${ BASE }/wp-admin/edit.php?post_type=ga_pick`, { waitUntil: 'networkidle' } );
+		const online = /Online/.test( await admin.locator( '#the-list tr', { hasText: pickName } ).innerText() );
+		await admin.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		await admin.waitForSelector( '.ga-pick', { timeout: 10000 } );
+		const shown = await admin.locator( '.ga-pick' ).innerText();
+		const href = await admin.locator( '.ga-pick .ga-pout' ).getAttribute( 'href' );
+		check( 'propositions : approuvee en un clic, elle s affiche sur la fiche, lien nettoye', online && shown.includes( pickName.toUpperCase() ) && shown.includes( 'PICKED BY SMOKE' ) && href === pickUrl,
+			`${ href }` );
+		await admin.locator( '.ga-dsec', { hasText: 'COMMUNITY PICKS' } ).screenshot( { path: `${ SHOTS }/10c-propositions-fiche.png` } );
+	}
 	check( 'import : l ecran d import repond', fileInput > 0, fileInput ? '' : 'pas de champ fichier' );
 	await admin.close();
 } finally {

@@ -1,6 +1,6 @@
 # Reprise — état au 12/10/2026
 
-**La v0.12.0 (formulaire de contact) est publiée, installée chez Maxime, et la réception fonctionne de bout en bout** : un message envoyé depuis `/contact/` arrive dans son Gmail (vérifié le 12/10/2026). Rien n'est en attente de son côté, sauf une étape facultative (voir la dernière section). `main` contient tout le travail, la branche de session aussi.
+**La v0.12.0 (formulaire de contact) est publiée, installée chez Maxime, et la réception fonctionne de bout en bout.** **La v0.13.0 (propositions de la communauté) est prête sur la branche de session, pas encore publiée** : voir la dernière section.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -14,6 +14,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - l'écoute (LISTEN) : une chanson pour 4 171 artistes, dont 3 760 jouables sur YouTube ;
   - les sources.
 - **Page RANDOM** (`/genre/random/`, v0.11.0) : un genre tiré au hasard, avec un filtre par branche.
+- **Propositions de la communauté** (v0.13.0) : section COMMUNITY PICKS sur chaque fiche, sous LISTEN. N'importe qui propose un artiste ou une playlist ; rien n'apparaît avant validation dans le menu Suggestions.
 - **Contact** (`/contact/`, v0.12.0) : formulaire, entrée CONTACT au menu, bloc SUGGEST A CORRECTION au pied de chaque fiche. Les messages partent vers l'adresse réglée dans Genres → Settings et sont gardés dans Messages.
 - **Maxime peut tout éditer dans WordPress.** Le texte se modifie dans l'éditeur du genre. Les artistes se gèrent par la boîte « Key artists » et par Genres → Artists. Une liste ou un artiste modifié à la main survit aux réimports.
 - **Chaîne de données** (voir `data/README.md`) :
@@ -22,7 +23,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
   - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 43 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
+- **Banc de test** : `tools/test-local.sh`, 50 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -471,3 +472,49 @@ Les courriels sont interceptés par un mu-plugin (`pre_wp_mail` → `wp-content/
 **Points d'attention** :
 - une page WordPress nommée « contact » serait masquée par la règle `^contact/?$` ;
 - le compteur de 5 messages par heure peut gêner un visiteur derrière une connexion partagée (bureau, école). À relever si Maxime s'en plaint.
+
+## Propositions de la communauté (v0.13.0, 12/10/2026, pas encore publiée)
+Idée de Maxime : que les visiteurs proposent des artistes ou des playlists sur chaque fiche, validés à la main, pour donner de la profondeur aux sous-genres. Choix faits avec lui :
+- la section se place **après LISTEN**, qui joue les artistes clés et reste donc collée à KEY ARTISTS ;
+- le contributeur donne un **pseudo facultatif** et pas d'e-mail ;
+- l'alerte est une **pastille** dans le menu de WordPress, sans e-mail ;
+- les liens sont limités à une **liste fermée de plateformes** : Spotify, Deezer, YouTube, Apple Music, Bandcamp, SoundCloud, Tidal et Qobuz.
+
+**Sur la fiche**, une section COMMUNITY PICKS, avec en micro-texte « SUGGESTED BY LISTENERS · CHECKED BY HAND ».
+- Chaque proposition validée est une ligne : étiquette `[ARTIST]` ou `[PLAYLIST]` en pointillé, le nom, la plateforme, « PICKED BY » suivi du pseudo, le mot du contributeur entre guillemets, et un bouton « OPEN ON SPOTIFY ↗ ».
+- Les lignes sont triées de A à Z, avec le même tri que les artistes clés (« The » ignoré). Au-delà de 8, un bouton SHOW ALL.
+- Pas de photo ni de lecteur : c'est ce qui distingue ces propositions des artistes clés.
+- Sans proposition, une phrase invite à en faire une.
+- Le bouton « + SUGGEST AN ARTIST OR A PLAYLIST » ouvre le formulaire dans la section. Il demande : ARTIST ou PLAYLIST, le lien (la plateforme s'affiche dès qu'elle est reconnue), le nom, le pseudo et un mot de 140 caractères au plus. Échap ou CANCEL le referme.
+- Seul le formulaire est redessiné : le reste de la fiche, et le lecteur YouTube s'il joue, ne bougent pas. Pour la même raison, la fiche ne se redessine plus au redimensionnement de la fenêtre.
+
+**Serveur** (`includes/picks.php`) :
+- type `ga_pick`, statut `pending` à l'arrivée, `publish` une fois validé ;
+- un refus envoie à la corbeille, que WordPress vide au bout de 30 jours ;
+- l'API dossier renvoie `picks`, les seules propositions validées ;
+- envoi par `POST /wp-json/genre-atlas/v1/pick`, avec le même antispam que le contact : champ piège, 3 s minimum par le même jeton, et 10 envois par heure et par connexion. La limite est maintenant écrite une seule fois, dans `genre_atlas_rate_ok()` (`contact.php`) ;
+- le lien est nettoyé avant d'être gardé : https forcé, `si`, `utm_*`, `feature`, etc. retirés, fragment retiré. Le même lien pour le même genre, en attente ou en ligne, est refusé (409).
+
+**Écran Suggestions** (menu à part, avec une pastille du nombre en attente) :
+- colonnes Kind, Link, Genre (lien vers la fiche), Note, Picked by, Status ;
+- les propositions en attente sont listées en premier ;
+- sur chaque ligne, **Approve**, ou **Take offline** pour une proposition en ligne, et **Reject** (corbeille). Approve existe aussi en action groupée ;
+- avant de valider, Maxime peut corriger le nom (titre), le type, le lien, le mot ou le pseudo.
+
+**Banc** : 50 vérifications, dont 7 sur les propositions :
+- la section suit LISTEN ;
+- un lien hors liste est refusé sans requête ;
+- la plateforme est reconnue et l'erreur s'efface ;
+- l'envoi part en attente, sans rien afficher ;
+- le doublon reçoit 409 ;
+- la pastille et la ligne Waiting apparaissent dans Suggestions ;
+- après Approve, la proposition s'affiche sur la fiche avec le lien nettoyé ;
+- la largeur mobile tient.
+Captures `10-propositions-formulaire.png`, `10b-suggestions.png` et `10c-propositions-fiche.png`.
+
+**Chez Maxime, après la mise à jour** : aucun réimport ni réglage. Le menu Suggestions apparaît.
+
+**Pour plus tard** (proposé, pas fait) :
+- remplir le nom tout seul à partir du lien collé ;
+- transformer en un clic un artiste proposé en artiste clé ;
+- vérifier de temps en temps que les liens validés répondent encore.

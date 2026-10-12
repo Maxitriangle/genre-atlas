@@ -358,3 +358,32 @@
   .ga-csent .ga-plate{width:120px;height:120px}
   #genre-atlas .ga-cactions .ga-cta{flex:1 1 100%;min-width:0}
 }
+
+/* community picks: links suggested by listeners, checked by hand */
+.ga-picks{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.ga-pick{display:grid;grid-template-columns:92px minmax(0,1fr) auto;align-items:center;gap:16px;min-height:60px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.ga-ptag{justify-self:start;display:inline-flex;align-items:center;height:24px;padding:0 8px;border:1px dashed var(--fam);color:var(--fam);font-size:9px;font-weight:600}
+.ga-pname{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ga-pname b{font-size:13px;font-weight:600;letter-spacing:.04em;overflow-wrap:anywhere}
+.ga-pnote{display:block;margin-top:2px;max-width:66ch;font-size:13px;line-height:1.55;font-weight:300;text-transform:none;letter-spacing:.01em;color:var(--ink);quotes:"“" "”"}
+.ga-pout{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:1px solid var(--line);font-size:10px}
+.ga-pout:hover{border-color:var(--fam);color:var(--fam)!important}
+.ga-picks+.ga-more{margin-top:4px}
+#genre-atlas button.ga-more{width:100%;padding:0}
+.ga-pempty{color:var(--dim)}
+.ga-pbox{margin-top:20px}
+#genre-atlas .ga-padd{display:inline-flex;gap:32px;border:1px solid var(--fam);font-weight:700}
+.ga-pform{display:flex;flex-direction:column;gap:18px;padding:20px;border:1px dashed color-mix(in oklab,var(--fam) 55%,transparent);background:var(--panel)}
+.ga-pform fieldset{margin:0;padding:0;border:0;display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.ga-pactions{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+#genre-atlas .ga-pform .ga-csend{min-width:240px}
+#genre-atlas .ga-pcancel{min-height:44px;padding:0 6px;font-size:11px;color:var(--dim)}
+#genre-atlas .ga-pcancel:hover{color:#fff}
+.ga-pdone{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:20px;border:1px solid var(--fam);background:var(--panel)}
+#genre-atlas .ga-pdone .ga-cta{border:1px solid var(--fam);font-weight:700;gap:32px}
+@media (max-width:899px){
+  .ga-pick{grid-template-columns:minmax(0,1fr) auto;row-gap:8px}
+  .ga-ptag{grid-column:1 / -1}
+  .ga-pform{padding:16px}
+  #genre-atlas .ga-padd,#genre-atlas .ga-pform .ga-csend{width:100%;min-width:0}
+}

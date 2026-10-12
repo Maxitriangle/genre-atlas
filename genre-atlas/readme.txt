@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.12.0
+Stable tag: 0.13.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -30,6 +30,11 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   Messages go to the address set in Genres > Settings, which visitors never see, with the visitor in Reply-To,
   and a copy is kept in Messages. No captcha and no outside service: a hidden field, a minimum of 3 seconds
   between loading and sending, and 5 messages an hour per connection.
+* Community picks: under LISTEN, every dossier lets anyone suggest an artist or a playlist (a link on Spotify,
+  Deezer, YouTube, Apple Music, Bandcamp, SoundCloud, Tidal or Qobuz, a name, an optional note and nickname).
+  Nothing shows before it is approved in Suggestions, where the menu counts what is waiting: Approve puts a
+  pick online, Reject moves it to the trash. The same link twice for one genre is refused; 10 suggestions an
+  hour per connection.
 * WP-CLI: wp genre-atlas import file.csv
 * The font (Azeret Mono, SIL Open Font License) is bundled: no call to Google Fonts.
 * Updates: new versions published as GitHub releases appear in Plugins like any other update.
