@@ -74,6 +74,22 @@ function genre_atlas_contact_token_age( $token ) {
 	return time() - (int) $parts[0];
 }
 
+/**
+ * Counts one more submission from this connection in a bucket, and says
+ * whether it is still under the hourly cap. The connection is only kept as a
+ * salted hash, for an hour. Shared by the contact form and community picks.
+ */
+function genre_atlas_rate_ok( $bucket, $per_hour ) {
+	$ip   = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	$key  = 'genre_atlas_' . $bucket . '_' . md5( $ip . wp_salt( 'nonce' ) );
+	$sent = (int) get_transient( $key );
+	if ( $sent >= $per_hour ) {
+		return false;
+	}
+	set_transient( $key, $sent + 1, HOUR_IN_SECONDS );
+	return true;
+}
+
 /* ---- Messages, kept in WordPress ---------------------------------------- */
 
 add_action( 'init', 'genre_atlas_register_message' );
@@ -141,14 +157,9 @@ function genre_atlas_contact_submit( $in ) {
 		return new WP_Error( 'genre_atlas_contact_message', 'The message is too long: ' . GENRE_ATLAS_CONTACT_MAX_CHARS . ' characters at most.', array( 'status' => 400, 'field' => 'message' ) );
 	}
 
-	// The connection is only kept as a salted hash, for an hour.
-	$ip   = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-	$key  = 'genre_atlas_contact_' . md5( $ip . wp_salt( 'nonce' ) );
-	$sent = (int) get_transient( $key );
-	if ( $sent >= GENRE_ATLAS_CONTACT_PER_HOUR ) {
+	if ( ! genre_atlas_rate_ok( 'contact', GENRE_ATLAS_CONTACT_PER_HOUR ) ) {
 		return new WP_Error( 'genre_atlas_contact_limit', 'Too many messages from this connection. Try again in an hour.', array( 'status' => 429 ) );
 	}
-	set_transient( $key, $sent + 1, HOUR_IN_SECONDS );
 
 	$id = wp_insert_post(
 		array(
