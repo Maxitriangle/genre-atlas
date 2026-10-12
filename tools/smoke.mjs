@@ -366,7 +366,66 @@ try {
 	}
 	await phone.close();
 
-	// 8. Import screen, behind the login.
+	// 8. Contact: the menu entry, the checks before sending, a message sent from
+	// a dossier, the honeypot and the cap per connection. Mail is caught by the
+	// bench and read back by test-local.sh.
+	const marker = `SMOKE-${ Date.now() }`;
+	const spam = `SPAM-${ Date.now() }`;
+	{
+		const ct = await newPage( 1440, 900 );
+		const api = [];
+		ct.on( 'request', r => r.url().includes( '/genre-atlas/v1/contact' ) && api.push( r.url() ) );
+		await ct.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await ct.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		await ct.locator( '.ga-nav [data-contact]' ).click();
+		await ct.waitForSelector( '.ga-contact form', { timeout: 10000 } );
+		check( 'contact : le menu CONTACT ouvre le formulaire, a l adresse /contact/', new URL( ct.url() ).pathname === '/contact/', ct.url().replace( BASE, '' ) );
+		await ct.screenshot( { path: `${ SHOTS }/09-contact.png`, fullPage: true } );
+		await ct.locator( '.ga-csend' ).click();
+		const bad = await ct.locator( '.ga-cfield.bad' ).count();
+		check( 'contact : un envoi vide est arrete avant de partir, message et adresse signales', bad === 2 && api.length === 0, `${ bad } champ(s) signale(s), ${ api.length } requete(s)` );
+
+		if ( lead ) {
+			await ct.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+			const loaded = Date.now();
+			await ct.waitForSelector( '.ga-dossier .ga-cfix', { timeout: 10000 } );
+			await ct.locator( '.ga-cfix' ).click();
+			await ct.waitForSelector( '.ga-contact form', { timeout: 10000 } );
+			const named = ( await ct.locator( '.ga-cgenre b' ).innerText() ).trim();
+			const topic = await ct.locator( 'input[name="topic"]:checked' ).getAttribute( 'value' );
+			check( 'contact : SUGGEST A CORRECTION arrive avec le genre et le sujet deja remplis', named.toLowerCase() === lead.name.toLowerCase() && topic === 'correction' && ct.url().includes( 'genre=' ),
+				`${ named }, ${ topic }, ${ ct.url().replace( BASE, '' ) }` );
+			await ct.fill( '#ga-cmsg', `${ marker } The origin of this genre looks wrong to me.` );
+			await ct.fill( '#ga-cname', 'Smoke Test' );
+			await ct.fill( '#ga-cemail', 'visitor@example.test' );
+			const reply = ( await ct.locator( '#ga-ct-reply' ).innerText() ).trim();
+			await ct.waitForTimeout( Math.max( 0, 3300 - ( Date.now() - loaded ) ) ); // a person takes longer than 3 s
+			await ct.locator( '.ga-csend' ).click();
+			await ct.waitForSelector( '.ga-csent', { timeout: 10000 } );
+			check( 'contact : le message part et la confirmation s affiche', reply === 'visitor@example.test' && api.length === 1, `${ api.length } envoi(s)` );
+			await ct.screenshot( { path: `${ SHOTS }/09b-contact-envoye.png`, fullPage: true } );
+
+			// Straight to the API, as a bot would: the token is the page's own.
+			const token = await ct.evaluate( () => window.GENRE_ATLAS.contactToken );
+			const post = body => fetch( `${ BASE }/wp-json/genre-atlas/v1/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { token, name: 'Smoke Test', email: 'visitor@example.test', topic: 'feedback', ...body } ) } );
+			const trap = await post( { message: `${ spam } buy now`, website: 'http://spam.example' } );
+			const codes = [];
+			for ( let i = 0; i < 5; i++ ) { codes.push( ( await post( { message: `${ marker } extra message ${ i }` } ) ).status ); }
+			check( 'contact : au-dela de 5 messages par heure, la connexion est refusee', trap.status === 200 && codes.join() === '200,200,200,200,429', `piege ${ trap.status }, puis ${ codes.join( ' ' ) }` );
+		}
+		await ct.close();
+
+		const phone2 = await newPage( 390, 844 );
+		await phone2.goto( `${ BASE }/contact/`, { waitUntil: 'networkidle' } );
+		await phone2.waitForSelector( '.ga-contact form', { timeout: 10000 } );
+		const width = await phone2.evaluate( () => document.documentElement.scrollWidth );
+		const menu = await phone2.locator( '.ga-nav [data-contact]' ).isVisible();
+		check( 'mobile : la page CONTACT tient dans la largeur, et son entree reste dans le menu', width <= 390 && menu, `${ width } px` );
+		await phone2.screenshot( { path: `${ SHOTS }/09c-contact-mobile.png`, fullPage: true } );
+		await phone2.close();
+	}
+
+	// 9. Import screen, behind the login.
 	const admin = await newPage( 1440, 900 );
 	await admin.goto( `${ BASE }/wp-login.php`, { waitUntil: 'networkidle' } );
 	await admin.fill( '#user_login', 'admin' );
@@ -385,8 +444,13 @@ try {
 		await admin.waitForLoadState( 'networkidle' );
 	}
 	const fileInput = await admin.locator( 'input[type="file"]' ).count();
-	check( 'import : l ecran d import repond', fileInput > 0, fileInput ? '' : 'pas de champ fichier' );
 	await admin.screenshot( { path: `${ SHOTS }/08-import.png`, fullPage: true } );
+	await admin.goto( `${ BASE }/wp-admin/edit.php?post_type=ga_message`, { waitUntil: 'networkidle' } );
+	const kept = await admin.locator( '#the-list tr' ).count();
+	// One sent from the page and four through the API; the trapped one is not kept.
+	check( 'contact : les messages sont gardes dans WordPress, sauf celui du piege', kept === 5, `${ kept } message(s)` );
+	await admin.screenshot( { path: `${ SHOTS }/09d-messages.png`, fullPage: true } );
+	check( 'import : l ecran d import repond', fileInput > 0, fileInput ? '' : 'pas de champ fichier' );
 	await admin.close();
 } finally {
 	await browser.close();

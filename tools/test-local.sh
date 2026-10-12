@@ -49,6 +49,16 @@ sed -e "s|{SQLITE_IMPLEMENTATION_FOLDER_PATH}|$SITE/wp-content/plugins/sqlite-da
 
 cp -r "$REPO/genre-atlas" "$SITE/wp-content/plugins/genre-atlas"
 
+# Mail is caught rather than sent: one JSON line per message, read back below.
+mkdir -p "$SITE/wp-content/mu-plugins"
+cat > "$SITE/wp-content/mu-plugins/catch-mail.php" <<'PHP'
+<?php
+add_filter( 'pre_wp_mail', function ( $null, $atts ) {
+	file_put_contents( WP_CONTENT_DIR . '/mail.log', wp_json_encode( $atts ) . "\n", FILE_APPEND );
+	return true;
+}, 10, 2 );
+PHP
+
 cat > "$SITE/wp-config.php" <<PHP
 <?php
 define( 'DB_NAME', 'wordpress' );
@@ -127,6 +137,7 @@ if ( is_wp_error( \$r ) ) { fwrite( STDERR, \$r->get_error_message() . \"\n\" );
 echo 'extension ' . GENRE_ATLAS_VERSION . \" activee\n\";
 global \$wp_rewrite;
 \$wp_rewrite->set_permalink_structure( '/%postname%/' );
+update_option( 'genre_atlas_contact_to', 'contact@example.test' );
 \$stats = Genre_Atlas_Importer::import( '$REPO/data/genre-import.csv' );
 if ( is_wp_error( \$stats ) ) { fwrite( STDERR, \$stats->get_error_message() . \"\n\" ); exit( 1 ); }
 foreach ( \$stats as \$k => \$v ) { echo str_pad( \$k, 20 ) . \$v . \"\n\"; }
@@ -175,6 +186,26 @@ set +e
 node "$REPO/tools/smoke.mjs" "http://127.0.0.1:$PORT" "$SHOTS" "$CACHE/node_modules" "$CHROME"
 STATUS=$?
 set -e
+
+say "Courriels du formulaire de contact"
+# smoke.mjs sends one message from the page and four through the API.
+python3 - "$SITE/wp-content/mail.log" <<'PY' || STATUS=1
+import json, sys
+try:
+    mails = [json.loads(l) for l in open(sys.argv[1]) if l.strip()]
+    # WordPress's own mail (the install notice) is caught too: keep the form's.
+    mails = [m for m in mails if 'Sent from the contact form' in m['message']]
+except FileNotFoundError:
+    mails = []
+def headers(m):
+    h = m.get('headers') or []
+    return '\n'.join(h) if isinstance(h, list) else h
+ok = len(mails) == 5 and all(m['to'] == 'contact@example.test' and 'Reply-To: Smoke Test <visitor@example.test>' in headers(m) for m in mails)
+genre = any('Genre: Shoegaze' in m['message'] and m['subject'].endswith('Correction: Shoegaze') for m in mails)
+print(('OK   ' if ok else 'ECHEC') + ' contact : %d courriel(s), tous vers l adresse reglee, reponse au visiteur' % len(mails))
+print(('OK   ' if genre else 'ECHEC') + ' contact : le genre de la fiche est nomme dans le sujet et le corps')
+sys.exit(0 if ok and genre else 1)
+PY
 
 say "Journal d erreurs de WordPress"
 # The bench is offline on purpose, so core's calls to wordpress.org are expected

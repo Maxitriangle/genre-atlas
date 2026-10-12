@@ -156,6 +156,8 @@ function genre_atlas_settings_page() {
 	if ( isset( $_POST['genre_atlas_settings_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['genre_atlas_settings_nonce'] ), 'genre_atlas_settings' ) && current_user_can( 'manage_options' ) ) {
 		update_option( 'genre_atlas_home', empty( $_POST['genre_atlas_home'] ) ? '0' : '1' );
 		update_option( 'genre_atlas_groups', empty( $_POST['genre_atlas_groups'] ) ? '0' : '1' );
+		$to = isset( $_POST['genre_atlas_contact_to'] ) ? sanitize_email( wp_unslash( $_POST['genre_atlas_contact_to'] ) ) : '';
+		update_option( 'genre_atlas_contact_to', is_email( $to ) ? $to : '' );
 		delete_transient( GENRE_ATLAS_CACHE ); // the tree carries the group labels.
 		echo '<div class="notice notice-success"><p>Settings saved.</p></div>';
 	}
@@ -167,6 +169,8 @@ function genre_atlas_settings_page() {
 	echo '<p class="description">When ticked, the home page of the site is the atlas index, whatever the theme. The atlas is always available at <code>' . esc_html( get_post_type_archive_link( 'genre' ) ) . '</code>.</p>';
 	echo '<p><label><input type="checkbox" name="genre_atlas_groups" value="1"' . checked( $groups, '1', false ) . '> Use the editorial group names on wide branches</label></p>';
 	echo '<p class="description">A branch with more than 8 subgenres is shown as groups rather than genre by genre. Ticked, the groups are the ones named in Genres &rarr; Groups. Unticked, the atlas ignores them and cuts those branches into alphabetical ranges instead. Nothing is lost either way: the names stay stored.</p>';
+	echo '<h2>Contact form</h2><p><label for="genre_atlas_contact_to">Send messages to</label><br><input class="regular-text" type="email" id="genre_atlas_contact_to" name="genre_atlas_contact_to" value="' . esc_attr( get_option( 'genre_atlas_contact_to', '' ) ) . '" placeholder="' . esc_attr( get_option( 'admin_email' ) ) . '"></p>';
+	echo '<p class="description">Messages sent from <a href="' . esc_url( home_url( '/contact/' ) ) . '">' . esc_html( home_url( '/contact/' ) ) . '</a> go to this address, and visitors never see it. Left empty, they go to the site administrator&rsquo;s address shown in grey. When the address is on this site&rsquo;s own domain, it is also the sender, which keeps the messages out of spam. Every message is kept in <a href="' . esc_url( admin_url( 'edit.php?post_type=ga_message' ) ) . '">Messages</a> as well.</p>';
 	submit_button( 'Save' );
 	echo '</form></div>';
 }
