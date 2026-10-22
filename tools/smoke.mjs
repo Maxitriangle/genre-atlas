@@ -429,6 +429,7 @@ try {
 	// platforms or twice, then approved in the admin below and shown.
 	const pickName = 'Smoke Pick Artist';
 	const pickUrl = 'https://open.spotify.com/artist/0oSGxfWSnnOXhD2fKuz2Gy';
+	let pickToken = '';
 	if ( lead ) {
 		const pk = await newPage( 1440, 900 );
 		const api = [];
@@ -456,6 +457,7 @@ try {
 		await pk.waitForSelector( '.ga-pdone', { timeout: 10000 } );
 		check( 'propositions : la plateforme est reconnue et la proposition part en attente', detected === 'DETECTED: SPOTIFY' && cleared && api.length === 1 && await pk.locator( '.ga-pick' ).count() === 0, detected );
 		const token = await pk.evaluate( () => window.GENRE_ATLAS.contactToken );
+		pickToken = token;
 		const twice = await fetch( `${ BASE }/wp-json/genre-atlas/v1/pick`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify( { token, genre: lead.id, kind: 'artist', url: pickUrl, name: pickName } ) } );
 		check( 'propositions : le meme lien pour le meme genre est refuse', twice.status === 409, `HTTP ${ twice.status }` );
@@ -513,6 +515,43 @@ try {
 		check( 'propositions : approuvee en un clic, elle s affiche sur la fiche, lien nettoye', online && shown.includes( pickName.toUpperCase() ) && shown.includes( 'PICKED BY SMOKE' ) && href === pickUrl,
 			`${ href }` );
 		await admin.locator( '.ga-dsec', { hasText: 'COMMUNITY PICKS' } ).screenshot( { path: `${ SHOTS }/10c-propositions-fiche.png` } );
+
+		// 9b. Approved links checked: the platforms are played by the bench, and
+		// a link with "smoke-gone" in it is not found.
+		const goneName = 'Smoke Gone Playlist';
+		const sent = await fetch( `${ BASE }/wp-json/genre-atlas/v1/pick`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify( { token: pickToken, genre: lead.id, kind: 'playlist', url: 'https://open.spotify.com/playlist/smoke-gone', name: goneName } ) } );
+		const picks = `${ BASE }/wp-admin/edit.php?post_type=ga_pick`;
+		const rowAction = async ( name, label ) => {
+			await admin.goto( picks, { waitUntil: 'networkidle' } );
+			const href = await admin.locator( '#the-list tr', { hasText: name } ).locator( 'a', { hasText: label } ).getAttribute( 'href' );
+			await admin.goto( new URL( href, `${ BASE }/wp-admin/` ).href.replace( /&amp;/g, '&' ), { waitUntil: 'networkidle', referer: picks } );
+		};
+		const rowText = async name => {
+			await admin.goto( picks, { waitUntil: 'networkidle' } );
+			return admin.locator( '#the-list tr', { hasText: name } ).innerText();
+		};
+		await rowAction( goneName, 'Approve' );
+		await rowAction( pickName, 'Check link' );
+		check( 'liens : Check link verifie un lien tout de suite', sent.status === 200 && /Link OK/.test( await rowText( pickName ) ), `envoi HTTP ${ sent.status }` );
+		const run = days => fetch( `${ BASE }/wp-json/smoke/v1/check-picks`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { days } ) } ).then( r => r.json() );
+		const first = await run( 8 );
+		const once = await rowText( goneName );
+		const quiet = await admin.locator( '.notice-error', { hasText: 'no longer answer' } ).count() === 0;
+		check( 'liens : la verification quotidienne est programmee, et un premier « introuvable » ne signale rien', first.scheduled && /Not found once/.test( once ) && ! /Broken/.test( once ) && quiet, once.split( '\n' ).pop() );
+		await run( 9 );
+		const twice = await rowText( goneName );
+		const broken = ( await admin.locator( '#menu-posts-ga_pick .awaiting-mod' ).innerText() ).trim();
+		const notice = await admin.locator( '.notice-error', { hasText: 'no longer answer' } ).innerText();
+		await admin.screenshot( { path: `${ SHOTS }/10d-liens-morts.png`, fullPage: true } );
+		await admin.goto( `${ picks }&ga_broken=1`, { waitUntil: 'networkidle' } );
+		const listed = await admin.locator( '#the-list tr' ).allInnerTexts();
+		check( 'liens : au second « introuvable », le lien est signale, nomme et compte au menu', /Broken link/.test( twice ) && broken === '1' && notice.includes( goneName ) && ! notice.includes( pickName )
+			&& listed.length === 1 && listed[ 0 ].includes( goneName ) && /Link OK/.test( await rowText( pickName ) ), `pastille « ${ broken } », ${ listed.length } ligne(s) dans Broken links` );
+		await admin.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		await admin.waitForSelector( '.ga-pick', { timeout: 10000 } );
+		const still = await admin.locator( '.ga-pick', { hasText: goneName.toUpperCase() } ).count();
+		check( 'liens : un lien signale reste sur la fiche, la decision revient a Maxime', still === 1 );
 	}
 	check( 'import : l ecran d import repond', fileInput > 0, fileInput ? '' : 'pas de champ fichier' );
 	await admin.close();

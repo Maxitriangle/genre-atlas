@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.13.0
+ * Version: 0.14.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.13.0' );
+define( 'GENRE_ATLAS_VERSION', '0.14.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v2' );
@@ -130,7 +130,11 @@ function genre_atlas_activate() {
 	genre_atlas_register();
 	flush_rewrite_rules();
 }
-register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
+register_deactivation_hook( __FILE__, 'genre_atlas_deactivate' );
+function genre_atlas_deactivate() {
+	wp_clear_scheduled_hook( 'genre_atlas_check_picks' );
+	flush_rewrite_rules();
+}
 
 /* -------------------------------------------------------------------------
  * JSON tree: one compact, cached payload for the whole atlas.

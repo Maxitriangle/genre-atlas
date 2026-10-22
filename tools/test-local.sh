@@ -59,6 +59,32 @@ add_filter( 'pre_wp_mail', function ( $null, $atts ) {
 }, 10, 2 );
 PHP
 
+# The listening platforms are played rather than called: a link whose address
+# holds "smoke-gone" is not found, any other is fine. A route of the bench runs
+# the daily link check as if some days had passed.
+cat > "$SITE/wp-content/mu-plugins/fake-platforms.php" <<'PHP'
+<?php
+add_filter( 'pre_http_request', function ( $pre, $args, $url ) {
+	$host = (string) wp_parse_url( $url, PHP_URL_HOST );
+	if ( ! preg_match( '/(spotify|deezer|youtube|youtu\.be|apple|bandcamp|soundcloud|tidal|qobuz)/', $host ) ) {
+		return $pre;
+	}
+	$gone = false !== strpos( rawurldecode( $url ), 'smoke-gone' );
+	return array( 'headers' => array(), 'body' => '', 'cookies' => array(), 'filename' => null,
+		'response' => array( 'code' => $gone ? 404 : 200, 'message' => $gone ? 'Not Found' : 'OK' ) );
+}, 10, 3 );
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'smoke/v1', '/check-picks', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( $request ) {
+			genre_atlas_check_picks( time() + (int) $request['days'] * DAY_IN_SECONDS );
+			return array( 'scheduled' => (bool) wp_next_scheduled( 'genre_atlas_check_picks' ) );
+		},
+	) );
+} );
+PHP
+
 cat > "$SITE/wp-config.php" <<PHP
 <?php
 define( 'DB_NAME', 'wordpress' );

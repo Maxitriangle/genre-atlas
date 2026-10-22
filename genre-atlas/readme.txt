@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.13.0
+Stable tag: 0.14.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -35,6 +35,10 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   Nothing shows before it is approved in Suggestions, where the menu counts what is waiting: Approve puts a
   pick online, Reject moves it to the trash. The same link twice for one genre is refused; 10 suggestions an
   hour per connection.
+* Approved links are checked once a week (WordPress's daily scheduled run). A link the platform calls gone twice
+  in a row, a day apart, is flagged in Suggestions: counted on the menu, named at the top of the screen and listed
+  under "Broken links". It stays on the dossier until it is corrected, taken offline or rejected. "Check link" on
+  a row checks it at once. A refusal or a timeout never flags a link.
 * WP-CLI: wp genre-atlas import file.csv
 * The font (Azeret Mono, SIL Open Font License) is bundled: no call to Google Fonts.
 * Updates: new versions published as GitHub releases appear in Plugins like any other update.

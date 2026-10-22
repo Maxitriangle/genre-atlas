@@ -1,8 +1,8 @@
-# Reprise — état au 12/10/2026
+# Reprise — état au 22/10/2026
 
-**La v0.13.0 (propositions de la communauté) est publiée, installée chez Maxime et vérifiée sur son site le 12/10/2026.** Le formulaire de contact (v0.12.0) fonctionne de bout en bout jusqu'à son Gmail. Rien n'est en attente de son côté. `main` contient tout le travail, la branche de session aussi.
+**La v0.14.0 (vérification des liens validés) est prête sur la branche `claude/hopeful-fermat-htfzxi`, banc vert, pas encore publiée.** La v0.13.0 (propositions de la communauté) est publiée, installée chez Maxime et vérifiée sur son site le 12/10/2026.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les deux dernières sections (contact, propositions).
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les trois dernières sections (contact, propositions, liens vérifiés).
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -16,7 +16,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - l'écoute (LISTEN) : une chanson pour 4 171 artistes, dont 3 760 jouables sur YouTube ;
   - les sources.
 - **Page RANDOM** (`/genre/random/`, v0.11.0) : un genre tiré au hasard, avec un filtre par branche.
-- **Propositions de la communauté** (v0.13.0) : section COMMUNITY PICKS sur chaque fiche, sous LISTEN. N'importe qui propose un artiste ou une playlist ; rien n'apparaît avant validation dans le menu Suggestions.
+- **Propositions de la communauté** (v0.13.0) : section COMMUNITY PICKS sur chaque fiche, sous LISTEN. N'importe qui propose un artiste ou une playlist ; rien n'apparaît avant validation dans le menu Suggestions. Depuis la v0.14.0, les liens validés sont vérifiés chaque semaine et un lien mort est signalé dans Suggestions, sans être retiré de la fiche.
 - **Contact** (`/contact/`, v0.12.0) : formulaire, entrée CONTACT au menu, bloc SUGGEST A CORRECTION au pied de chaque fiche. Les messages partent vers l'adresse réglée dans Genres → Settings et sont gardés dans Messages.
 - **Maxime peut tout éditer dans WordPress.** Le texte se modifie dans l'éditeur du genre. Les artistes se gèrent par la boîte « Key artists » et par Genres → Artists. Une liste ou un artiste modifié à la main survit aux réimports.
 - **Chaîne de données** (voir `data/README.md`) :
@@ -25,7 +25,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
   - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 50 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
+- **Banc de test** : `tools/test-local.sh`, 54 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -38,10 +38,9 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 4. **Genres sans texte** : 790 (pas d'article anglais, ou seulement une section d'article). À écrire à la main ou à laisser vides.
 5. **Crédit Wikipedia sur un texte réécrit** : il reste affiché tant que le champ `ga_text_source` existe. Prévoir une case dans l'écran du genre si Maxime réécrit souvent.
 6. **Défaut cosmétique ancien** : le titre du panneau coupe au milieu d'un mot sur les noms longs.
-7. **Propositions de la communauté, suites possibles** (proposées, pas décidées) :
+7. **Propositions de la communauté, suites possibles** (proposées, pas décidées ; la vérification des liens est faite en v0.14.0) :
    - remplir le nom tout seul à partir du lien collé ;
-   - transformer un artiste proposé en artiste clé en un clic ;
-   - vérifier de temps en temps que les liens validés répondent encore.
+   - transformer un artiste proposé en artiste clé en un clic.
 8. **Contact, facultatif** : répondre depuis Gmail sous le nom `contact@every-genre.com` (Gmail → « Envoyer des e-mails en tant que », avec le serveur SMTP d'o2switch).
 
 ## Pour publier une nouvelle version (rappel)
@@ -525,3 +524,31 @@ Captures `10-propositions-formulaire.png`, `10b-suggestions.png` et `10c-proposi
 - remplir le nom tout seul à partir du lien collé ;
 - transformer en un clic un artiste proposé en artiste clé ;
 - vérifier de temps en temps que les liens validés répondent encore.
+
+## Liens validés vérifiés (v0.14.0, 22/10/2026, pas encore publiée)
+Point 7 de « Ce qui attend », choisi par Maxime avant les deux autres. Choix fait avec lui : un lien mort est **signalé, jamais retiré** du site tout seul.
+
+**Fonctionnement** (`includes/picks.php`, section « Link check ») :
+- une tâche planifiée WordPress, une fois par jour (`genre_atlas_check_picks`, programmée au premier chargement après la mise à jour, retirée à la désactivation). Chaque passage dure 20 s au plus, les liens vérifiés depuis le plus longtemps passant en premier ;
+- chaque lien validé (statut `publish`) est revu **une fois par semaine** ;
+- un lien est déclaré mort après **deux « introuvable » de suite, à un jour d'écart** ;
+- un retour du lien efface le signalement ;
+- un refus ou une panne ne change rien au verdict précédent ;
+- métadonnées : `ga_pick_checked` (date), `ga_pick_code` (code HTTP), `ga_pick_misses`, `ga_pick_broken`. Corriger le lien dans l'écran de la proposition les remet à zéro.
+
+**Comment chaque plateforme répond à un lien inexistant** (essayé le 22/10/2026 depuis la session) :
+- Spotify, Deezer, Apple Music, Tidal, et les albums Qobuz : 404 sur la page elle-même ;
+- YouTube : une vidéo supprimée répond 200 en page. On passe donc par son oEmbed, qui répond 400 ou 404 ; 401 et 403 veulent dire que l'intégration est seulement désactivée, et le lien est vivant. Les chaînes (`/@nom`) répondent 404 en page ;
+- SoundCloud : par son oEmbed (404) ;
+- Bandcamp : 403 à tous les robots depuis la session, et les pages artiste Qobuz renvoient vers la boutique. **Seuls 404 et 410 comptent comme « mort »**. Un lien Bandcamp disparu risque donc de n'être jamais signalé ; le statut affiche alors « Could not check (HTTP 403) ».
+
+**Dans Suggestions** :
+- la pastille du menu compte les propositions en attente **et** les liens morts ;
+- un bandeau rouge nomme chaque lien mort, avec son genre et un lien vers la plateforme ;
+- une vue « Broken links (n) » s'ajoute à côté de All / Published ;
+- la colonne Status indique le résultat de la dernière vérification : Link OK, Not found once, Broken link (HTTP 404), Could not check, ou Link not checked yet ;
+- l'action de ligne **Check link** vérifie tout de suite ; demandée à la main, un seul « introuvable » suffit pour signaler le lien.
+
+**Banc** : 54 vérifications, dont 4 sur les liens. Les plateformes sont simulées par un mu-plugin (`fake-platforms.php`, `pre_http_request`) : une adresse qui contient `smoke-gone` répond 404, toute autre 200. La route `POST /wp-json/smoke/v1/check-picks {days}` lance la vérification comme si des jours avaient passé. Capture `10d-liens-morts.png`.
+
+**Chez Maxime, après publication** : mettre à jour l'extension, sans réimport. La première vérification part dans l'heure qui suit le premier chargement d'une page. Sur o2switch, WordPress lance ses tâches planifiées quand quelqu'un visite le site : il n'y a rien à régler.

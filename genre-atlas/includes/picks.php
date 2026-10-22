@@ -7,6 +7,9 @@
  *
  * Statuses: pending (waiting), publish (on the dossier), trash (rejected,
  * emptied by WordPress after 30 days).
+ *
+ * Approved links are checked once a week. One that is gone is flagged in
+ * Suggestions and stays on the dossier: Maxime decides what becomes of it.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,6 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const GENRE_ATLAS_PICKS_PER_HOUR = 10; // Per connection.
+const GENRE_ATLAS_PICK_RECHECK    = 6 * DAY_IN_SECONDS + 12 * HOUR_IN_SECONDS; // A week, give or take the daily run.
+const GENRE_ATLAS_PICK_CONFIRM    = 20 * HOUR_IN_SECONDS; // A link found gone is tried again the next day.
+const GENRE_ATLAS_PICK_BUDGET     = 20; // Seconds of checking per run, under any host's time limit.
 
 /**
  * The platforms a pick may link to: label => hosts. A host matches itself
@@ -239,7 +245,7 @@ function genre_atlas_pending_picks() {
 add_action( 'admin_menu', 'genre_atlas_picks_badge', 99 );
 function genre_atlas_picks_badge() {
 	global $menu;
-	$n = genre_atlas_pending_picks();
+	$n = genre_atlas_pending_picks() + count( genre_atlas_broken_picks() );
 	if ( ! $n || ! is_array( $menu ) ) {
 		return;
 	}
@@ -281,6 +287,7 @@ function genre_atlas_pick_column( $column, $id ) {
 		echo esc_html( get_post_meta( $id, 'ga_pick_by', true ) );
 	} elseif ( 'ga_pick_state' === $column ) {
 		echo 'publish' === get_post_status( $id ) ? 'Online' : '<strong>Waiting</strong>';
+		echo '<br>' . genre_atlas_pick_check_label( $id ); // phpcs:ignore WordPress.Security.EscapeOutput -- built escaped.
 	}
 }
 
@@ -303,6 +310,7 @@ function genre_atlas_pick_row_actions( $actions, $post ) {
 	$do   = 'publish' === $post->post_status ? 'unapprove' : 'approve';
 	$link = wp_nonce_url( admin_url( 'admin-post.php?action=genre_atlas_pick&do=' . $do . '&id=' . $post->ID ), 'genre_atlas_pick_' . $post->ID );
 	$mine = array( $do => '<a href="' . esc_url( $link ) . '"' . ( 'approve' === $do ? ' style="color:#008a20;font-weight:600"' : '' ) . '>' . ( 'approve' === $do ? 'Approve' : 'Take offline' ) . '</a>' );
+	$mine['ga_check'] = '<a href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=genre_atlas_pick&do=check&id=' . $post->ID ), 'genre_atlas_pick_' . $post->ID ) ) . '">Check link</a>';
 	if ( isset( $actions['trash'] ) ) {
 		$actions['trash'] = str_replace( '>Trash<', '>Reject<', $actions['trash'] );
 	}
@@ -318,6 +326,11 @@ function genre_atlas_pick_action() {
 		wp_die( 'Not allowed.' );
 	}
 	$do = isset( $_GET['do'] ) ? sanitize_key( $_GET['do'] ) : '';
+	if ( 'check' === $do ) {
+		genre_atlas_pick_check( $id, true );
+		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=ga_pick' ) );
+		exit;
+	}
 	wp_update_post(
 		array(
 			'ID'          => $id,
@@ -349,6 +362,195 @@ function genre_atlas_pick_bulk_approve( $redirect, $action, $ids ) {
 		}
 	}
 	return $redirect;
+}
+
+/* ---- Link check: approved links that no longer answer -------------------- */
+
+/**
+ * What a platform says of a link: ok, gone, or unknown (refused, timed out,
+ * down). Only a plain "not found" counts as gone: Bandcamp turns robots away
+ * with a 403 and Qobuz sends unknown pages to its shop, so anything else could
+ * flag a link that is fine.
+ *
+ * @return array { verdict: ok|gone|unknown, code: HTTP status, 0 if none }
+ */
+function genre_atlas_pick_probe( $url ) {
+	$host  = strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
+	$query = (string) wp_parse_url( $url, PHP_URL_QUERY );
+	$gone  = array( 404, 410 );
+	$fine  = array();
+	// A removed YouTube video still answers 200 as a page; its oEmbed says 400
+	// or 404 instead (and 401 or 403 when only embedding is turned off).
+	if ( preg_match( '/(^|\.)(youtube\.com|youtu\.be)$/', $host ) && ( 'youtu.be' === $host || preg_match( '/(^|&)(v|list)=/', $query ) ) ) {
+		$url  = 'https://www.youtube.com/oembed?format=json&url=' . rawurlencode( $url );
+		$gone = array( 400, 404, 410 );
+		$fine = array( 401, 403 );
+	} elseif ( preg_match( '/(^|\.)soundcloud\.com$/', $host ) ) {
+		$url = 'https://soundcloud.com/oembed?format=json&url=' . rawurlencode( $url );
+	}
+	$response = wp_remote_get(
+		$url,
+		array(
+			'timeout'             => 10,
+			'redirection'         => 5,
+			'user-agent'          => 'Mozilla/5.0 (compatible; Genre Atlas link check; ' . home_url( '/' ) . ')',
+			'limit_response_size' => 65536,
+		)
+	);
+	$code = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
+	if ( in_array( $code, $gone, true ) ) {
+		return array( 'verdict' => 'gone', 'code' => $code );
+	}
+	if ( ( $code >= 200 && $code < 300 ) || in_array( $code, $fine, true ) ) {
+		return array( 'verdict' => 'ok', 'code' => $code );
+	}
+	return array( 'verdict' => 'unknown', 'code' => $code );
+}
+
+/**
+ * Checks one pick's link and records the answer. A link is flagged broken
+ * after two "not found" in a row, a day apart, so one bad day on a platform
+ * flags nothing; a check asked for by hand settles it at once.
+ *
+ * @return string ok|gone|unknown
+ */
+function genre_atlas_pick_check( $id, $by_hand = false, $now = null ) {
+	$probe  = genre_atlas_pick_probe( get_post_meta( $id, 'ga_pick_url', true ) );
+	$misses = (int) get_post_meta( $id, 'ga_pick_misses', true );
+	update_post_meta( $id, 'ga_pick_checked', null === $now ? time() : (int) $now );
+	update_post_meta( $id, 'ga_pick_code', $probe['code'] );
+	if ( 'ok' === $probe['verdict'] ) {
+		delete_post_meta( $id, 'ga_pick_misses' );
+		delete_post_meta( $id, 'ga_pick_broken' );
+	} elseif ( 'gone' === $probe['verdict'] ) {
+		update_post_meta( $id, 'ga_pick_misses', ++$misses );
+		if ( $by_hand || $misses >= 2 ) {
+			update_post_meta( $id, 'ga_pick_broken', 1 );
+		}
+	}
+	// Unknown: nothing learnt, the earlier verdict stands.
+	return $probe['verdict'];
+}
+
+/**
+ * The daily run: approved picks whose turn has come, the longest unchecked
+ * first, until the time budget is spent. The rest wait for tomorrow.
+ *
+ * @param int|null $now The time to act at (the test bench moves it forward).
+ */
+add_action( 'genre_atlas_check_picks', 'genre_atlas_check_picks' );
+function genre_atlas_check_picks( $now = null ) {
+	$now   = null === $now ? time() : (int) $now;
+	$start = microtime( true );
+	$due   = array();
+	$ids   = get_posts(
+		array(
+			'post_type'   => 'ga_pick',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+			'fields'      => 'ids',
+		)
+	);
+	foreach ( $ids as $id ) {
+		$last = (int) get_post_meta( $id, 'ga_pick_checked', true );
+		$wait = (int) get_post_meta( $id, 'ga_pick_misses', true ) && ! get_post_meta( $id, 'ga_pick_broken', true ) ? GENRE_ATLAS_PICK_CONFIRM : GENRE_ATLAS_PICK_RECHECK;
+		if ( $now - $last >= $wait ) {
+			$due[ $id ] = $last;
+		}
+	}
+	asort( $due );
+	foreach ( array_keys( $due ) as $id ) {
+		if ( microtime( true ) - $start > GENRE_ATLAS_PICK_BUDGET ) {
+			break;
+		}
+		genre_atlas_pick_check( $id, false, $now );
+	}
+}
+
+// Activation is not run by an update from the Plugins screen, so the daily
+// run is put in place on the first page after it.
+add_action( 'init', 'genre_atlas_schedule_pick_checks' );
+function genre_atlas_schedule_pick_checks() {
+	if ( ! wp_next_scheduled( 'genre_atlas_check_picks' ) ) {
+		wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'genre_atlas_check_picks' );
+	}
+}
+
+/** Approved picks whose link no longer answers, as post IDs. */
+function genre_atlas_broken_picks() {
+	return get_posts(
+		array(
+			'post_type'   => 'ga_pick',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+			'fields'      => 'ids',
+			'meta_key'    => 'ga_pick_broken', // phpcs:ignore WordPress.DB.SlowDBQuery
+			'meta_value'  => 1,                // phpcs:ignore WordPress.DB.SlowDBQuery
+		)
+	);
+}
+
+/** The last check of a pick, for the Status column (escaped HTML). */
+function genre_atlas_pick_check_label( $id ) {
+	$last = (int) get_post_meta( $id, 'ga_pick_checked', true );
+	if ( ! $last ) {
+		return '<span style="color:#646970">Link not checked yet</span>';
+	}
+	$code = (int) get_post_meta( $id, 'ga_pick_code', true );
+	$when = esc_html( wp_date( 'j M', $last ) );
+	if ( get_post_meta( $id, 'ga_pick_broken', true ) ) {
+		return '<strong style="color:#d63638">Broken link</strong> <span style="color:#646970">(' . ( $code ? 'HTTP ' . $code : 'no answer' ) . ', ' . $when . ')</span>';
+	}
+	if ( $code >= 200 && $code < 300 ) {
+		return '<span style="color:#008a20">Link OK</span> <span style="color:#646970">(' . $when . ')</span>';
+	}
+	if ( (int) get_post_meta( $id, 'ga_pick_misses', true ) ) {
+		return '<span style="color:#996800">Not found once, checked again tomorrow</span> <span style="color:#646970">(' . $when . ')</span>';
+	}
+	return '<span style="color:#646970">Could not check (' . ( $code ? 'HTTP ' . $code : 'no answer' ) . ', ' . $when . ')</span>';
+}
+
+// The broken ones, named, at the top of Suggestions.
+add_action( 'admin_notices', 'genre_atlas_broken_picks_notice' );
+function genre_atlas_broken_picks_notice() {
+	$screen = get_current_screen();
+	if ( ! $screen || 'edit-ga_pick' !== $screen->id ) {
+		return;
+	}
+	$ids = genre_atlas_broken_picks();
+	if ( ! $ids ) {
+		return;
+	}
+	$items = array();
+	foreach ( $ids as $id ) {
+		$genre   = (int) get_post_meta( $id, 'ga_pick_genre', true );
+		$items[] = '<li><a href="' . esc_url( get_edit_post_link( $id ) ) . '">' . esc_html( get_the_title( $id ) ) . '</a>'
+			. ( $genre ? ' (' . esc_html( get_the_title( $genre ) ) . ')' : '' )
+			. ' · <a href="' . esc_url( get_post_meta( $id, 'ga_pick_url', true ) ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( get_post_meta( $id, 'ga_pick_platform', true ) ) . ' ↗</a></li>';
+	}
+	echo '<div class="notice notice-error"><p><strong>' . count( $ids ) . ' approved ' . _n( 'link no longer answers', 'links no longer answer', count( $ids ) ) . '.</strong> '
+		. 'The platform says the page is gone. ' . _n( 'It is', 'They are', count( $ids ) ) . ' still on the dossiers: correct the link, take the suggestion offline, or reject it.</p>'
+		. '<ul style="list-style:disc;margin-left:2em">' . implode( '', $items ) . '</ul></div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- built escaped.
+}
+
+// A "Broken links" view beside All, Published and Pending.
+add_filter( 'views_edit-ga_pick', 'genre_atlas_pick_views' );
+function genre_atlas_pick_views( $views ) {
+	$n = count( genre_atlas_broken_picks() );
+	if ( $n ) {
+		$on                 = ! empty( $_GET['ga_broken'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		$views['ga_broken'] = '<a href="' . esc_url( admin_url( 'edit.php?post_type=ga_pick&ga_broken=1' ) ) . '"' . ( $on ? ' class="current" aria-current="page"' : '' ) . '>Broken links <span class="count">(' . $n . ')</span></a>';
+	}
+	return $views;
+}
+
+add_action( 'pre_get_posts', 'genre_atlas_pick_broken_filter' );
+function genre_atlas_pick_broken_filter( $query ) {
+	if ( is_admin() && $query->is_main_query() && 'ga_pick' === $query->get( 'post_type' ) && ! empty( $_GET['ga_broken'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		$query->set( 'post_status', 'publish' );
+		$query->set( 'meta_key', 'ga_pick_broken' );
+		$query->set( 'meta_value', 1 );
+	}
 }
 
 /* ---- Edit screen: a suggestion can be corrected before approval ----------- */
@@ -393,6 +595,12 @@ function genre_atlas_save_pick_box( $post_id ) {
 	}
 	if ( isset( $_POST['ga_pick_url'] ) ) {
 		$link = genre_atlas_pick_link( wp_unslash( $_POST['ga_pick_url'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		if ( $link && get_post_meta( $post_id, 'ga_pick_url', true ) !== $link['url'] ) {
+			// A new link starts with a clean slate, and is checked at the next run.
+			delete_post_meta( $post_id, 'ga_pick_checked' );
+			delete_post_meta( $post_id, 'ga_pick_misses' );
+			delete_post_meta( $post_id, 'ga_pick_broken' );
+		}
 		if ( $link ) { // A link off the list is left as it was.
 			update_post_meta( $post_id, 'ga_pick_url', $link['url'] );
 			update_post_meta( $post_id, 'ga_pick_platform', $link['platform'] );
