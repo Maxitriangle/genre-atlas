@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.15.1
+Stable tag: 0.16.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -46,6 +46,10 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   shared on social networks is drawn per genre with its glyph (1200 × 630, PHP GD, kept in uploads/genre-atlas/og/).
   /genre/random/ is not indexed; the users' sitemap is switched off. An SEO plugin (Yoast, Rank Math, AIOSEO,
   SEOPress, The SEO Framework) takes over the head if one is active.
+* Legal notice and privacy: /legal/ (linked from the foot of the index and from both forms). The text is written once,
+  in includes/legal.php: publisher (a private individual, anonymous as French law allows, details given to the host),
+  host, what the forms keep, cookies (none), rights, sources and credits. Change GENRE_ATLAS_LEGAL_UPDATED with it.
+  Core's emoji script is switched off on atlas pages, so no page fetches anything from outside before a click.
 * Site icon: the glyph of the atlas (a hexagon in a ring of eight), used while none is set in Appearance > Customize,
   for /favicon.ico too. tools/make-icons.php draws it again.
 * WP-CLI: wp genre-atlas import file.csv
