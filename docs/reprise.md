@@ -1,6 +1,6 @@
 # Reprise — état au 23/10/2026
 
-**La v0.15.0 (référencement : page lisible par les moteurs, aperçus de partage, favicon) est prête sur la branche `claude/hopeful-fermat-htfzxi`, banc vert, pas encore publiée.** La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
+**La v0.15.0 (référencement : page lisible par les moteurs, aperçus de partage, favicon) est publiée et vérifiée en ligne le 23/10/2026. La v0.15.1 (espacement des lettres dans les images d'aperçu) est prête sur la branche, banc vert.** La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
 
 **Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les dernières sections (contact, propositions, liens vérifiés, visibilité).
 
@@ -559,7 +559,7 @@ Point 7 de « Ce qui attend », choisi par Maxime avant les deux autres. Choix f
 
 **Chez Maxime, après publication** : mettre à jour l'extension, sans réimport. La première vérification part dans l'heure qui suit le premier chargement d'une page. Sur o2switch, WordPress lance ses tâches planifiées quand quelqu'un visite le site : il n'y a rien à régler.
 
-## Visibilité : la page lisible par les moteurs (v0.15.0, 23/10/2026, pas encore publiée)
+## Visibilité : la page lisible par les moteurs (v0.15.0, publiée le 23/10/2026)
 Demande de Maxime : que les gens tombent par hasard sur le site. Constat sur le site en ligne (22/10/2026) :
 - le site était ouvert aux moteurs (robots.txt correct, aucun noindex, plan du site avec les 2 000 genres) ;
 - mais le HTML envoyé par le serveur ne contenait, pour un genre, que le nom, le parent, le texte et les enfants directs. Tout le reste était dessiné par le script ;
@@ -602,3 +602,13 @@ Choix fait avec Maxime : **un visiteur venu de Google arrive sur la fiche** (`/a
 - mettre à jour l'extension, sans réimport ;
 - Search Console n'a rien à refaire : le plan du site garde son adresse et donne maintenant les fiches ;
 - pour voir un aperçu de partage, coller l'adresse d'une fiche dans une conversation WhatsApp ou Slack. Les réseaux gardent en cache un aperçu déjà vu : le débogueur de partage de Facebook permet de le rafraîchir.
+
+**Vérifié en ligne le 23/10/2026** (v0.15.0) :
+- titre, résumé, canonique `/about/`, Open Graph, fil d'Ariane JSON-LD (Every Genre > Rock Music > Alternative Rock > Shoegaze) ;
+- fiche entière dans la page, 862 liens sur l'accueil ;
+- image d'aperçu en PNG 1200 × 630 ;
+- `/favicon.ico` renvoie vers notre icône ;
+- plan du site en `/about/`, sans les utilisateurs ;
+- `/genre/random/` en noindex.
+
+**v0.15.1** : dans les images, la ponctuation était mal espacée (« EVERY -GENRE .COM », « 2,098 »). Chaque lettre avançait de la largeur de son propre dessin, et une lettre étroite (point, tiret, virgule, ·) laissait trop peu de place. Désormais, chaque lettre avance d'un pas fixe, celui de la police à chasse fixe (`genre_atlas_og_advance`). `GENRE_ATLAS_OG_DRAWING` est passé à 2 : toutes les images sont redessinées à leur prochaine visite, sous une nouvelle adresse.
