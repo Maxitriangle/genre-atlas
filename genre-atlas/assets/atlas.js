@@ -260,8 +260,7 @@
         '<div class="ga-tile-body">' + glyph(r, 104) + '<div><h2>' + esc(r.name) + '</h2><p>' + esc(micro(r) || 'ORIGIN: —') + '</p><p>' + pad(r.grouped || r.kids.length) + ' DIRECT SUBGENRES' + (r.grouped ? ' // ' + pad(r.kids.length) + ' GROUPS' : '') + '</p></div></div></a>';
     }).join('');
     return '<main class="ga-index"><div class="ga-hero"><div><p class="ga-micro">[INDEX] MUSIC GENRE ATLAS</p><h1>Every genre.<br>Every lineage.</h1></div>' +
-      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(TILES.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div>' +
-      '<p class="ga-foot ga-micro"><a href="' + esc(legalUrl()) + '">LEGAL NOTICE · PRIVACY · CREDITS</a><span>NO COOKIE · NO TRACKER</span></p></main>';
+      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(TILES.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div>' + foot() + '</main>';
   }
 
   /* ---------- detail panel ---------- */
@@ -278,7 +277,7 @@
       (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') + '<div>' + rows + '</div>' +
       (n.grp ? '' : '<a class="ga-cta" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') +
       (n.kids.length && !isCentre ? '<a class="ga-cta ghost" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>CENTRE ON ' + esc(n.name) + '</span><span>⊕</span></a>' : '') +
-      (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — A TO Z</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + '</aside>';
+      (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — A TO Z</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + foot() + '</aside>';
   }
 
   /* ---------- map ---------- */
@@ -352,7 +351,7 @@
         '<a href="' + esc(url(n)) + '" data-go="' + n.id + '">' + glyph(n, 30) + '<b>' + esc(n.name) + '</b></a></span><span class="dim">' + esc(n.o || '—') + '</span><span>' + (n.y || '—') + '</span><span>' + esc(n.b ? bpmText(n).replace(' BPM', '') : '—') + '</span><span class="dim">L' + pad(depth(n)) + '</span><span>' + (n.kids.length ? pad(n.kids.length) : '—') + '</span></div>';
       if (open) n.kids.forEach(function (k, j) { var last = j === n.kids.length - 1; walk(k, preKids + (last ? '└─ ' : '├─ '), preKids + (last ? '   ' : '│  ')); });
     })(fam, '', '');
-    return '<main class="ga-list" style="--fam:' + color(fam) + '"><div class="ga-lhead" role="row"><span>GENRE</span><span>ORIGIN</span><span>EPOCH</span><span>BPM</span><span>LEVEL</span><span>SUB</span></div>' + rows + '</main>';
+    return '<main class="ga-list" style="--fam:' + color(fam) + '"><div class="ga-lhead" role="row"><span>GENRE</span><span>ORIGIN</span><span>EPOCH</span><span>BPM</span><span>LEVEL</span><span>SUB</span></div>' + rows + foot() + '</main>';
   }
 
   /* ---------- mobile: one vertical tree ---------- */
@@ -372,7 +371,7 @@
       return h;
     }).join('');
     return '<main class="ga-mobile" style="--fam:' + color(centre) + '"><nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
-      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad"><a class="ga-cta" href="' + esc(url(centre)) + 'about/" data-about="' + centre.id + '"><span>OPEN DOSSIER</span><span>↗</span></a></div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div></main>';
+      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad"><a class="ga-cta" href="' + esc(url(centre)) + 'about/" data-about="' + centre.id + '"><span>OPEN DOSSIER</span><span>↗</span></a></div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div>' + foot() + '</main>';
   }
 
   /* ---------- dossier: a full page per genre ----------
@@ -492,7 +491,7 @@
     html += section('correct', 'CORRECTIONS', ['READ BY A PERSON'],
       '<p class="ga-prose">Something wrong or missing on this page: a parent, an origin, the text, an artist, a song?</p>' +
       '<a class="ga-cta ghost ga-cfix" href="' + esc(contactUrl(n.id)) + '" data-contact="' + n.id + '"><span>SUGGEST A CORRECTION</span><span aria-hidden="true">→</span></a>');
-    return html + '</main>';
+    return html + foot() + '</main>';
   }
 
   /* ---------- community picks ----------
@@ -673,7 +672,7 @@
       '<p class="ga-slot-name" id="ga-slot-name" aria-live="polite">' + esc(withinLabel()) + '</p>' +
       (count ? '<button type="button" class="ga-cta" data-spin="1"><span>SPIN</span><span aria-hidden="true">↻</span></button>'
         : '<p class="ga-micro">NO GENRE MATCHES. TRY INCLUDING SPARSE DOSSIERS.</p>') +
-      '</div></div></main>';
+      '</div></div>' + foot() + '</main>';
   }
   // A short shuffle through the pool's glyphs, then the dossier of the genre drawn.
   var spinning = false;
@@ -765,7 +764,7 @@
         '<p class="ga-micro">[SENT] MESSAGE RECEIVED</p><h2>Thank you.</h2>' +
         '<p class="ga-lede">Your message has reached a real inbox and will be read by a person. If it calls for an answer, the reply will come to the address you gave' + (C.email ? ': <b>' + esc(C.email) + '</b>' : '') + '.</p>' +
         '<div class="ga-cactions">' + (g ? '<a class="ga-cta" href="' + esc(url(g)) + 'about/" data-about="' + g.id + '"><span>BACK TO ' + esc(g.name) + '</span><span aria-hidden="true">←</span></a>' : '<a class="ga-cta" href="' + esc(CFG.base) + '" data-go="0"><span>BACK TO THE ATLAS</span><span aria-hidden="true">←</span></a>') +
-        '<button type="button" class="ga-cta ghost" data-cnew="1"><span>WRITE ANOTHER</span><span aria-hidden="true">+</span></button></div></div></section></main>';
+        '<button type="button" class="ga-cta ghost" data-cnew="1"><span>WRITE ANOTHER</span><span aria-hidden="true">+</span></button></div></div></section>' + foot() + '</main>';
     }
     var topics = TOPICS.map(function (t) {
       return '<label class="ga-ctopic"><input type="radio" name="topic" value="' + t[0] + '"' + (C.topic === t[0] ? ' checked' : '') + '><span>' + t[1] + '</span></label>';
@@ -787,7 +786,7 @@
       '<button type="submit" class="ga-cta ga-csend"' + (C.sending ? ' disabled' : '') + '><span>' + (C.sending ? 'SENDING…' : 'SEND MESSAGE') + '</span><span aria-hidden="true">→</span></button>' +
       '<p class="ga-micro ga-cpriv">YOUR ADDRESS IS ONLY USED TO REPLY · <a href="' + esc(legalUrl()) + '#what-this-site-keeps">PRIVACY</a></p>' +
       '</form><aside class="ga-slot ga-cticket" aria-label="Summary"><div class="ga-plate">' + seal + '</div><div class="ga-ctrows">' + ticket() + '</div>' +
-      '<p class="ga-micro">NO NEWSLETTER, NO TRACKING. YOUR ADDRESS IS USED TO REPLY, AND FOR NOTHING ELSE.</p></aside></div></main>';
+      '<p class="ga-micro">NO NEWSLETTER, NO ADVERTISING. YOUR ADDRESS IS USED TO REPLY, AND FOR NOTHING ELSE.</p></aside></div>' + foot() + '</main>';
   }
   function contactResults() {
     var box = document.getElementById('ga-cresults'), q = C.gq.trim().toLowerCase(); if (!box) return;
@@ -831,12 +830,16 @@
       rule('B', 'TEMPO → SPOKES (ONE PER 20 BPM)', [60, 100, 140, 180].map(function (b) { return [g({ bpm: [b, b] }), b + ' BPM']; })) +
       rule('C', 'DEPTH → RINGS', [0, 1, 2, 3, 4].map(function (d) { return [g({ depth: d }), 'LEVEL ' + pad(d)]; })) +
       rule('D', 'SUBGENRES → ORBIT NODES (MAX 12)', [0, 3, 7, 12].map(function (k) { return [g({ children: k }), pad(k) + ' SUB']; })) +
-      rule('E', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; })) + '</div></main>';
+      rule('E', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; })) + '</div>' + foot() + '</main>';
   }
 
   /* ---------- legal notice, privacy, credits ----------
    * Text from the server (includes/legal.php), in the atlas's own layout. */
   function legalUrl() { return CFG.legalUrl || '/legal/'; }
+  // The foot of every page: the legal notice is never more than a scroll away.
+  function foot() {
+    return '<footer class="ga-foot ga-micro"><a href="' + esc(legalUrl()) + '">LEGAL NOTICE · PRIVACY · CREDITS</a><span>NO COOKIE · NO ADVERTISING</span></footer>';
+  }
   function showLegal() {
     S.legal = true; S.contact = false; S.random = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     document.title = 'Legal notice and privacy — ' + (CFG.title || 'Genre');
@@ -844,8 +847,40 @@
   }
   function viewLegal() {
     return '<main class="ga-contact ga-legal"><div class="ga-hero"><div><p class="ga-micro">[LEGAL] NOTICE · PRIVACY · CREDITS</p><h1>Who runs it,<br>what it keeps.</h1></div>' +
-      '<dl class="ga-stats"><div><dt>COOKIES</dt><dd>00</dd></div><div><dt>TRACKERS</dt><dd>00</dd></div></dl></div>' +
-      '<div class="ga-legal-text ga-prose">' + LEGAL + '</div></main>';
+      '<dl class="ga-stats"><div><dt>COOKIES</dt><dd>00</dd></div><div><dt>THIRD PARTIES</dt><dd>00</dd></div></dl></div>' +
+      '<div class="ga-legal-text ga-prose">' + LEGAL + '</div>' + foot() + '</main>';
+  }
+
+  /* ---------- audience measurement ----------
+   * Matomo, when the site runs it, counts the page a visit lands on. The atlas
+   * then changes page without reloading, so each new address is counted here,
+   * with its title. A visitor who chose not to be counted is left out by
+   * Matomo itself. */
+  var COUNTED = null; // the address last counted: path only, a filter or a #centre is not a new page
+  function count() {
+    var here = location.pathname;
+    if (COUNTED === null) { COUNTED = here; return; } // the landing page: counted by Matomo's own snippet
+    if (here === COUNTED || !window._paq) return;
+    window._paq.push(['setReferrerUrl', location.origin + COUNTED]);
+    window._paq.push(['setCustomUrl', location.href.split('#')[0]]);
+    window._paq.push(['setDocumentTitle', document.title]);
+    window._paq.push(['trackPageView']);
+    COUNTED = here;
+  }
+  // The choice offered on the legal page. Matomo answers through its queue; no
+  // answer means the counter is blocked or missing.
+  function optOutBox() {
+    var box = document.getElementById('ga-optout'); if (!box) return;
+    var show = function (out) {
+      box.innerHTML = out === null
+        ? '<p class="ga-micro">YOUR BROWSER DOES NOT LOAD THE COUNTER: YOUR VISITS ARE NOT COUNTED.</p>'
+        : '<p class="ga-micro" role="status">' + (out ? 'YOUR VISITS ARE NOT COUNTED.' : 'YOUR VISITS ARE COUNTED, WITHOUT A COOKIE.') + '</p>' +
+          '<button type="button" class="ga-cta ghost" data-optout="' + (out ? '0' : '1') + '"><span>' + (out ? 'COUNT MY VISITS AGAIN' : 'STOP COUNTING MY VISITS') + '</span><span aria-hidden="true">' + (out ? '+' : '×') + '</span></button>';
+    };
+    if (!window._paq) { show(null); return; }
+    var answered = false;
+    setTimeout(function () { if (!answered) show(null); }, 2000);
+    window._paq.push([function () { answered = true; show(this.isUserOptedOut()); }]);
   }
 
   /* ---------- render ---------- */
@@ -867,6 +902,8 @@
     root.innerHTML = html;
     root.classList.add('ga-ready');
     root.classList.toggle('ga-in-dossier', !!S.about);
+    if (S.legal) optOutBox();
+    count();
     var map = root.querySelector('.ga-map');
     if (map) map.innerHTML = viewMap(centre, open);   // second pass: needs the real size of the map
     if (focus) { var q = document.getElementById('ga-q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); results(); }
@@ -880,6 +917,12 @@
   }
 
   root.addEventListener('click', function (e) {
+    var oo = e.target.closest('[data-optout]');
+    if (oo && window._paq) {
+      var stop = oo.getAttribute('data-optout') === '1';
+      window._paq.push([function () { if (stop) this.optUserOut(); else this.forgetUserOptOut(); optOutBox(); }]);
+      return;
+    }
     var pk = e.target.closest('[data-popen],[data-pclose],[data-pnew],[data-pall]');
     if (pk && root.contains(pk)) {
       e.preventDefault();

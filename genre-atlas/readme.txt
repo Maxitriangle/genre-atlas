@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.16.0
+Stable tag: 0.16.1
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -46,7 +46,10 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   shared on social networks is drawn per genre with its glyph (1200 × 630, PHP GD, kept in uploads/genre-atlas/og/).
   /genre/random/ is not indexed; the users' sitemap is switched off. An SEO plugin (Yoast, Rank Math, AIOSEO,
   SEOPress, The SEO Framework) takes over the head if one is active.
-* Legal notice and privacy: /legal/ (linked from the foot of the index and from both forms). The text is written once,
+* Legal notice and privacy: /legal/ (linked from the foot of every page, the map's panel included, and from both
+  forms). When the Matomo Analytics plugin is active, the page says so and offers a button not to be counted
+  (Matomo's own opt-out, its one cookie set only on request), and the atlas counts every page it shows without a
+  reload, which Matomo's snippet alone does not see. The text is written once,
   in includes/legal.php: publisher (a private individual, anonymous as French law allows, details given to the host),
   host, what the forms keep, cookies (none), rights, sources and credits. Change GENRE_ATLAS_LEGAL_UPDATED with it.
   Core's emoji script is switched off on atlas pages, so no page fetches anything from outside before a click.

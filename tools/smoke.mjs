@@ -558,6 +558,53 @@ try {
 		const top = await lg.locator( '#what-this-site-keeps' ).evaluate( el => Math.round( el.getBoundingClientRect().top ) );
 		check( 'legal : le formulaire de contact renvoie a la section des donnees, qui s affiche en haut', /\/legal\/#what-this-site-keeps$/.test( priv ) && top >= 0 && top < 120, `section a ${ top } px` );
 		await lg.close();
+		// The foot of every page leads to the legal notice, the map included.
+		const feet = [];
+		const fp = await newPage( 1440, 900 );
+		for ( const [ label, url, sel ] of [ [ 'fiche', lead ? `${ permalink( lead ) }about/` : `${ BASE }/`, '.ga-dossier' ], [ 'carte', lead ? permalink( lead ) : `${ BASE }/`, '.ga-panel' ],
+			[ 'hasard', `${ BASE }/genre/random/`, 'main' ], [ 'contact', `${ BASE }/contact/`, '.ga-contact' ], [ 'legende', `${ BASE }/#legend`, 'main' ] ] ) {
+			await fp.goto( url, { waitUntil: 'networkidle' } );
+			await fp.waitForSelector( '.ga-ready', { timeout: 10000 } );
+			if ( label === 'legende' ) { await fp.locator( '[data-legend]' ).first().click(); await fp.waitForSelector( '.ga-legend' ); }
+			if ( await fp.locator( `${ sel } .ga-foot a[href$="/legal/"]` ).count() === 0 ) feet.push( label );
+		}
+		await fp.close();
+		check( 'legal : le pied de chaque page mene a la page legale (fiche, carte, hasard, contact, legende)', feet.length === 0, feet.length ? `manque sur ${ feet.join( ', ' ) }` : '' );
+
+		// Audience measurement (Matomo, played by the bench): each page is
+		// counted once, even without a reload, and the legal page lets a
+		// visitor stop it, with the one cookie that remembers the choice.
+		const mt = await newPage( 1440, 900 );
+		await mt.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await mt.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		await mt.locator( '.ga-tile' ).first().click();
+		await mt.waitForURL( /\/genre\/[^/]+\/$/, { timeout: 10000 } );
+		await mt.locator( '[data-legend]' ).first().click();
+		const views = await mt.evaluate( () => window.__views );
+		check( 'mesure : chaque page est comptee une fois, meme sans rechargement, avec son adresse', views.length === 2 && new URL( views[ 1 ].url ).pathname.startsWith( '/genre/' ),
+			views.map( v => new URL( v.url ).pathname ).join( ' → ' ) );
+		await mt.goto( `${ BASE }/legal/`, { waitUntil: 'networkidle' } );
+		await mt.waitForSelector( '#ga-optout [data-optout="1"]', { timeout: 10000 } );
+		const counted = await mt.locator( '#ga-optout' ).innerText();
+		await mt.locator( '[data-optout="1"]' ).click();
+		await mt.waitForSelector( '[data-optout="0"]', { timeout: 5000 } );
+		const stored = ( await mt.context().cookies() ).map( c => c.name );
+		await mt.locator( '.ga-foot a' ).first().click(); // same page again: nothing to count
+		await mt.waitForLoadState( 'networkidle' );
+		await mt.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		await mt.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await mt.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		await mt.locator( '.ga-tile' ).first().click();
+		await mt.waitForURL( /\/genre\/[^/]+\/$/, { timeout: 10000 } );
+		const after = await mt.evaluate( () => window.__views.length );
+		await mt.goto( `${ BASE }/legal/`, { waitUntil: 'networkidle' } );
+		await mt.locator( '[data-optout="0"]' ).click();
+		await mt.waitForSelector( '[data-optout="1"]', { timeout: 5000 } );
+		const cleared = ( await mt.context().cookies() ).length === 0;
+		check( 'mesure : le refus d etre compte marche, ne pose que son cookie, et se reprend', /COUNTED, WITHOUT A COOKIE/.test( counted ) && stored.join() === 'mtm_consent_removed' && after === 0 && cleared,
+			`cookies ${ stored.join( ' ' ) || 'aucun' }, ${ after } page(s) comptee(s) apres refus` );
+		await mt.close();
+
 		const phone4 = await newPage( 390, 844 );
 		await phone4.goto( `${ BASE }/legal/`, { waitUntil: 'networkidle' } );
 		await phone4.waitForSelector( '.ga-legal-text section', { timeout: 10000 } );

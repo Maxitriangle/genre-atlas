@@ -1,6 +1,6 @@
 # Reprise — état au 23/10/2026
 
-**La v0.16.0 (page légale `/legal/`) est prête sur la branche `claude/hopeful-fermat-htfzxi`, banc vert, pas encore publiée.** Les v0.15.0 et v0.15.1 (référencement, aperçus de partage, favicon) sont publiées et vérifiées en ligne le 23/10/2026. La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
+**La v0.16.0 (page légale `/legal/`) est publiée le 23/10/2026 ; CookieAdmin et FormLayer sont retirés. La v0.16.1 (Matomo déclaré, refus d'être compté, chaque page comptée, lien légal au pied de chaque page) est prête sur la branche, banc vert.** Les v0.15.0 et v0.15.1 (référencement, aperçus de partage, favicon) sont publiées et vérifiées en ligne le 23/10/2026. La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
 
 **Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les dernières sections (contact, propositions, liens vérifiés, visibilité).
 
@@ -648,3 +648,29 @@ Mise en œuvre :
 Capture `12-legal.png`.
 
 **Chez Maxime, après la mise à jour** : désactiver puis supprimer **CookieAdmin**, **CookieAdmin Pro** et **FormLayer** (Extensions). Tant que CookieAdmin est actif, la page dit « aucun cookie » alors que le bandeau en pose un au clic.
+
+## Matomo et le pied de page (v0.16.1, 23/10/2026)
+Deux remarques de Maxime après la v0.16.0 :
+- le lien légal doit être sur toutes les pages : il a choisi **en bas de chaque page** ;
+- la page disait « no audience measurement » alors que **Matomo est installé**.
+
+**Mon erreur** : Matomo (extension « Matomo Analytics » pour WordPress, hébergée sur le site, réglée `disableCookies`) était bien dans les pages. Je ne l'avais pas vu, parce que j'avais cherché les extensions par leur chemin `wp-content/plugins/…`, et celui de Matomo est écrit échappé (`matomo\/matomo.js`) dans son extrait. Pour inventorier ce qu'une page charge, il faut aussi chercher `_paq`, `gtag`, `fbq`, et les scripts en ligne.
+
+**Ce qui change** :
+- **pied commun** `foot()` dans `atlas.js` : « LEGAL NOTICE · PRIVACY · CREDITS » à gauche, « NO COOKIE · NO ADVERTISING » à droite. Il est présent sur l'index, la fiche, la carte (en bas du panneau), la liste, l'arbre mobile, RANDOM, CONTACT (formulaire et confirmation), LEGEND et LEGAL. Les mentions « NO TRACKER » et « NO TRACKING » ont disparu ; le compteur de la page légale affiche « THIRD PARTIES 00 » ;
+- **page légale** : si Matomo est actif (`MATOMO_ANALYTICS_FILE` ou classe `WpMatomo`), un paragraphe « Audience measurement » (Matomo sur le site, aucun cookie, IP raccourcies, 25 mois au plus, données à personne) et un bouton **STOP COUNTING MY VISITS / COUNT MY VISITS AGAIN** (`optUserOut` / `forgetUserOptOut` de Matomo). La section Cookies cite le seul cookie posé, à la demande : `mtm_consent_removed`. Sans Matomo, le texte reste « There is no audience measurement ». Vérifié avec le `matomo.js` du site (Matomo 4) : le refus pose ce cookie, plus aucune page n'est comptée, et l'annulation l'efface ;
+- **chaque page vue est comptée** : l'extrait de Matomo ne compte que la page d'arrivée, et l'atlas change d'adresse sans recharger. Désormais, à chaque nouveau chemin (`count()` après chaque rendu), l'atlas envoie `setCustomUrl`, `setDocumentTitle` et `trackPageView`. Un filtre de RANDOM, le genre choisi dans CONTACT ou `#centre` ne comptent pas comme une nouvelle page.
+
+**Conditions de la CNIL pour se passer de consentement** (mesure d'audience exemptée) :
+- finalité limitée à la mesure ;
+- IP anonymisées ;
+- conservation de 25 mois au plus ;
+- pas de croisement ;
+- information et droit d'opposition.
+
+Les deux réglages à vérifier dans Matomo chez Maxime : **anonymisation des IP (2 octets)** et **suppression des anciennes données (25 mois au plus)**. Le texte de la page les affirme.
+
+**Banc** : 70 vérifications. Un mu-plugin `fake-matomo.php` joue Matomo (file `_paq`, pages comptées dans `window.__views`, refus en cookie `mtm_consent_removed`). Trois vérifications nouvelles :
+- le pied mène à la page légale sur la fiche, la carte, RANDOM, CONTACT et LEGEND ;
+- chaque page est comptée une fois, sans rechargement ;
+- le refus marche, ne pose que son cookie, et se reprend.
