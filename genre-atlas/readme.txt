@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.14.0
+Stable tag: 0.15.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -39,6 +39,15 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   in a row, a day apart, is flagged in Suggestions: counted on the menu, named at the top of the screen and listed
   under "Broken links". It stays on the dossier until it is corrected, taken offline or rejected. "Check link" on
   a row checks it at once. A refusal or a timeout never flags a link.
+* Search engines and link previews: every page is written in plain HTML before the script draws over it (a genre's
+  dossier with its text, subgenres, key artists, songs, picks and sources; the families and their subgenres on the
+  home page). A genre's canonical address is its dossier (/genre/…/about/), which the sitemap lists. Each page has
+  a title, a summary from its text, Open Graph tags and structured data (breadcrumbs of the lineage). The picture
+  shared on social networks is drawn per genre with its glyph (1200 × 630, PHP GD, kept in uploads/genre-atlas/og/).
+  /genre/random/ is not indexed; the users' sitemap is switched off. An SEO plugin (Yoast, Rank Math, AIOSEO,
+  SEOPress, The SEO Framework) takes over the head if one is active.
+* Site icon: the glyph of the atlas (a hexagon in a ring of eight), used while none is set in Appearance > Customize,
+  for /favicon.ico too. tools/make-icons.php draws it again.
 * WP-CLI: wp genre-atlas import file.csv
 * The font (Azeret Mono, SIL Open Font License) is bundled: no call to Google Fonts.
 * Updates: new versions published as GitHub releases appear in Plugins like any other update.
