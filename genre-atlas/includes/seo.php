@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const GENRE_ATLAS_OG_W       = 1200;
 const GENRE_ATLAS_OG_H       = 630;
-const GENRE_ATLAS_OG_DRAWING = 1; // Bump when the picture changes: every preview is drawn again.
+const GENRE_ATLAS_OG_DRAWING = 2; // Bump when the picture changes: every preview is drawn again.
 const GENRE_ATLAS_BG         = array( 0x12, 0x10, 0x16 );
 const GENRE_ATLAS_INK        = array( 0xE4, 0xDF, 0xF5 );
 const GENRE_ATLAS_DIM        = array( 0x9A, 0x94, 0xB5 );
@@ -720,12 +720,23 @@ function genre_atlas_og_draw( $card ) {
 
 /** Width of a text set letter by letter with extra spacing, as the site's capitals. */
 function genre_atlas_og_width( $text, $font, $size, $spacing ) {
-	$wd = 0;
-	foreach ( preg_split( '//u', $text, -1, PREG_SPLIT_NO_EMPTY ) as $ch ) {
-		$box = imagettfbbox( $size, 0, $font, $ch );
-		$wd += ( ' ' === $ch ? $size * 0.6 : $box[2] - $box[0] ) + $spacing;
+	$n = mb_strlen( $text );
+	return $n ? (int) ceil( $n * genre_atlas_og_advance( $font, $size ) + ( $n - 1 ) * $spacing ) : 0;
+}
+
+/**
+ * The width every letter takes in a monospaced font. A letter's own ink is no
+ * measure: a dot or a hyphen is narrow and would pull the next letter onto it.
+ */
+function genre_atlas_og_advance( $font, $size ) {
+	static $cache = array();
+	$key = $font . '@' . $size;
+	if ( ! isset( $cache[ $key ] ) ) {
+		$one           = imagettfbbox( $size, 0, $font, 'M' );
+		$ten           = imagettfbbox( $size, 0, $font, 'MMMMMMMMMMM' );
+		$cache[ $key ] = ( $ten[2] - $one[2] ) / 10;
 	}
-	return (int) ceil( $wd - $spacing );
+	return $cache[ $key ];
 }
 
 /** Writes a text letter by letter (GD has no letter spacing), cut with … past $max. */
@@ -736,9 +747,11 @@ function genre_atlas_og_text( $img, $text, $font, $size, $x, $y, $color, $spacin
 		}
 		$text .= '…';
 	}
-	foreach ( preg_split( '//u', $text, -1, PREG_SPLIT_NO_EMPTY ) as $ch ) {
-		$box = imagettftext( $img, $size, 0, (int) round( $x ), $y, $color, $font, $ch );
-		$x  += ( ' ' === $ch ? $size * 0.6 : $box[2] - $box[0] ) + $spacing;
+	$step = genre_atlas_og_advance( $font, $size ) + $spacing;
+	foreach ( preg_split( '//u', $text, -1, PREG_SPLIT_NO_EMPTY ) as $i => $ch ) {
+		if ( ' ' !== $ch ) {
+			imagettftext( $img, $size, 0, (int) round( $x + $i * $step ), $y, $color, $font, $ch );
+		}
 	}
 }
 
