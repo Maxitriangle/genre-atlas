@@ -1,8 +1,17 @@
 # Reprise — état au 23/10/2026
 
-**La v0.16.0 (page légale `/legal/`) est publiée le 23/10/2026 ; CookieAdmin et FormLayer sont retirés. La v0.16.1 (Matomo déclaré, refus d'être compté, chaque page comptée, lien légal au pied de chaque page) est prête sur la branche, banc vert.** Les v0.15.0 et v0.15.1 (référencement, aperçus de partage, favicon) sont publiées et vérifiées en ligne le 23/10/2026. La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
+**La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les dernières sections (contact, propositions, liens vérifiés, visibilité).
+Versions des 22 et 23/10/2026, toutes publiées :
+- 0.14.0 : vérification des liens validés ;
+- 0.15.0 et 0.15.1 : référencement, aperçus de partage, favicon ;
+- 0.16.0 et 0.16.1 : page légale, Matomo.
+
+CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine.
+
+**Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : Bing Webmaster Tools du côté de Maxime, puis faire connaître le site.
+
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les trois dernières sections (visibilité, page légale, Matomo).
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -25,8 +34,13 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
   - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 63 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
-- **Visibilité** : Google Search Console validée pour le domaine `every-genre.com` (enregistrement TXT dans la zone DNS o2switch, à ne jamais supprimer), plan du site envoyé le 22/10/2026. v0.15.0 : voir la dernière section.
+- **Banc de test** : `tools/test-local.sh`, 70 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version. Les plateformes d'écoute et Matomo y sont simulés par des mu-plugins.
+- **Visibilité** :
+  - Google Search Console est validée pour le domaine `every-genre.com`, par un enregistrement TXT dans la zone DNS o2switch, **à ne jamais supprimer**. Le plan du site a été envoyé le 22/10/2026 ;
+  - depuis la v0.15, chaque page est lisible sans script : titre, résumé, canonique vers la fiche `/about/`, aperçu de partage dessiné par genre, données structurées, favicon (section « Visibilité ») ;
+  - les premiers chiffres d'indexation sont attendus dans Search Console → Indexation → Pages.
+- **Page légale** `/legal/` (v0.16) : mentions légales anonymes (hébergeur o2switch), données gardées, cookies, droits, crédits. Le lien est au pied de chaque page.
+- **Matomo** (extension « Matomo Analytics », hébergée sur le site, sans cookie) : IP anonymisées et conservation de 25 mois au plus, vérifiées par Maxime le 23/10/2026. Bouton de refus sur la page légale. L'atlas compte chaque page vue, pas seulement la page d'arrivée.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -43,8 +57,9 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - remplir le nom tout seul à partir du lien collé ;
    - transformer un artiste proposé en artiste clé en un clic.
 8. **Visibilité, suite du plan proposé à Maxime le 22/10/2026** (dans cet ordre) :
-   - ~~page LEGAL~~ : faite en v0.16.0 (voir la dernière section). Chez Maxime : désactiver CookieAdmin, CookieAdmin Pro et FormLayer ;
-   - **Bing Webmaster Tools**, à importer depuis Search Console (à faire par Maxime) ;
+   - ~~page LEGAL~~ : faite (v0.16.0 et v0.16.1), et les extensions CookieAdmin et FormLayer sont retirées ;
+   - **Bing Webmaster Tools** : **prochaine étape**, à faire par Maxime. Bing alimente aussi DuckDuckGo, Yahoo, et la recherche de ChatGPT et de Copilot. Il s'importe depuis Search Console en un clic, sans refaire de DNS ;
+   - dans quelques jours, regarder avec Maxime les premiers chiffres de Search Console et de Matomo (genres les plus consultés) ;
    - faire connaître le site : Reddit (r/InternetIsBeautiful, r/LetsTalkMusic, forums de scènes), Show HN, Product Hunt, newsletters musique ou design. L'angle : Every Noise at Once a fermé fin 2023 ;
    - plus tard : une page ABOUT qui raconte le projet ; les 790 genres sans texte.
 9. **Contact, facultatif** : répondre depuis Gmail sous le nom `contact@every-genre.com` (Gmail → « Envoyer des e-mails en tant que », avec le serveur SMTP d'o2switch).
@@ -56,6 +71,10 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 4. Il met à jour dans Extensions, puis réimporte `genre-import.csv` et `artist-import.csv` (Genres → Import CSV), dans cet ordre, si les données ont changé.
 
 ## Ce qu'il ne faut pas réapprendre
+- **Inventorier ce qu'une page charge** : ne pas se fier aux chemins `wp-content/plugins/…`. Un extrait peut les écrire échappés (`matomo\/matomo.js`), et Matomo est passé inaperçu ainsi. Chercher aussi `_paq`, `gtag`, `fbq`, les scripts en ligne, et les `Set-Cookie`.
+- **Après la fusion d'une PR**, repartir de `main` sur la branche de session (`git checkout -B <branche> origin/main`). La branche distante étant déjà contenue dans `main`, un `git push` normal suffit ; le push forcé est refusé dans ces sessions.
+- **Ne jamais arrêter un serveur avec `pkill -f "php -S …"`** : la commande tue le shell qui la lance. Garder le PID (`php -S … & SP=$!`), puis `kill $SP`.
+- **Matomo** : un refus (`optUserOut`) pose le cookie `mtm_consent_removed` même en mode sans cookie. C'est admis, puisqu'il n'est posé qu'à la demande du visiteur, et la page légale le cite.
 - **Wikimedia bloque les sessions Claude** (429 et 403 « robot policy » sur Wikidata ; Wikipedia répond). Tout ce qui interroge Wikidata ou Commons passe par un workflow GitHub Actions qui commite son résultat sur la branche.
 - **`wp_localize_script` transmet tout en chaîne**, et `"0"` est vrai en JavaScript : comparer avec `Number(x) === 1`.
 - Pour attendre un processus, `pgrep -f "[a]rtists-verify"` : sans les crochets, le motif se trouve lui-même et tue ou bloque le shell.
@@ -531,7 +550,7 @@ Captures `10-propositions-formulaire.png`, `10b-suggestions.png` et `10c-proposi
 - transformer en un clic un artiste proposé en artiste clé ;
 - vérifier de temps en temps que les liens validés répondent encore.
 
-## Liens validés vérifiés (v0.14.0, 22/10/2026, pas encore publiée)
+## Liens validés vérifiés (v0.14.0, publiée le 22/10/2026)
 Point 7 de « Ce qui attend », choisi par Maxime avant les deux autres. Choix fait avec lui : un lien mort est **signalé, jamais retiré** du site tout seul.
 
 **Fonctionnement** (`includes/picks.php`, section « Link check ») :
@@ -613,7 +632,7 @@ Choix fait avec Maxime : **un visiteur venu de Google arrive sur la fiche** (`/a
 
 **v0.15.1** : dans les images, la ponctuation était mal espacée (« EVERY -GENRE .COM », « 2,098 »). Chaque lettre avançait de la largeur de son propre dessin, et une lettre étroite (point, tiret, virgule, ·) laissait trop peu de place. Désormais, chaque lettre avance d'un pas fixe, celui de la police à chasse fixe (`genre_atlas_og_advance`). `GENRE_ATLAS_OG_DRAWING` est passé à 2 : toutes les images sont redessinées à leur prochaine visite, sous une nouvelle adresse.
 
-## Page légale (v0.16.0, 23/10/2026, pas encore publiée)
+## Page légale (v0.16.0, publiée le 23/10/2026)
 Choix faits avec Maxime :
 - **anonyme** : un particulier qui publie un site non commercial peut ne donner que l'hébergeur (LCEN, art. 6-III-2) ;
 - **retirer le bandeau de cookies** ;
@@ -649,7 +668,7 @@ Capture `12-legal.png`.
 
 **Chez Maxime, après la mise à jour** : désactiver puis supprimer **CookieAdmin**, **CookieAdmin Pro** et **FormLayer** (Extensions). Tant que CookieAdmin est actif, la page dit « aucun cookie » alors que le bandeau en pose un au clic.
 
-## Matomo et le pied de page (v0.16.1, 23/10/2026)
+## Matomo et le pied de page (v0.16.1, publiée le 23/10/2026)
 Deux remarques de Maxime après la v0.16.0 :
 - le lien légal doit être sur toutes les pages : il a choisi **en bas de chaque page** ;
 - la page disait « no audience measurement » alors que **Matomo est installé**.
@@ -674,3 +693,10 @@ Les deux réglages à vérifier dans Matomo chez Maxime : **anonymisation des IP
 - le pied mène à la page légale sur la fiche, la carte, RANDOM, CONTACT et LEGEND ;
 - chaque page est comptée une fois, sans rechargement ;
 - le refus marche, ne pose que son cookie, et se reprend.
+
+**Chez Maxime, le 23/10/2026** :
+- réglages Matomo vérifiés (IP anonymisées, conservation de 25 mois au plus) ;
+- v0.16.1 publiée et installée ;
+- CookieAdmin, CookieAdmin Pro et FormLayer retirés.
+
+Il reste à vérifier en ligne, au navigateur, le pied de chaque page et le comptage d'une navigation, ce qui n'a pas été fait en fin de séance. La page légale sert bien la v0.16.1, avec son bouton de refus.
