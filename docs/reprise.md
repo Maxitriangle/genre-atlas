@@ -1,6 +1,6 @@
 # Reprise — état au 23/10/2026
 
-**La v0.15.0 (référencement : page lisible par les moteurs, aperçus de partage, favicon) est publiée et vérifiée en ligne le 23/10/2026. La v0.15.1 (espacement des lettres dans les images d'aperçu) est prête sur la branche, banc vert.** La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
+**La v0.16.0 (page légale `/legal/`) est prête sur la branche `claude/hopeful-fermat-htfzxi`, banc vert, pas encore publiée.** Les v0.15.0 et v0.15.1 (référencement, aperçus de partage, favicon) sont publiées et vérifiées en ligne le 23/10/2026. La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
 
 **Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les dernières sections (contact, propositions, liens vérifiés, visibilité).
 
@@ -43,7 +43,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - remplir le nom tout seul à partir du lien collé ;
    - transformer un artiste proposé en artiste clé en un clic.
 8. **Visibilité, suite du plan proposé à Maxime le 22/10/2026** (dans cet ordre) :
-   - une page **LEGAL** : mentions légales (obligatoires en France ; un particulier peut ne donner que l'hébergeur o2switch et un contact), politique de confidentialité (le formulaire de contact garde des e-mails) et crédits. Pas de CGU, au plus une phrase sur les propositions. Revoir le **bandeau de cookies** du site (un plugin, quatre catégories) : le site ne semble déposer aucun cookie de suivi ;
+   - ~~page LEGAL~~ : faite en v0.16.0 (voir la dernière section). Chez Maxime : désactiver CookieAdmin, CookieAdmin Pro et FormLayer ;
    - **Bing Webmaster Tools**, à importer depuis Search Console (à faire par Maxime) ;
    - faire connaître le site : Reddit (r/InternetIsBeautiful, r/LetsTalkMusic, forums de scènes), Show HN, Product Hunt, newsletters musique ou design. L'angle : Every Noise at Once a fermé fin 2023 ;
    - plus tard : une page ABOUT qui raconte le projet ; les 790 genres sans texte.
@@ -612,3 +612,39 @@ Choix fait avec Maxime : **un visiteur venu de Google arrive sur la fiche** (`/a
 - `/genre/random/` en noindex.
 
 **v0.15.1** : dans les images, la ponctuation était mal espacée (« EVERY -GENRE .COM », « 2,098 »). Chaque lettre avançait de la largeur de son propre dessin, et une lettre étroite (point, tiret, virgule, ·) laissait trop peu de place. Désormais, chaque lettre avance d'un pas fixe, celui de la police à chasse fixe (`genre_atlas_og_advance`). `GENRE_ATLAS_OG_DRAWING` est passé à 2 : toutes les images sont redessinées à leur prochaine visite, sous une nouvelle adresse.
+
+## Page légale (v0.16.0, 23/10/2026, pas encore publiée)
+Choix faits avec Maxime :
+- **anonyme** : un particulier qui publie un site non commercial peut ne donner que l'hébergeur (LCEN, art. 6-III-2) ;
+- **retirer le bandeau de cookies** ;
+- **retirer FormLayer** : il ne servait à rien, aucune page n'en utilise de formulaire.
+
+**Constat sur le site en ligne (23/10/2026)** :
+- aucun cookie sur l'accueil, aucune mesure d'audience, aucune publicité ;
+- police locale ;
+- YouTube chargé au clic, depuis youtube-nocookie.com ;
+- deux extensions venues d'ailleurs, sans doute installées par l'installateur d'o2switch avec WordPress : **CookieAdmin** (+ Pro, le bandeau à quatre catégories) et **FormLayer** (outil de formulaires, dont les fichiers étaient chargés sur chaque page sans servir).
+
+**La page** `/legal/` (`includes/legal.php`, même règle de réécriture que `/contact/`) contient six sections :
+- PUBLISHER : particulier, site non commercial, identité confiée à l'hébergeur, contact par `/contact/` ;
+- HOST : o2switch SAS, Chemin des Pardiaux, 63000 Clermont-Ferrand, +33 4 44 44 60 40, coordonnées relevées sur o2switch.fr le 23/10/2026 ;
+- WHAT THIS SITE KEEPS : contact, propositions, empreinte d'IP d'une heure ; ni compte, ni lettre, ni publicité, ni mesure d'audience ;
+- COOKIES : aucun ; YouTube au clic en mode sans cookie ; police locale ;
+- YOUR RIGHTS : RGPD, recours CNIL ;
+- SOURCES AND CREDITS : Wikidata CC0, MusicBrainz, Wikipedia CC BY-SA 4.0, Wikimedia Commons, Deezer, Azeret Mono OFL.
+
+Mise en œuvre :
+- le texte n'est écrit qu'une fois, en PHP. Le serveur l'imprime dans la page, et `atlas.js` le reprend (`LEGAL`, lu avant le premier rendu) dans le cadre de la page contact : en-tête « Who runs it, what it keeps. », compteurs COOKIES 00 et TRACKERS 00. Date de mise à jour : `GENRE_ATLAS_LEGAL_UPDATED` ;
+- liens : pied de l'index (« LEGAL NOTICE · PRIVACY · CREDITS / NO COOKIE · NO TRACKER »), une ligne sous les deux formulaires vers `#what-this-site-keeps`, et la version texte de l'accueil et des fiches ;
+- le script emoji de WordPress, qui pouvait chercher des images sur s.w.org, est coupé sur les pages de l'atlas.
+
+**Engagement pris dans le texte** : les messages sont supprimés quand ils ne servent plus, ou à la demande. C'est à faire à la main dans Messages.
+
+**Banc** : 67 vérifications, dont 4 sur la page légale :
+- le pied de l'index l'ouvre, avec ses 6 sections ;
+- **aucun cookie et aucune requête extérieure** sur l'index, une fiche et la page légale ;
+- le lien du formulaire de contact arrive en haut de la section des données ;
+- la page tient en largeur mobile.
+Capture `12-legal.png`.
+
+**Chez Maxime, après la mise à jour** : désactiver puis supprimer **CookieAdmin**, **CookieAdmin Pro** et **FormLayer** (Extensions). Tant que CookieAdmin est actif, la page dit « aucun cookie » alors que le bandeau en pose un au clic.

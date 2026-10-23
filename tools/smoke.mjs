@@ -526,6 +526,46 @@ try {
 		check( 'moteurs : la version sans script se lit seule, et ne s affiche pas avant la fiche', shown && ! flashed, `sans script ${ shown ? 'visible' : 'invisible' }, ${ flashed ? 'eclair' : 'pas d eclair' }` );
 	}
 
+	// 8d. Legal notice and privacy: reached from the index, the forms point to
+	// it, and what it promises holds (no cookie, nothing fetched from outside
+	// before a click).
+	{
+		const lg = await newPage( 1440, 900 );
+		const outside = [];
+		lg.on( 'request', r => { const h = new URL( r.url() ).hostname; if ( h !== '127.0.0.1' && h !== 'localhost' ) outside.push( r.url() ); } );
+		await lg.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await lg.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		await lg.locator( '.ga-foot a' ).click();
+		await lg.waitForURL( /\/legal\/$/, { timeout: 10000 } );
+		await lg.waitForSelector( '.ga-legal-text section', { timeout: 10000 } );
+		const heads = await lg.locator( '.ga-legal-text h2' ).allInnerTexts();
+		const text = await lg.locator( '.ga-legal-text' ).innerText();
+		check( 'legal : le pied de l index ouvre la page, avec editeur, hebergeur, donnees, cookies, droits et credits',
+			heads.length === 6 && /o2switch/i.test( text ) && /CNIL/.test( text ) && /CC BY-SA/.test( text ) && ( await lg.title() ).startsWith( 'Legal notice' ), heads.join( ' · ' ) );
+		await lg.screenshot( { path: `${ SHOTS }/12-legal.png`, fullPage: true } );
+		if ( lead ) {
+			await lg.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+			await lg.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
+		}
+		const cookies = await lg.context().cookies();
+		check( 'legal : aucun cookie depose et rien demande a l exterieur sur l index, la fiche et cette page', cookies.length === 0 && outside.length === 0,
+			`${ cookies.length } cookie(s) ${ cookies.map( c => c.name ).join( ' ' ) }, ${ outside.length } requete(s) ${ outside.slice( 0, 3 ).join( ' ' ) }` );
+		await lg.goto( `${ BASE }/contact/`, { waitUntil: 'networkidle' } );
+		await lg.waitForSelector( '.ga-cform', { timeout: 10000 } );
+		const priv = await lg.locator( '.ga-cform .ga-cpriv a' ).getAttribute( 'href' );
+		await lg.goto( priv, { waitUntil: 'networkidle' } );
+		await lg.waitForSelector( '.ga-legal-text section', { timeout: 10000 } );
+		const top = await lg.locator( '#what-this-site-keeps' ).evaluate( el => Math.round( el.getBoundingClientRect().top ) );
+		check( 'legal : le formulaire de contact renvoie a la section des donnees, qui s affiche en haut', /\/legal\/#what-this-site-keeps$/.test( priv ) && top >= 0 && top < 120, `section a ${ top } px` );
+		await lg.close();
+		const phone4 = await newPage( 390, 844 );
+		await phone4.goto( `${ BASE }/legal/`, { waitUntil: 'networkidle' } );
+		await phone4.waitForSelector( '.ga-legal-text section', { timeout: 10000 } );
+		const width = await phone4.evaluate( () => document.documentElement.scrollWidth );
+		check( 'mobile : la page legale tient dans la largeur', width <= 390, `${ width } px` );
+		await phone4.close();
+	}
+
 	// 9. Import screen, behind the login.
 	const admin = await newPage( 1440, 900 );
 	await admin.goto( `${ BASE }/wp-login.php`, { waitUntil: 'networkidle' } );

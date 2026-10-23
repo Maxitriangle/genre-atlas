@@ -320,7 +320,7 @@ function genre_atlas_dossier_html( $post ) {
 	if ( $sources ) {
 		$out .= '<h2>Sources</h2><p>' . implode( ' · ', $sources ) . '</p>';
 	}
-	$out .= '<p><a href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html( $name ) . ' on the map</a> · <a href="' . esc_url( home_url( '/contact/?genre=' . rawurlencode( implode( '/', array_map( function ( $a ) use ( $n ) { return isset( $n[ $a ] ) ? $n[ $a ]['slug'] : get_post_field( 'post_name', $a ); }, genre_atlas_real_trail( $id ) ) ) ) ) ) . '">Suggest a correction</a></p>';
+	$out .= '<p><a href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html( $name ) . ' on the map</a> · <a href="' . esc_url( home_url( '/legal/' ) ) . '">Legal notice and privacy</a> · <a href="' . esc_url( home_url( '/contact/?genre=' . rawurlencode( implode( '/', array_map( function ( $a ) use ( $n ) { return isset( $n[ $a ] ) ? $n[ $a ]['slug'] : get_post_field( 'post_name', $a ); }, genre_atlas_real_trail( $id ) ) ) ) ) ) . '">Suggest a correction</a></p>';
 	return $out . '</article>';
 }
 
@@ -351,7 +351,7 @@ function genre_atlas_home_html() {
 			$out .= '</ul>';
 		}
 	}
-	$out .= '<p><a href="' . esc_url( home_url( '/genre/random/' ) ) . '">A genre at random</a> · <a href="' . esc_url( home_url( '/contact/' ) ) . '">Contact</a></p>';
+	$out .= '<p><a href="' . esc_url( home_url( '/genre/random/' ) ) . '">A genre at random</a> · <a href="' . esc_url( home_url( '/contact/' ) ) . '">Contact</a> · <a href="' . esc_url( home_url( '/legal/' ) ) . '">Legal notice and privacy</a></p>';
 	return $out;
 }
 
@@ -365,6 +365,9 @@ function genre_atlas_home_summary() {
 function genre_atlas_page_kind() {
 	if ( genre_atlas_is_contact() ) {
 		return 'contact';
+	}
+	if ( genre_atlas_is_legal() ) {
+		return 'legal';
 	}
 	if ( is_singular( 'genre' ) ) {
 		return 'genre';
@@ -390,6 +393,8 @@ function genre_atlas_title_parts( $parts ) {
 		$parts['title'] = 'A genre at random';
 	} elseif ( 'contact' === $kind ) {
 		$parts['title'] = 'Contact';
+	} elseif ( 'legal' === $kind ) {
+		$parts['title'] = 'Legal notice and privacy';
 	}
 	return $parts;
 }
@@ -435,6 +440,9 @@ function genre_atlas_page_summary() {
 	if ( 'contact' === $kind ) {
 		return 'Write to ' . get_bloginfo( 'name' ) . ': feedback, a correction, a missing genre.';
 	}
+	if ( 'legal' === $kind ) {
+		return 'Who publishes ' . get_bloginfo( 'name' ) . ', where it is hosted, what it keeps (no cookie, no tracker) and where its data and pictures come from.';
+	}
 	if ( 'home' === $kind ) {
 		return genre_atlas_home_summary();
 	}
@@ -449,6 +457,9 @@ function genre_atlas_canonical() {
 	}
 	if ( 'contact' === $kind ) {
 		return home_url( '/contact/' );
+	}
+	if ( 'legal' === $kind ) {
+		return home_url( '/legal/' );
 	}
 	if ( 'random' === $kind ) {
 		return home_url( '/genre/random/' );

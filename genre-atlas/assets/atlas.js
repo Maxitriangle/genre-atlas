@@ -4,6 +4,9 @@
   var CFG = window.GENRE_ATLAS || {};
   var root = document.getElementById('genre-atlas');
   if (!root) return;
+  // The legal page's text is written by the server, once: lifted here before
+  // the first render draws the atlas over it.
+  var LEGAL = Number(CFG.legal) === 1 && root.querySelector('.ga-legal-text') ? root.querySelector('.ga-legal-text').innerHTML : '';
 
   var RING_MAX = 8, ARC_MAX = 8, DIAL_STEP = 6, GROUP_LIMIT = 8, GROUP_SEP = '>';
   var SHAPES = ['circle', 'hex', 'pent', 'square', 'diamond', 'oct', 'tri_up', 'tri_down', 'hex_r'];
@@ -14,7 +17,7 @@
   var ROOTS = [];        // roots of the tree: genres with no parent
   var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
-  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false };
+  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false, legal: false };
   var R = { within: 0, sub: false, all: false }; // the random draw's filter
   var DRAWN = {};        // ids drawn this visit: not drawn again until the pool runs out
   var DOS = {};          // id -> what a dossier adds to the tree, fetched on demand
@@ -185,6 +188,7 @@
     S.legend = false;
     S.random = false;
     S.contact = false;
+    S.legal = false;
     S.about = about && n && !n.grp ? n.id : 0;
     if (!n) { S.centre = 0; S.open = 0; }
     else if (centreOnIt || isTile(n)) { S.centre = n.id; S.open = 0; }
@@ -228,6 +232,7 @@
     var st = e.state || {};
     if (st.random) { readRandom(); showRandom(false); return; }
     if (st.contact) { readContact(); showContact(false); return; }
+    if (st.legal) { showLegal(); return; }
     select(N[st.id] || null, st.c, false, st.about);
     if (!st.about) S.fromMap = false;
   });
@@ -235,7 +240,7 @@
   /* ---------- shared pieces ---------- */
   function header() {
     return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
-      '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.contact && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
+      '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.contact && !S.legal && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
       '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a>' +
       '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a></nav>' +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
@@ -255,7 +260,8 @@
         '<div class="ga-tile-body">' + glyph(r, 104) + '<div><h2>' + esc(r.name) + '</h2><p>' + esc(micro(r) || 'ORIGIN: —') + '</p><p>' + pad(r.grouped || r.kids.length) + ' DIRECT SUBGENRES' + (r.grouped ? ' // ' + pad(r.kids.length) + ' GROUPS' : '') + '</p></div></div></a>';
     }).join('');
     return '<main class="ga-index"><div class="ga-hero"><div><p class="ga-micro">[INDEX] MUSIC GENRE ATLAS</p><h1>Every genre.<br>Every lineage.</h1></div>' +
-      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(TILES.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div></main>';
+      '<dl class="ga-stats"><div><dt>FAMILIES</dt><dd>' + pad(TILES.length) + '</dd></div><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div></dl></div><div class="ga-grid">' + tiles + '</div>' +
+      '<p class="ga-foot ga-micro"><a href="' + esc(legalUrl()) + '">LEGAL NOTICE · PRIVACY · CREDITS</a><span>NO COOKIE · NO TRACKER</span></p></main>';
   }
 
   /* ---------- detail panel ---------- */
@@ -540,7 +546,8 @@
       pickField('note', 'Why this pick?', 'OPTIONAL · <span id="ga-pcount">' + pad(P.note.length, 3) + '</span> / 140', '<input' + pAttrs('note') + ' name="note" maxlength="140" value="' + esc(P.note) + '">') +
       '<div class="ga-hp" aria-hidden="true"><label for="ga-pwebsite">Leave this field empty</label><input id="ga-pwebsite" name="website" tabindex="-1" autocomplete="off"></div>' +
       '<div class="ga-pactions"><button type="submit" class="ga-cta ga-csend"' + (P.sending ? ' disabled' : '') + '><span>' + (P.sending ? 'SENDING…' : 'SEND FOR REVIEW') + '</span><span aria-hidden="true">→</span></button>' +
-      '<button type="button" class="ga-pcancel" data-pclose="1">CANCEL</button></div></form>';
+      '<button type="button" class="ga-pcancel" data-pclose="1">CANCEL</button></div>' +
+      '<p class="ga-micro ga-cpriv">NO E-MAIL ASKED · YOUR NAME IS SHOWN ONLY IF YOU GIVE ONE · <a href="' + esc(legalUrl()) + '#what-this-site-keeps">PRIVACY</a></p></form>';
   }
   function picksSection(n, d) {
     pickFor(n);
@@ -632,7 +639,7 @@
     R = { within: byPath(p.within), sub: p.sub === '1', all: p.all === '1' };
   }
   function showRandom(push) {
-    S.random = true; S.contact = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
+    S.random = true; S.contact = false; S.legal = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
     if (push !== false && window.history && history.pushState) { try { history.pushState({ random: true }, '', randomUrl()); } catch (e) { /* noop */ } }
     document.title = 'Random genre — ' + (CFG.title || 'Genre');
     render();
@@ -712,7 +719,7 @@
     if (p.error) C.error = p.error;
   }
   function showContact(push) {
-    S.contact = true; S.random = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.contact = true; S.random = false; S.legal = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     if (push !== false && window.history && history.pushState) { try { history.pushState({ contact: true }, '', contactUrl(C.genre)); } catch (e) { /* noop */ } }
     document.title = 'Contact — ' + (CFG.title || 'Genre');
     render();
@@ -778,6 +785,7 @@
       field('email', 'E-mail', 'ONLY USED TO REPLY', '<input' + attrs('email') + ' type="email" name="email" autocomplete="email" required value="' + esc(C.email) + '">') + '</div>' +
       '<div class="ga-hp" aria-hidden="true"><label for="ga-cwebsite">Leave this field empty</label><input id="ga-cwebsite" name="website" tabindex="-1" autocomplete="off"></div></section>' +
       '<button type="submit" class="ga-cta ga-csend"' + (C.sending ? ' disabled' : '') + '><span>' + (C.sending ? 'SENDING…' : 'SEND MESSAGE') + '</span><span aria-hidden="true">→</span></button>' +
+      '<p class="ga-micro ga-cpriv">YOUR ADDRESS IS ONLY USED TO REPLY · <a href="' + esc(legalUrl()) + '#what-this-site-keeps">PRIVACY</a></p>' +
       '</form><aside class="ga-slot ga-cticket" aria-label="Summary"><div class="ga-plate">' + seal + '</div><div class="ga-ctrows">' + ticket() + '</div>' +
       '<p class="ga-micro">NO NEWSLETTER, NO TRACKING. YOUR ADDRESS IS USED TO REPLY, AND FOR NOTHING ELSE.</p></aside></div></main>';
   }
@@ -826,6 +834,20 @@
       rule('E', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; })) + '</div></main>';
   }
 
+  /* ---------- legal notice, privacy, credits ----------
+   * Text from the server (includes/legal.php), in the atlas's own layout. */
+  function legalUrl() { return CFG.legalUrl || '/legal/'; }
+  function showLegal() {
+    S.legal = true; S.contact = false; S.random = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    document.title = 'Legal notice and privacy — ' + (CFG.title || 'Genre');
+    render();
+  }
+  function viewLegal() {
+    return '<main class="ga-contact ga-legal"><div class="ga-hero"><div><p class="ga-micro">[LEGAL] NOTICE · PRIVACY · CREDITS</p><h1>Who runs it,<br>what it keeps.</h1></div>' +
+      '<dl class="ga-stats"><div><dt>COOKIES</dt><dd>00</dd></div><div><dt>TRACKERS</dt><dd>00</dd></div></dl></div>' +
+      '<div class="ga-legal-text ga-prose">' + LEGAL + '</div></main>';
+  }
+
   /* ---------- render ---------- */
   function isMobile() { return root.clientWidth < 900; }
   function render() {
@@ -834,6 +856,7 @@
     if (S.legend) html += viewLegend();
     else if (S.random) html += viewRandom();
     else if (S.contact) html += viewContact();
+    else if (S.legal) html += viewLegal();
     else if (S.about && N[S.about]) html += viewDossier(N[S.about]);
     else if (!centre) html += viewIndex();
     else if (isMobile()) html += viewMobile(centre, open);
@@ -888,7 +911,7 @@
     var t = e.target.closest('[data-go],[data-centre],[data-view],[data-exp],[data-dial],[data-legend],[data-about],[data-close]');
     if (!t || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
-    if (t.hasAttribute('data-legend')) { S.legend = true; S.random = false; S.contact = false; S.q = ''; S.about = 0; render(); }
+    if (t.hasAttribute('data-legend')) { S.legend = true; S.random = false; S.contact = false; S.legal = false; S.q = ''; S.about = 0; render(); }
     else if (t.hasAttribute('data-close')) { closeDossier(); }
     else if (t.hasAttribute('data-about')) { S.q = ''; openDossier(N[t.getAttribute('data-about')]); }
     else if (t.hasAttribute('data-centre')) { S.q = ''; select(N[t.getAttribute('data-centre')], true); }
@@ -942,6 +965,13 @@
 
   fetch(CFG.treeUrl).then(function (r) { return r.json(); }).then(function (tree) {
     build(tree);
+    if (Number(CFG.legal) === 1) {
+      showLegal();
+      if (history.replaceState) { try { history.replaceState({ legal: true }, ''); } catch (e) { /* noop */ } }
+      // Arriving at a section (#what-this-site-keeps): the browser looked for it before it was drawn.
+      var at = location.hash && document.getElementById(location.hash.slice(1)); if (at) at.scrollIntoView();
+      return;
+    }
     if (Number(CFG.random) === 1) {
       readRandom(); showRandom(false);
       if (history.replaceState) { try { history.replaceState({ random: true }, ''); } catch (e) { /* noop */ } }

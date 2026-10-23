@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.15.1
+ * Version: 0.16.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.15.1' );
+define( 'GENRE_ATLAS_VERSION', '0.16.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v2' );
@@ -24,6 +24,7 @@ require_once GENRE_ATLAS_DIR . 'includes/admin.php';
 require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
+require_once GENRE_ATLAS_DIR . 'includes/legal.php';
 require_once GENRE_ATLAS_DIR . 'includes/glyph.php';
 require_once GENRE_ATLAS_DIR . 'includes/seo.php';
 require_once GENRE_ATLAS_DIR . 'includes/updater.php';
@@ -298,6 +299,10 @@ function genre_atlas_template( $template ) {
 	$is_atlas_page = is_page() && 'genre-atlas-full' === get_page_template_slug( get_queried_object_id() );
 	$is_atlas_home = is_front_page() && get_option( 'genre_atlas_home', '1' );
 	if ( is_singular( 'genre' ) || is_post_type_archive( 'genre' ) || $is_atlas_page || $is_atlas_home ) {
+		// Core's emoji script fetches pictures from s.w.org: the atlas has no
+		// use for it, and the privacy page promises no outside request.
+		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+		remove_action( 'wp_print_styles', 'print_emoji_styles' );
 		return GENRE_ATLAS_DIR . 'templates/atlas.php';
 	}
 	return $template;
@@ -317,6 +322,8 @@ function genre_atlas_enqueue() {
 			'about'        => is_singular( 'genre' ) && get_query_var( 'ga_about' ) ? 1 : 0,
 			'random'       => is_post_type_archive( 'genre' ) && get_query_var( 'ga_random' ) ? 1 : 0,
 			'contact'      => genre_atlas_is_contact() ? 1 : 0,
+			'legal'        => genre_atlas_is_legal() ? 1 : 0,
+			'legalUrl'     => home_url( '/legal/' ),
 			'contactUrl'   => home_url( '/contact/' ),
 			'contactApi'   => esc_url_raw( rest_url( 'genre-atlas/v1/contact' ) ),
 			'contactToken' => genre_atlas_contact_token(),
@@ -338,6 +345,9 @@ function genre_atlas_shortcode() {
 function genre_atlas_fallback_html() {
 	if ( genre_atlas_is_contact() ) {
 		return genre_atlas_contact_fallback_html();
+	}
+	if ( genre_atlas_is_legal() ) {
+		return genre_atlas_legal_html();
 	}
 	if ( is_singular( 'genre' ) ) {
 		return genre_atlas_dossier_html( get_queried_object() );
