@@ -31,10 +31,19 @@ function genre_atlas_is_legal() {
 	return is_post_type_archive( 'genre' ) && get_query_var( 'ga_legal' );
 }
 
+/**
+ * Whether the site counts its visits with Matomo (the "Matomo Analytics"
+ * plugin, which keeps everything on the site). The page says so only then.
+ */
+function genre_atlas_matomo_active() {
+	return defined( 'MATOMO_ANALYTICS_FILE' ) || class_exists( 'WpMatomo' );
+}
+
 /** The text of the page, as sections: a heading and its paragraphs (HTML). */
 function genre_atlas_legal_sections() {
 	$contact = '<a href="' . esc_url( home_url( '/contact/' ) ) . '">contact page</a>';
 	$site    = esc_html( get_bloginfo( 'name' ) );
+	$matomo  = genre_atlas_matomo_active();
 	return array(
 		'Publisher'                 => array(
 			$site . ' is a personal, non-commercial website, published by a private individual who is also its director of publication. As French law allows (article 6-III-2 of law no. 2004-575 of 21 June 2004, “LCEN”), the publisher’s identity is not shown here: it has been given to the host, who keeps it.',
@@ -47,15 +56,20 @@ function genre_atlas_legal_sections() {
 			'<b>The contact form</b> sends the topic, the genre, your name if you give one, your e-mail address and your message. They go to the publisher’s inbox and a copy is kept on the site, to answer you and to fix what you point out. Your address is used for nothing else and given to no one. Messages are deleted once they no longer serve, or as soon as you ask.',
 			'<b>Community picks</b> keep the link, the name, the note and the nickname you type, and no e-mail address. A pick is shown on the genre’s page, with your nickname, only once it has been approved by hand. By sending one, you agree that it may be shown, corrected or declined.',
 			'<b>Against spam</b>, both forms count the messages sent from one connection in an hour. Your IP address is never stored as such: only a scrambled fingerprint of it is kept, for one hour.',
-			'There is no account, no newsletter, no advertising and no audience measurement.',
+			$matomo
+				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
+				: 'There is no audience measurement.',
+			'There is no account, no newsletter and no advertising.',
 		),
 		'Cookies'                   => array(
-			'This site sets no cookie on your device and uses no tracker, which is why it asks for no consent. (WordPress uses cookies for the publisher’s own login, never for visitors.)',
+			$matomo
+				? 'This site sets no cookie on your device, which is why it asks for no consent. The one exception is a cookie you ask for: if you choose not to be counted, a cookie named mtm_consent_removed remembers that choice. (WordPress uses cookies for the publisher’s own login, never for visitors.)'
+				: 'This site sets no cookie on your device and uses no tracker, which is why it asks for no consent. (WordPress uses cookies for the publisher’s own login, never for visitors.)',
 			'Songs play from YouTube only when you press PLAY, in YouTube’s privacy-enhanced mode (youtube-nocookie.com). From then on, Google’s privacy policy applies to the player. The links to Spotify, Deezer, Wikipedia and the other platforms take you to those sites, under their own rules.',
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
 		'Your rights'               => array(
-			'Under the GDPR and the French data protection act, you can see, correct or have deleted what the site keeps about you, and object to its use. Write through the ' . $contact . '. If you think your rights have not been respected, you can complain to the CNIL (<a href="https://www.cnil.fr/">cnil.fr</a>).',
+			'Under the GDPR and the French data protection act, you can see, correct or have deleted what the site keeps about you, and object to its use' . ( $matomo ? ' (for the visit counter, the button above is enough)' : '' ) . '. Write through the ' . $contact . '. If you think your rights have not been respected, you can complain to the CNIL (<a href="https://www.cnil.fr/">cnil.fr</a>).',
 		),
 		'Sources and credits'       => array(
 			'<b>Genres</b>, their lineage, origin and epoch come from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), checked and arranged by hand; genre identifiers also link to <a href="https://musicbrainz.org/">MusicBrainz</a>.',
@@ -73,7 +87,7 @@ function genre_atlas_legal_html() {
 	foreach ( genre_atlas_legal_sections() as $title => $paras ) {
 		$out .= '<section id="' . esc_attr( sanitize_title( $title ) ) . '"><h2>' . esc_html( $title ) . '</h2>';
 		foreach ( $paras as $p ) {
-			$out .= '<p>' . wp_kses( $p, array( 'a' => array( 'href' => true ), 'b' => array() ) ) . '</p>';
+			$out .= '<p>' . wp_kses( $p, array( 'a' => array( 'href' => true ), 'b' => array(), 'span' => array( 'id' => true ) ) ) . '</p>';
 		}
 		$out .= '</section>';
 	}

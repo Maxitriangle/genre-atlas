@@ -62,6 +62,40 @@ PHP
 # The listening platforms are played rather than called: a link whose address
 # holds "smoke-gone" is not found, any other is fine. A route of the bench runs
 # the daily link check as if some days had passed.
+# Matomo is played too: its plugin is not in the bench, so a stand-in answers
+# the same queue (_paq), counts page views in window.__views and keeps an
+# opt-out the way Matomo does, in a cookie named mtm_consent_removed.
+cat > "$SITE/wp-content/mu-plugins/fake-matomo.php" <<'PHP'
+<?php
+define( 'MATOMO_ANALYTICS_FILE', __FILE__ );
+add_action( 'wp_head', function () {
+	?>
+<script>
+var _paq = window._paq = window._paq || [];
+_paq.push(['trackPageView']);
+(function () {
+	var out = document.cookie.indexOf('mtm_consent_removed=') >= 0, cfg = {};
+	window.__views = [];
+	var tracker = {
+		isUserOptedOut: function () { return out; },
+		optUserOut: function () { out = true; document.cookie = 'mtm_consent_removed=1; path=/; max-age=34128000'; },
+		forgetUserOptOut: function () { out = false; document.cookie = 'mtm_consent_removed=; path=/; max-age=0'; }
+	};
+	function run(c) {
+		if (typeof c[0] === 'function') return c[0].call(tracker); // as Matomo: [function () { this... }]
+		if (c[0] === 'setCustomUrl') cfg.url = c[1];
+		else if (c[0] === 'setDocumentTitle') cfg.title = c[1];
+		else if (c[0] === 'trackPageView' && !out) window.__views.push({ url: cfg.url || location.href, title: cfg.title || document.title });
+	}
+	var queue = window._paq;
+	window._paq = { push: function () { for (var i = 0; i < arguments.length; i++) run(arguments[i]); } };
+	queue.forEach(run);
+})();
+</script>
+	<?php
+}, 1 );
+PHP
+
 cat > "$SITE/wp-content/mu-plugins/fake-platforms.php" <<'PHP'
 <?php
 add_filter( 'pre_http_request', function ( $pre, $args, $url ) {
