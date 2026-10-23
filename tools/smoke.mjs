@@ -472,6 +472,60 @@ try {
 		await phone3.close();
 	}
 
+	// 8c. What search engines and link previews read: the page as the server
+	// sends it, before any script runs.
+	if ( lead ) {
+		const about = `${ permalink( lead ) }about/`;
+		const raw = await fetch( permalink( lead ) ).then( r => r.text() );
+		const head = raw.slice( 0, raw.indexOf( '</head>' ) );
+		const canonical = ( head.match( /<link rel=["']canonical["'] href=["']([^"']+)/ ) || [] )[ 1 ];
+		const description = ( head.match( /<meta name="description" content="([^"]+)"/ ) || [] )[ 1 ] || '';
+		const image = ( head.match( /<meta property="og:image" content="([^"]+)"/ ) || [] )[ 1 ];
+		check( 'moteurs : la carte d un genre renvoie a sa fiche, avec un resume tire du texte', canonical === about && description.startsWith( 'Shoegaze' ) && description.length <= 160,
+			`${ ( canonical || 'pas de canonique' ).replace( BASE, '' ) } · ${ description.length } car.` );
+		const png = image ? await fetch( image ) : null;
+		const bytes = png && png.ok ? new Uint8Array( await png.arrayBuffer() ) : new Uint8Array();
+		const wide = bytes.length > 24 ? ( bytes[ 16 ] << 24 | bytes[ 17 ] << 16 | bytes[ 18 ] << 8 | bytes[ 19 ] ) : 0;
+		check( 'partage : l image d apercu du genre est un PNG de 1200 px', /image\/png/.test( png?.headers.get( 'content-type' ) || '' ) && wide === 1200, image ? image.replace( BASE, '' ) : 'pas d og:image' );
+		let ld = null;
+		try { ld = JSON.parse( ( head.match( /<script type="application\/ld\+json">([\s\S]*?)<\/script>/ ) || [] )[ 1 ] ); } catch ( e ) { ld = null; }
+		const crumbs = ld?.[ '@graph' ]?.find( g => g[ '@type' ] === 'WebPage' )?.breadcrumb?.itemListElement || [];
+		check( 'moteurs : la lignee est decrite en donnees structurees', crumbs.length >= 3 && crumbs[ crumbs.length - 1 ].item === about, crumbs.map( c => c.name ).join( ' > ' ) );
+		const body = raw.slice( raw.indexOf( 'ga-fallback' ) );
+		const artistsInPage = ( body.match( /<h2>Key [^<]+ artists<\/h2><ul>([\s\S]*?)<\/ul>/ ) || [] )[ 1 ] || '';
+		check( 'moteurs : la fiche est dans la page sans script : texte, artistes, lien vers le parent', /<h1>Shoegaze<\/h1>/.test( body ) && /Wikipedia<\/a>, <a href="https:\/\/creativecommons/.test( body )
+			&& ( artistsInPage.match( /<li>/g ) || [] ).length > 0 && body.includes( `href="${ permalink( tree.nodes.find( n => n.id === lead.p ) ) }about/"` ),
+			`${ ( artistsInPage.match( /<li>/g ) || [] ).length } artiste(s)` );
+		const home = await fetch( `${ BASE }/` ).then( r => r.text() );
+		const familyLinks = ( home.match( /<h2><a href="[^"]+\/about\/">/g ) || [] ).length;
+		check( 'moteurs : l accueil sans script mene a chaque famille et a ses sous-genres', familyLinks === tree.nodes.filter( n => n.f || ! n.p ).length, `${ familyLinks } famille(s)` );
+		const random = await fetch( `${ BASE }/genre/random/` ).then( r => r.text() );
+		check( 'moteurs : la page du hasard n est pas indexee', /<meta name='robots' content='[^']*noindex/.test( random ) );
+		const map = await fetch( `${ BASE }/wp-sitemap.xml` ).then( r => r.text() );
+		const genres = await fetch( `${ BASE }/wp-sitemap-posts-genre-1.xml` ).then( r => r.text() );
+		const locs = ( genres.match( /<loc>[^<]+<\/loc>/g ) || [] );
+		check( 'moteurs : le plan du site donne les fiches, sans la page des utilisateurs', locs.length > 0 && locs.every( l => l.endsWith( '/about/</loc>' ) ) && ! /sitemap-users/.test( map ), `${ locs.length } fiche(s)` );
+		const ico = await fetch( `${ BASE }/favicon.ico` );
+		const icons = ( head.match( /<link rel="(icon|apple-touch-icon)"[^>]*assets\/icons\//g ) || [] ).length;
+		check( 'favicon : l icone du site remplace le logo WordPress, partout', ico.ok && /image\/png/.test( ico.headers.get( 'content-type' ) || '' ) && /assets\/icons\//.test( ico.url ) && icons >= 3, `${ icons } lien(s) d icone` );
+
+		// Without a script the page must read as a page, and with one the plain
+		// version must not flash before the dossier.
+		const plain = await browser.newPage( { viewport: { width: 1440, height: 900 }, javaScriptEnabled: false } );
+		await plain.route( '**/*', route => [ '127.0.0.1', 'localhost' ].includes( new URL( route.request().url() ).hostname ) ? route.continue() : route.abort() );
+		await plain.goto( about, { waitUntil: 'networkidle' } );
+		const shown = await plain.locator( '.ga-fallback h1' ).isVisible();
+		await plain.screenshot( { path: `${ SHOTS }/11-sans-script.png`, fullPage: false } );
+		await plain.close();
+		const live = await newPage( 1440, 900 );
+		let flashed = false;
+		await live.goto( about, { waitUntil: 'commit' } );
+		flashed = await live.locator( '.ga-fallback h1' ).evaluate( el => getComputedStyle( el.closest( '.ga-fallback' ) ).opacity !== '0' ).catch( () => false );
+		await live.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
+		await live.close();
+		check( 'moteurs : la version sans script se lit seule, et ne s affiche pas avant la fiche', shown && ! flashed, `sans script ${ shown ? 'visible' : 'invisible' }, ${ flashed ? 'eclair' : 'pas d eclair' }` );
+	}
+
 	// 9. Import screen, behind the login.
 	const admin = await newPage( 1440, 900 );
 	await admin.goto( `${ BASE }/wp-login.php`, { waitUntil: 'networkidle' } );

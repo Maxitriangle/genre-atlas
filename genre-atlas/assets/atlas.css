@@ -12,6 +12,11 @@
 .ga-fallback{padding:40px;text-transform:none;letter-spacing:0;font-size:15px;line-height:1.6}
 .ga-fallback a{text-decoration:underline!important}
 .ga-ready .ga-fallback{display:none}
+/* The plain page is for search engines and for a script that fails: hidden
+   while the atlas draws, shown after a few seconds if it never does. */
+.ga-js .ga-fallback{opacity:0;animation:ga-show 0s 4s forwards}
+@keyframes ga-show{to{opacity:1}}
+.ga-fallback h1{margin:12px 0}.ga-fallback p{margin:0 0 12px}.ga-fallback h2{font-size:15px;margin:28px 0 8px}
 .ga-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .ga-glyph{display:block;flex-shrink:0}
 .ga-micro{font-size:10px;color:var(--dim)}

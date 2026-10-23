@@ -1,8 +1,8 @@
-# Reprise — état au 22/10/2026
+# Reprise — état au 23/10/2026
 
-**La v0.14.0 (vérification des liens validés) est prête sur la branche `claude/hopeful-fermat-htfzxi`, banc vert, pas encore publiée.** La v0.13.0 (propositions de la communauté) est publiée, installée chez Maxime et vérifiée sur son site le 12/10/2026.
+**La v0.15.0 (référencement : page lisible par les moteurs, aperçus de partage, favicon) est prête sur la branche `claude/hopeful-fermat-htfzxi`, banc vert, pas encore publiée.** La v0.14.0 (vérification des liens validés) est publiée le 22/10/2026. Search Console est en place pour le domaine.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les trois dernières sections (contact, propositions, liens vérifiés).
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les dernières sections (contact, propositions, liens vérifiés, visibilité).
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -25,7 +25,8 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
   - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 54 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
+- **Banc de test** : `tools/test-local.sh`, 63 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version.
+- **Visibilité** : Google Search Console validée pour le domaine `every-genre.com` (enregistrement TXT dans la zone DNS o2switch, à ne jamais supprimer), plan du site envoyé le 22/10/2026. v0.15.0 : voir la dernière section.
 
 ## Ce qui attend, par ordre de maturité
 1. **Relecture d'équipe** (décidée par Maxime pour la fin du projet), avec quatre sources à relire :
@@ -41,7 +42,12 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 7. **Propositions de la communauté, suites possibles** (proposées, pas décidées ; la vérification des liens est faite en v0.14.0) :
    - remplir le nom tout seul à partir du lien collé ;
    - transformer un artiste proposé en artiste clé en un clic.
-8. **Contact, facultatif** : répondre depuis Gmail sous le nom `contact@every-genre.com` (Gmail → « Envoyer des e-mails en tant que », avec le serveur SMTP d'o2switch).
+8. **Visibilité, suite du plan proposé à Maxime le 22/10/2026** (dans cet ordre) :
+   - une page **LEGAL** : mentions légales (obligatoires en France ; un particulier peut ne donner que l'hébergeur o2switch et un contact), politique de confidentialité (le formulaire de contact garde des e-mails) et crédits. Pas de CGU, au plus une phrase sur les propositions. Revoir le **bandeau de cookies** du site (un plugin, quatre catégories) : le site ne semble déposer aucun cookie de suivi ;
+   - **Bing Webmaster Tools**, à importer depuis Search Console (à faire par Maxime) ;
+   - faire connaître le site : Reddit (r/InternetIsBeautiful, r/LetsTalkMusic, forums de scènes), Show HN, Product Hunt, newsletters musique ou design. L'angle : Every Noise at Once a fermé fin 2023 ;
+   - plus tard : une page ABOUT qui raconte le projet ; les 790 genres sans texte.
+9. **Contact, facultatif** : répondre depuis Gmail sous le nom `contact@every-genre.com` (Gmail → « Envoyer des e-mails en tant que », avec le serveur SMTP d'o2switch).
 
 ## Pour publier une nouvelle version (rappel)
 1. Banc vert.
@@ -552,3 +558,47 @@ Point 7 de « Ce qui attend », choisi par Maxime avant les deux autres. Choix f
 **Banc** : 54 vérifications, dont 4 sur les liens. Les plateformes sont simulées par un mu-plugin (`fake-platforms.php`, `pre_http_request`) : une adresse qui contient `smoke-gone` répond 404, toute autre 200. La route `POST /wp-json/smoke/v1/check-picks {days}` lance la vérification comme si des jours avaient passé. Capture `10d-liens-morts.png`.
 
 **Chez Maxime, après publication** : mettre à jour l'extension, sans réimport. La première vérification part dans l'heure qui suit le premier chargement d'une page. Sur o2switch, WordPress lance ses tâches planifiées quand quelqu'un visite le site : il n'y a rien à régler.
+
+## Visibilité : la page lisible par les moteurs (v0.15.0, 23/10/2026, pas encore publiée)
+Demande de Maxime : que les gens tombent par hasard sur le site. Constat sur le site en ligne (22/10/2026) :
+- le site était ouvert aux moteurs (robots.txt correct, aucun noindex, plan du site avec les 2 000 genres) ;
+- mais le HTML envoyé par le serveur ne contenait, pour un genre, que le nom, le parent, le texte et les enfants directs. Tout le reste était dessiné par le script ;
+- pas de résumé, pas de balises de partage, pas de données structurées, pas de favicon (`/favicon.ico` renvoyait le logo WordPress) ;
+- `/about/` avait pour canonique la carte.
+
+Choix fait avec Maxime : **un visiteur venu de Google arrive sur la fiche** (`/about/`), pas sur la carte.
+
+**Ce que fait la v0.15.0** (`includes/seo.php`, `includes/glyph.php`) :
+- **Page écrite en HTML** avant le script : pour un genre, la fiche entière (lignée, texte et crédit Wikipedia, origine et époque, sous-genres, artistes clés, titres, propositions validées en `nofollow ugc`, sources, lien vers la carte et vers la correction). Pour l'accueil, une phrase et les 15 familles avec leurs sous-genres directs (environ 860 liens). La version texte est masquée tant que le script dessine (classe `ga-js` posée dans le `<head>`), puis montrée au bout de 4 s s'il n'a jamais rien dessiné. Elle reste visible sans script ;
+- **adresse canonique** : la fiche, sur la carte comme sur la fiche (filtre `get_canonical_url`) ; l'accueil, `/contact/`, `/genre/random/` ont la leur. Le plan du site donne `…/about/` pour chaque genre, et celui des utilisateurs est coupé (il livrait l'identifiant de connexion) ;
+- **titre** « Shoegaze: history, subgenres and key artists – Every Genre » ; **résumé** tiré du texte (moins de 160 caractères, coupé à une phrase ou à un mot), ou une phrase construite pour les 790 genres sans texte ;
+- **Open Graph et Twitter** : titre, résumé, adresse, image ;
+- **données structurées** : `WebSite` sur l'accueil, `WebPage` + `BreadcrumbList` (la lignée) + sujet `DefinedTerm` avec `sameAs` Wikipedia et Wikidata sur un genre ;
+- `/genre/random/` est en `noindex, follow` ;
+- un plugin SEO actif (Yoast, Rank Math, AIOSEO, SEOPress, The SEO Framework) prend la main sur l'en-tête, la page texte reste.
+
+**Image d'aperçu** (`genre_atlas_og_image`) :
+- 1200 × 630, dessinée en PHP GD : le glyphe du genre à gauche, avec le même calcul que `glyph()` dans `atlas.js`. Il est porté en PHP avec le découpage en groupes (`genre_atlas_model`), pour compter les points et les anneaux comme la carte. À droite : la famille, le nom en Azeret Mono 600 sur trois lignes au plus sans couper un mot, le parent, l'année et l'origine, puis `EVERY-GENRE.COM` en pied ;
+- l'accueil a sa propre image, avec les 15 glyphes des familles ;
+- les traits sont dessinés trois fois plus grands, puis réduits (GD ne lisse pas). Les polices sont des instances statiques de la police variable de Google Fonts (`assets/fonts/azeret-mono-400.ttf` et `-600.ttf`, OFL) ;
+- l'image est dessinée à la première visite d'une page (0,2 s environ) et gardée dans `wp-content/uploads/genre-atlas/og/{id}-{empreinte}.png`. L'empreinte change avec ce que montre l'image, donc un genre renommé a une nouvelle adresse, et les réseaux ne gardent pas l'ancienne en cache. Monter `GENRE_ATLAS_OG_DRAWING` redessine tout.
+
+**Favicon** : le glyphe de l'atlas, un hexagone dans un anneau de huit points (le maximum autour d'un centre), lavande `#C2B0FB` sur `#121016`. Fichiers dans `assets/icons/` (SVG, 48, 192, et 180 pour Apple), dessinés par `tools/make-icons.php` avec le même code. Ils passent par le filtre `get_site_icon_url` : WordPress écrit lui-même les balises et renvoie `/favicon.ico` vers notre PNG. Une icône choisie dans Apparence → Personnaliser reprend la main.
+
+**Banc** : 63 vérifications, dont 9 nouvelles :
+- canonique et résumé ;
+- image PNG de 1200 px ;
+- fil d'Ariane en données structurées ;
+- fiche lisible sans script ;
+- accueil vers les 15 familles ;
+- hasard en noindex ;
+- plan du site en `/about/` sans les utilisateurs ;
+- favicon ;
+- page lisible sans JavaScript, sans éclair avec. Capture `11-sans-script.png`.
+
+**Piège** : `pkill -f "php -S …"` a encore tué le shell pendant un essai à la main. Garder le PID du serveur et faire `kill $PID`.
+
+**Chez Maxime, après publication** :
+- mettre à jour l'extension, sans réimport ;
+- Search Console n'a rien à refaire : le plan du site garde son adresse et donne maintenant les fiches ;
+- pour voir un aperçu de partage, coller l'adresse d'une fiche dans une conversation WhatsApp ou Slack. Les réseaux gardent en cache un aperçu déjà vu : le débogueur de partage de Facebook permet de le rafraîchir.

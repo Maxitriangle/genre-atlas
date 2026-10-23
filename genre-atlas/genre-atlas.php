@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.14.0
+ * Version: 0.15.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.14.0' );
+define( 'GENRE_ATLAS_VERSION', '0.15.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v2' );
@@ -24,6 +24,8 @@ require_once GENRE_ATLAS_DIR . 'includes/admin.php';
 require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
+require_once GENRE_ATLAS_DIR . 'includes/glyph.php';
+require_once GENRE_ATLAS_DIR . 'includes/seo.php';
 require_once GENRE_ATLAS_DIR . 'includes/updater.php';
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once GENRE_ATLAS_DIR . 'includes/cli.php';
@@ -334,44 +336,11 @@ function genre_atlas_shortcode() {
  * Plain HTML shown before the script takes over (and to search engines).
  */
 function genre_atlas_fallback_html() {
-	$out = '';
 	if ( genre_atlas_is_contact() ) {
 		return genre_atlas_contact_fallback_html();
 	}
 	if ( is_singular( 'genre' ) ) {
-		$post = get_queried_object();
-		$out .= '<h1>' . esc_html( get_the_title( $post ) ) . '</h1>';
-		if ( $post->post_parent ) {
-			$out .= '<p>Subgenre of <a href="' . esc_url( get_permalink( $post->post_parent ) ) . '">' . esc_html( get_the_title( $post->post_parent ) ) . '</a></p>';
-		}
-		$out .= wp_kses_post( wpautop( $post->post_content ) );
-		$children = get_posts(
-			array(
-				'post_type'   => 'genre',
-				'post_parent' => $post->ID,
-				'numberposts' => 200,
-				'orderby'     => 'title',
-				'order'       => 'ASC',
-			)
-		);
-	} else {
-		$out     .= '<h1>' . esc_html( get_bloginfo( 'name' ) ) . '</h1>';
-		$children = get_posts(
-			array(
-				'post_type'   => 'genre',
-				'post_parent' => 0,
-				'numberposts' => 200,
-				'orderby'     => 'title',
-				'order'       => 'ASC',
-			)
-		);
+		return genre_atlas_dossier_html( get_queried_object() );
 	}
-	if ( $children ) {
-		$out .= '<ul>';
-		foreach ( $children as $c ) {
-			$out .= '<li><a href="' . esc_url( get_permalink( $c ) ) . '">' . esc_html( get_the_title( $c ) ) . '</a></li>';
-		}
-		$out .= '</ul>';
-	}
-	return $out;
+	return genre_atlas_home_html();
 }
