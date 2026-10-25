@@ -1,0 +1,80 @@
+<title>Genre City Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: the game screen first, its pad under it, a short note last. Single dark look, the atlas's own. */
+:root {
+  --bg: #121016; --panel: #18151E; --ink: #E4DFF5; --dim: #9A94B5; --line: rgba(228,223,245,.16); --accent: #C2B0FB;
+  --mono: "Azeret Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+html, body { background: var(--bg); color: var(--ink); }
+[hidden] { display: none !important; }
+body { font: 14px/1.6 var(--mono); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+.wrap { max-width: 1000px; margin: 0 auto; display: grid; gap: 18px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; }
+h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: uppercase; margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.screen { position: relative; border: 1px solid var(--line); background: #08070A; overflow: hidden; }
+.screen canvas { display: block; width: 100%; height: auto; }
+#banner { position: absolute; left: 12px; top: 12px; padding: 7px 12px; background: rgba(13,11,17,.88); border: 1px solid var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .14em; color: var(--accent); text-transform: uppercase; }
+#fade { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity .25s; pointer-events: none; }
+#dlg { position: absolute; left: 10px; right: 10px; bottom: 10px; border: 3px double var(--accent); background: rgba(24,21,30,.96); padding: 12px 16px; display: grid; gap: 10px; cursor: pointer; }
+#dlg-text { margin: 0; font-size: 13px; letter-spacing: .03em; max-height: 7.5em; overflow: auto; }
+#dlg-link { justify-self: start; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: var(--bg); background: var(--accent); padding: 8px 12px; text-decoration: none; }
+#dlg-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.pad { display: flex; justify-content: space-between; align-items: center; gap: 20px; user-select: none; -webkit-user-select: none; touch-action: none; }
+.dpad { display: grid; grid-template-columns: repeat(3, 52px); grid-template-rows: repeat(3, 52px); }
+.pad button { font: 600 14px/1 var(--mono); color: var(--ink); background: var(--panel); border: 1px solid var(--line); cursor: pointer; touch-action: none; }
+.pad button:active { background: #2A2534; }
+.pad button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+[data-dir="up"] { grid-column: 2; grid-row: 1; } [data-dir="left"] { grid-column: 1; grid-row: 2; } [data-dir="right"] { grid-column: 3; grid-row: 2; } [data-dir="down"] { grid-column: 2; grid-row: 3; }
+.ab { display: flex; gap: 14px; }
+.ab button { width: 64px; height: 64px; border-radius: 50%; font-size: 16px; }
+#btn-a { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+.keys { font-size: 12px; color: var(--dim); text-align: center; flex: 1; min-width: 0; }
+.keys b { color: var(--ink); font-weight: 600; }
+.note { display: grid; gap: 8px; color: var(--dim); font-size: 13px; max-width: 72ch; }
+.note p { margin: 0; }
+@media (max-width: 560px) { .keys { display: none; } .dpad { grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px); } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Genre City</h1>
+    <span class="eyebrow">Prototype jouable · version 1</span>
+  </header>
+
+  <div class="screen">
+    <canvas id="game" aria-label="Genre City: the Terminal, Electronic City and the inside of every genre"></canvas>
+    <div id="banner" hidden></div>
+    <div id="dlg" hidden><p id="dlg-text"></p><a id="dlg-link" href="#" target="_blank" rel="noopener" hidden></a></div>
+    <div id="fade"></div>
+  </div>
+
+  <div class="pad">
+    <div class="dpad" role="group" aria-label="Walk">
+      <button type="button" id="pad-up" data-dir="up" aria-label="Up">▲</button>
+      <button type="button" id="pad-left" data-dir="left" aria-label="Left">◀</button>
+      <button type="button" id="pad-right" data-dir="right" aria-label="Right">▶</button>
+      <button type="button" id="pad-down" data-dir="down" aria-label="Down">▼</button>
+    </div>
+    <div class="keys"><b>ARROWS</b> or <b>WASD / ZQSD</b> to walk · <b>SPACE</b> or <b>ENTER</b> to read what you face · <b>ESC</b> to close</div>
+    <div class="ab">
+      <button type="button" id="btn-b" aria-label="Close">B</button>
+      <button type="button" id="btn-a" aria-label="Read">A</button>
+    </div>
+  </div>
+
+  <div class="note">
+    <p>À essayer : descendre l'escalier 01 ELECTRONIC, en haut à gauche de la gare. Dans Electronic City, chaque rue est un quartier et chaque bâtiment un genre ; on entre par la porte. À l'intérieur, une porte par groupe ou par sous-genre, jusqu'au bout de la branche. Le juke-box et la borne ABOUT ouvrent la vraie fiche du site. Le tapis EXIT ramène d'un niveau, l'escalier TERMINAL de la place ramène à la gare.</p>
+    <p>Pas encore de son ni de personnages à qui parler. Les autres lignes de la gare sont fermées dans cette version.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+/*#JS#*/
+})();
+</script>

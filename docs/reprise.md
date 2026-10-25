@@ -11,6 +11,8 @@ CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console 
 
 **Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : regarder les premiers chiffres de Search Console, de Bing et de Matomo, puis faire connaître le site.
 
+**En cours, en parallèle** : Genre City, un mini-jeu dans l'atlas. Prototype jouable soumis à Maxime le 25/10/2026 (dernière section).
+
 **Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les trois dernières sections (visibilité, page légale, Matomo).
 
 ## Lire d'abord
@@ -711,3 +713,25 @@ Les envois à `matomo.php` ont été interceptés par le script (`route.fulfill`
 **Piège : o2switch (`server: o2switch-PowerBoost-v3`) répond 429** à un Chromium sans tête après quelques pages, même espacées de 25 s, et parfois sur la page entière. Avec l'identité d'un Chrome ordinaire (`userAgent` de Chrome macOS), la même page passe sans refus, et `curl` aussi. Les visiteurs ne sont donc pas gênés. Pour une vérification en ligne : donner un `userAgent` ordinaire et intercepter Matomo. À surveiller dans Search Console (Paramètres → Statistiques sur l'exploration) et dans Bing : que les robots des moteurs ne reçoivent pas de 429.
 
 **Bing Webmaster Tools** : importé par Maxime depuis Search Console le 25/10/2026, sans DNS à refaire. Le plan du site y figure (vérifié par Maxime dans Sitemaps).
+
+## Genre City, le mini-jeu (25/10/2026, prototype)
+Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier Pokémon. Chaque genre y est un lieu, une entrée de menu y mène. Sources dans `prototypes/genre-city/` (voir son README) ; rien dans l'extension pour l'instant.
+
+**Décisions prises avec Maxime** :
+- **but** : faire découvrir les genres d'abord ; le jeu sert l'atlas ;
+- **hiérarchie** : la gare (une ligne par tuile de l'accueil) → une ville par famille → une rue par groupe éditorial → un bâtiment par genre, dont la taille suit le nombre de descendants → à l'intérieur, une porte par groupe ou sous-genre (8 au plus, regroupement de `atlas.js`). Les sous-genres sont des bâtiments, pas des villages ;
+- **direction artistique** : pixel art sur une grille de 16, la nuit, néons dans la couleur de la famille, pluie, reflets sur sol mouillé. L'écran de référence est la rue d'Electronic City (croquis, écran 2) ; une version plus « adulte » (personnages élancés, ou silhouettes) et une grande place en hub ont été essayées puis **refusées** : on garde les personnages ronds du croquis 03 ;
+- **pas de surcharge** : peu d'objets, le détail est dans la matière et la lumière ;
+- **pas de personnage immobile** tant qu'il n'y a pas de quêtes : un seul passant par écran, qui marche de profil. Ce qui répond, ce sont les objets (enseignes, juke-box, bornes) ;
+- **son** : plus tard, une ambiance générée par genre qui monte à l'approche, et le vrai morceau au juke-box, au clic ;
+- **comptes** : plus tard, avec les quêtes ; proposer d'abord un code de sauvegarde sans compte ;
+- **poids** : le jeu aura sa propre page, son script ne se charge que là ;
+- **nom** : « Genre City » reste un titre de travail, entrée de menu courte (CITY) à confirmer.
+
+**Prototype 1** (lien d'aperçu privé envoyé à Maxime) :
+- la gare : 15 escaliers, seule la ligne 01 est ouverte. La borne MAP mène au site ;
+- Electronic City, construite à partir des données : une rue par quartier, le panneau du quartier, l'escalier TERMINAL ;
+- l'intérieur de chacun des 392 genres et groupes, jusqu'au bout des branches ; le juke-box (vers LISTEN si la fiche a des artistes, sinon vers la page pour en proposer) et la borne ABOUT ;
+- commandes : flèches, WASD ou ZQSD, Espace ou Entrée pour lire, Échap pour fermer ; croix et boutons A et B à l'écran. Vérifié au navigateur, sur ordinateur et sur téléphone.
+
+**Ce qui reste** : avis de Maxime sur le prototype ; les 14 autres villes ; le son ; puis l'intégration dans l'extension (page `/city/`, entrée de menu, déclaration sur la page légale si quelque chose est gardé dans le navigateur).

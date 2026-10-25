@@ -1,0 +1,972 @@
+<title>Genre City Sketch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one column of three game screens, each with its caption. Single dark look, the atlas's own. */
+:root {
+  --bg: #121016; --panel: #18151E; --ink: #E4DFF5; --dim: #9A94B5; --line: rgba(228,223,245,.16); --accent: #C2B0FB;
+  --mono: "Azeret Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+html, body { background: var(--bg); color: var(--ink); }
+body { font: 14px/1.6 var(--mono); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; }
+.wrap { max-width: 1160px; margin: 0 auto; display: grid; gap: 56px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+h1 { font-weight: 600; font-size: clamp(26px, 5vw, 44px); line-height: 1.1; letter-spacing: .02em; margin: 0; text-transform: uppercase; text-wrap: balance; }
+h2 { font-weight: 600; font-size: 15px; letter-spacing: .12em; text-transform: uppercase; margin: 0; }
+p { margin: 0; max-width: 72ch; }
+.lede { color: var(--dim); }
+section { display: grid; gap: 14px; }
+.screen { overflow-x: auto; border: 1px solid var(--line); background: #0d0b10; }
+.screen canvas { display: block; width: 100%; min-width: 760px; }
+.box { border: 3px double var(--accent); background: var(--panel); padding: 12px 34px 12px 16px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; max-width: 640px; position: relative; }
+.box::after { content: "▼"; position: absolute; right: 12px; bottom: 6px; font-size: 10px; color: var(--accent); animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.switch { display: flex; flex-wrap: wrap; gap: 10px; }
+.switch button { font: 600 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); background: var(--panel); border: 1px solid var(--line); padding: 11px 14px; cursor: pointer; }
+.switch button[aria-pressed="true"] { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+.switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tiers { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; }
+.tiers b { color: var(--ink); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .box::after { animation: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Every Genre · croquis 06 · à valider avant tout code</div>
+    <h1>Genre City</h1>
+    <p class="lede">Personne n'attend immobile : un seul passant traverse chaque écran, sans jamais se tourner vers le joueur. Ce qui répond, ce sont les objets qui brillent (enseignes, juke-box, bornes). Trois écrans, tels que le joueur les verrait : la gare centrale, une rue d'Electronic City, puis l'intérieur d'un bâtiment. Pixel art sur une grille de 16 pixels, comme sur Game Boy, avec la lumière de la nuit. Tout est dessiné par le code à partir des données de l'atlas : aucune image ni aucun son à télécharger.</p>
+  </header>
+
+  <section>
+    <h2>1 · The Terminal</h2>
+    <div class="screen"><canvas id="terminal"></canvas></div>
+    <div class="box">Welcome to Every Genre. 15 lines, one per city. Pick a stairway.</div>
+    <p>Quinze escaliers, un par ville, dans l'ordre de l'accueil, chacun avec sa plaque lumineuse : glyphe, numéro, nom. Au centre, le tableau des quinze lignes et la borne MAP. La lumière fait le reste : le sol carrelé reflète le néon de chaque escalier, les plafonniers découpent des zones de lumière, l'air chaud monte des marches, et une rame passe en bas de temps en temps.</p>
+  </section>
+
+  <section>
+    <h2>2 · Electronic City, Club &amp; Dancefloor</h2>
+    <div class="screen"><canvas id="city"></canvas></div>
+    <div class="box">Electronic Dance Music · 312 subgenres. Enter?</div>
+    <p>Une rue du quartier Club &amp; Dancefloor, l'un des quatre groupes éditoriaux d'Electronic. Chaque genre est un bâtiment, et sa taille suit le nombre de ses descendants : la tour d'Electronic Dance Music (312), les maisons de Nightcore et de Witch House, le kiosque de Seapunk. Le nom de chaque genre est sur son enseigne, toujours lisible.</p>
+    <div class="tiers"><span><b>Kiosk</b> 0</span><span><b>House</b> 1–9</span><span><b>Block</b> 10–49</span><span><b>Tower</b> 50+</span><span>descendants</span></div>
+  </section>
+
+  <section>
+    <h2>3 · Inside Electronic Dance Music</h2>
+    <div class="screen"><canvas id="court"></canvas></div>
+    <div class="box">7 halls. Jukebox: play a track? · Terminal: read the full page.</div>
+    <p>Entrer dans un bâtiment mène à son intérieur : une porte par groupe ou par sous-genre, 8 au plus, rangées par ordre alphabétique. Chaque porte descend d'un niveau. Le juke-box joue le vrai morceau au clic ; la borne ouvre la fiche <code>/about/</code>. Le tapis du bas ramène dans la rue.</p>
+  </section>
+</div>
+
+<script>
+(function () {
+
+  var Z = 3;                                     // canvas pixels per art pixel
+  var MONO = '"Azeret Mono", ui-monospace, Menlo, monospace';
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var POLY = { tri_up: [3, -90, 1.18], tri_down: [3, 90, 1.18], square: [4, 45, 1.1], diamond: [4, 0, 1.05], pent: [5, -90, 1.04], hex: [6, 0, 1], hex_r: [6, 30, 1], oct: [8, 22.5, 1] };
+  function neonc(h, a) { return 'oklch(0.80 0.105 ' + h + (a != null ? ' / ' + a : '') + ')'; }
+  function deepc(h, a) { return 'oklch(0.42 0.09 ' + h + (a != null ? ' / ' + a : '') + ')'; }
+  function darkc(h, a) { return 'oklch(0.28 0.05 ' + h + (a != null ? ' / ' + a : '') + ')'; }
+  function rnd(seed) { var s = (seed % 2147483646) + 1; return function () { s = s * 16807 % 2147483647; return (s - 1) / 2147483646; }; }
+  function hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rgb(hex) { var n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function mix(hex, to, f) { var a = rgb(hex), b = rgb(to); return 'rgb(' + a.map(function (v, i) { return Math.round(v + (b[i] - v) * f); }).join(',') + ')'; }
+
+  // The night palette, sampled from the atlas: near-black violet, lavender ink.
+  var K = {
+    out: '#0A090D', ink: '#E4DFF5',
+    asph: '#17141C', asph2: '#1C1922', asph3: '#110F15', lane: '#A49DB5',
+    walk: '#2A2534', walk2: '#231F2C', walk3: '#332D3F', walk4: '#3A3447', curb: '#433C50', curb2: '#0F0D13',
+    grass: '#16231E', grass2: '#1D2E27', grass3: '#294034', grass4: '#0F1813', grass5: '#35523F',
+    roof: '#3A3150', roof2: '#4B4068', roof3: '#2A2340', roof4: '#221C33', ridge: '#615486', eave: '#0D0B11', moss: '#2C4436',
+    wall: '#2D2738', wall2: '#262030', wall3: '#383149', wall4: '#211C2A', found: '#18141E',
+    glass: '#101826', glass2: '#253750', glass3: '#3A5272', warm: '#F6C97C', warm2: '#D9984E', warm3: '#FFE6B0',
+    metal: '#4A4459', metal2: '#615B76', metal3: '#2E2A38', metal4: '#7A7490',
+    floor: '#221E2A', floor2: '#1C1923', floor3: '#2A2534',
+    pink: '#FF6FA8', cyan: '#7DF9FF', red: '#FF4F6B', green: '#7DFFB0', amber: '#FFC86B'
+  };
+
+  /* ---------- a scene: art at low resolution, scaled up, light, bloom and text on top ---------- */
+  function Scene(id, cols, rows) {
+    var cv = document.getElementById(id);
+    this.W = cols * 16; this.H = rows * 16;
+    cv.width = this.W * Z; cv.height = this.H * Z;
+    this.cv = cv; this.c = cv.getContext('2d');
+    var mk = function (w, h) { var x = document.createElement('canvas'); x.width = w; x.height = h; return x; };
+    this.base = mk(this.W, this.H); this.emis = mk(this.W, this.H); this.lite = mk(this.W, this.H);
+    this.dyn = mk(this.W, this.H); this.dynE = mk(this.W, this.H); this.dynL = mk(this.W, this.H);
+    this.g = this.base.getContext('2d'); this.e = this.emis.getContext('2d'); this.l = this.lite.getContext('2d');
+    this.labels = [];
+  }
+  Scene.prototype.px = function (x, y, w, h, col) { this.g.fillStyle = col; this.g.fillRect(x, y, w, h); };
+  Scene.prototype.glow = function (x, y, w, h, col) { this.px(x, y, w, h, col); this.e.fillStyle = col; this.e.fillRect(x, y, w, h); };
+  // Soft light thrown on the ground: an additive radial pool.
+  function pool(l, x, y, rx, ry, col, a) {
+    l.save(); l.translate(x, y); l.scale(1, ry / rx);
+    var gr = l.createRadialGradient(0, 0, 0, 0, 0, rx);
+    gr.addColorStop(0, col.replace('A', a)); gr.addColorStop(1, col.replace('A', 0));
+    l.fillStyle = gr; l.beginPath(); l.arc(0, 0, rx, 0, 7); l.fill(); l.restore();
+  }
+  Scene.prototype.pool = function (x, y, rx, ry, col, a) { pool(this.l, x, y, rx, ry, col, a); };
+  // A sprite from rows of letters; '.' is transparent; '*' before a colour makes it glow.
+  // shade: pixels on the right edge of a shape darken, on the left edge brighten.
+  Scene.prototype.sprite = function (rows, pal, x, y, g, e, flip, shade) {
+    g = g || this.g; e = e || this.e;
+    var H = rows.length;
+    function at(i, j) { return j < 0 || j >= H || i < 0 || i >= rows[j].length ? '.' : rows[j][i]; }
+    for (var j = 0; j < H; j++) for (var i = 0; i < rows[j].length; i++) {
+      var k = rows[j][i], col = pal[k]; if (k === '.' || !col) continue;
+      var glowing = col[0] === '*'; if (glowing) col = col.slice(1);
+      if (shade && !glowing && k !== 'o' && col[0] === '#') {
+        var r = at(i + 1, j), l = at(i - 1, j);
+        if (r === 'o' || r === '.') col = mix(col, '#0A090D', .32);
+        else if (l === 'o' || l === '.') col = mix(col, '#FFFFFF', .14);
+      }
+      var xx = flip ? x + rows[j].length - 1 - i : x + i;
+      g.fillStyle = col; g.fillRect(xx, y + j, 1, 1);
+      if (glowing) { e.fillStyle = col; e.fillRect(xx, y + j, 1, 1); }
+    }
+  };
+  Scene.prototype.label = function (x, y, w, h, text, hue, shape, size, vertical) { this.labels.push({ x: x, y: y, w: w, h: h, t: text, hue: hue, shape: shape, size: size || 10, v: vertical }); };
+  Scene.prototype.render = function (live, opts) {
+    opts = opts || {};
+    var self = this, c = this.c, R = rnd(hash(this.cv.id)), drops = [], splash = [];
+    for (var i = 0; i < 110; i++) drops.push([R() * this.cv.width, R() * this.cv.height, 8 + R() * 12]);
+    for (var k = 0; k < 26; k++) splash.push([R() * this.W, opts.wetTop + R() * (this.H - opts.wetTop), R() * 1000]);
+    var vig = c.createRadialGradient(this.cv.width / 2, this.cv.height / 2, this.cv.height * .35, this.cv.width / 2, this.cv.height / 2, this.cv.width * .62);
+    vig.addColorStop(0, 'rgba(6,5,9,0)'); vig.addColorStop(1, 'rgba(6,5,9,.55)');
+    function frame(t) {
+      var dg = self.dyn.getContext('2d'), de = self.dynE.getContext('2d'), dl = self.dynL.getContext('2d');
+      dg.clearRect(0, 0, self.W, self.H); de.clearRect(0, 0, self.W, self.H); dl.clearRect(0, 0, self.W, self.H);
+      live && live(dg, de, dl, t);
+      if (opts.rain) splash.forEach(function (p) {
+        var ph = ((t + p[2]) % 900) / 900; if (ph > .3) return;
+        var r = Math.round(ph * 8); dg.fillStyle = 'rgba(200,190,240,' + (.5 - ph) + ')';
+        dg.fillRect(Math.round(p[0]) - r, Math.round(p[1]), 1, 1); dg.fillRect(Math.round(p[0]) + r, Math.round(p[1]), 1, 1);
+        if (ph < .1) dg.fillRect(Math.round(p[0]), Math.round(p[1]) - 1, 1, 1);
+      });
+      var CW = self.cv.width, CH = self.cv.height;
+      c.globalCompositeOperation = 'source-over'; c.filter = 'none'; c.globalAlpha = 1;
+      c.imageSmoothingEnabled = false;
+      c.drawImage(self.base, 0, 0, CW, CH);
+      c.drawImage(self.dyn, 0, 0, CW, CH);
+      // light pools, then the bloom of everything that glows
+      c.imageSmoothingEnabled = true; c.globalCompositeOperation = 'lighter';
+      c.drawImage(self.lite, 0, 0, CW, CH); c.drawImage(self.dynL, 0, 0, CW, CH);
+      [[16, .5], [5, .45]].forEach(function (b) {
+        c.filter = 'blur(' + b[0] + 'px)'; c.globalAlpha = b[1];
+        c.drawImage(self.emis, 0, 0, CW, CH); c.drawImage(self.dynE, 0, 0, CW, CH);
+      });
+      c.filter = 'none'; c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+      c.fillStyle = vig; c.fillRect(0, 0, CW, CH);
+      self.labels.forEach(function (l) { drawLabel(c, l); });
+      if (opts.rain) {
+        c.strokeStyle = 'rgba(194,176,251,.18)'; c.lineWidth = 1.5;
+        drops.forEach(function (d) {
+          var y = (d[1] + t * .55 * d[2] / 10) % CH, x = (d[0] + y * .22) % CW;
+          c.beginPath(); c.moveTo(x, y); c.lineTo(x - d[2] * .22, y - d[2]); c.stroke();
+        });
+      }
+    }
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () {
+      frame(0);
+      if (!still) (function loop(t) { frame(t); requestAnimationFrame(loop); })(0);
+    });
+  };
+  // Shop signs: the family glyph and the genre name. Never cut inside a word.
+  function drawLabel(c, l) {
+    var X = l.x * Z, Y = l.y * Z, W = l.w * Z, H = l.h * Z, col = neonc(l.hue);
+    c.font = '600 ' + l.size + 'px ' + MONO; c.textBaseline = 'middle'; c.textAlign = 'center';
+    c.shadowColor = col; c.shadowBlur = 8; c.fillStyle = col;
+    if (l.v) {
+      var ch = l.t.toUpperCase().split(''), step = H / ch.length;
+      ch.forEach(function (s, i) { c.fillText(s, X + W / 2, Y + step * (i + .5)); });
+      c.shadowBlur = 0; return;
+    }
+    var icon = l.shape ? H * .62 : 0, room = W - icon - 10, words = l.t.toUpperCase().split(' '), lines = [''];
+    words.forEach(function (w) { var s = lines[lines.length - 1] ? lines[lines.length - 1] + ' ' + w : w; if (c.measureText(s).width > room && lines[lines.length - 1]) lines.push(w); else lines[lines.length - 1] = s; });
+    var cx = X + icon + (W - icon) / 2, lh = l.size + 2, y0 = Y + H / 2 - (lines.length - 1) * lh / 2;
+    lines.forEach(function (s, i) { c.fillText(s, cx, y0 + i * lh); });
+    if (l.shape) {
+      c.strokeStyle = col; c.lineWidth = 1.6; var r = H * .26, ix = X + 4 + icon / 2, iy = Y + H / 2;
+      shapePath(c, l.shape, ix, iy, r); c.stroke();
+      c.beginPath(); c.arc(ix, iy, 1.6, 0, 7); c.fill();
+    }
+    c.shadowBlur = 0;
+  }
+  function shapePath(c, kind, x, y, r) {
+    c.beginPath();
+    if (kind === 'circle' || !POLY[kind]) { c.arc(x, y, r, 0, Math.PI * 2); return; }
+    var p = POLY[kind];
+    for (var i = 0; i < p[0]; i++) { var a = (p[1] + 360 * i / p[0]) * Math.PI / 180; c[i ? 'lineTo' : 'moveTo'](x + r * p[2] * Math.cos(a), y + r * p[2] * Math.sin(a)); }
+    c.closePath();
+  }
+  // The same glyph shapes, in pixels, for monuments, badges and gates.
+  function pixShape(s, kind, cx, cy, r, col, g, e) {
+    var steps = Math.max(60, Math.round(r * 14)), p = POLY[kind], seen = {};
+    for (var i = 0; i < steps; i++) {
+      var u = i / steps, x, y;
+      if (kind === 'circle' || !p) { var a = u * Math.PI * 2; x = cx + r * Math.cos(a); y = cy + r * Math.sin(a); }
+      else {
+        var n = p[0], k = Math.floor(u * n), f = u * n - k, a0 = (p[1] + 360 * k / n) * Math.PI / 180, a1 = (p[1] + 360 * (k + 1) / n) * Math.PI / 180, rr = r * p[2];
+        x = cx + rr * ((1 - f) * Math.cos(a0) + f * Math.cos(a1)); y = cy + rr * ((1 - f) * Math.sin(a0) + f * Math.sin(a1));
+      }
+      var key = Math.round(x) + ',' + Math.round(y); if (seen[key]) continue; seen[key] = 1;
+      if (g) { g.fillStyle = col; g.fillRect(Math.round(x), Math.round(y), 1, 1); e.fillStyle = col; e.fillRect(Math.round(x), Math.round(y), 1, 1); }
+      else s.glow(Math.round(x), Math.round(y), 1, 1, col);
+    }
+  }
+  // Organic shapes (foliage, hedges): a union of circles, lit from the top left, outlined.
+  function blob(s, x, y, w, h, circles, cols, seed) {
+    var R = rnd(seed), m = [];
+    for (var j = 0; j < h; j++) { m[j] = []; for (var i = 0; i < w; i++) {
+      var inside = circles.some(function (c) { var dx = i + .5 - c[0], dy = j + .5 - c[1]; return dx * dx + dy * dy <= c[2] * c[2]; });
+      m[j][i] = inside;
+    } }
+    for (var jj = 0; jj < h; jj++) for (var ii = 0; ii < w; ii++) {
+      if (!m[jj][ii]) continue;
+      var edge = jj === 0 || ii === 0 || jj === h - 1 || ii === w - 1 || !m[jj - 1][ii] || !m[jj + 1][ii] || !m[jj][ii - 1] || !m[jj][ii + 1];
+      if (edge) { s.px(x + ii, y + jj, 1, 1, K.out); continue; }
+      // light: which circle owns the pixel, and where in it
+      var best = null, bd = 1e9;
+      circles.forEach(function (c) { var dx = ii + .5 - c[0], dy = jj + .5 - c[1], d = dx * dx + dy * dy - c[2] * c[2]; if (d < bd) { bd = d; best = c; } });
+      var lx = (ii + .5 - best[0]) / best[2], ly = (jj + .5 - best[1]) / best[2], v = -lx * .55 - ly * .8 + (R() - .5) * .5;
+      var col = v > .55 ? cols[0] : v > .05 ? cols[1] : v > -.5 ? cols[2] : cols[3];
+      if (R() < .08) col = cols[Math.min(3, cols.indexOf(col) + 1)];
+      s.px(x + ii, y + jj, 1, 1, col);
+    }
+  }
+
+  /* ---------- people: 18 px wide, drawn as a left half and mirrored, shaded at the edges ---------- */
+  var HEADS = {
+    hood: [
+      '......ooo', '....ooppp', '...opPHHH', '..opHHHHH', '..oHHHHHH', '.oHHHHhhh', 'nnpHhqqqq',
+      'nnpHqrrrr', 'nnpHqrrss', 'nnpHqswEs', '.opHqsEEs', '..oHqbsss', '..oHhssSm', '...ohhSSS'],
+    cap: [
+      '.....oooo', '...ooCccc', '..oCcccCC', '..oCcCCCC', '..oCCCCCN', '..oCCCCCC', '..oQBBBBB',
+      '..ohoUUUU', '..ohSSSSS', '..ohswEss', '..ohsEEss', '..ohbssss', '...ossssm', '....oSSSS'],
+    hair: [
+      '.....oooo', '...ooRRRR', '..oRRrrrr', '.oRRrrRRR', '.oRrRRRRR', '.oRRqRRqR', '.oRRqsqss',
+      '.oRqsssss', '.oRqswEss', '.oRqsEEss', '.oRRbssss', '.oRRssssm', '.oRRoSSSS', '.oRRRoooo'],
+    beanie: [
+      '.....oooo', '...ooVvvv', '..oVvvVVV', '..oVvVVVV', '..oWVWVWV', '..oVWVWVW', '..oqqssss',
+      '..oqswEss', '..oqsEEss', '..oqbssss', '...ossssm', '....oSSSS'],
+    bun: [
+      '......ooo', '.....oRRR', '.....oRrR', '...ooRRRR', '..oRRrrrr', '.oRrrRRRR', '.oRRRRRqq',
+      '.oRRqssss', '.oRqswEss', '.oRqsEEss', '..oRbssss', '..oRssssm', '...ooSSSS']
+  };
+  var BODIES = {
+    jacket: [
+      '...ojJjkz', '..ojJJjkz', '.ojJJjjkz', '.ojJjjjkz', 'ojJjjjjkz', 'osJjjjjkz', 'osSojjjkz',
+      '.oo.okkkk', '...odllll', '..olLllo.', '..olLllo.', '..ollllo.', '..oFFFfo.', '..oooooo.'],
+    coat: [
+      '...ojJjjo', '..ojJJjjz', '.ojJJjjjj', '.ojJjjjjz', 'ojJjjjjjj', 'osJjjjjjz', 'osSjjjjjj',
+      '.oojjjjjk', '..ojjjjkk', '..okkkkoo', '..olLlo..', '..olllo..', '..oFFfo..', '..ooooo..'],
+    tee: [
+      '...ojJjjj', '..osjJjjj', '.osSjJjjj', '.osSjjjPP', 'osSojjjPP', 'oSsojjjjj', '.oo.ojjjj',
+      '...okkkkk', '...odllll', '..olLllo.', '..olLllo.', '..ollllo.', '..oFFFfo.', '..oooooo.']
+  };
+  function mirror(half) { return half.map(function (r) { return r + r.split('').reverse().join(''); }); }
+  function person(head, body) {
+    var rows = mirror(HEADS[head]).concat(mirror(BODIES[body || 'jacket']));
+    if (head === 'hair') {                       // long hair falls over the shoulders
+      var top = HEADS.hair.length;
+      for (var j = 0; j < 3; j++) { var r = rows[top + j].split(''); r[1] = 'R'; r[2] = j < 2 ? 'R' : r[2]; r[16] = 'R'; r[15] = j < 2 ? 'R' : r[15]; r[0] = 'o'; r[17] = 'o'; rows[top + j] = r.join(''); }
+    }
+    return rows;
+  }
+  function look(o) {
+    var b = { o: K.out, s: '#F2D2B8', S: '#C99A82', E: '#1C1424', w: '#FFFFFF', b: '#E79A9A', m: '#9C4E5E', q: '#2A1E2C',
+      j: '#2E2838', J: '#463D58', k: '#1E1A26', z: '#5E5872', l: '#25213A', L: '#353050', d: '#1A1726', F: '#4E4462', f: '#16121C', P: '#7A7490', p: '#3A3348', n: '*#7DF9FF' };
+    for (var k in o) b[k] = o[k];
+    return b;
+  }
+  function drawPerson(s, g, e, kind, pal, x, feetY, flip, bob) {
+    var rows = person(kind[0], kind[1]);
+    var y = feetY - rows.length - (bob || 0);
+    g.fillStyle = 'rgba(0,0,0,.4)'; g.fillRect(x + 4, feetY - 1, 10, 2); g.fillRect(x + 3, feetY, 12, 1);
+    s.sprite(rows, pal, x, y, g, e, flip, true);
+  }
+  // A passer-by, seen from the side: two walking poses. Only people who walk are drawn
+  // until there are quests, so nobody standing still seems to wait for a chat.
+  var SIDE_HEAD = [
+    '......oooooo......', '....ooCCCCCCo.....', '...oCcccCCCCCo....', '...oCCCCCCCCCo....', '...oCCCCCCCCCBBBo.', '...oQQQQQQQQQoooo.',
+    '...ohhhhsssssso...', '...ohhhssssEsso...', '...ohhhsssssssso..', '...ohhSssssssso...', '....ohSSssmsso....', '.....oSSSSSoo.....', '.....ooSSSo.......'];
+  var SIDE_BODY = ['....ojjjjjjo......', '...ojJjjjjjjo.....', '...ojJjjjjjjo.....', '...ojJjjjjjko.....', '...ojJjsSjjko.....', '...ojjjSSjjko.....', '....okkkkkko......', '....oddddddo......'];
+  var SIDE_LEGS = [
+    ['...olLlo.olLo.....', '..olLlo...olLo....', '..ollo.....ollo...', '.oFFfo.....oFFfo..', '.ooooo.....ooooo..'],
+    ['....olLLlo........', '....olLLlo........', '....ollllo........', '....oFFFFfo.......', '....ooooooo.......']];
+  function drawWalker(s, g, e, pal, x, feetY, left, frame) {
+    var rows = SIDE_HEAD.concat(SIDE_BODY, SIDE_LEGS[frame]);
+    g.fillStyle = 'rgba(0,0,0,.4)'; g.fillRect(x + 3, feetY - 1, 11, 2);
+    s.sprite(rows, pal, x, feetY - rows.length - (frame ? 1 : 0), g, e, left, true);
+  }
+  var LOOKS = {
+    hero: look({ H: '#C9B8FF', h: '#9583DA', P: '#E7DEFF', p: '#353048', q: '#2A1F3A', r: '#3B2B3F', j: '#2C2738', J: '#433A57', k: '#1C1826', z: '*#C2B0FB', n: '*#7DF9FF', F: '#C2B0FB', f: '#4A3D78' }),
+    cap: look({ C: '#E05C8A', c: '#F48DB0', Q: '#8E2F57', N: '*#FFE07D', B: '#F07AA0', U: '#5A1F3A', h: '#2B1D1E', s: '#C88E6C', S: '#9A6650', j: '#3A3A4A', J: '#54546A', k: '#24242F', z: '#E05C8A' }),
+    hair: look({ R: '#7B57C9', r: '#A587EA', q: '#4B3285', j: '#22394A', J: '#33546B', k: '#172633', z: '*#7DF9FF', P: '*#7DF9FF' }),
+    beanie: look({ V: '#3E8C7A', v: '#62B39E', W: '#2C6658', q: '#5A4038', s: '#E8C2A4', j: '#4A3A2C', J: '#66523E', k: '#2E241B', z: '#8C7A60' }),
+    bun: look({ R: '#F1E7FF', r: '#FFFFFF', q: '#B8A8D8', s: '#E9C0A6', j: '#5A2E4E', J: '#7C4469', k: '#3A1D33', P: '*#FF6FA8' })
+  };
+
+  /* ---------- ground ---------- */
+  function asphalt(s, x, y, w, h) {
+    var R = rnd(x * 31 + y * 17 + 5);
+    s.px(x, y, w, h, K.asph);
+    for (var i = 0; i < w * h / 7; i++) s.px(x + Math.floor(R() * w), y + Math.floor(R() * h), 1, 1, R() < .5 ? K.asph2 : K.asph3);
+    for (var p = 0; p < w / 60; p++) {                          // patched repairs
+      var px = x + Math.floor(R() * (w - 20)), py = y + 2 + Math.floor(R() * (h - 10)), pw = 8 + Math.floor(R() * 14);
+      s.px(px, py, pw, 5, '#141218'); s.px(px, py, pw, 1, '#1E1B25');
+    }
+    for (var c = 0; c < w / 40; c++) {                          // cracks
+      var cx = x + Math.floor(R() * w), cy = y + Math.floor(R() * h);
+      for (var k = 0; k < 7; k++) { s.px(cx, cy, 1, 1, '#0C0A10'); cx += R() < .5 ? 1 : 0; cy += 1; }
+    }
+  }
+  function pavers(s, x, y, w, h) {
+    var R = rnd(x * 13 + y * 7 + 3);
+    for (var j = y; j < y + h; j += 8) for (var i = x - ((j - y) / 8 % 2) * 4; i < x + w; i += 8) {
+      var tone = [K.walk, K.walk, '#2D2837', '#27222F'][Math.floor(R() * 4)];
+      var ix = Math.max(i, x), iw = Math.min(i + 8, x + w) - ix; if (iw <= 0) continue;
+      var ih = Math.min(8, y + h - j);
+      s.px(ix, j, iw, ih, tone);
+      s.px(ix, j, iw, 1, K.walk4); if (i >= x) s.px(i, j, 1, ih, K.walk3);
+      s.px(ix, j + ih - 1, iw, 1, K.walk2);
+      if (R() < .12) s.px(ix + 2 + Math.floor(R() * 3), j + 2 + Math.floor(R() * 3), 2, 1, '#3F3950');   // wet sheen
+      if (R() < .05) { s.px(ix + 1, j + 7, 1, 1, K.grass3); s.px(ix + 2, j + 6, 1, 1, K.grass5); }       // weed in a joint
+    }
+  }
+  function curb(s, x, y, w) {
+    s.px(x, y, w, 1, K.walk4); s.px(x, y + 1, w, 2, K.curb); s.px(x, y + 3, w, 1, K.curb2);
+    for (var i = x; i < x + w; i += 16) s.px(i, y + 1, 1, 2, K.walk2);
+  }
+  function grass(s, x, y, w, h) {
+    var R = rnd(x * 7 + y * 29 + 11);
+    s.px(x, y, w, h, K.grass);
+    for (var i = 0; i < w * h / 3.5; i++) {
+      var gx = x + Math.floor(R() * w), gy = y + 1 + Math.floor(R() * (h - 2)), v = R();
+      s.px(gx, gy, 1, 1, v < .4 ? K.grass3 : v < .8 ? K.grass2 : K.grass4);
+      if (v < .15) s.px(gx, gy - 1, 1, 1, K.grass5);
+    }
+  }
+  function flowers(s, x, y, w, h, hues, n) {
+    var R = rnd(x * 3 + y * 5 + n);
+    for (var i = 0; i < n; i++) {
+      var fx = x + 1 + Math.floor(R() * (w - 3)), fy = y + 1 + Math.floor(R() * (h - 4)), col = neonc(hues[Math.floor(R() * hues.length)]);
+      s.px(fx + 1, fy + 2, 1, 2, K.grass5); s.px(fx + 2, fy + 3, 1, 1, K.grass3);
+      s.glow(fx + 1, fy, 1, 1, col); s.glow(fx, fy + 1, 1, 1, col); s.glow(fx + 2, fy + 1, 1, 1, col); s.px(fx + 1, fy + 1, 1, 1, K.warm3);
+    }
+  }
+  // A neon or a lit window, reflected on wet ground below it: dithered, fading.
+  function reflect(s, x, w, y0, y1, col, a) {
+    var g = s.g;
+    for (var yy = y0; yy < y1; yy++) {
+      var f = 1 - (yy - y0) / (y1 - y0); g.globalAlpha = a * f * f;
+      for (var xx = x; xx < x + w; xx++) if ((xx - x) % 4 === 0 && ((xx + yy) % 2 === 0 || f > .8)) { g.fillStyle = col; g.fillRect(xx, yy, 1, 1); }
+    }
+    g.globalAlpha = 1;
+  }
+
+  /* ---------- small things ---------- */
+  var PROPPAL = { o: K.out, L: '*#F6EEFF', m: K.metal, M: K.metal2, N: K.metal4, t: K.metal3, W: '#5B4B68', w: '#43364F', K: K.out, r: '*#FF4F6B', g: '*#7DFFB0' };
+  var LAMP = [
+    '....ooooooooo..', '...oMMMMMMMMMo.', '...oNNNNNNNNMo.', '....oLLLLLLLo..', '.....oooooooo..', '.....om........', '.....om........', '.....om........',
+    '.....om........', '.....om........', '.....om........', '.....om........', '.....om........', '.....om........', '.....om........', '.....om........',
+    '.....om........', '.....om........', '....oNMo.......', '...oMMMMo......', '..ommmmmmo.....', '..oooooooo.....'];
+  var BENCH = ['.oooooooooooooooooo.', 'oWWWWWWWWWWWWWWWWWWo', 'owwwwwwwwwwwwwwwwwwo', 'oooooooooooooooooooo', 'oWWWWWWWWWWWWWWWWWWo', 'owwwwwwwwwwwwwwwwwwo',
+    'oooooooooooooooooooo', '.oMo............oMo.', '.omo............omo.', '.ooo............ooo.'];
+  var BIN = ['.oooooooo.', 'oNNNNNNNNo', 'oMMMMMMMMo', 'oooooooooo', '.omMmMmMo.', '.omMmMmMo.', '.omMmMmMo.', '.omMmMmMo.', '.omMmMmMo.', '.oooooooo.'];
+  var HYDRANT = ['..ooo..', '.oRRRo.', 'ooRRRoo', 'oRrRRRo', 'ooRRRoo', '.oRRRo.', '.oRrRo.', 'ooooooo'];
+  var CONE = ['...o...', '..oCo..', '..oWo..', '.oCCCo.', '.oWWWo.', 'oCCCCCo', 'ooooooo'];
+  var CRATE = ['oooooooooooo', 'oCcCcCcCcCco', 'oooooooooooo', 'oCcvvvvvvcCo', 'oCcv****vcCo', 'oCcvvvvvvcCo', 'oooooooooooo'];
+  var DUMP = [
+    'oooooooooooooooooooooo', 'oNNNNNNNNNNNNNNNNNNNNo', 'oMMMMMMMMMMMMMMMMMMMMo', 'oooooooooooooooooooooo', 'oGGGGGGGGGGGGGGGGGGGGo', 'oGggggggggggggggggggGo',
+    'oGgGGGGGGGGGGGGGGGGgGo', 'oGgGGGGGGGGGGGGGGGGgGo', 'oGggggggggggggggggggGo', 'oGGGGGGGGGGGGGGGGGGGGo', 'oooooooooooooooooooooo', '.oo................oo.'];
+  var AC = ['oooooooooooo', 'oNNNNNNNNNNo', 'oMoooooooomo', 'oMoMNMNMNomo', 'oMoNMNMNMomo', 'oMoMNMNMNomo', 'oMoooooooomo', 'oMMMMMMMMMMo', 'oooooooooooo'];
+  var DISH = ['..oooooo..', '.oNNNNNNo.', 'oNMMMMMMNo', 'oMmmmmmmMo', '.oMmmmmMo.', '..oMMMMo..', '....om....', '...oooo...'];
+  var VEND = [
+    'oooooooooooooo', 'oMMMMMMMMMMMMo', 'oMooooooooomMo', 'oMoAAAAAAAomMo', 'oMoAaaaaaAomMo', 'oMoAAAAAAAomMo', 'oMooooooooomMo', 'oMorrggbbyomMo',
+    'oMoRRGGBBYomMo', 'oMorrggbbyomMo', 'oMoRRGGBBYomMo', 'oMooooooooomMo', 'oMMMMMMMMMMMMo', 'oMooooooooMMMo', 'oMoKKKKKKoM*Mo', 'oMooooooooMMMo', 'oMMMMMMMMMMMMo', 'oooooooooooooo'];
+  var VENDPAL = { o: K.out, M: '#3B3350', m: K.metal2, A: '*#7DF9FF', a: '*#E8FDFF', r: '#FF5F7E', R: '#B23A55', g: '#7DFFB0', G: '#3E9B6E', b: '#7DB8FF', B: '#3E6AB2', y: '#FFE07D', Y: '#B29A3E', K: '#16121C', '*': '*#FF6FA8' };
+  function lamp(s, x, y, hue, cold) {
+    var col = cold ? 'rgba(200,230,255,A)' : 'rgba(255,214,150,A)';
+    s.pool(x + 8, y + 24, 30, 11, col, .22); s.pool(x + 8, y + 24, 12, 5, col, .25);
+    s.sprite(LAMP, PROPPAL, x, y, null, null, false, true);
+    s.e.fillStyle = cold ? '#D8ECFF' : '#FFE2B0'; s.e.fillRect(x + 4, y + 3, 8, 1);
+  }
+  function tree(s, x, y, seed, size) {
+    var k = size || 1, w = Math.round(30 * k), h = Math.round(26 * k);
+    s.g.fillStyle = 'rgba(0,0,0,.35)'; s.g.beginPath(); s.g.ellipse(x + w / 2 + 3, y + h + 9, w * .42, 4, 0, 0, 7); s.g.fill();
+    s.px(x + w / 2 - 2, y + h - 4, 5, 13, K.out); s.px(x + w / 2 - 1, y + h - 4, 3, 12, '#4A3838'); s.px(x + w / 2 - 1, y + h - 4, 1, 12, '#5E4646');
+    blob(s, x, y, w, h, [[w * .5, h * .38, w * .3], [w * .27, h * .58, w * .24], [w * .73, h * .58, w * .24], [w * .5, h * .7, w * .26], [w * .36, h * .28, w * .2]],
+      ['#4E7A63', '#36604E', '#25463A', '#173027'], seed);
+  }
+  function hedge(s, x, y, w, seed) {
+    var cs = []; for (var i = 6; i < w; i += 9) cs.push([i, 7, 6.5]);
+    blob(s, x, y, w, 14, cs, ['#3E6B55', '#2C5242', '#1F3D31', '#142A21'], seed);
+  }
+  function car(s, x, y, hue) {
+    s.g.fillStyle = 'rgba(0,0,0,.45)'; s.g.fillRect(x + 3, y + 22, 40, 3);
+    s.glow(x + 4, y + 23, 38, 1, neonc(hue, .8)); s.pool(x + 23, y + 24, 26, 5, 'oklch(0.80 0.105 ' + hue + ' / A)', .35);
+    s.px(x, y + 6, 46, 17, K.out); s.px(x + 1, y + 7, 44, 15, '#3B2F55'); s.px(x + 1, y + 7, 44, 2, '#5A4A80'); s.px(x + 1, y + 20, 44, 2, '#2A2140');
+    s.px(x + 10, y, 26, 8, K.out); s.px(x + 11, y + 1, 24, 6, '#46386A'); s.px(x + 11, y + 1, 24, 1, '#6E5D9C');
+    s.px(x + 11, y + 8, 24, 7, K.out); s.px(x + 12, y + 9, 10, 5, '#1B2636'); s.px(x + 24, y + 9, 10, 5, '#1B2636');
+    s.px(x + 13, y + 9, 4, 1, K.glass3); s.px(x + 25, y + 9, 3, 1, K.glass3);
+    s.px(x + 2, y + 16, 42, 1, '#2A2140'); s.px(x + 22, y + 15, 1, 6, '#2A2140');
+    s.glow(x + 1, y + 10, 3, 4, '#FFF1C8'); s.glow(x + 42, y + 10, 3, 4, K.red);
+    s.px(x + 5, y + 21, 7, 4, K.out); s.px(x + 34, y + 21, 7, 4, K.out); s.px(x + 6, y + 21, 5, 1, '#3A3446'); s.px(x + 35, y + 21, 5, 1, '#3A3446');
+    s.pool(x - 8, y + 13, 22, 8, 'rgba(255,240,200,A)', .2);
+  }
+  function puddle(s, x, y, w, hue) {
+    s.g.fillStyle = '#0D0B12'; s.g.beginPath(); s.g.ellipse(x, y, w, w * .32, 0, 0, 7); s.g.fill();
+    s.g.fillStyle = '#1A1724'; s.g.beginPath(); s.g.ellipse(x - 1, y - 1, w * .7, w * .18, 0, 0, 7); s.g.fill();
+    s.px(Math.round(x - w * .5), Math.round(y - 1), Math.round(w * .55), 1, neonc(hue, .55));
+    s.px(Math.round(x + 1), Math.round(y + 1), Math.round(w * .35), 1, 'rgba(236,230,255,.3)');
+  }
+  function manhole(s, x, y) {
+    s.g.fillStyle = K.out; s.g.beginPath(); s.g.ellipse(x, y, 9, 4, 0, 0, 7); s.g.fill();
+    s.g.fillStyle = '#2A2632'; s.g.beginPath(); s.g.ellipse(x, y, 8, 3, 0, 0, 7); s.g.fill();
+    for (var i = -6; i <= 6; i += 3) s.px(x + i, y - 1, 2, 1, '#3A3546'); s.px(x - 5, y + 1, 10, 1, '#1E1B25');
+  }
+  function grate(s, x, y) { s.px(x, y, 12, 4, K.out); for (var i = 1; i < 12; i += 2) s.px(x + i, y + 1, 1, 2, '#2E2A38'); }
+  function poster(s, x, y, hue, R) {
+    s.px(x - 1, y - 1, 10, 13, K.out); s.px(x, y, 8, 11, '#D8D0E8'); s.px(x, y, 8, 5, neonc(hue));
+    pixShape(s, ['circle', 'tri_up', 'diamond'][Math.floor(R() * 3)], x + 4, y + 2, 1.8, '#1A1622');
+    s.px(x + 1, y + 6, 6, 1, '#4A4459'); s.px(x + 1, y + 8, 4, 1, '#6E6880'); s.px(x + 5, y + 10, 3, 1, '#2A2534');
+    if (R() < .5) s.px(x + 6, y, 2, 2, 'rgba(0,0,0,.35)');      // a torn corner
+  }
+  function tag(s, x, y, hue) {                                   // a small graffiti tag
+    var g = s.g; g.globalAlpha = .75;
+    [[0, 3], [1, 2], [2, 1], [3, 2], [4, 3], [5, 2], [6, 1], [7, 1], [8, 2], [9, 3], [10, 3], [11, 2], [12, 1]].forEach(function (p) { g.fillStyle = neonc(hue); g.fillRect(x + p[0], y + p[1], 1, 1); });
+    g.fillRect(x + 3, y + 4, 6, 1); g.globalAlpha = 1;
+  }
+
+  /* ---------- buildings: roof seen from above, front wall below, as on the Game Boy ---------- */
+  function roofTiles(s, x, y, w, h, R) {
+    s.px(x - 2, y - 1, w + 4, h + 1, K.out);
+    for (var ry = y; ry < y + h - 3; ry += 3) for (var sx = x - ((ry - y) / 3 % 2 ? 3 : 0); sx < x + w; sx += 6) {
+      var ix = Math.max(sx, x), iw = Math.min(sx + 6, x + w) - ix; if (iw <= 0) continue;
+      var v = R(), base = v < .1 ? '#43395C' : v < .2 ? '#332B48' : K.roof;
+      s.px(ix, ry, iw, 3, base); s.px(ix, ry, iw, 1, v < .1 ? '#5A4E7A' : K.roof2); s.px(ix + iw - 1, ry + 1, 1, 2, K.roof3);
+      if (ry > y + h * .5 && R() < .12) s.px(ix + 1, ry + 2, 2, 1, K.moss);
+    }
+    s.px(x - 1, y, w + 2, 3, K.ridge); s.px(x - 1, y, w + 2, 1, '#7A6CA2'); s.px(x - 1, y + 3, w + 2, 1, K.roof4);
+    s.px(x - 1, y, 2, h - 2, K.roof4); s.px(x + w - 1, y, 2, h - 2, K.roof4);
+    s.px(x - 2, y + h - 3, w + 4, 3, K.eave); s.px(x - 2, y + h - 3, w + 4, 1, '#2A2436');
+  }
+  function planks(s, x, y, w, h, R) {
+    s.px(x, y, w, h, K.wall);
+    for (var py = y; py < y + h; py += 4) {
+      s.px(x, py, w, 1, K.wall3); s.px(x, py + 3, w, 1, K.wall2);
+      var seam = x + 6 + Math.floor(R() * (w - 12)); s.px(seam, py, 1, 4, K.wall4); s.px(seam - 2, py + 1, 1, 1, '#4A4258');
+    }
+    for (var gy = 0; gy < 8; gy++) { s.g.fillStyle = 'rgba(10,8,14,' + (gy * .045) + ')'; s.g.fillRect(x, y + h - 8 + gy, w, 1); }   // grime at the foot
+  }
+  function drainpipe(s, x, y, h) {
+    s.px(x, y, 3, h, K.out); s.px(x + 1, y, 1, h, K.metal2);
+    for (var b = y + 6; b < y + h - 4; b += 10) s.px(x - 1, b, 5, 2, K.metal3);
+    s.px(x - 2, y + h - 3, 5, 3, K.out); s.px(x - 1, y + h - 2, 3, 1, K.metal2);
+  }
+  function windowW(s, x, y, w, h, o) {
+    var R = o.R, lit = o.lit, glass = lit ? (o.cold ? neonc(o.hue) : K.warm) : K.glass;
+    s.px(x - 2, y - 2, w + 4, h + 4, K.out); s.px(x - 1, y - 1, w + 2, h + 2, '#4A4258'); s.px(x - 1, y - 1, w + 2, 1, '#615A72');
+    if (lit) {
+      s.glow(x, y, w, h, glass);
+      s.px(x, y, w, 1, o.cold ? neonc(o.hue) : K.warm3);
+      if (o.silhouette) { s.px(x + 2, y + h - 6, 4, 6, 'rgba(40,24,40,.75)'); s.px(x + 3, y + h - 8, 2, 2, 'rgba(40,24,40,.75)'); }
+      if (o.plant) { s.px(x + w - 5, y + h - 4, 3, 4, '#2E5444'); s.px(x + w - 6, y + h - 6, 2, 2, '#3E6B55'); }
+      if (o.blinds) for (var b = y + 1; b < y + h; b += 2) s.px(x, b, w, 1, 'rgba(60,40,30,.5)');
+      if (o.curtain) { s.px(x, y, 2, h, '#8E3F6A'); s.px(x + w - 2, y, 2, h, '#8E3F6A'); s.px(x, y, 1, h, '#B05A88'); }
+      s.pool(x + w / 2, y + h + 18, w * 1.4, 5, o.cold ? 'oklch(0.80 0.105 ' + o.hue + ' / A)' : 'rgba(255,200,120,A)', .12);
+    } else {
+      s.px(x, y, w, h, glass); s.px(x + 1, y + 1, 2, 1, K.glass3); s.px(x + 1, y + 2, 1, 1, K.glass2); s.px(x + w - 3, y + h - 2, 2, 1, K.glass2);
+    }
+    s.px(x + Math.floor(w / 2), y, 1, h, '#4A4258'); s.px(x, y + Math.floor(h / 2), w, 1, '#4A4258');
+    s.px(x - 2, y + h + 1, w + 4, 1, K.metal4); s.px(x - 2, y + h + 2, w + 4, 1, K.out);
+    if (o.box) {                                                 // a flower box under the sill
+      s.px(x - 1, y + h + 3, w + 2, 4, K.out); s.px(x, y + h + 3, w, 3, '#5A3F3A'); s.px(x, y + h + 3, w, 1, '#7A5650');
+      for (var f = x; f < x + w; f += 3) { s.px(f, y + h + 1, 2, 2, '#3E6B55'); if (R() < .6) s.glow(f + (R() < .5 ? 0 : 1), y + h, 1, 1, neonc([343, 199, 295][Math.floor(R() * 3)])); }
+    }
+  }
+  function shopWindow(s, x, y, w, h, hue, R) {
+    s.px(x - 2, y - 2, w + 4, h + 4, K.out); s.px(x - 1, y - 1, w + 2, h + 2, K.metal);
+    s.glow(x, y, w, h, '#2A2040'); s.px(x, y, w, h, '#2A2040');
+    s.e.fillStyle = 'rgba(194,176,251,.25)'; s.e.fillRect(x, y, w, h);
+    for (var sh = y + 6; sh < y + h; sh += 8) {                   // shelves of records
+      s.px(x, sh, w, 1, '#5A4E70');
+      for (var r = x + 1; r < x + w - 4; r += 5) {
+        var c = ['#E05C8A', '#7DB8FF', '#FFE07D', '#7DFFB0', '#C2B0FB'][Math.floor(R() * 5)];
+        s.px(r, sh - 5, 4, 5, K.out); s.px(r, sh - 5, 4, 4, '#121016'); s.px(r + 1, sh - 4, 2, 2, c);
+      }
+    }
+    s.px(x, y, w, 1, 'rgba(255,255,255,.35)'); s.px(x + 1, y + 1, 1, h - 2, 'rgba(255,255,255,.15)');
+    s.glow(x + w - 12, y + h - 5, 10, 3, K.pink);                 // OPEN
+    s.pool(x + w / 2, y + h + 12, w * 1.2, 6, 'oklch(0.80 0.105 ' + hue + ' / A)', .16);
+  }
+  function door(s, x, y, hue, R) {
+    s.px(x - 2, y - 2, 18, 22, K.out); s.px(x - 1, y - 1, 16, 21, K.metal);
+    s.px(x, y, 14, 20, '#2A1F33'); s.px(x, y, 14, 1, '#3B2E48');
+    s.px(x + 2, y + 2, 10, 7, K.out); s.glow(x + 3, y + 3, 8, 5, deepc(hue)); s.px(x + 3, y + 3, 3, 1, neonc(hue, .8));
+    s.px(x + 2, y + 11, 10, 7, '#241A2D'); s.px(x + 2, y + 11, 10, 1, '#352944');
+    s.px(x + 11, y + 12, 2, 2, K.warm);
+    s.px(x - 4, y + 20, 22, 2, K.curb); s.px(x - 3, y + 22, 20, 1, K.curb2);    // step
+    s.px(x, y + 19, 14, 1, '#4A3D52');
+    // wall lamps either side
+    [x - 7, x + 17].forEach(function (lx) { s.px(lx - 1, y + 3, 5, 6, K.out); s.glow(lx, y + 4, 3, 4, K.warm3); s.pool(lx + 1, y + 6, 12, 10, 'rgba(255,214,150,A)', .25); });
+  }
+  function plate(s, x, y, w, h, hue) {
+    s.px(x - 2, y - 2, w + 4, h + 4, K.out); s.px(x - 1, y - 1, w + 2, h + 2, '#2B2537'); s.px(x, y, w, h, '#0D0B11');
+    s.glow(x + 1, y + 1, w - 2, 1, neonc(hue)); s.glow(x + 1, y + h - 2, w - 2, 1, neonc(hue)); s.glow(x + 1, y + 1, 1, h - 2, neonc(hue)); s.glow(x + w - 2, y + 1, 1, h - 2, neonc(hue));
+    s.e.fillStyle = neonc(hue, .25); s.e.fillRect(x + 2, y + 2, w - 4, h - 4);
+  }
+  function house(s, x, y, w, h, hue, name, num) {
+    var R = rnd(hash(name)), rh = 28, wy = y + rh;
+    s.g.fillStyle = 'rgba(0,0,0,.4)'; s.g.fillRect(x + w + 2, y + 6, 5, h - 6);                 // cast shadow
+    roofTiles(s, x, y, w, rh, R);
+    // chimney, skylight, AC
+    s.px(x + w - 15, y - 9, 9, 13, K.out); s.px(x + w - 14, y - 8, 7, 12, '#5A3F48'); s.px(x + w - 14, y - 8, 7, 2, '#7A5560'); s.px(x + w - 14, y - 4, 7, 1, '#3A2830');
+    s.px(x + w - 15, y - 10, 9, 2, K.out);
+    s.px(x + 6, y + 8, 12, 9, K.out); s.px(x + 7, y + 9, 10, 7, '#18202E'); s.px(x + 7, y + 9, 10, 1, K.glass3); s.px(x + 12, y + 9, 1, 7, K.out);
+    s.e.fillStyle = 'rgba(160,190,255,.15)'; s.e.fillRect(x + 7, y + 9, 10, 7);
+    s.sprite(AC, PROPPAL, x + 24, y + 6, null, null, false, true);
+    planks(s, x, wy, w, h - rh, R);
+    s.px(x - 1, wy, 1, h - rh, K.out); s.px(x + w, wy, 1, h - rh, K.out); s.px(x - 1, y + h, w + 2, 1, K.out);
+    // sign under the eave
+    plate(s, x + 3, wy + 2, w - 6, 11, hue); s.label(x + 3, wy + 2, w - 6, 11, name, hue, 'circle', 10);
+    // record shop window, door, a window with flowers
+    shopWindow(s, x + 4, wy + 18, 16, 16, hue, R);
+    door(s, Math.round(x + w / 2 - 7), y + h - 22, hue, R);
+    windowW(s, x + w - 19, wy + 18, 14, 11, { R: R, lit: true, box: true, curtain: R() < .5, plant: true });
+    drainpipe(s, x + w - 3, wy, h - rh);
+    // house number and letterbox
+    s.px(x + w / 2 + 11, y + h - 26, 5, 4, K.out); s.px(x + w / 2 + 12, y + h - 25, 3, 2, '#D8D0E8');
+    s.px(x + 3, y + h - 9, 6, 6, K.out); s.px(x + 4, y + h - 8, 4, 4, '#3E5A8C'); s.px(x + 4, y + h - 8, 4, 1, '#5A7AB2');
+  }
+  function tower(s, x, y, w, h, hue, name) {
+    var R = rnd(hash(name)), rh = 18, wy = y + rh;
+    s.g.fillStyle = 'rgba(0,0,0,.4)'; s.g.fillRect(x + w + 2, y + 8, 6, h - 8);
+    // flat roof with gravel, parapet, water tank, AC units, a dish
+    s.px(x - 1, y - 1, w + 2, rh + 1, K.out); s.px(x, y, w, rh, '#36313F');
+    for (var i = 0; i < w * rh / 4; i++) s.px(x + Math.floor(R() * w), y + Math.floor(R() * rh), 1, 1, R() < .5 ? '#3F3A4A' : '#2C2834');
+    s.px(x, y, w, 2, '#4C465A'); s.px(x, y + rh - 3, w, 3, '#24202C'); s.px(x, y, 2, rh, '#4C465A'); s.px(x + w - 2, y, 2, rh, '#24202C');
+    s.sprite(AC, PROPPAL, x + 6, y + 4, null, null, false, true); s.sprite(AC, PROPPAL, x + 20, y + 5, null, null, false, true);
+    // water tank
+    var tx = x + 40;
+    s.px(tx, y - 10, 22, 22, K.out); s.px(tx + 1, y - 9, 20, 20, '#5A4048'); s.px(tx + 1, y - 9, 20, 3, '#7A5862'); s.px(tx + 1, y - 3, 20, 1, '#3A2830'); s.px(tx + 1, y + 4, 20, 1, '#3A2830');
+    s.px(tx + 3, y - 9, 2, 20, '#8A6872'); s.px(tx + 2, y + 11, 3, 3, K.out); s.px(tx + 17, y + 11, 3, 3, K.out);
+    s.sprite(DISH, PROPPAL, x + w - 18, y + 3, null, null, false, true);
+    s.px(x + w - 7, y - 26, 1, 30, K.metal2); s.px(x + w - 10, y - 18, 7, 1, K.metal2); s.px(x + w - 9, y - 11, 5, 1, K.metal2);
+    // wall of panels
+    s.px(x, wy, w, h - rh, '#25212F');
+    for (var py = wy; py < y + h; py += 13) for (var px = x; px < x + w; px += 16) { s.px(px, py, 16, 1, '#302A3C'); s.px(px, py, 1, 13, '#302A3C'); s.px(px + 15, py + 1, 1, 12, '#1D1926'); }
+    s.px(x - 1, wy, 1, h - rh, K.out); s.px(x + w, wy, 1, h - rh, K.out); s.px(x - 1, y + h, w + 2, 1, K.out);
+    // three floors of windows
+    for (var f = 0; f < 3; f++) for (var c = 0; c < 5; c++) {
+      var wx = x + 16 + c * 12, wyy = wy + 4 + f * 13, lit = R() < .6;
+      windowW(s, wx, wyy, 8, 7, { R: R, lit: lit, cold: R() < .3, hue: hue, blinds: lit && R() < .3, silhouette: lit && R() < .15 });
+    }
+    // fire escape on the right
+    var fx = x + w - 15;
+    for (var fl = 0; fl < 3; fl++) {
+      var fy = wy + 12 + fl * 13;
+      s.px(fx - 1, fy, 15, 3, K.out); for (var gx = fx; gx < fx + 13; gx += 2) s.px(gx, fy + 1, 1, 1, K.metal2);
+      s.px(fx - 1, fy - 6, 1, 6, K.metal); s.px(fx + 13, fy - 6, 1, 6, K.metal); s.px(fx - 1, fy - 6, 15, 1, K.metal);
+      for (var ly = fy - 10; ly < fy; ly += 2) s.px(fx + (fl % 2 ? 9 : 3), ly, 3, 1, K.metal2);
+    }
+    // vertical neon blade
+    s.px(x + 2, wy + 3, 11, 40, K.out); s.px(x + 3, wy + 4, 9, 38, '#0D0B11');
+    s.glow(x + 3, wy + 4, 9, 1, neonc(hue)); s.glow(x + 3, wy + 41, 9, 1, neonc(hue)); s.glow(x + 3, wy + 4, 1, 38, neonc(hue)); s.glow(x + 11, wy + 4, 1, 38, neonc(hue));
+    s.label(x + 3, wy + 5, 9, 36, 'EDM', hue, null, 11, true);
+    reflect(s, x + 4, 7, 117, 147, neonc(hue), .35);
+    // sign and glass lobby
+    plate(s, x + 16, y + h - 40, w - 32, 12, hue); s.label(x + 16, y + h - 40, w - 32, 12, name, hue, 'circle', 12);
+    var lx = x + w / 2 - 20, ly0 = y + h - 25;
+    s.px(lx - 2, ly0 - 2, 44, 27, K.out); s.px(lx - 1, ly0 - 1, 42, 26, K.metal);
+    s.glow(lx, ly0, 40, 25, '#3A2E58'); s.px(lx, ly0, 40, 25, '#3A2E58');
+    s.px(lx, ly0, 40, 6, deepc(hue)); s.px(lx + 2, ly0 + 9, 6, 14, '#2E5444'); s.px(lx + 3, ly0 + 7, 4, 3, '#3E6B55');       // lobby plant
+    s.px(lx + 32, ly0 + 9, 6, 14, '#2E5444'); s.px(lx + 33, ly0 + 7, 4, 3, '#3E6B55');
+    s.px(lx + 10, ly0 + 2, 20, 23, K.out); s.px(lx + 11, ly0 + 3, 9, 22, '#5A4A8C'); s.px(lx + 20, ly0 + 3, 9, 22, '#5A4A8C');
+    s.px(lx + 11, ly0 + 3, 1, 22, '#8C7AC8'); s.px(lx + 18, ly0 + 13, 1, 3, K.warm); s.px(lx + 21, ly0 + 13, 1, 3, K.warm);
+    s.e.fillStyle = 'rgba(194,176,251,.2)'; s.e.fillRect(lx, ly0, 40, 25);
+    s.px(lx - 6, y + h, 52, 2, K.curb); s.px(lx - 5, y + h + 2, 50, 1, K.curb2);
+    s.pool(x + w / 2, y + h + 10, 40, 10, 'oklch(0.80 0.105 ' + hue + ' / A)', .16);
+    poster(s, x + 3, y + h - 20, 343, R); poster(s, x + w - 12, y + h - 22, 199, R);
+  }
+  function kiosk(s, x, y, w, h, hue, name, vendor) {
+    var R = rnd(hash(name));
+    s.g.fillStyle = 'rgba(0,0,0,.4)'; s.g.fillRect(x + w + 1, y + 10, 4, h - 10);
+    // back wall and shelves inside
+    s.px(x - 1, y + 6, w + 2, h - 6, K.out); s.px(x, y + 7, w, h - 8, '#1C1724');
+    for (var sh = y + 14; sh < y + 24; sh += 5) { s.px(x + 2, sh, w - 4, 1, '#3A3248'); for (var b = x + 3; b < x + w - 4; b += 4) s.glow(b, sh - 3, 2, 3, [K.pink, K.cyan, K.amber, K.green][Math.floor(R() * 4)]); }
+    s.e.fillStyle = 'rgba(255,200,140,.25)'; s.e.fillRect(x, y + 7, w, 20);
+    vendor && vendor(x + w / 2 - 9, y + 38);
+    // counter
+    s.px(x - 2, y + 26, w + 4, 12, K.out); s.px(x - 1, y + 27, w + 2, 10, '#3E3550'); s.px(x - 1, y + 27, w + 2, 2, '#5A4E70');
+    for (var st = x + 2; st < x + w - 2; st += 6) s.px(st, y + 30, 4, 6, '#2E2740');
+    s.px(x + 3, y + 24, 3, 3, '#E8E0F8'); s.px(x + 7, y + 24, 3, 3, '#E8E0F8'); s.glow(x + w - 8, y + 23, 4, 4, K.amber);   // cups and a lamp
+    // striped awning
+    s.px(x - 4, y, w + 8, 12, K.out);
+    for (var i = x - 3; i < x + w + 3; i += 4) { s.px(i, y + 1, 2, 9, neonc(hue)); s.px(i + 2, y + 1, 2, 9, '#ECE6FA'); s.px(i, y + 10, 2, 2, neonc(hue)); s.px(i + 2, y + 10, 2, 1, '#ECE6FA'); }
+    s.px(x - 3, y + 1, w + 6, 1, 'rgba(255,255,255,.35)'); s.px(x - 3, y + 8, w + 6, 1, 'rgba(0,0,0,.2)');
+    // sign on two poles
+    s.px(x + 2, y - 6, 2, 7, K.metal); s.px(x + w - 4, y - 6, 2, 7, K.metal);
+    plate(s, x - 6, y - 18, w + 12, 12, hue); s.label(x - 6, y - 18, w + 12, 12, name, hue, null, 10);
+    // a crate of records out front
+    s.sprite(CRATE, { o: K.out, C: '#6A4A3A', c: '#8A6450', v: '#2A2030', '*': '*' + neonc(hue) }, x + w - 6, y + h - 7, null, null, false, true);
+    s.pool(x + w / 2, y + h + 6, 26, 7, 'rgba(255,200,140,A)', .22);
+  }
+
+  /* =================== 1. The Terminal =================== */
+  var FAM = [
+    ['ELECTRONIC', 'circle', 295], ['ROCK', 'hex', 103], ['METAL', 'pent', 271], ['PUNK', 'square', 79], ['FOLK', 'diamond', 247],
+    ['LATIN', 'oct', 55], ['ART MUSIC', 'tri_up', 223], ['HIP-HOP', 'tri_down', 31], ['POP', 'hex_r', 199], ['JAZZ', 'circle', 7],
+    ['EXPERIMENTAL', 'hex', 175], ['R&B', 'pent', 343], ['COUNTRY', 'square', 151], ['BLUES', 'diamond', 319], ['REGGAE', 'oct', 127]
+  ];
+  (function () {
+    var s = new Scene('terminal', 24, 15), W = s.W, g = s.g, R = rnd(77);
+    // polished floor: large tiles, a sheen across each, worn and dirtier near the walls
+    for (var y = 48; y < 186; y += 16) for (var x = 0; x < W; x += 16) {
+      var tone = R() < .5 ? '#24202C' : '#211D29';
+      s.px(x, y, 16, 16, tone); s.px(x, y, 16, 1, '#302A3A'); s.px(x, y, 1, 16, '#302A3A'); s.px(x + 15, y + 1, 1, 15, '#17141D'); s.px(x + 1, y + 15, 15, 1, '#17141D');
+      for (var d = 0; d < 6; d++) s.px(x + 3 + d, y + 9 - d, 1, 1, 'rgba(255,255,255,.035)');
+      if (R() < .07) { var cx0 = x + 3 + Math.floor(R() * 8), cy0 = y + 2; for (var c = 0; c < 9; c++) { s.px(cx0, cy0 + c, 1, 1, '#141118'); cx0 += R() < .4 ? 1 : 0; } }
+    }
+    for (var gy = 0; gy < 10; gy++) { g.fillStyle = 'rgba(8,6,12,' + (.32 - gy * .032) + ')'; g.fillRect(0, 55 + gy, W, 1); g.fillRect(0, 177 - gy, W, 1); }
+    // tactile strips along both platforms
+    [50, 178].forEach(function (ty) { s.px(0, ty, W, 5, '#3A3424'); for (var tx = 1; tx < W; tx += 3) { s.px(tx, ty + 1, 2, 1, '#C9B65E'); s.px(tx, ty + 3, 2, 1, '#A8964A'); } });
+    // walls: glazed tiles, grimy at the foot, a few cracked or missing
+    function wall(y0, h) {
+      s.px(0, y0, W, h, '#1A1720');
+      for (var j = y0; j < y0 + h; j += 4) for (var i = (j / 4 % 2) * 4; i < W; i += 8) {
+        var v = R(), tile = v < .04 ? '#141118' : v < .5 ? '#1F1B26' : '#1D1924';
+        s.px(i, j, 8, 4, tile); s.px(i, j, 8, 1, v < .04 ? '#18151E' : '#28232F'); s.px(i, j, 1, 4, '#141118');
+        if (v > .97) { s.px(i + 2, j + 1, 1, 1, '#0E0C12'); s.px(i + 3, j + 2, 2, 1, '#0E0C12'); }
+      }
+    }
+    wall(0, 48); wall(186, 54);
+    for (var wg = 0; wg < 8; wg++) { g.fillStyle = 'rgba(8,6,12,' + (wg * .05) + ')'; g.fillRect(0, 38 + wg, W, 1); g.fillRect(0, 196 - wg, W, 1); }
+    s.px(0, 45, W, 1, K.metal3); s.px(0, 46, W, 2, K.out); s.px(0, 186, W, 2, K.out); s.px(0, 188, W, 1, K.metal3);
+    function reflectUp(x, w, y0, y1, col, a) {                  // the same wet sheen, rising from the lower stairs
+      for (var yy = y0; yy > y1; yy--) {
+        var f = 1 - (y0 - yy) / (y0 - y1); g.globalAlpha = a * f * f;
+        for (var xx = x; xx < x + w; xx++) if ((xx - x) % 4 === 0 && ((xx + yy) % 2 === 0 || f > .8)) { g.fillStyle = col; g.fillRect(xx, yy, 1, 1); }
+      }
+      g.globalAlpha = 1;
+    }
+    var STAIRS = [];
+    // one stairway per city: a lit name plate on the wall, the stairs going down
+    function gate(i, f, top) {
+      var k = top ? i : i - 8, n = top ? 8 : 7, span = W / n, gx = Math.round(k * span + span / 2 - 15), hue = f[2];
+      var gy = top ? 15 : 189;
+      STAIRS.push([gx, gy, top, hue]);
+      s.px(gx - 3, gy - 1, 36, top ? 33 : 34, K.out);
+      for (var st = 0; st < 32; st += 3) {
+        var dd = top ? st : 31 - st, c = 10 + dd;
+        s.px(gx, gy + st, 30, 3, 'rgb(' + c + ',' + (c - 2) + ',' + (c + 6) + ')'); s.px(gx, gy + st, 30, 1, 'rgba(255,255,255,.07)');
+        s.px(gx, gy + st + 1, 30, 1, deepc(hue, .05 + dd * .006));
+      }
+      s.px(gx - 2, gy - 1, 2, 33, K.metal2); s.px(gx - 2, gy - 1, 1, 33, K.metal4); s.px(gx + 30, gy - 1, 2, 33, K.metal2);
+      s.glow(gx, gy - 1, 1, 33, neonc(hue)); s.glow(gx + 29, gy - 1, 1, 33, neonc(hue));
+      s.pool(gx + 15, top ? 60 : 174, 30, 12, 'oklch(0.80 0.105 ' + hue + ' / A)', .3);
+      if (top) reflect(s, gx + 1, 28, 56, 104, neonc(hue), .32); else reflectUp(gx + 1, 28, 176, 130, neonc(hue), .32);
+      // name plate: glyph, number, name
+      var py = top ? 2 : 226, pw = Math.min(46, Math.floor(span) - 4), px = gx + 15 - Math.round(pw / 2);
+      plate(s, px, py, pw, 11, hue);
+      pixShape(s, f[1], px + 6, py + 5, 2.6, neonc(hue));
+      s.label(px + 11, py, pw - 12, 11, (i < 9 ? '0' : '') + (i + 1) + ' ' + f[0], hue, null, f[0].length > 9 ? 8 : 9);
+    }
+    FAM.forEach(function (f, i) { gate(i, f, i < 8); });
+    // ceiling lights: pools of cold light down the concourse, darker between them
+    for (var lx = 32; lx < W; lx += 64) { s.pool(lx, 116, 40, 22, 'rgba(210,205,255,A)', .14); s.pool(lx, 116, 14, 8, 'rgba(230,225,255,A)', .12); }
+    // the line board: fifteen lines, one hub
+    var bx = 102, by = 72, bw = 180;
+    g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(bx + 4, by + 34, bw, 4);
+    s.px(bx - 2, by - 2, bw + 4, 34, K.out); s.px(bx - 1, by - 1, bw + 2, 32, K.metal); s.px(bx - 1, by - 1, bw + 2, 1, K.metal4); s.px(bx, by, bw, 30, '#0B0910');
+    for (var sc = by + 1; sc < by + 30; sc += 2) s.px(bx, sc, bw, 1, 'rgba(255,255,255,.02)');
+    s.px(bx + 8, by + 30, 2, 8, K.metal); s.px(bx + bw - 10, by + 30, 2, 8, K.metal);
+    s.label(bx, by + 2, bw, 10, 'EVERY GENRE · 15 LINES', 270, null, 11);
+    s.px(bx + 10, by + 20, bw - 20, 1, '#3A3446');
+    FAM.forEach(function (f, i) {
+      var dx = bx + 12 + Math.round(i * (bw - 24) / 14);
+      s.px(dx - 2, by + 18, 5, 5, K.out); s.glow(dx - 1, by + 19, 3, 3, neonc(f[2]));
+    });
+    s.e.fillStyle = 'rgba(194,176,251,.1)'; s.e.fillRect(bx, by, bw, 30);
+    s.pool(bx + bw / 2, by + 40, 90, 12, 'rgba(194,176,251,A)', .12);
+    // map kiosk under the board
+    var kx = 176, ky = 124;
+    g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(kx + 33, ky + 2, 4, 26);
+    s.px(kx - 2, ky - 2, 36, 30, K.out); s.px(kx - 1, ky - 1, 34, 28, '#3A3448'); s.px(kx - 1, ky - 1, 34, 2, '#56506A');
+    s.px(kx + 2, ky + 2, 28, 15, K.out); s.glow(kx + 3, ky + 3, 26, 13, '#1E2A4A');
+    pixShape(s, 'hex', kx + 16, ky + 9, 4, neonc(270));
+    s.px(kx + 9, ky + 20, 14, 3, K.metal); s.px(kx + 9, ky + 20, 14, 1, K.metal4);
+    s.label(kx, ky + 28, 32, 8, 'MAP', 270, null, 10);
+    s.pool(kx + 16, ky + 30, 26, 8, 'rgba(194,176,251,A)', .18);
+    // two benches, two planters
+    s.sprite(BENCH, PROPPAL, 40, 120, null, null, false, true); s.sprite(BENCH, PROPPAL, 324, 120, null, null, false, true);
+    [[10, 110], [358, 110]].forEach(function (p, i) {
+      s.px(p[0], p[1] + 14, 16, 12, K.out); s.px(p[0] + 1, p[1] + 15, 14, 10, '#3A3044'); s.px(p[0] + 1, p[1] + 15, 14, 2, '#56486A');
+      blob(s, p[0], p[1], 16, 17, [[8, 8, 7], [4, 11, 4], [12, 11, 4]], ['#4E7A63', '#36604E', '#25463A', '#173027'], 30 + i);
+    });
+    var passer = look({ C: '#3E5A8C', c: '#5A7AB2', Q: '#28406A', B: '#4A6AA0', U: '#1E3050', N: '*#FFE07D', h: '#2A1E1A', s: '#D8A888', S: '#A87A62', j: '#3A2E2A', J: '#54443C', k: '#241C1A' });
+    s.render(function (g2, e, l, t) {
+      // warm air rising from the stairs
+      STAIRS.forEach(function (st, i) {
+        for (var m = 0; m < 3; m++) {
+          var ph = ((t / 2600) + m / 3 + i * .17) % 1, ax = st[0] + 6 + ((i * 7 + m * 9) % 18) + Math.round(Math.sin(ph * 6 + i) * 2);
+          var ay = st[2] ? st[1] + 32 + Math.round(ph * 16) : st[1] - Math.round(ph * 16);
+          g2.fillStyle = 'rgba(220,210,240,' + (.12 * (1 - ph)) + ')'; g2.fillRect(ax, ay, 2, 1);
+        }
+      });
+      // a train passing at the foot of the stairs, every few seconds
+      var cyc = t % 7000;
+      if (cyc < 1800) {
+        var pos = cyc / 1800 * (W + 160) - 80;
+        STAIRS.forEach(function (st) {
+          var deep = st[2] ? st[1] : st[1] + 26;
+          for (var wx = Math.max(st[0], Math.round(pos - 70)); wx < Math.min(st[0] + 30, Math.round(pos + 70)); wx++) {
+            if ((wx - Math.round(pos)) % 8 < 5) { g2.fillStyle = 'rgba(255,236,190,.55)'; g2.fillRect(wx, deep + 1, 1, 4); e.fillStyle = 'rgba(255,236,190,.6)'; e.fillRect(wx, deep + 1, 1, 4); }
+          }
+        });
+      }
+      drawPerson(s, g2, e, ['hood', 'jacket'], LOOKS.hero, 146, 174, false, 0);
+      // one passer-by crossing the concourse
+      drawWalker(s, g2, e, passer, Math.round((t * .026) % (W + 60) - 30), 160, false, Math.floor(t / 230) % 2);
+    });
+  })();
+  /* =================== 2. A street of Electronic City =================== */
+  var HUE = 295;
+  (function () {
+    var s = new Scene('city', 22, 13), W = s.W;
+    // back alley, front sidewalk, road, sidewalk, park and plaza
+    pavers(s, 0, 0, W, 112);
+    s.px(0, 22, W, 1, '#1E1A26');
+    asphalt(s, 0, 116, W, 32);
+    for (var i = 4; i < W; i += 22) { if (i > 186 && i < 240) continue; s.px(i, 131, 11, 2, K.lane); s.px(i, 131, 11, 1, '#C8C2D8'); }
+    for (var z = 192; z < 238; z += 7) { s.px(z, 118, 4, 28, '#8E88A0'); s.px(z, 118, 4, 1, '#B8B2C8'); s.px(z + 3, 119, 1, 27, '#6E6880'); }   // crossing
+    curb(s, 0, 112, W); pavers(s, 0, 149, W, 15); curb(s, 0, 148, W);
+    grass(s, 0, 166, 196, 42); s.px(0, 164, 196, 2, K.curb);
+    for (var py = 164; py < 208; py += 8) for (var px = 200; px < W; px += 8) {
+      var tone = ((px + py) / 8) % 2 ? '#221E2C' : '#1C1925'; s.px(px, py, 8, 8, tone); s.px(px, py, 8, 1, '#2C2738'); s.px(px, py, 1, 8, '#2C2738');
+    }
+    s.px(196, 164, 4, 44, K.out); s.px(197, 164, 2, 44, K.curb);
+    // the plaza tiles catch the monument's light in a ring
+    for (var a = 0; a < 64; a++) { var an = a / 64 * Math.PI * 2; s.px(Math.round(276 + 34 * Math.cos(an)), Math.round(188 + 12 * Math.sin(an)), 2, 1, deepc(HUE, .7)); }
+
+    // wet reflections of what glows, laid before the buildings so they stay on the ground
+    reflect(s, 30, 56, 117, 147, neonc(HUE), .28);
+    reflect(s, 128, 52, 117, 147, neonc(HUE), .2); reflect(s, 266, 56, 117, 147, neonc(HUE), .2);
+    reflect(s, 204, 36, 117, 147, K.warm, .18);
+
+    // the four genres of Club & Dancefloor, alphabetical, sized by their descendants
+    tower(s, 12, -4, 92, 102, HUE, 'Electronic Dance Music');
+    house(s, 124, 32, 60, 66, HUE, 'Nightcore', 7);
+    var vendorLook = LOOKS.bun;
+    kiosk(s, 206, 60, 32, 38, HUE, 'Seapunk');
+    house(s, 262, 32, 64, 66, HUE, 'Witch House', 9);
+
+    // cables strung with lights between the roofs
+    function cable(x0, x1, y0, sag, n) {
+      for (var x = x0; x <= x1; x++) { var u = (x - x0) / (x1 - x0); s.px(x, Math.round(y0 + sag * 4 * u * (1 - u)), 1, 1, '#08070A'); }
+      for (var k = 1; k < n; k++) { var xx = Math.round(x0 + (x1 - x0) * k / n), uu = k / n, yy = Math.round(y0 + sag * 4 * uu * (1 - uu)) + 1; s.px(xx, yy, 1, 1, K.out); s.glow(xx, yy + 1, 1, 2, [neonc(HUE), K.warm, neonc(343)][k % 3]); }
+    }
+    cable(104, 124, 40, 7, 4); cable(184, 262, 38, 14, 9); cable(326, 352, 40, 6, 3);
+
+    // the alley behind: a fence, a dumpster, trees
+    for (var fx = 104; fx < W; fx += 6) { if (fx > 120 && fx < 186) continue; s.px(fx, 4, 1, 16, K.metal3); }
+    s.px(104, 4, 20, 1, K.metal3); s.px(186, 4, 76, 1, K.metal3); s.px(186, 12, 76, 1, '#26222F');
+    tree(s, 186, -6, 11, .9); tree(s, 226, -2, 12, .8); tree(s, 330, -4, 13, .9);
+    s.sprite(CRATE, { o: K.out, C: '#6A4A3A', c: '#8A6450', v: '#2A2030', '*': '*' + neonc(199) }, 188, 86, null, null, false, true);
+    s.sprite(CRATE, { o: K.out, C: '#6A4A3A', c: '#8A6450', v: '#2A2030', '*': '*' + neonc(343) }, 190, 79, null, null, false, true);
+    tag(s, 336, 70, 343); poster(s, 336, 80, 175, rnd(5));
+
+    // front sidewalk furniture
+    s.sprite(VEND, VENDPAL, 106, 78, null, null, false, true);
+    s.pool(113, 100, 16, 6, 'rgba(125,249,255,A)', .2);
+    s.sprite(BIN, PROPPAL, 246, 88, null, null, false, true);
+    s.sprite(HYDRANT, { o: K.out, R: '#C8445E', r: '#E8708A' }, 330, 90, null, null, false, true);
+    lamp(s, -4, 80, HUE); lamp(s, 244, 66, HUE);
+    grate(s, 60, 113); grate(s, 300, 113);
+    // the road: a parked car, puddles, a manhole
+    car(s, 132, 116, HUE);
+    puddle(s, 70, 140, 11, HUE); puddle(s, 186, 124, 7, 343); puddle(s, 318, 142, 10, HUE);
+    manhole(s, 270, 132);
+    s.sprite(CONE, { o: K.out, C: '#FF8A4F', W: '#ECE6FA' }, 252, 120, null, null, false, true);
+    // lower sidewalk, park, plaza
+    lamp(s, 100, 128, HUE, true); lamp(s, 328, 128, HUE, true);
+    s.sprite(BENCH, PROPPAL, 150, 152, null, null, false, true); s.sprite(BIN, PROPPAL, 236, 152, null, null, false, true);
+    hedge(s, 0, 166, 80, 3); hedge(s, 120, 166, 74, 4);
+    flowers(s, 6, 184, 80, 22, [295, 343, 199], 20); flowers(s, 110, 188, 80, 18, [295, 175], 14);
+    tree(s, 78, 172, 21, 1); tree(s, 20, 182, 22, .85); tree(s, 150, 178, 23, .9);
+    // monument: the glyph of Electronic on a plinth
+    var mx = 276, my = 186;
+    s.px(mx - 24, my + 8, 48, 13, K.out); s.px(mx - 23, my + 9, 46, 11, '#3A3446'); s.px(mx - 23, my + 9, 46, 2, '#56506A'); s.px(mx - 23, my + 18, 46, 2, '#2A2534');
+    s.px(mx - 10, my + 12, 20, 4, '#2A2534'); s.px(mx - 9, my + 13, 18, 2, deepc(HUE));
+    pixShape(s, 'circle', mx, my - 8, 12, neonc(HUE)); pixShape(s, 'circle', mx, my - 8, 17, neonc(HUE, .55));
+    for (var d = 0; d < 4; d++) { var ang = (-90 + 90 * d) * Math.PI / 180; s.glow(Math.round(mx - 1 + 14.5 * Math.cos(ang)), Math.round(my - 9 + 14.5 * Math.sin(ang)), 2, 2, neonc(HUE)); }
+    s.glow(mx - 1, my - 9, 3, 3, neonc(HUE));
+    s.pool(mx, my + 4, 46, 16, 'oklch(0.80 0.105 ' + HUE + ' / A)', .3);
+
+    var walker = LOOKS.cap, girl = LOOKS.hair, old = LOOKS.beanie;
+    s.render(function (g, e, l, t) {
+      // the tower's music, reaching out in rings
+      for (var r = 0; r < 3; r++) {
+        var p = ((t / 2600) + r / 3) % 1, rad = 60 + p * 80;
+        for (var k = 0; k < 260; k += 2) {
+          var a2 = k / 260 * Math.PI * 2, xx = Math.round(58 + rad * Math.cos(a2)), yy = Math.round(56 + rad * .6 * Math.sin(a2));
+          g.fillStyle = neonc(HUE, .32 * (1 - p)); g.fillRect(xx, yy, 1, 1);
+        }
+      }
+      // chimney smoke
+      [[154, 23], [310, 23]].forEach(function (c, i) {
+        for (var n = 0; n < 6; n++) { var ph = ((t / 2200) + n / 6 + i * .3) % 1; g.fillStyle = 'rgba(150,140,170,' + (.35 * (1 - ph)) + ')'; var sz = 2 + Math.round(ph * 3); g.fillRect(Math.round(c[0] + Math.sin(ph * 5 + n) * 3 + ph * 6), Math.round(c[1] - ph * 22), sz, sz); }
+      });
+      // steam from the manhole
+      for (var m = 0; m < 8; m++) { var ph2 = ((t / 1800) + m / 8) % 1; g.fillStyle = 'rgba(200,190,230,' + (.22 * (1 - ph2)) + ')'; g.fillRect(Math.round(266 + Math.sin(ph2 * 4 + m) * 5 + m), Math.round(130 - ph2 * 26), 3 + Math.round(ph2 * 3), 2); }
+      // the antenna's red light
+      if (Math.floor(t / 900) % 2) { g.fillStyle = K.red; g.fillRect(96, -26 + 0, 1, 1); e.fillStyle = K.red; e.fillRect(95, -27, 3, 3); }
+      // neon blade flicker
+      if (Math.floor(t / 130) % 37 === 0) { g.fillStyle = 'rgba(10,9,13,.7)'; g.fillRect(15, 18, 9, 38); }
+      // people
+      drawPerson(s, g, e, ['hood', 'jacket'], LOOKS.hero, 66, 111, false, 0);
+      // one passer-by, crossing the screen
+      drawWalker(s, g, e, walker, Math.round((t * .028) % (W + 60) - 30), 162, false, Math.floor(t / 230) % 2);
+      // car blinker
+      if (Math.floor(t / 500) % 2) { e.fillStyle = K.amber; e.fillRect(133, 126, 2, 2); g.fillStyle = K.amber; g.fillRect(133, 126, 2, 2); }
+    }, { rain: true, wetTop: 100 });
+  })();
+
+  /* =================== 3. Inside Electronic Dance Music =================== */
+  (function () {
+    var s = new Scene('court', 22, 13), W = s.W, H = s.H, R = rnd(91);
+    var HALLS = [['Bass Music', 13], ['Club & Breaks', 15], ['Global Club', 15], ['Hardcore & Hardstyle', 8], ['House & Techno', 7], ['Retro & Eurodance', 9], ['Trance & Rave', 7]];
+    // polished concrete floor
+    for (var y = 74; y < H; y += 16) for (var x = 0; x < W; x += 16) {
+      s.px(x, y, 16, 16, R() < .5 ? '#1F1B27' : '#1C1924'); s.px(x, y, 16, 1, '#292432'); s.px(x, y, 1, 16, '#292432');
+      if (R() < .3) s.px(x + 4 + Math.floor(R() * 6), y + 5 + Math.floor(R() * 6), 4, 1, '#25212E');
+    }
+    // back wall: brick, a neon strip, posters between the doors
+    s.px(0, 0, W, 74, '#1E1820');
+    for (var by = 0; by < 72; by += 4) for (var bx = (by / 4 % 2) * 6; bx < W; bx += 12) { s.px(bx, by, 12, 4, R() < .5 ? '#2A1F26' : '#261C23'); s.px(bx, by, 12, 1, '#33262E'); s.px(bx, by, 1, 4, '#160F14'); }
+    s.px(0, 72, W, 2, K.out); s.glow(0, 70, W, 1, neonc(HUE, .8));
+    HALLS.forEach(function (hl, i) {
+      var span = W / 7, dx = Math.round(i * span + span / 2 - 12);
+      plate(s, dx - 10, 3, 44, 19, HUE); s.label(dx - 10, 3, 44, 19, hl[0], HUE, null, 9);
+      // door frame, a curtain of light strips inside
+      s.px(dx - 2, 27, 28, 45, K.out); s.px(dx - 1, 28, 26, 44, K.metal);
+      s.px(dx, 29, 24, 43, '#0A080D');
+      for (var k = 0; k < 6; k++) s.px(dx + 2, 32 + k * 7, 20, 3, 'rgba(194,176,251,' + (.03 + k * .03) + ')');
+      for (var st = dx + 1; st < dx + 23; st += 3) s.glow(st, 29, 1, 6, neonc(HUE, .5));
+      s.glow(dx, 28, 24, 1, neonc(HUE));
+      s.label(dx - 6, 75, 36, 7, hl[1] + ' GENRES', 270, null, 8);
+      reflect(s, dx + 2, 20, 84, 110, neonc(HUE), .16);
+      if (i < 6) poster(s, Math.round(dx + 24 + (span - 24) / 2 - 4), 34 + (i % 2) * 10, [343, 199, 175, 55, 31, 7][i], R);
+    });
+    // DJ booth on a stage, with the DJ behind
+    var sx = 136, sy = 84;
+    s.px(sx - 30, sy - 2, 140, 20, K.out); s.px(sx - 29, sy - 1, 138, 18, '#2A2433'); s.px(sx - 29, sy - 1, 138, 2, '#3E3650');
+    for (var sp = sx - 28; sp < sx + 108; sp += 8) s.px(sp, sy + 4, 1, 12, '#221D2B');
+    s.px(sx + 6, sy + 2, 68, 14, K.out); s.px(sx + 7, sy + 3, 66, 12, '#3A3348'); s.px(sx + 7, sy + 3, 66, 2, '#56506A');
+    [sx + 18, sx + 62].forEach(function (cx) {
+      s.g.fillStyle = K.out; s.g.beginPath(); s.g.arc(cx, sy + 9, 6, 0, 7); s.g.fill(); s.g.fillStyle = '#18141F'; s.g.beginPath(); s.g.arc(cx, sy + 9, 5, 0, 7); s.g.fill();
+      s.px(cx - 1, sy + 8, 2, 2, neonc(HUE)); s.px(cx + 4, sy + 4, 1, 5, K.metal4);
+    });
+    s.px(sx + 30, sy + 4, 20, 10, '#1E1A26'); for (var kn = 0; kn < 8; kn++) s.glow(sx + 32 + (kn % 4) * 4, sy + 6 + Math.floor(kn / 4) * 4, 2, 2, [K.cyan, K.pink, K.green, K.amber][kn % 4]);
+    s.e.fillStyle = 'rgba(194,176,251,.2)'; s.e.fillRect(sx + 7, sy + 3, 66, 12);
+    // speaker stacks
+    function speaker(x, y, h) {
+      s.px(x - 1, y - 1, 22, h + 2, K.out); s.px(x, y, 20, h, '#1F1B27'); s.px(x, y, 20, 2, '#2E2838'); s.px(x + 18, y + 2, 2, h - 2, '#16131C');
+      for (var c = y + 10; c < y + h - 4; c += 16) {
+        s.g.fillStyle = K.out; s.g.beginPath(); s.g.arc(x + 10, c, 7, 0, 7); s.g.fill();
+        s.g.fillStyle = '#2B2635'; s.g.beginPath(); s.g.arc(x + 10, c, 6, 0, 7); s.g.fill();
+        s.g.fillStyle = '#1A1720'; s.g.beginPath(); s.g.arc(x + 10, c, 3, 0, 7); s.g.fill();
+        s.glow(x + 10, c, 1, 1, neonc(HUE)); s.px(x + 7, c - 4, 2, 1, '#3E3850');
+      }
+    }
+    speaker(80, 80, 40); speaker(252, 80, 40);
+    // jukebox
+    var jx = 22, jy = 100;
+    s.g.fillStyle = 'rgba(0,0,0,.4)'; s.g.fillRect(jx + 30, jy + 6, 5, 40);
+    s.g.fillStyle = K.out; s.g.beginPath(); s.g.arc(jx + 15, jy + 13, 16, Math.PI, 0); s.g.fill(); s.px(jx - 1, jy + 12, 32, 34, K.out);
+    s.g.fillStyle = '#4A3A62'; s.g.beginPath(); s.g.arc(jx + 15, jy + 13, 15, Math.PI, 0); s.g.fill(); s.px(jx, jy + 13, 30, 32, '#4A3A62');
+    s.px(jx, jy + 13, 3, 32, '#5E4C7C'); s.px(jx + 27, jy + 13, 3, 32, '#36294A');
+    for (var a = 0; a < 60; a++) { var an = Math.PI + a / 60 * Math.PI; s.glow(Math.round(jx + 15 + 13 * Math.cos(an)), Math.round(jy + 13 + 13 * Math.sin(an)), 1, 1, a % 10 < 5 ? neonc(HUE) : K.pink); }
+    s.px(jx + 5, jy + 6, 20, 13, K.out); s.px(jx + 6, jy + 7, 18, 11, '#120F18'); for (var rr = 0; rr < 5; rr++) s.px(jx + 7, jy + 8 + rr * 2, 16, 1, rr % 2 ? K.warm2 : K.warm);
+    s.e.fillStyle = 'rgba(246,201,124,.5)'; s.e.fillRect(jx + 6, jy + 7, 18, 11);
+    s.px(jx + 5, jy + 22, 20, 12, K.out); s.px(jx + 6, jy + 23, 18, 10, '#241D30'); for (var gr = 0; gr < 6; gr++) s.px(jx + 7 + gr * 3, jy + 24, 2, 8, K.metal);
+    s.glow(jx + 2, jy + 38, 26, 2, K.pink); s.px(jx + 2, jy + 41, 26, 3, '#36294A');
+    s.label(jx - 3, jy + 47, 36, 8, 'JUKEBOX', HUE, null, 9);
+    s.pool(jx + 15, jy + 46, 26, 9, 'rgba(255,111,168,A)', .2);
+    // the ABOUT terminal, like the PC of a Pokemon centre
+    var tx = 306, ty = 100;
+    s.g.fillStyle = 'rgba(0,0,0,.4)'; s.g.fillRect(tx + 30, ty + 6, 5, 40);
+    s.px(tx - 1, ty - 1, 32, 46, K.out); s.px(tx, ty, 30, 44, '#2E2A3C'); s.px(tx, ty, 30, 2, '#46405A'); s.px(tx + 27, ty + 2, 3, 42, '#24202F');
+    s.px(tx + 3, ty + 4, 24, 18, K.out); s.glow(tx + 4, ty + 5, 22, 16, darkc(HUE));
+    for (var sl = ty + 6; sl < ty + 21; sl += 2) s.px(tx + 4, sl, 22, 1, 'rgba(0,0,0,.18)');
+    pixShape(s, 'circle', tx + 15, ty + 11, 4, neonc(HUE)); s.glow(tx + 15, ty + 11, 1, 1, neonc(HUE));
+    s.glow(tx + 7, ty + 17, 16, 1, neonc(HUE, .7));
+    s.px(tx + 3, ty + 26, 24, 12, '#1C1824'); for (var kk = 0; kk < 18; kk++) s.px(tx + 4 + (kk % 6) * 4, ty + 27 + Math.floor(kk / 6) * 4, 3, 2, kk === 17 ? neonc(HUE) : K.metal);
+    s.label(tx - 3, ty + 47, 36, 8, 'ABOUT', HUE, null, 9);
+    s.pool(tx + 15, ty + 46, 24, 9, 'oklch(0.80 0.105 ' + HUE + ' / A)', .2);
+    // bar with bottles and stools, bottom left
+    var bxx = 6, byy = 168;
+    s.px(bxx - 1, byy - 1, 92, 16, K.out); s.px(bxx, byy, 90, 14, '#4A3048'); s.px(bxx, byy, 90, 3, '#6A4466'); s.px(bxx, byy + 12, 90, 2, '#2A1A28');
+    for (var bt = bxx + 4; bt < bxx + 86; bt += 6) { var bc = [K.cyan, K.pink, K.amber, K.green][Math.floor(R() * 4)]; s.px(bt, byy - 6, 3, 7, K.out); s.glow(bt + 1, byy - 5, 1, 5, bc); }
+    for (var stx = bxx + 8; stx < bxx + 90; stx += 20) { s.px(stx, byy + 18, 9, 5, K.out); s.px(stx + 1, byy + 18, 7, 3, '#8E3F6A'); s.px(stx + 3, byy + 23, 3, 8, K.metal); }
+    s.pool(bxx + 45, byy + 6, 50, 12, 'rgba(255,111,168,A)', .12);
+    // couch and low table, bottom right
+    var cx2 = 262, cy2 = 170;
+    s.px(cx2 - 1, cy2 - 1, 80, 22, K.out); s.px(cx2, cy2, 78, 20, '#3E2E58'); s.px(cx2, cy2, 78, 6, '#56427A');
+    for (var cu = cx2 + 4; cu < cx2 + 74; cu += 24) { s.px(cu, cy2 + 7, 22, 11, '#4A3868'); s.px(cu, cy2 + 7, 22, 1, '#6A55A0'); }
+    s.px(cx2 + 20, cy2 + 26, 36, 10, K.out); s.px(cx2 + 21, cy2 + 27, 34, 8, '#2E2A3C'); s.px(cx2 + 21, cy2 + 27, 34, 1, '#46405A');
+    s.glow(cx2 + 26, cy2 + 28, 3, 3, K.amber); s.px(cx2 + 40, cy2 + 28, 8, 5, '#121016'); s.px(cx2 + 42, cy2 + 30, 3, 1, neonc(HUE));
+    // plants
+    [[4, 76], [334, 76]].forEach(function (p, i) {
+      s.px(p[0] + 1, p[1] + 16, 14, 10, K.out); s.px(p[0] + 2, p[1] + 17, 12, 8, '#3A3044'); s.px(p[0] + 2, p[1] + 17, 12, 2, '#56486A');
+      blob(s, p[0], p[1], 16, 19, [[8, 9, 7], [4, 12, 4], [12, 12, 4]], ['#4E7A63', '#36604E', '#25463A', '#173027'], 50 + i);
+    });
+    // exit mat
+    s.px(160, H - 12, 32, 12, K.out); s.px(161, H - 11, 30, 11, deepc(HUE)); for (var m = 0; m < 30; m += 3) s.px(161 + m, H - 11, 1, 11, '#2B2440');
+    s.label(148, H - 21, 56, 8, '▼ EXIT', 270, null, 9);
+
+    var fx = 104, fy = 114;
+    var dancers = [['hair', 'tee', LOOKS.hair, fx + 22, fy + 26], ['beanie', 'jacket', LOOKS.beanie, fx + 96, fy + 34], ['bun', 'coat', LOOKS.bun, fx + 60, fy + 44]];
+    s.render(function (g, e, l, t) {
+      var beat = Math.floor(t / 420);
+      // the dance floor lights, cycling
+      for (var i = 0; i < 9; i++) for (var j = 0; j < 4; j++) {
+        var x = fx + i * 16, y = fy + j * 11, lit = (i * 7 + j * 3 + beat) % 5, hue = [295, 343, 199, 295, 175][lit];
+        g.fillStyle = K.out; g.fillRect(x, y, 16, 11);
+        g.fillStyle = lit < 2 ? neonc(hue, .9) : darkc(hue, .95); g.fillRect(x + 1, y + 1, 14, 9);
+        g.fillStyle = 'rgba(255,255,255,.15)'; g.fillRect(x + 1, y + 1, 14, 1);
+        if (lit < 2) { e.fillStyle = neonc(hue, .45); e.fillRect(x + 1, y + 1, 14, 9); }
+      }
+      // lasers from the booth
+      for (var z = 0; z < 4; z++) {
+        var ang = Math.PI * .5 + Math.sin(t / 900 + z * 1.7) * .9, len = 120, hueL = [343, 199, 295, 175][z];
+        for (var q = 8; q < len; q += 1) { var lx = Math.round(sx + 40 + Math.cos(ang) * q), ly = Math.round(sy + 4 + Math.sin(ang) * q * .7); if (ly > H) break; e.fillStyle = neonc(hueL, .5 * (1 - q / len)); e.fillRect(lx, ly, 1, 1); }
+      }
+      // mirror-ball spots wandering on walls and floor
+      for (var b = 0; b < 14; b++) {
+        var bxs = (b * 53 + t * .03 * (b % 3 + 1)) % W, bys = 20 + ((b * 37 + t * .02 * (b % 2 + 1)) % (H - 30));
+        pool(l, bxs, bys, 4, 3, 'rgba(255,255,255,A)', .35);
+      }
+      var hop = Math.floor(t / 420) % 2;
+      // notes rising from the jukebox
+      for (var n = 0; n < 3; n++) {
+        var p = ((t / 1800) + n / 3) % 1, nx = Math.round(jx + 15 + Math.sin(p * 6 + n) * 7), ny = Math.round(jy - 6 - p * 24), col = n % 2 ? K.pink : neonc(HUE);
+        g.globalAlpha = 1 - p; g.fillStyle = col; g.fillRect(nx, ny, 3, 2); g.fillRect(nx + 2, ny - 6, 1, 6); g.fillRect(nx + 2, ny - 6, 3, 1); g.globalAlpha = 1;
+        e.fillStyle = col; e.fillRect(nx, ny, 3, 2);
+      }
+      drawPerson(s, g, e, ['hood', 'jacket'], LOOKS.hero, 130, 198, false, 0);
+      drawWalker(s, g, e, look({ C: '#2E7A6A', c: '#4FA08A', Q: '#1E4A40', B: '#3E8C7A', U: '#163A32', N: '*#7DF9FF', h: '#1E1418', j: '#2A2E3E', J: '#3E4458', k: '#1A1D28' }), W - Math.round((t * .024) % (W + 60)) + 10, 180, true, Math.floor(t / 230) % 2);
+    });
+  })();
+
+})();
+</script>
