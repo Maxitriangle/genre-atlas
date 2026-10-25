@@ -1,4 +1,4 @@
-# Reprise — état au 23/10/2026
+# Reprise — état au 25/10/2026
 
 **La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
@@ -7,9 +7,9 @@ Versions des 22 et 23/10/2026, toutes publiées :
 - 0.15.0 et 0.15.1 : référencement, aperçus de partage, favicon ;
 - 0.16.0 et 0.16.1 : page légale, Matomo.
 
-CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine.
+CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : Bing Webmaster Tools du côté de Maxime, puis faire connaître le site.
+**Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : regarder les premiers chiffres de Search Console, de Bing et de Matomo, puis faire connaître le site.
 
 **Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les trois dernières sections (visibilité, page légale, Matomo).
 
@@ -36,7 +36,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
 - **Banc de test** : `tools/test-local.sh`, 70 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version. Les plateformes d'écoute et Matomo y sont simulés par des mu-plugins.
 - **Visibilité** :
-  - Google Search Console est validée pour le domaine `every-genre.com`, par un enregistrement TXT dans la zone DNS o2switch, **à ne jamais supprimer**. Le plan du site a été envoyé le 22/10/2026 ;
+  - Google Search Console est validée pour le domaine `every-genre.com` (Bing Webmaster Tools l'a importée le 25/10/2026), par un enregistrement TXT dans la zone DNS o2switch, **à ne jamais supprimer**. Le plan du site a été envoyé le 22/10/2026 ;
   - depuis la v0.15, chaque page est lisible sans script : titre, résumé, canonique vers la fiche `/about/`, aperçu de partage dessiné par genre, données structurées, favicon (section « Visibilité ») ;
   - les premiers chiffres d'indexation sont attendus dans Search Console → Indexation → Pages.
 - **Page légale** `/legal/` (v0.16) : mentions légales anonymes (hébergeur o2switch), données gardées, cookies, droits, crédits. Le lien est au pied de chaque page.
@@ -58,7 +58,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - transformer un artiste proposé en artiste clé en un clic.
 8. **Visibilité, suite du plan proposé à Maxime le 22/10/2026** (dans cet ordre) :
    - ~~page LEGAL~~ : faite (v0.16.0 et v0.16.1), et les extensions CookieAdmin et FormLayer sont retirées ;
-   - **Bing Webmaster Tools** : **prochaine étape**, à faire par Maxime. Bing alimente aussi DuckDuckGo, Yahoo, et la recherche de ChatGPT et de Copilot. Il s'importe depuis Search Console en un clic, sans refaire de DNS ;
+   - ~~Bing Webmaster Tools~~ : fait le 25/10/2026, importé depuis Search Console. Bing alimente aussi DuckDuckGo, Yahoo, et la recherche de ChatGPT et de Copilot ;
    - dans quelques jours, regarder avec Maxime les premiers chiffres de Search Console et de Matomo (genres les plus consultés) ;
    - faire connaître le site : Reddit (r/InternetIsBeautiful, r/LetsTalkMusic, forums de scènes), Show HN, Product Hunt, newsletters musique ou design. L'angle : Every Noise at Once a fermé fin 2023 ;
    - plus tard : une page ABOUT qui raconte le projet ; les 790 genres sans texte.
@@ -700,3 +700,14 @@ Les deux réglages à vérifier dans Matomo chez Maxime : **anonymisation des IP
 - CookieAdmin, CookieAdmin Pro et FormLayer retirés.
 
 Il reste à vérifier en ligne, au navigateur, le pied de chaque page et le comptage d'une navigation, ce qui n'a pas été fait en fin de séance. La page légale sert bien la v0.16.1, avec son bouton de refus.
+
+## Vérification en ligne et Bing (25/10/2026)
+**Vérifié au navigateur sur le site en ligne (v0.16.1)** :
+- le pied « LEGAL NOTICE · PRIVACY · CREDITS » mène à `/legal/` sur l'accueil, la carte, la légende, la fiche, RANDOM, CONTACT, la page légale et la vue mobile ;
+- Matomo compte la page d'arrivée, puis la famille ouverte d'un clic sans rechargement, avec son adresse et son titre ;
+- le bouton de refus est sur la page légale.
+Les envois à `matomo.php` ont été interceptés par le script (`route.fulfill`), pour ne pas compter ces visites dans les statistiques de Maxime.
+
+**Piège : o2switch (`server: o2switch-PowerBoost-v3`) répond 429** à un Chromium sans tête après quelques pages, même espacées de 25 s, et parfois sur la page entière. Avec l'identité d'un Chrome ordinaire (`userAgent` de Chrome macOS), la même page passe sans refus, et `curl` aussi. Les visiteurs ne sont donc pas gênés. Pour une vérification en ligne : donner un `userAgent` ordinaire et intercepter Matomo. À surveiller dans Search Console (Paramètres → Statistiques sur l'exploration) et dans Bing : que les robots des moteurs ne reçoivent pas de 429.
+
+**Bing Webmaster Tools** : importé par Maxime depuis Search Console le 25/10/2026, sans DNS à refaire. Le plan du site y figure (vérifié par Maxime dans Sitemaps).
