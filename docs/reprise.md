@@ -710,4 +710,4 @@ Les envois à `matomo.php` ont été interceptés par le script (`route.fulfill`
 
 **Piège : o2switch (`server: o2switch-PowerBoost-v3`) répond 429** à un Chromium sans tête après quelques pages, même espacées de 25 s, et parfois sur la page entière. Avec l'identité d'un Chrome ordinaire (`userAgent` de Chrome macOS), la même page passe sans refus, et `curl` aussi. Les visiteurs ne sont donc pas gênés. Pour une vérification en ligne : donner un `userAgent` ordinaire et intercepter Matomo. À surveiller dans Search Console (Paramètres → Statistiques sur l'exploration) et dans Bing : que les robots des moteurs ne reçoivent pas de 429.
 
-**Bing Webmaster Tools** : importé par Maxime depuis Search Console le 25/10/2026, sans DNS à refaire.
+**Bing Webmaster Tools** : importé par Maxime depuis Search Console le 25/10/2026, sans DNS à refaire. Le plan du site y figure (vérifié par Maxime dans Sitemaps).
