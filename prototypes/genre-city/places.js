@@ -1,19 +1,17 @@
   /* =====================================================================
    * Places. How deep a genre goes decides what it is in the game:
-   *   no subgenre             a kiosk: its page is read at the counter
-   *   up to 8 subgenres       a house: one room, every subgenre in sight
-   *   grouped, under 50       a tower: an elevator, one floor per group
-   *   grouped, 50 and more    a quarter: open air, a plaza and its districts
-   * Electronic City itself is the quarter of the whole family.
+   *   no subgenre          a kiosk: its page is read at the counter
+   *   up to 8 subgenres    a house: one room, every subgenre in sight
+   *   grouped              a tower: an elevator, one floor per group
+   * The city itself is the family: a plaza and its districts around it.
    * ===================================================================== */
   function kindOf(n) {
     if (!n.kids.length) return 'kiosk';
-    if (!n.kids.some(function (k) { return k.grp; })) return 'house';
-    return n.total >= 50 ? 'quarter' : 'tower';
+    return n.kids.some(function (k) { return k.grp; }) ? 'tower' : 'house';
   }
   function artSize(n) {
     var k = kindOf(n);
-    return k === 'kiosk' ? [36, 38] : k === 'house' ? (n.total >= 10 ? [76, 74] : [60, 66]) : k === 'tower' ? [92, 102] : [96, 84];
+    return k === 'kiosk' ? [36, 38] : k === 'house' ? (n.total >= 10 ? [76, 74] : [60, 66]) : n.total >= 50 ? [104, 128] : [92, 102];
   }
   // A group's genres, nested groups included, each with the path of groups it sits in.
   function flatten(g, path) {
@@ -33,24 +31,9 @@
   function what(n) {
     var k = kindOf(n);
     return n.name.toUpperCase() + ' · ' + (k === 'kiosk' ? 'no subgenre. Read its page at the counter.' :
-      plural(n.total, 'subgenre', 'subgenres') + (k === 'quarter' ? '. A whole quarter: walk through the arch.' : k === 'tower' ? '. A tower: take the elevator.' : '. Walk in through the door.'));
+      plural(n.total, 'subgenre', 'subgenres') + (k === 'tower' ? '. A tower: take the elevator.' : '. Walk in through the door.'));
   }
 
-  /* ---------- the arch at the mouth of a quarter ---------- */
-  function arch(s, x, y, w, h, hue, name) {
-    s.pool(x + w / 2, y + h + 4, w * .7, 10, 'oklch(0.80 0.105 ' + hue + ' / A)', .3);
-    for (var gy = 0; gy < h - 24; gy++) { s.g.globalAlpha = .06 + gy * .006; s.g.fillStyle = neonc(hue); s.g.fillRect(x + 14, y + 22 + gy, w - 28, 1); }
-    s.g.globalAlpha = 1;
-    [x, x + w - 14].forEach(function (px, i) {
-      s.g.fillStyle = 'rgba(0,0,0,.4)'; s.g.fillRect(px + 14, y + 26, 4, h - 26);
-      s.px(px - 1, y + 16, 16, h - 15, K.out); s.px(px, y + 17, 14, h - 17, '#2E2A38'); s.px(px, y + 17, 3, h - 17, '#3E384C'); s.px(px + 11, y + 17, 3, h - 17, '#24202C');
-      s.glow(i ? px : px + 13, y + 22, 1, h - 24, neonc(hue));
-      for (var b = y + 30; b < y + h - 6; b += 12) s.px(px + 3, b, 8, 1, '#24202C');
-    });
-    s.px(x - 4, y - 1, w + 8, 22, K.out); s.px(x - 3, y, w + 6, 20, '#2E2A38'); s.px(x - 3, y, w + 6, 2, '#4A4458'); s.px(x - 3, y + 18, w + 6, 2, '#1E1B26');
-    plate(s, x + 4, y + 3, w - 8, 14, hue); s.label(x + 4, y + 3, w - 8, 14, name, hue, null, 10);
-    s.px(x + 14, y + h - 2, w - 28, 2, K.curb);
-  }
   function post(s, x, y, name, hue, w) {                    // a street sign on a pole
     w = w || 104;
     s.px(x + 6, y + 18, 2, 30, K.metal); s.px(x + 6, y + 18, 1, 30, K.metal4);
@@ -82,7 +65,7 @@
     colW = colW.map(function (v) { return ceil16(Math.max(v, 224)); }); rowH = rowH.map(function (v) { return ceil16(Math.max(v, 192)); });
     var W = 2 * M + colW[0] + colW[1] + colW[2] + 2 * ROAD, H = 2 * M + rowH[0] + rowH[1] + rowH[2] + 2 * ROAD;
     var CW = colW[1], CH = rowH[1];
-    var s = new World(W / TILE, H / TILE, node === ROOT ? 'ELECTRONIC CITY' : node.name.toUpperCase() + ' QUARTER'), g = s.g, R = rnd(typeof node.id === 'number' ? node.id : 7);
+    var s = new World(W / TILE, H / TILE, 'ELECTRONIC CITY'), g = s.g, R = rnd(typeof node.id === 'number' ? node.id : 7);
     function origin(col, row) { return [M + colW.slice(0, col).reduce(function (t, v) { return t + v + ROAD; }, 0), M + rowH.slice(0, row).reduce(function (t, v) { return t + v + ROAD; }, 0)]; }
     var RX = [origin(1, 0)[0] - ROAD, origin(2, 0)[0] - ROAD], RY = [origin(0, 1)[1] - ROAD, origin(0, 2)[1] - ROAD];
     pavers(s, 0, 0, W, H);
@@ -116,28 +99,20 @@
     for (var d = 0; d < Math.min(8, node.kids.length); d++) { var ang = (-90 + 360 * d / node.kids.length) * Math.PI / 180; s.glow(Math.round(cx - 1 + 14.5 * Math.cos(ang)), Math.round(cy - 1 + 14.5 * Math.sin(ang)), 2, 2, neonc(hue)); }
     s.glow(cx - 1, cy - 1, 3, 3, neonc(hue)); s.pool(cx, cy + 12, 46, 16, 'oklch(0.80 0.105 ' + hue + ' / A)', .3);
     s.block(cx - 24, cy - 18, 48, 47);
-    var mon = info(node); mon.text = (node === ROOT ? 'ELECTRONIC CITY · ' : node.name.toUpperCase() + ' QUARTER · ') + plural(node.total, 'genre', 'genres') + ' in ' + plural(node.kids.length, 'district', 'districts') + '. ' + (node.d || '');
+    s.sound(cx, cy, node, 9, .6);                             // the family's theme on the plaza
+    var mon = info(node); mon.text = 'ELECTRONIC CITY · ' + plural(node.total, 'genre', 'genres') + ' in ' + plural(node.kids.length, 'district', 'districts') + '. ' + (node.d || '');
     for (var mi = Math.floor((cx - 24) / TILE); mi <= Math.floor((cx + 23) / TILE); mi++) for (var mr = Math.floor((cy - 18) / TILE); mr <= Math.floor((cy + 29) / TILE); mr++) s.act(mi, mr, mon);
-    // the way out: the metro in the city, an arch back to the street in a quarter
+    // the way out: the metro, back to the Terminal
     var ex = cx - 120, ey = cy - 56, exitRow;
-    if (opts.metro) {
-      s.px(ex - 3, ey - 1, 36, 34, K.out);
-      for (var st = 0; st < 32; st += 3) { var cc = 10 + st; s.px(ex, ey + st, 30, 3, 'rgb(' + cc + ',' + (cc - 2) + ',' + (cc + 6) + ')'); s.px(ex, ey + st, 30, 1, 'rgba(255,255,255,.07)'); }
-      s.px(ex - 2, ey - 1, 2, 33, K.metal2); s.px(ex + 30, ey - 1, 2, 33, K.metal2); s.glow(ex, ey - 1, 1, 33, neonc(270)); s.glow(ex + 29, ey - 1, 1, 33, neonc(270));
-      plate(s, ex - 8, ey - 16, 46, 11, 270); s.label(ex - 8, ey - 16, 46, 11, 'TERMINAL', 270, null, 9);
-      s.pool(ex + 15, ey + 38, 26, 9, 'rgba(194,176,251,A)', .2);
-      s.block(ex - 3, ey - 16, 36, 22); s.block(ex - 3, ey, 4, 33); s.block(ex + 29, ey, 4, 33);
-      exitRow = Math.floor((ey + 24) / TILE);
-      for (var tx = Math.floor((ex + 2) / TILE); tx <= Math.floor((ex + 27) / TILE); tx++) { s.on(tx, exitRow, { go: 'terminal' }); s.wall(tx, exitRow - 1); }
-      s.start = { x: Math.floor((ex + 15) / TILE), y: exitRow + 1, dir: 'down' };
-    } else {
-      var aw = 64, ah = 56, axx = Math.round(ex - 16), ayy = Math.round(ey - 20);
-      arch(s, axx, ayy, aw, ah, hue, '◀ ' + opts.back);
-      s.block(axx - 4, ayy - 1, aw + 8, ah - 14); s.block(axx, ayy + 16, 14, ah - 16); s.block(axx + aw - 14, ayy + 16, 14, ah - 16);
-      exitRow = Math.floor((ayy + ah - 1) / TILE);
-      for (var at = Math.floor((axx + 16) / TILE); at <= Math.floor((axx + aw - 17) / TILE); at++) s.on(at, exitRow, { exit: true });
-      s.start = { x: Math.floor((axx + aw / 2) / TILE), y: exitRow + 1, dir: 'down' };
-    }
+    s.px(ex - 3, ey - 1, 36, 34, K.out);
+    for (var st = 0; st < 32; st += 3) { var cc = 10 + st; s.px(ex, ey + st, 30, 3, 'rgb(' + cc + ',' + (cc - 2) + ',' + (cc + 6) + ')'); s.px(ex, ey + st, 30, 1, 'rgba(255,255,255,.07)'); }
+    s.px(ex - 2, ey - 1, 2, 33, K.metal2); s.px(ex + 30, ey - 1, 2, 33, K.metal2); s.glow(ex, ey - 1, 1, 33, neonc(270)); s.glow(ex + 29, ey - 1, 1, 33, neonc(270));
+    plate(s, ex - 8, ey - 16, 46, 11, 270); s.label(ex - 8, ey - 16, 46, 11, 'TERMINAL', 270, null, 9);
+    s.pool(ex + 15, ey + 38, 26, 9, 'rgba(194,176,251,A)', .2);
+    s.block(ex - 3, ey - 16, 36, 22); s.block(ex - 3, ey, 4, 33); s.block(ex + 29, ey, 4, 33);
+    exitRow = Math.floor((ey + 24) / TILE);
+    for (var tx = Math.floor((ex + 2) / TILE); tx <= Math.floor((ex + 27) / TILE); tx++) { s.on(tx, exitRow, { go: 'terminal' }); s.wall(tx, exitRow - 1); }
+    s.start = { x: Math.floor((ex + 15) / TILE), y: exitRow + 1, dir: 'down' };
     // the family's jukebox and terminal on the plaza
     outdoorJukebox(s, cx + 70, cy - 52, node, hue); aboutTerminal(s, cx + 108, cy - 52, node, hue);
     [[-60, -10], [44, -10]].forEach(function (o) { lamp(s, cx + o[0], cy + o[1], hue); s.block(cx + o[0] + 4, cy + o[1] + 18, 8, 4); });
@@ -163,6 +138,7 @@
       var north = pos[1] === 0, west = pos[0] === 0, pw = Math.min(cw - 16, 140);
       var sx0 = west ? ox + cw - pw - 8 : ox + 8, sy0 = north ? oy + ch - 52 : oy + 4;
       post(s, sx0, sy0, c.top.name, hue, pw);
+      s.sound(ox + cw / 2, oy + ch / 2, c.top, Math.max(cw, ch) / TILE * .6, .45, 'pad');   // the district's bed
       s.block(sx0 + 4, sy0 + 30, 6, 18);
       var sign = { text: c.top.name.toUpperCase() + ' · ' + plural(c.items.length, 'building', 'buildings') + ', ' + plural(c.top.grp ? c.top.total : 1 + c.top.total, 'genre', 'genres') + ' in all.' };
       for (var sx = 0; sx < 3; sx++) s.act(Math.floor((sx0 + 6) / TILE), Math.floor((sy0 + 30) / TILE) + sx, sign);
@@ -173,10 +149,10 @@
           var n = it.n, k = kindOf(n), sz = artSize(n), w = sz[0], h = sz[1], top = bottom - h;
           if (k === 'kiosk') kiosk(s, x, top, w, h, hue, n.name);
           else if (k === 'tower') tower(s, x, top, w, h, hue, n.name);
-          else if (k === 'quarter') arch(s, x, top, w, h, hue, n.name);
           else house(s, x, top, w, h, hue, n.name);
           s.block(x - 2, top + (k === 'kiosk' ? -18 : 0), w + 4, h + (k === 'kiosk' ? 18 : 0));
           var doorTile = Math.floor((x + w / 2) / TILE), doorRow = bottom / TILE - 1;
+          s.sound(x + w / 2, bottom, n, 7, 1);
           var about = info(n, it.path);
           if (k === 'kiosk') { s.bumps[doorTile + ',' + doorRow] = about; }
           else s.on(doorTile, doorRow, { enter: n, path: it.path });
@@ -241,13 +217,13 @@
   // Subgenres line the back wall: those with subgenres of their own are doors, the others are
   // lit studios whose page is read through the glass. Nothing is behind a door for its own sake.
   function buildRoom(o) {
-    var s = new World(20, 12, o.title), W = s.W, H = s.H, g = s.g, hue = HUE, R = rnd(hash(o.title));
+    var items = o.items || [], cols = Math.max(20, 2 * Math.ceil((items.length * 3 + 2) / 2)), mid = cols / 2;
+    var s = new World(cols, 12, o.title), W = s.W, H = s.H, g = s.g, hue = HUE, R = rnd(hash(o.title));
     for (var y = 74; y < H; y += 16) for (var x = 0; x < W; x += 16) { s.px(x, y, 16, 16, R() < .5 ? '#1F1B27' : '#1C1924'); s.px(x, y, 16, 1, '#292432'); s.px(x, y, 1, 16, '#292432'); }
     s.px(0, 0, W, 74, '#1E1820');
     for (var by = 0; by < 72; by += 4) for (var bx = (by / 4 % 2) * 6; bx < W; bx += 12) { s.px(bx, by, 12, 4, R() < .5 ? '#2A1F26' : '#261C23'); s.px(bx, by, 12, 1, '#33262E'); s.px(bx, by, 1, 4, '#160F14'); }
     s.px(0, 72, W, 2, K.out); s.glow(0, 70, W, 1, neonc(hue, .8));
-    for (var i = 0; i < 20; i++) for (var j = 0; j < 4; j++) s.wall(i, j);
-    var items = o.items || [];
+    for (var i = 0; i < cols; i++) for (var j = 0; j < 4; j++) s.wall(i, j);
     items.forEach(function (it, i) {
       var n = it.n, span = W / items.length, dx = Math.round(i * span + span / 2 - 12), pw = Math.min(46, Math.floor(span) - 4), t = Math.floor((dx + 12) / TILE);
       plate(s, dx + 12 - pw / 2, 3, pw, 19, hue); s.label(dx + 12 - pw / 2, 3, pw, 19, n.name, hue, null, 8);
@@ -263,6 +239,7 @@
         shopWindow(s, dx, 29, 24, 40, hue, R);
         s.act(t, 3, info(n, it.path)); s.bumps[t + ',' + 3] = info(n, it.path);
       }
+      s.sound(dx + 12, 72, n, 5, .6);
       s.label(dx - 8, 75, 40, 7, n.kids.length ? plural(n.total, 'SUBGENRE', 'SUBGENRES') : 'READ', 270, null, 8);
       reflect(s, dx + 2, 20, 84, 110, neonc(hue), .16);
     });
@@ -273,20 +250,22 @@
       s.px(ex + 2, 32, 2, 38, '#56506A'); s.px(ex + 22, 32, 2, 38, '#56506A');
       plate(s, ex - 6, 6, 52, 13, hue); s.label(ex - 6, 6, 52, 13, 'ELEVATOR', hue, null, 9);
       s.glow(ex + 44, 44, 3, 3, K.amber); s.glow(ex + 44, 50, 3, 3, K.green);
-      s.on(9, 3, { elevator: o.elevator }); s.on(10, 3, { elevator: o.elevator });
+      s.on(mid - 1, 3, { elevator: o.elevator }); s.on(mid, 3, { elevator: o.elevator });
     }
-    if (!items.length && !o.elevator) { plate(s, 80, 26, 160, 26, hue); s.label(80, 26, 160, 26, 'NO SUBGENRE · THE END OF THIS BRANCH', hue, null, 9); }
-    if (o.host) { outdoorJukebox(s, 16, 92, o.host, hue); aboutTerminal(s, 276, 92, o.host, hue); }
-    s.px(144, H - 12, 32, 12, K.out); s.px(145, H - 11, 30, 11, deepc(hue)); for (var m = 0; m < 30; m += 3) s.px(145 + m, H - 11, 1, 11, '#2B2440');
-    s.label(180, H - 10, 60, 8, o.exitLabel || '▼ EXIT', 270, null, 9);
-    s.on(9, 11, { exit: true }); s.on(10, 11, { exit: true });
-    for (var ex2 = 0; ex2 < 20; ex2++) if (ex2 !== 9 && ex2 !== 10) s.wall(ex2, 11);
-    [[2, 150], [302, 150]].forEach(function (p, i) {
+    if (!items.length && !o.elevator) { plate(s, W / 2 - 80, 26, 160, 26, hue); s.label(W / 2 - 80, 26, 160, 26, 'NO SUBGENRE · THE END OF THIS BRANCH', hue, null, 9); }
+    if (o.host) { outdoorJukebox(s, 16, 92, o.host, hue); aboutTerminal(s, W - 44, 92, o.host, hue); s.sound(W / 2, H / 2, o.host, 80, .7, 'room'); }
+    if (o.bed) s.sound(W / 2, H / 2, o.bed, 80, .4, 'room');          // a floor plays its group
+    var mx = (mid - 1) * TILE;
+    s.px(mx, H - 12, 32, 12, K.out); s.px(mx + 1, H - 11, 30, 11, deepc(hue)); for (var m = 0; m < 30; m += 3) s.px(mx + 1 + m, H - 11, 1, 11, '#2B2440');
+    s.label(mx + 36, H - 10, 60, 8, o.exitLabel || '▼ EXIT', 270, null, 9);
+    s.on(mid - 1, 11, { exit: true }); s.on(mid, 11, { exit: true });
+    for (var ex2 = 0; ex2 < cols; ex2++) if (ex2 !== mid - 1 && ex2 !== mid) s.wall(ex2, 11);
+    [[2, 150], [W - 18, 150]].forEach(function (p, i) {
       s.px(p[0] + 1, p[1] + 16, 14, 10, K.out); s.px(p[0] + 2, p[1] + 17, 12, 8, '#3A3044'); s.px(p[0] + 2, p[1] + 17, 12, 2, '#56486A');
       blob(s, p[0], p[1], 16, 19, [[8, 9, 7], [4, 12, 4], [12, 12, 4]], ['#4E7A63', '#36604E', '#25463A', '#173027'], 50 + i);
       s.block(p[0], p[1] + 12, 16, 14);
     });
-    var fx = 104, fy = 108;
+    var fx = Math.round(W / 2 - 56), fy = 108;
     s.live = function (g2, e) {
       var beat = Math.floor(performance.now() / 420);
       for (var i2 = 0; i2 < 7; i2++) for (var j2 = 0; j2 < 4; j2++) {
@@ -297,17 +276,15 @@
         if (lit < 2) { e.fillStyle = neonc(h2, .45); e.fillRect(x2 + 1, y2 + 1, 14, 9); }
       }
     };
-    s.start = { x: 9, y: 10, dir: 'up' };
+    s.start = { x: mid - 1, y: 10, dir: 'up' };
     return s;
   }
   // What lies behind a door, by kind.
   function placeFor(n) {
     var k = kindOf(n);
-    if (k === 'quarter') return buildQuarter(n, { back: realPathName(n) });
     if (k === 'tower') return buildRoom({ title: n.name.toUpperCase() + ' · LOBBY', host: n, elevator: n });
     return buildRoom({ title: n.name.toUpperCase(), host: n, items: n.kids.map(function (k2) { return { n: k2, path: [] }; }) });
   }
-  function realPathName(n) { var p = N[n.p]; return p === ROOT ? 'ELECTRONIC CITY' : (p ? p.name.toUpperCase() + ' QUARTER' : 'BACK'); }
 
   /* =================== the game: camera, moves, triggers, dialogue =================== */
   var cv = document.getElementById('game'), c = cv.getContext('2d');
@@ -380,7 +357,7 @@
         var back = { w: world, x: hero.x, y: hero.y + 1, dir: 'down' };
         travel(function () {
           stack.push(back);
-          var w = place('f' + f.id, function () { return buildRoom({ title: host.name.toUpperCase() + ' · FLOOR ' + (floors.indexOf(f) + 1) + ' · ' + f.name, items: f.grp ? flatten(f) : [{ n: f, path: [] }], exitLabel: '▼ ELEVATOR' }); });
+          var w = place('f' + f.id, function () { return buildRoom({ title: host.name.toUpperCase() + ' · FLOOR ' + (floors.indexOf(f) + 1) + ' · ' + f.name, items: f.grp ? flatten(f) : [{ n: f, path: [] }], bed: f, exitLabel: '▼ ELEVATOR' }); });
           enterWorld(w, w.start);
         });
       });
@@ -426,7 +403,8 @@
     [dg, de, dl].forEach(function (x) { x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, VW, VH); x.setTransform(1, 0, 0, 1, -cx, -cy); });
     var t = still ? 0 : now;
     world.live && world.live(dg, de, dl, t);
-    drawHero(dg, de, Math.round(hp[0]) - 1, Math.round(hp[1]) + 15, hero.dir, hero.moving ? hero.frame : 0);
+    listen(world, hp[0] + 8, hp[1] + 8);
+    drawHero(dg, de, Math.round(hp[0]), Math.round(hp[1]) + 15, hero.dir, hero.moving ? hero.frame : 0);
     var CW = cv.width, CH = cv.height;
     c.globalCompositeOperation = 'source-over'; c.filter = 'none'; c.globalAlpha = 1;
     c.fillStyle = '#08070A'; c.fillRect(0, 0, CW, CH);
@@ -466,6 +444,7 @@
     if (KEYS[k]) { ev.preventDefault(); if (!dlg.hidden || (lock && ev.repeat)) return; lock = false; press(KEYS[k]); }
     else if (k === ' ' || k === 'Enter' || k === 'e') { ev.preventDefault(); if (!ev.repeat) action(); }
     else if (k === 'Escape' || k === 'x') close();
+    else if (k === 'm') setSound(!soundOn);
   });
   window.addEventListener('keyup', function (ev) {
     var k = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
@@ -483,6 +462,7 @@
     ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (n) { b.addEventListener(n, function () { release(dir); }); });
   });
   document.getElementById('btn-a').addEventListener('click', action);
+  document.getElementById('btn-sound').addEventListener('click', function () { setSound(!soundOn); });
   // B closes what is open; held down, it runs.
   var btnB = document.getElementById('btn-b');
   btnB.addEventListener('pointerdown', function () { if (!dlg.hidden) close(); else run = true; });

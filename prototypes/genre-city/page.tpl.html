@@ -13,7 +13,7 @@ html, body { background: var(--bg); color: var(--ink); }
 [hidden] { display: none !important; }
 body { font: 14px/1.6 var(--mono); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
 .wrap { max-width: 1000px; margin: 0 auto; display: grid; gap: 18px; }
-header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 20px; }
 h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: uppercase; margin: 0; }
 .eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
 .screen { position: relative; border: 1px solid var(--line); background: #08070A; overflow: hidden; }
@@ -42,6 +42,9 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
 #btn-a { color: var(--bg); background: var(--accent); border-color: var(--accent); }
 .keys { font-size: 12px; color: var(--dim); text-align: center; flex: 1; min-width: 0; }
 .keys b { color: var(--ink); font-weight: 600; }
+.sound { font: 600 12px/1 var(--mono); letter-spacing: .1em; color: var(--accent); background: var(--panel); border: 1px solid var(--accent); padding: 10px 14px; cursor: pointer; }
+.sound[aria-pressed="true"] { color: var(--bg); background: var(--accent); }
+.sound:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .note { display: grid; gap: 8px; color: var(--dim); font-size: 13px; max-width: 72ch; }
 .note p { margin: 0; }
 @media (max-width: 560px) { .keys { display: none; } .dpad { grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px); } }
@@ -50,7 +53,8 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
 <div class="wrap">
   <header>
     <h1>Genre City</h1>
-    <span class="eyebrow">Prototype jouable · version 2</span>
+    <span class="eyebrow">Prototype jouable · version 3</span>
+    <button type="button" id="btn-sound" class="sound" aria-pressed="false">♪ SOUND OFF</button>
   </header>
 
   <div class="screen">
@@ -67,7 +71,7 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
       <button type="button" id="pad-right" data-dir="right" aria-label="Right">▶</button>
       <button type="button" id="pad-down" data-dir="down" aria-label="Down">▼</button>
     </div>
-    <div class="keys"><b>ARROWS</b> or <b>WASD / ZQSD</b> to walk, <b>SHIFT</b> to run · <b>SPACE</b> or <b>ENTER</b> to read what you face · <b>ESC</b> to close</div>
+    <div class="keys"><b>ARROWS</b> or <b>WASD / ZQSD</b> to walk, <b>SHIFT</b> to run · <b>M</b> for sound · <b>SPACE</b> or <b>ENTER</b> to read what you face · <b>ESC</b> to close</div>
     <div class="ab">
       <button type="button" id="btn-b" aria-label="Close">B</button>
       <button type="button" id="btn-a" aria-label="Read">A</button>
@@ -75,8 +79,8 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
   </div>
 
   <div class="note">
-    <p>À essayer : l'escalier 01 ELECTRONIC, en haut à gauche de la gare, mène à la place d'Electronic City. Ses quatre quartiers sont tout autour, un dans chaque direction, avec un panneau à leur nom. Un genre sans sous-genre est un kiosque qu'on lit au comptoir ; une maison a une seule salle où tous ses sous-genres se voient ; une tour a un ascenseur, un étage par groupe ; une arche ouvre un quartier entier, comme Electronic Dance Music.</p>
-    <p>Maj (ou B maintenu sur téléphone) pour courir. Pas encore de son ni de personnages à qui parler ; les autres lignes de la gare sont fermées.</p>
+    <p>Nouveau : le son. Appuie sur ♪ SOUND OFF en haut (ou M) pour l'activer, puis promène-toi : chaque quartier a sa nappe, chaque genre sa boucle, qui monte quand tu approches de sa porte et se place à gauche ou à droite. Les boucles sont composées par le code à partir du nom du genre (tempo, batterie, ligne de basse) : elles évoquent le genre sans le reproduire. Le vrai morceau reste au juke-box.</p>
+    <p>Les grands genres sont tous des tours à ascenseur ; les petits, des maisons à une salle ; ceux sans sous-genre, des kiosques qu'on lit au comptoir. Maj (ou B maintenu) pour courir.</p>
   </div>
 </div>
 

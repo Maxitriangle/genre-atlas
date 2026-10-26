@@ -744,3 +744,10 @@ Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier
 - « les bâtiments les plus à gauche ne s'affichent pas » : non reproduit (Chrome, ordinateur et téléphone). Question posée à Maxime : appareil, navigateur, capture ;
 - une DA par ville : retenue pour plus tard (Rock briques et entrepôts, Jazz art déco, Folk bourg, Latin façades colorées, Reggae bord de mer, Country désert…) ;
 - un genre ajouté dans WordPress : le prototype a une copie figée ; la version intégrée lira `/wp-json/genre-atlas/v1/tree` et le montrera seule. Chaque quartier garde sa case : un ajout n'agrandit que sa rue.
+
+**Prototype 3 (26/10/2026)** :
+- les arches (quartiers en plein air dans un genre) **désorientaient** Maxime ; les tours fonctionnent mieux : tout genre à groupes est une tour à ascenseur, plus haute à partir de 50 descendants. Un étage s'élargit si son groupe compte plus de 8 genres ;
+- le personnage est plus petit (16 × 22 au lieu de 18 × 27), à la demande de Maxime ;
+- **démo sonore** (`audio.js`) : boucles générées dans le navigateur, sans fichier ni service extérieur, et rien avant le bouton SOUND. Vérifié au navigateur que les voix apparaissent, montent avec la proximité et se coupent ; la qualité musicale reste à juger à l'oreille par Maxime.
+
+**À garder pour plus tard, demandé par Maxime : la musique réelle via Deezer.** Jouer en fondu les extraits de 30 secondes des titres que l'atlas connaît déjà (LISTEN), selon la même règle de proximité. Conditions : un choix explicite du joueur au départ (« musique réelle via Deezer »), puisque c'est un service extérieur appelé sans autre clic ; déclaration sur la page légale ; vérifier les conditions d'utilisation de l'API Deezer pour les extraits ; repli sur les boucles générées pour les genres sans titre.

@@ -38,7 +38,7 @@ if __name__ == '__main__':
         data = subtree(sys.argv[sys.argv.index('--data') + 1])
         json.dump(data, open(os.path.join(HERE, 'electronic.json'), 'w'), separators=(',', ':'), ensure_ascii=False)
     read = lambda f: open(os.path.join(HERE, f), encoding='utf-8').read()
-    js = '  var DATA = ' + read('electronic.json') + ';\n' + read('art.js') + read('game.js') + read('places.js')
+    js = '  var DATA = ' + read('electronic.json') + ';\n' + read('art.js') + read('game.js') + read('audio.js') + read('places.js')
     page = read('page.tpl.html').replace('/*#JS#*/', js)
     out = os.path.join(HERE, 'genre-city-prototype.html')
     open(out, 'w', encoding='utf-8').write(page)

@@ -504,14 +504,15 @@
     s.px(x, wy, w, h - rh, '#25212F');
     for (var py = wy; py < y + h; py += 13) for (var px = x; px < x + w; px += 16) { s.px(px, py, 16, 1, '#302A3C'); s.px(px, py, 1, 13, '#302A3C'); s.px(px + 15, py + 1, 1, 12, '#1D1926'); }
     s.px(x - 1, wy, 1, h - rh, K.out); s.px(x + w, wy, 1, h - rh, K.out); s.px(x - 1, y + h, w + 2, 1, K.out);
-    // three floors of windows
-    for (var f = 0; f < 3; f++) for (var c = 0; c < 5; c++) {
+    // as many floors of windows as the tower is tall
+    var floors = Math.max(3, Math.floor((h - 62) / 13)), wcols = Math.floor((w - 32) / 12);
+    for (var f = 0; f < floors; f++) for (var c = 0; c < wcols; c++) {
       var wx = x + 16 + c * 12, wyy = wy + 4 + f * 13, lit = R() < .6;
       windowW(s, wx, wyy, 8, 7, { R: R, lit: lit, cold: R() < .3, hue: hue, blinds: lit && R() < .3, silhouette: lit && R() < .15 });
     }
     // fire escape on the right
     var fx = x + w - 15;
-    for (var fl = 0; fl < 3; fl++) {
+    for (var fl = 0; fl < floors; fl++) {
       var fy = wy + 12 + fl * 13;
       s.px(fx - 1, fy, 15, 3, K.out); for (var gx = fx; gx < fx + 13; gx += 2) s.px(gx, fy + 1, 1, 1, K.metal2);
       s.px(fx - 1, fy - 6, 1, 6, K.metal); s.px(fx + 13, fy - 6, 1, 6, K.metal); s.px(fx - 1, fy - 6, 15, 1, K.metal);

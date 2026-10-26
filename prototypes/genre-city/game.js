@@ -69,21 +69,27 @@
   World.prototype.on = function (i, j, what) { this.solid[j][i] = false; this.trig[i + ',' + j] = what; };
   World.prototype.act = function (i, j, what) { this.acts[i + ',' + j] = what; };
 
-  /* ---------- the hero, seen from four sides, two steps each ---------- */
-  var HOOD_BACK = mirror(['......ooo', '....ooppp', '...opPHHH', '..opHHHHH', '..oHHHHHH', '.oHHHHHHH', 'nnpHHHHHH', 'nnpHHHHHH', 'nnpHHHHHH', 'nnpHhHHHH', '.ophHHHHH', '..ohHHHHH', '..ohhHHHH', '...ohhhhh']);
+  /* ---------- the hero, seen from four sides, two steps each ----------
+   * 16 by 22 pixels: smaller than the passers-by, so the buildings keep their scale. */
   function mirror(half) { return half.map(function (r) { return r + r.split('').reverse().join(''); }); }
-  var HOOD_SIDE = [
-    '......oooooo......', '....ooHHHHHHoo....', '...oHHHHHHHHHHo...', '..oHHHHHHhhhhHo...', '..oHHHHhqqqqqo....', '..oHHpnnqrrsso....',
-    '..oHHpnnqssEso....', '..oHHpnnqsssssso..', '..oHHHppqssSso....', '...oHHHhqSmSo.....', '....oHHhhSSSo.....', '.....oooooSo......', '.....ooSSSo.......'];
+  var HERO_FRONT = mirror(['....oooo', '..ooHHHH', '.oHHHHHH', '.oHHhhhh', 'nphhqqqq', 'nphqssss', 'nphssEss', '.ohsssss', '..ohSSSS',
+    '...ojJjz', '..ojJjjz', '.ojJjjjz', '.ojJojjz', '.ojjojjz', '.osSojjz', '...okkkk', '...olLlo', '...olLlo', '...olllo', '...olLlo', '...oFFFo', '...ooooo']);
+  var HERO_BACK = mirror(['....oooo', '..ooHHHH', '.oHHHHHH', '.oHHHHHH', 'nphHHHHH', 'nphHHHHH', 'nphHHHHH', '.ohHHHHH', '..ohhhhh',
+    '...ojJjj', '..ojJjjj', '.ojJjjjj', '.ojJojjj', '.ojjojjj', '.osSojjj', '...okkkk', '...olLlo', '...olLlo', '...olllo', '...olLlo', '...oFFFo', '...ooooo']);
+  var HERO_SIDE = ['.....oooooo.....', '...ooHHHHHHo....', '..oHHHHHHHHHo...', '..oHHHHHhqqqo...', '..oHpnnqsssso...', '..oHpnnqssEso...',
+    '..oHHppqssssso..', '...oHHhqSSSo....', '....oohhSSo.....', '.....ojjjjo.....', '....ojJjjjjo....', '....ojJjjjjo....', '....ojJsSjjo....', '....ojjSSjko....', '.....okkkko.....'];
+  var HERO_STEPS = [
+    ['.....olLlo......', '.....olLlo......', '.....ollLo......', '.....oFFFo......', '.....ooooo......'],
+    ['....olLo.olo....', '....olLo..olo...', '...olLo...olo...', '...oFFo...oFFo..', '...oooo...oooo..']];
   function heroRows(dir, frame) {
-    if (dir === 'left' || dir === 'right') return HOOD_SIDE.concat(SIDE_BODY, SIDE_LEGS[frame % 2]);
-    var rows = (dir === 'up' ? HOOD_BACK.concat(person('hood', 'jacket').slice(14).map(function (r) { return r.replace(/z/g, 'j'); })) : person('hood', 'jacket')).slice();
+    if (dir === 'left' || dir === 'right') return HERO_SIDE.concat(HERO_STEPS[frame % 2]);
+    var rows = (dir === 'up' ? HERO_BACK : HERO_FRONT).slice();
     if (frame) {                                  // one leg lifted: that half of the legs moves up a pixel
-      var from = rows.length - 5, left = frame === 1;
+      var from = rows.length - 6, left = frame === 1;
       for (var j = from; j < rows.length; j++) {
-        var below = j + 1 < rows.length ? rows[j + 1] : '..................';
+        var below = j + 1 < rows.length ? rows[j + 1] : '................';
         var r = rows[j].split(''), b = below.split('');
-        for (var i = left ? 0 : 9; i < (left ? 9 : 18); i++) r[i] = b[i] || '.';
+        for (var i = left ? 0 : 8; i < (left ? 8 : 16); i++) r[i] = b[i] || '.';
         rows[j] = r.join('');
       }
     }
@@ -91,7 +97,7 @@
   }
   function drawHero(g, e, x, feetY, dir, frame) {
     var rows = heroRows(dir, frame);
-    g.fillStyle = 'rgba(0,0,0,.45)'; g.fillRect(x + 4, feetY - 1, 10, 2); g.fillRect(x + 3, feetY, 12, 1);
+    g.fillStyle = 'rgba(0,0,0,.45)'; g.fillRect(x + 3, feetY - 1, 10, 2); g.fillRect(x + 2, feetY, 12, 1);
     Scene.prototype.sprite.call({ g: g, e: e }, rows, LOOKS.hero, x, feetY - rows.length, g, e, dir === 'left', true);
   }
 
