@@ -369,8 +369,11 @@
     banner.textContent = w.name; banner.hidden = false; clearTimeout(bannerTimer);
     bannerTimer = setTimeout(function () { banner.hidden = true; }, 2600);
   }
+  // After a door or a stairway, a key still held does not walk straight back through it:
+  // the hero waits for the key to be let go.
+  var lock = false;
   function travel(fn) {
-    busy = true; fade.style.opacity = 1;
+    busy = true; fade.style.opacity = 1; held = []; lock = true;
     setTimeout(function () { fn(); fade.style.opacity = 0; setTimeout(function () { busy = false; }, 200); }, 260);
   }
   function say(o) {
@@ -459,11 +462,11 @@
   function release(dir) { held = held.filter(function (h) { return h !== dir; }); }
   window.addEventListener('keydown', function (ev) {
     var k = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
-    if (KEYS[k]) { ev.preventDefault(); if (!dlg.hidden) return; press(KEYS[k]); }
+    if (KEYS[k]) { ev.preventDefault(); if (!dlg.hidden || (lock && ev.repeat)) return; lock = false; press(KEYS[k]); }
     else if (k === ' ' || k === 'Enter' || k === 'e') { ev.preventDefault(); if (!ev.repeat) action(); }
     else if (k === 'Escape' || k === 'x') close();
   });
-  window.addEventListener('keyup', function (ev) { var k = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key; if (KEYS[k]) release(KEYS[k]); });
+  window.addEventListener('keyup', function (ev) { var k = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key; if (KEYS[k]) release(KEYS[k]); lock = false; });
   window.addEventListener('blur', function () { held = []; });
   [].forEach.call(document.querySelectorAll('[data-dir]'), function (b) {
     var dir = b.getAttribute('data-dir');
