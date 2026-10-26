@@ -7,7 +7,7 @@
    * The nearest genres play at once, louder as the hero gets closer, panned
    * to the side they stand on.
    * ===================================================================== */
-  var AC = null, master = null, noiseBuf = null, voices = {}, soundOn = false;
+  var audioCtx = null, master = null, noiseBuf = null, voices = {}, soundOn = false;
   var STYLES = [
     // words in the name           tempo     drums      what leads
     [/ambient|chill|new age|drone|kanky|space|illbient|lowercase|isolation/, [68, 86], 'none', 'pad'],
@@ -37,12 +37,12 @@
   }
   function midi(m) { return 440 * Math.pow(2, (m - 69) / 12); }
   function startAudio() {
-    if (AC) return;
+    if (audioCtx) return;
     var Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
-    AC = new Ctx();
-    var comp = AC.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
-    master = AC.createGain(); master.gain.value = 0; master.connect(comp); comp.connect(AC.destination);
-    noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate);
+    audioCtx = new Ctx();
+    var comp = audioCtx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+    master = audioCtx.createGain(); master.gain.value = 0; master.connect(comp); comp.connect(audioCtx.destination);
+    noiseBuf = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
     var d = noiseBuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     setInterval(schedule, 25);
   }
@@ -50,23 +50,23 @@
   function Voice(n, kind) {
     this.r = recipe(n); this.kind = kind === 'pad' ? 'pad' : 'full';
     if (kind === 'pad') { this.r.drums = 'none'; this.r.lead = 'pad'; this.r.bpm = Math.min(this.r.bpm, 90); }
-    this.out = AC.createGain(); this.out.gain.value = 0;
-    this.pan = AC.createStereoPanner ? AC.createStereoPanner() : null;
+    this.out = audioCtx.createGain(); this.out.gain.value = 0;
+    this.pan = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
     if (this.pan) { this.out.connect(this.pan); this.pan.connect(master); } else this.out.connect(master);
-    this.step = 0; this.next = AC.currentTime + .05; this.idle = 0;
+    this.step = 0; this.next = audioCtx.currentTime + .05; this.idle = 0;
   }
-  Voice.prototype.stop = function () { var o = this.out; o.gain.setTargetAtTime(0, AC.currentTime, .2); setTimeout(function () { o.disconnect(); }, 1500); };
-  function env(t, a, d, peak) { var g = AC.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(.0008, t + a + d); return g; }
+  Voice.prototype.stop = function () { var o = this.out; o.gain.setTargetAtTime(0, audioCtx.currentTime, .2); setTimeout(function () { o.disconnect(); }, 1500); };
+  function env(t, a, d, peak) { var g = audioCtx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(.0008, t + a + d); return g; }
   Voice.prototype.play = function (t) {
     var r = this.r, s = this.step % 16, bar = Math.floor(this.step / 16) % 4, dur = 60 / r.bpm / 4, out = this.out, self = this;
     var root = r.root + r.prog[bar % 2 ? 1 : 0];
     function tone(type, f, a, d, peak, cut) {
-      var o = AC.createOscillator(), e = env(t, a, d, peak); o.type = type; o.frequency.setValueAtTime(f, t);
-      if (cut) { var fl = AC.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = cut; o.connect(fl); fl.connect(e); } else o.connect(e);
+      var o = audioCtx.createOscillator(), e = env(t, a, d, peak); o.type = type; o.frequency.setValueAtTime(f, t);
+      if (cut) { var fl = audioCtx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = cut; o.connect(fl); fl.connect(e); } else o.connect(e);
       e.connect(out); o.start(t); o.stop(t + a + d + .05); return o;
     }
     function noise(hp, d, peak) {
-      var src = AC.createBufferSource(), f = AC.createBiquadFilter(), e = env(t, .001, d, peak);
+      var src = audioCtx.createBufferSource(), f = audioCtx.createBiquadFilter(), e = env(t, .001, d, peak);
       src.buffer = noiseBuf; f.type = 'highpass'; f.frequency.value = hp; src.connect(f); f.connect(e); e.connect(out); src.start(t); src.stop(t + d + .05);
     }
     function kick() { var o = tone('sine', 140, .002, .28, .9); o.frequency.exponentialRampToValueAtTime(42, t + .14); }
@@ -89,13 +89,13 @@
     this.step++;
   };
   function schedule() {
-    if (!AC) return;
-    var horizon = AC.currentTime + .12;
+    if (!audioCtx) return;
+    var horizon = audioCtx.currentTime + .12;
     Object.keys(voices).forEach(function (k) { var v = voices[k]; while (v.next < horizon) { v.play(v.next); v.next += 60 / v.r.bpm / 4; } });
   }
   // Each frame: who is near, and how loud. Three voices at most, plus the room's own.
   function listen(w, hx, hy) {
-    if (!AC || !soundOn) return;
+    if (!audioCtx || !soundOn) return;
     var want = [];
     (w.sounds || []).forEach(function (src) {
       var d = Math.hypot(src.x - hx, src.y - hy) / TILE, k = Math.max(0, 1 - d / src.r);
@@ -107,16 +107,16 @@
     want.forEach(function (x) {
       keep[x.key] = true;
       var v = voices[x.key] || (voices[x.key] = new Voice(x.n, x.kind));
-      v.out.gain.setTargetAtTime(x.gain * .55, AC.currentTime, .25);
-      if (v.pan) v.pan.pan.setTargetAtTime(x.pan, AC.currentTime, .2);
+      v.out.gain.setTargetAtTime(x.gain * .55, audioCtx.currentTime, .25);
+      if (v.pan) v.pan.pan.setTargetAtTime(x.pan, audioCtx.currentTime, .2);
     });
     Object.keys(voices).forEach(function (k) { if (!keep[k]) { voices[k].stop(); delete voices[k]; } });
   }
   function hush() { Object.keys(voices).forEach(function (k) { voices[k].stop(); delete voices[k]; }); }
   function setSound(on) {
     soundOn = on;
-    if (on) { startAudio(); if (!AC) return; AC.resume && AC.resume(); master.gain.setTargetAtTime(.9, AC.currentTime, .1); }
-    else if (AC) { master.gain.setTargetAtTime(0, AC.currentTime, .1); hush(); }
+    if (on) { startAudio(); if (!audioCtx) return; audioCtx.resume && audioCtx.resume(); master.gain.setTargetAtTime(.9, audioCtx.currentTime, .1); }
+    else if (audioCtx) { master.gain.setTargetAtTime(0, audioCtx.currentTime, .1); hush(); }
     var b = document.getElementById('btn-sound');
     b.setAttribute('aria-pressed', String(on)); b.textContent = on ? '♪ SOUND ON' : '♪ SOUND OFF';
   }

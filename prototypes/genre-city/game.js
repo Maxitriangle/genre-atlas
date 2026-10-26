@@ -71,7 +71,6 @@
 
   /* ---------- the hero, seen from four sides, two steps each ----------
    * 16 by 22 pixels: smaller than the passers-by, so the buildings keep their scale. */
-  function mirror(half) { return half.map(function (r) { return r + r.split('').reverse().join(''); }); }
   var HERO_FRONT = mirror(['....oooo', '..ooHHHH', '.oHHHHHH', '.oHHhhhh', 'nphhqqqq', 'nphqssss', 'nphssEss', '.ohsssss', '..ohSSSS',
     '...ojJjz', '..ojJjjz', '.ojJjjjz', '.ojJojjz', '.ojjojjz', '.osSojjz', '...okkkk', '...olLlo', '...olLlo', '...olllo', '...olLlo', '...oFFFo', '...ooooo']);
   var HERO_BACK = mirror(['....oooo', '..ooHHHH', '.oHHHHHH', '.oHHHHHH', 'nphHHHHH', 'nphHHHHH', 'nphHHHHH', '.ohHHHHH', '..ohhhhh',
