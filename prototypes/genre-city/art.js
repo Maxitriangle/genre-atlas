@@ -228,17 +228,17 @@
   }
   // A passer-by, seen from the side: two walking poses. Only people who walk are drawn
   // until there are quests, so nobody standing still seems to wait for a chat.
-  var SIDE_HEAD = [
-    '......oooooo......', '....ooCCCCCCo.....', '...oCcccCCCCCo....', '...oCCCCCCCCCo....', '...oCCCCCCCCCBBBo.', '...oQQQQQQQQQoooo.',
-    '...ohhhhsssssso...', '...ohhhssssEsso...', '...ohhhsssssssso..', '...ohhSssssssso...', '....ohSSssmsso....', '.....oSSSSSoo.....', '.....ooSSSo.......'];
-  var SIDE_BODY = ['....ojjjjjjo......', '...ojJjjjjjjo.....', '...ojJjjjjjjo.....', '...ojJjjjjjko.....', '...ojJjsSjjko.....', '...ojjjSSjjko.....', '....okkkkkko......', '....oddddddo......'];
+  var SIDE_HEAD = [                              // 16 px wide, the hero's size
+    '.....oooooo.....', '...ooCCCCCCo....', '..oCcccCCCCCo...', '..oCCCCCCCCCBBo.', '..oQQQQQQQQoo...',
+    '..ohhhsssEsso...', '..ohhsssssssso..', '...ohSSssmso....', '....ooSSSoo.....'];
+  var SIDE_BODY = ['.....ojjjjo.....', '....ojJjjjjo....', '....ojJjjjjo....', '....ojJsSjjo....', '....ojjSSjko....', '.....okkkko.....'];
   var SIDE_LEGS = [
-    ['...olLlo.olLo.....', '..olLlo...olLo....', '..ollo.....ollo...', '.oFFfo.....oFFfo..', '.ooooo.....ooooo..'],
-    ['....olLLlo........', '....olLLlo........', '....ollllo........', '....oFFFFfo.......', '....ooooooo.......']];
+    ['....olLo.olo....', '....olLo..olo...', '...olLo...olo...', '...oFFo...oFFo..', '...oooo...oooo..'],
+    ['.....olLlo......', '.....olLlo......', '.....ollLo......', '.....oFFFo......', '.....ooooo......']];
   function drawWalker(s, g, e, pal, x, feetY, left, frame) {
     var rows = SIDE_HEAD.concat(SIDE_BODY, SIDE_LEGS[frame]);
-    g.fillStyle = 'rgba(0,0,0,.4)'; g.fillRect(x + 3, feetY - 1, 11, 2);
-    s.sprite(rows, pal, x, feetY - rows.length - (frame ? 1 : 0), g, e, left, true);
+    g.fillStyle = 'rgba(0,0,0,.4)'; g.fillRect(x + 3, feetY - 1, 10, 2);
+    s.sprite(rows, pal, x, feetY - rows.length - (frame ? 0 : 1), g, e, left, true);
   }
   var LOOKS = {
     hero: look({ H: '#C9B8FF', h: '#9583DA', P: '#E7DEFF', p: '#353048', q: '#2A1F3A', r: '#3B2B3F', j: '#2C2738', J: '#433A57', k: '#1C1826', z: '*#C2B0FB', n: '*#7DF9FF', F: '#C2B0FB', f: '#4A3D78' }),

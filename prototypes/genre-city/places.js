@@ -308,7 +308,17 @@
     }
     return cache[key];
   }
+  // The halo of what glows and does not move is blurred once, at a third of the size, and
+  // scaled up with the rest: blurring a whole city at every frame was too slow for Firefox.
+  function bake(w) {
+    if (w.halo) return;
+    w.halo = mk(w.W, w.H);
+    var x = w.halo.getContext('2d');
+    if (!('filter' in x)) return;
+    [[16 / Z, .5], [5 / Z, .45]].forEach(function (b) { x.filter = 'blur(' + b[0] + 'px)'; x.globalAlpha = b[1]; x.drawImage(w.emis, 0, 0); });
+  }
   function enterWorld(w, at) {
+    bake(w);
     world = w;
     hero.x = at.x; hero.y = at.y; hero.dir = at.dir || 'up'; hero.moving = null;
     banner.textContent = w.name; banner.hidden = false; clearTimeout(bannerTimer);
@@ -319,7 +329,11 @@
   var lock = false;
   function travel(fn) {
     busy = true; fade.style.opacity = 1; held = []; lock = true;
-    setTimeout(function () { fn(); fade.style.opacity = 0; setTimeout(function () { busy = false; }, 200); }, 260);
+    setTimeout(function () {
+      // A place that cannot be built says why, instead of leaving the screen black.
+      try { fn(); } catch (err) { say({ text: 'Something went wrong while opening this place: ' + (err && err.message || err) + '. Please send this message to Maxime.' }); }
+      fade.style.opacity = 0; setTimeout(function () { busy = false; }, 200);
+    }, 260);
   }
   var choosing = null;
   function say(o) {
@@ -416,7 +430,8 @@
     blit(world.base); c.drawImage(dyn, 0, 0, CW, CH);
     c.imageSmoothingEnabled = true; c.globalCompositeOperation = 'lighter';
     blit(world.lite); c.drawImage(dynL, 0, 0, CW, CH);
-    [[16, .5], [5, .45]].forEach(function (b) { c.filter = 'blur(' + b[0] + 'px)'; c.globalAlpha = b[1]; blit(world.emis); c.drawImage(dynE, 0, 0, CW, CH); });
+    blit(world.halo);                                           // the neon halo, baked once per place
+    [[16, .5], [5, .45]].forEach(function (b) { c.filter = 'blur(' + b[0] + 'px)'; c.globalAlpha = b[1]; c.drawImage(dynE, 0, 0, CW, CH); });
     c.filter = 'none'; c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
     c.fillStyle = vig; c.fillRect(0, 0, CW, CH);
     c.save(); c.translate(-cx * Z, -cy * Z);

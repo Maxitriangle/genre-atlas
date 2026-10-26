@@ -751,3 +751,7 @@ Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier
 - **démo sonore** (`audio.js`) : boucles générées dans le navigateur, sans fichier ni service extérieur, et rien avant le bouton SOUND. Vérifié au navigateur que les voix apparaissent, montent avec la proximité et se coupent ; la qualité musicale reste à juger à l'oreille par Maxime.
 
 **À garder pour plus tard, demandé par Maxime : la musique réelle via Deezer.** Jouer en fondu les extraits de 30 secondes des titres que l'atlas connaît déjà (LISTEN), selon la même règle de proximité. Conditions : un choix explicite du joueur au départ (« musique réelle via Deezer »), puisque c'est un service extérieur appelé sans autre clic ; déclaration sur la page légale ; vérifier les conditions d'utilisation de l'API Deezer pour les extraits ; repli sur les boucles générées pour les genres sans titre.
+
+**Prototype 3, correctifs (26/10/2026)** :
+- **écran noir sur Firefox en quittant la gare** : non reproduit ici (pas de Firefox dans les sessions). Cause probable : le halo des néons était flouté à chaque image sur toute la carte du lieu, trop lourd pour Firefox dans la ville. Il est désormais précalculé une fois par lieu (`bake`, au tiers de la taille, agrandi avec le reste). Garde-fou : un lieu qui ne se construit pas affiche son erreur au lieu de laisser l'écran noir. À confirmer par Maxime sur Firefox ;
+- les passants ont la taille du héros (16 px de large).

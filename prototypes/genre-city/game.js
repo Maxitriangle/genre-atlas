@@ -77,10 +77,8 @@
   var HERO_BACK = mirror(['....oooo', '..ooHHHH', '.oHHHHHH', '.oHHHHHH', 'nphHHHHH', 'nphHHHHH', 'nphHHHHH', '.ohHHHHH', '..ohhhhh',
     '...ojJjj', '..ojJjjj', '.ojJjjjj', '.ojJojjj', '.ojjojjj', '.osSojjj', '...okkkk', '...olLlo', '...olLlo', '...olllo', '...olLlo', '...oFFFo', '...ooooo']);
   var HERO_SIDE = ['.....oooooo.....', '...ooHHHHHHo....', '..oHHHHHHHHHo...', '..oHHHHHhqqqo...', '..oHpnnqsssso...', '..oHpnnqssEso...',
-    '..oHHppqssssso..', '...oHHhqSSSo....', '....oohhSSo.....', '.....ojjjjo.....', '....ojJjjjjo....', '....ojJjjjjo....', '....ojJsSjjo....', '....ojjSSjko....', '.....okkkko.....'];
-  var HERO_STEPS = [
-    ['.....olLlo......', '.....olLlo......', '.....ollLo......', '.....oFFFo......', '.....ooooo......'],
-    ['....olLo.olo....', '....olLo..olo...', '...olLo...olo...', '...oFFo...oFFo..', '...oooo...oooo..']];
+    '..oHHppqssssso..', '...oHHhqSSSo....', '....oohhSSo.....'].concat(SIDE_BODY);
+  var HERO_STEPS = [SIDE_LEGS[1], SIDE_LEGS[0]];
   function heroRows(dir, frame) {
     if (dir === 'left' || dir === 'right') return HERO_SIDE.concat(HERO_STEPS[frame % 2]);
     var rows = (dir === 'up' ? HERO_BACK : HERO_FRONT).slice();
