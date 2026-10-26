@@ -22,8 +22,15 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
 #fade { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity .25s; pointer-events: none; }
 #dlg { position: absolute; left: 10px; right: 10px; bottom: 10px; border: 3px double var(--accent); background: rgba(24,21,30,.96); padding: 12px 16px; display: grid; gap: 10px; cursor: pointer; }
 #dlg-text { margin: 0; font-size: 13px; letter-spacing: .03em; max-height: 7.5em; overflow: auto; }
-#dlg-link { justify-self: start; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: var(--bg); background: var(--accent); padding: 8px 12px; text-decoration: none; }
-#dlg-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+#dlg .links { display: flex; flex-wrap: wrap; gap: 8px; }
+#dlg .links:empty { display: none; }
+#dlg-list { display: grid; gap: 4px; }
+#dlg-list button { font: 600 12px/1.3 var(--mono); letter-spacing: .06em; text-align: left; color: var(--ink); background: transparent; border: 1px solid var(--line); padding: 7px 10px; cursor: pointer; }
+#dlg-list button[aria-current="true"] { border-color: var(--accent); color: var(--accent); }
+#dlg-list button[aria-current="true"]::before { content: "▶ "; }
+#dlg-link, #dlg-link2 { justify-self: start; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: var(--bg); background: var(--accent); padding: 8px 12px; text-decoration: none; }
+#dlg-link2 { color: var(--accent); background: transparent; border: 1px solid var(--accent); }
+#dlg-link:focus-visible, #dlg-link2:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .pad { display: flex; justify-content: space-between; align-items: center; gap: 20px; user-select: none; -webkit-user-select: none; touch-action: none; }
 .dpad { display: grid; grid-template-columns: repeat(3, 52px); grid-template-rows: repeat(3, 52px); }
 .pad button { font: 600 14px/1 var(--mono); color: var(--ink); background: var(--panel); border: 1px solid var(--line); cursor: pointer; touch-action: none; }
@@ -43,13 +50,13 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
 <div class="wrap">
   <header>
     <h1>Genre City</h1>
-    <span class="eyebrow">Prototype jouable · version 1</span>
+    <span class="eyebrow">Prototype jouable · version 2</span>
   </header>
 
   <div class="screen">
     <canvas id="game" aria-label="Genre City: the Terminal, Electronic City and the inside of every genre"></canvas>
     <div id="banner" hidden></div>
-    <div id="dlg" hidden><p id="dlg-text"></p><a id="dlg-link" href="#" target="_blank" rel="noopener" hidden></a></div>
+    <div id="dlg" hidden><p id="dlg-text"></p><div id="dlg-list" hidden></div><div class="links"><a id="dlg-link" href="#" target="_blank" rel="noopener" hidden></a><a id="dlg-link2" href="#" target="_blank" rel="noopener" hidden></a></div></div>
     <div id="fade"></div>
   </div>
 
@@ -60,7 +67,7 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
       <button type="button" id="pad-right" data-dir="right" aria-label="Right">▶</button>
       <button type="button" id="pad-down" data-dir="down" aria-label="Down">▼</button>
     </div>
-    <div class="keys"><b>ARROWS</b> or <b>WASD / ZQSD</b> to walk · <b>SPACE</b> or <b>ENTER</b> to read what you face · <b>ESC</b> to close</div>
+    <div class="keys"><b>ARROWS</b> or <b>WASD / ZQSD</b> to walk, <b>SHIFT</b> to run · <b>SPACE</b> or <b>ENTER</b> to read what you face · <b>ESC</b> to close</div>
     <div class="ab">
       <button type="button" id="btn-b" aria-label="Close">B</button>
       <button type="button" id="btn-a" aria-label="Read">A</button>
@@ -68,8 +75,8 @@ h1 { font-weight: 600; font-size: 18px; letter-spacing: .14em; text-transform: u
   </div>
 
   <div class="note">
-    <p>À essayer : descendre l'escalier 01 ELECTRONIC, en haut à gauche de la gare. Dans Electronic City, chaque rue est un quartier et chaque bâtiment un genre ; on entre par la porte. À l'intérieur, une porte par groupe ou par sous-genre, jusqu'au bout de la branche. Le juke-box et la borne ABOUT ouvrent la vraie fiche du site. Le tapis EXIT ramène d'un niveau, l'escalier TERMINAL de la place ramène à la gare.</p>
-    <p>Pas encore de son ni de personnages à qui parler. Les autres lignes de la gare sont fermées dans cette version.</p>
+    <p>À essayer : l'escalier 01 ELECTRONIC, en haut à gauche de la gare, mène à la place d'Electronic City. Ses quatre quartiers sont tout autour, un dans chaque direction, avec un panneau à leur nom. Un genre sans sous-genre est un kiosque qu'on lit au comptoir ; une maison a une seule salle où tous ses sous-genres se voient ; une tour a un ascenseur, un étage par groupe ; une arche ouvre un quartier entier, comme Electronic Dance Music.</p>
+    <p>Maj (ou B maintenu sur téléphone) pour courir. Pas encore de son ni de personnages à qui parler ; les autres lignes de la gare sont fermées.</p>
   </div>
 </div>
 

@@ -735,3 +735,12 @@ Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier
 - commandes : flèches, WASD ou ZQSD, Espace ou Entrée pour lire, Échap pour fermer ; croix et boutons A et B à l'écran. Vérifié au navigateur, sur ordinateur et sur téléphone.
 
 **Ce qui reste** : avis de Maxime sur le prototype ; les 14 autres villes ; le son ; puis l'intégration dans l'extension (page `/city/`, entrée de menu, déclaration sur la page légale si quelque chose est gardé dans le navigateur).
+
+**Retours de Maxime sur le prototype 1 (26/10/2026)** et ce qui a changé (prototype 2) :
+- une flèche maintenue faisait repasser la porte : corrigé, il faut relâcher la touche après un passage ;
+- « ça fait couloir, pas ville » : la ville devient une **place centrale et des quartiers en étoile** (grille 3 × 3, 8 quartiers au plus, choix de Maxime) avec un panneau des directions ;
+- « un enchaînement de portes fait labyrinthe » : la forme dépend de la profondeur (**choix « selon la taille »**) : kiosque lu au comptoir, maison à une salle où tout se voit, tour à ascenseur (un étage par groupe), arche vers un quartier en plein air pour les plus grands (Electronic Dance Music, House Music, Hardcore). Dans Electronic : 4 quartiers, 4 tours, 72 maisons ;
+- Maj ou B maintenu pour courir ;
+- « les bâtiments les plus à gauche ne s'affichent pas » : non reproduit (Chrome, ordinateur et téléphone). Question posée à Maxime : appareil, navigateur, capture ;
+- une DA par ville : retenue pour plus tard (Rock briques et entrepôts, Jazz art déco, Folk bourg, Latin façades colorées, Reggae bord de mer, Country désert…) ;
+- un genre ajouté dans WordPress : le prototype a une copie figée ; la version intégrée lira `/wp-json/genre-atlas/v1/tree` et le montrera seule. Chaque quartier garde sa case : un ajout n'agrandit que sa rue.
