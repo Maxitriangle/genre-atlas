@@ -1,4 +1,4 @@
-# Reprise — état au 25/10/2026
+# Reprise — état au 27/10/2026
 
 **La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
@@ -11,9 +11,9 @@ CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console 
 
 **Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : regarder les premiers chiffres de Search Console, de Bing et de Matomo, puis faire connaître le site.
 
-**En cours, en parallèle** : Genre City, un mini-jeu dans l'atlas. Prototype jouable soumis à Maxime le 25/10/2026 (dernière section).
+**Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les trois dernières sections (visibilité, page légale, Matomo).
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les sections visibilité, page légale et Matomo. La dernière section (Genre City) est en pause.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -65,6 +65,12 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - faire connaître le site : Reddit (r/InternetIsBeautiful, r/LetsTalkMusic, forums de scènes), Show HN, Product Hunt, newsletters musique ou design. L'angle : Every Noise at Once a fermé fin 2023 ;
    - plus tard : une page ABOUT qui raconte le projet ; les 790 genres sans texte.
 9. **Contact, facultatif** : répondre depuis Gmail sous le nom `contact@every-genre.com` (Gmail → « Envoyer des e-mails en tant que », avec le serveur SMTP d'o2switch).
+10. **Genre City, le mini-jeu : en pause** (décision de Maxime, 27/10/2026). Trois prototypes faits les 25 et 26/10, sources dans `prototypes/genre-city/` (hors extension), détail dans la dernière section. Ce que Maxime a retenu, si on y revient :
+   - **à garder** : la rue d'Electronic City du croquis (pixel art de nuit, néons, pluie), les tours à ascenseur, la taille actuelle des personnages, les kiosques qu'on lit sans entrer ;
+   - **refusé** : la grande place en hub, les personnages « adultes » ou en silhouettes, les arches vers des quartiers en plein air, trop de personnages et d'objets ;
+   - **pas convaincu** : l'ensemble (« trop ambitieux », « le résultat ne me convient pas ») ; la navigation restait plus proche d'un couloir que d'une ville, malgré les quartiers en étoile ;
+   - **idée à garder** : la musique réelle via les extraits Deezer, en fondu selon la proximité ; le son généré n'a pas été jugé ;
+   - **avant de reprendre** : repartir du besoin (faire découvrir des genres de façon ludique) plutôt que du jeu, et envisager plus petit, par exemple une seule rue explorable ou un mode promenade dans une branche.
 
 ## Pour publier une nouvelle version (rappel)
 1. Banc vert.
@@ -714,7 +720,7 @@ Les envois à `matomo.php` ont été interceptés par le script (`route.fulfill`
 
 **Bing Webmaster Tools** : importé par Maxime depuis Search Console le 25/10/2026, sans DNS à refaire. Le plan du site y figure (vérifié par Maxime dans Sitemaps).
 
-## Genre City, le mini-jeu (25/10/2026, prototype)
+## Genre City, le mini-jeu (25–26/10/2026, prototypes) — EN PAUSE depuis le 27/10/2026
 Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier Pokémon. Chaque genre y est un lieu, une entrée de menu y mène. Sources dans `prototypes/genre-city/` (voir son README) ; rien dans l'extension pour l'instant.
 
 **Décisions prises avec Maxime** :
@@ -755,3 +761,5 @@ Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier
 **Prototype 3, correctifs (26/10/2026)** :
 - **écran noir sur Firefox en quittant la gare** : non reproduit ici (pas de Firefox dans les sessions). Cause probable : le halo des néons était flouté à chaque image sur toute la carte du lieu, trop lourd pour Firefox dans la ville. Il est désormais précalculé une fois par lieu (`bake`, au tiers de la taille, agrandi avec le reste). Garde-fou : un lieu qui ne se construit pas affiche son erreur au lieu de laisser l'écran noir. **La vraie cause**, révélée par ce garde-fou chez Maxime (« rows is null ») : `audio.js` déclarait `var AC` (le contexte audio), le même nom que le climatiseur dessiné sur les toits (`art.js`). Son coupé, `AC` valait `null` et la ville plantait, dans tous les navigateurs ; mes tests activaient le son et le masquaient. Renommé `audioCtx`. **Leçon** : les fichiers du prototype partagent une seule portée, vérifier les noms en double, et tester aussi son coupé ;
 - les passants ont la taille du héros (16 px de large).
+
+**27/10/2026 : mis en pause par Maxime.** Le dernier prototype (version 3, avec les correctifs Firefox et son coupé) reste jouable à son lien d'aperçu privé ; `python3 prototypes/genre-city/build.py` le reconstruit. Rien à faire tant que Maxime ne le redemande pas.
