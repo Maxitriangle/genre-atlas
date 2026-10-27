@@ -1,4 +1,4 @@
-# Reprise — état au 25/10/2026
+# Reprise — état au 27/10/2026
 
 **La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
@@ -11,7 +11,9 @@ CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console 
 
 **Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : regarder les premiers chiffres de Search Console, de Bing et de Matomo, puis faire connaître le site.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les trois dernières sections (visibilité, page légale, Matomo).
+**Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
+
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les sections visibilité, page légale et Matomo. La dernière section (Genre City) est en pause.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -63,6 +65,12 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - faire connaître le site : Reddit (r/InternetIsBeautiful, r/LetsTalkMusic, forums de scènes), Show HN, Product Hunt, newsletters musique ou design. L'angle : Every Noise at Once a fermé fin 2023 ;
    - plus tard : une page ABOUT qui raconte le projet ; les 790 genres sans texte.
 9. **Contact, facultatif** : répondre depuis Gmail sous le nom `contact@every-genre.com` (Gmail → « Envoyer des e-mails en tant que », avec le serveur SMTP d'o2switch).
+10. **Genre City, le mini-jeu : en pause** (décision de Maxime, 27/10/2026). Trois prototypes faits les 25 et 26/10, sources dans `prototypes/genre-city/` (hors extension), détail dans la dernière section. Ce que Maxime a retenu, si on y revient :
+   - **à garder** : la rue d'Electronic City du croquis (pixel art de nuit, néons, pluie), les tours à ascenseur, la taille actuelle des personnages, les kiosques qu'on lit sans entrer ;
+   - **refusé** : la grande place en hub, les personnages « adultes » ou en silhouettes, les arches vers des quartiers en plein air, trop de personnages et d'objets ;
+   - **pas convaincu** : l'ensemble (« trop ambitieux », « le résultat ne me convient pas ») ; la navigation restait plus proche d'un couloir que d'une ville, malgré les quartiers en étoile ;
+   - **idée à garder** : la musique réelle via les extraits Deezer, en fondu selon la proximité ; le son généré n'a pas été jugé ;
+   - **avant de reprendre** : repartir du besoin (faire découvrir des genres de façon ludique) plutôt que du jeu, et envisager plus petit, par exemple une seule rue explorable ou un mode promenade dans une branche.
 
 ## Pour publier une nouvelle version (rappel)
 1. Banc vert.
@@ -711,3 +719,47 @@ Les envois à `matomo.php` ont été interceptés par le script (`route.fulfill`
 **Piège : o2switch (`server: o2switch-PowerBoost-v3`) répond 429** à un Chromium sans tête après quelques pages, même espacées de 25 s, et parfois sur la page entière. Avec l'identité d'un Chrome ordinaire (`userAgent` de Chrome macOS), la même page passe sans refus, et `curl` aussi. Les visiteurs ne sont donc pas gênés. Pour une vérification en ligne : donner un `userAgent` ordinaire et intercepter Matomo. À surveiller dans Search Console (Paramètres → Statistiques sur l'exploration) et dans Bing : que les robots des moteurs ne reçoivent pas de 429.
 
 **Bing Webmaster Tools** : importé par Maxime depuis Search Console le 25/10/2026, sans DNS à refaire. Le plan du site y figure (vérifié par Maxime dans Sitemaps).
+
+## Genre City, le mini-jeu (25–26/10/2026, prototypes) — EN PAUSE depuis le 27/10/2026
+Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier Pokémon. Chaque genre y est un lieu, une entrée de menu y mène. Sources dans `prototypes/genre-city/` (voir son README) ; rien dans l'extension pour l'instant.
+
+**Décisions prises avec Maxime** :
+- **but** : faire découvrir les genres d'abord ; le jeu sert l'atlas ;
+- **hiérarchie** : la gare (une ligne par tuile de l'accueil) → une ville par famille → une rue par groupe éditorial → un bâtiment par genre, dont la taille suit le nombre de descendants → à l'intérieur, une porte par groupe ou sous-genre (8 au plus, regroupement de `atlas.js`). Les sous-genres sont des bâtiments, pas des villages ;
+- **direction artistique** : pixel art sur une grille de 16, la nuit, néons dans la couleur de la famille, pluie, reflets sur sol mouillé. L'écran de référence est la rue d'Electronic City (croquis, écran 2) ; une version plus « adulte » (personnages élancés, ou silhouettes) et une grande place en hub ont été essayées puis **refusées** : on garde les personnages ronds du croquis 03 ;
+- **pas de surcharge** : peu d'objets, le détail est dans la matière et la lumière ;
+- **pas de personnage immobile** tant qu'il n'y a pas de quêtes : un seul passant par écran, qui marche de profil. Ce qui répond, ce sont les objets (enseignes, juke-box, bornes) ;
+- **son** : plus tard, une ambiance générée par genre qui monte à l'approche, et le vrai morceau au juke-box, au clic ;
+- **comptes** : plus tard, avec les quêtes ; proposer d'abord un code de sauvegarde sans compte ;
+- **poids** : le jeu aura sa propre page, son script ne se charge que là ;
+- **nom** : « Genre City » reste un titre de travail, entrée de menu courte (CITY) à confirmer.
+
+**Prototype 1** (lien d'aperçu privé envoyé à Maxime) :
+- la gare : 15 escaliers, seule la ligne 01 est ouverte. La borne MAP mène au site ;
+- Electronic City, construite à partir des données : une rue par quartier, le panneau du quartier, l'escalier TERMINAL ;
+- l'intérieur de chacun des 392 genres et groupes, jusqu'au bout des branches ; le juke-box (vers LISTEN si la fiche a des artistes, sinon vers la page pour en proposer) et la borne ABOUT ;
+- commandes : flèches, WASD ou ZQSD, Espace ou Entrée pour lire, Échap pour fermer ; croix et boutons A et B à l'écran. Vérifié au navigateur, sur ordinateur et sur téléphone.
+
+**Ce qui reste** : avis de Maxime sur le prototype ; les 14 autres villes ; le son ; puis l'intégration dans l'extension (page `/city/`, entrée de menu, déclaration sur la page légale si quelque chose est gardé dans le navigateur).
+
+**Retours de Maxime sur le prototype 1 (26/10/2026)** et ce qui a changé (prototype 2) :
+- une flèche maintenue faisait repasser la porte : corrigé, il faut relâcher la touche après un passage ;
+- « ça fait couloir, pas ville » : la ville devient une **place centrale et des quartiers en étoile** (grille 3 × 3, 8 quartiers au plus, choix de Maxime) avec un panneau des directions ;
+- « un enchaînement de portes fait labyrinthe » : la forme dépend de la profondeur (**choix « selon la taille »**) : kiosque lu au comptoir, maison à une salle où tout se voit, tour à ascenseur (un étage par groupe), arche vers un quartier en plein air pour les plus grands (Electronic Dance Music, House Music, Hardcore). Dans Electronic : 4 quartiers, 4 tours, 72 maisons ;
+- Maj ou B maintenu pour courir ;
+- « les bâtiments les plus à gauche ne s'affichent pas » : non reproduit (Chrome, ordinateur et téléphone). Question posée à Maxime : appareil, navigateur, capture ;
+- une DA par ville : retenue pour plus tard (Rock briques et entrepôts, Jazz art déco, Folk bourg, Latin façades colorées, Reggae bord de mer, Country désert…) ;
+- un genre ajouté dans WordPress : le prototype a une copie figée ; la version intégrée lira `/wp-json/genre-atlas/v1/tree` et le montrera seule. Chaque quartier garde sa case : un ajout n'agrandit que sa rue.
+
+**Prototype 3 (26/10/2026)** :
+- les arches (quartiers en plein air dans un genre) **désorientaient** Maxime ; les tours fonctionnent mieux : tout genre à groupes est une tour à ascenseur, plus haute à partir de 50 descendants. Un étage s'élargit si son groupe compte plus de 8 genres ;
+- le personnage est plus petit (16 × 22 au lieu de 18 × 27), à la demande de Maxime ;
+- **démo sonore** (`audio.js`) : boucles générées dans le navigateur, sans fichier ni service extérieur, et rien avant le bouton SOUND. Vérifié au navigateur que les voix apparaissent, montent avec la proximité et se coupent ; la qualité musicale reste à juger à l'oreille par Maxime.
+
+**À garder pour plus tard, demandé par Maxime : la musique réelle via Deezer.** Jouer en fondu les extraits de 30 secondes des titres que l'atlas connaît déjà (LISTEN), selon la même règle de proximité. Conditions : un choix explicite du joueur au départ (« musique réelle via Deezer »), puisque c'est un service extérieur appelé sans autre clic ; déclaration sur la page légale ; vérifier les conditions d'utilisation de l'API Deezer pour les extraits ; repli sur les boucles générées pour les genres sans titre.
+
+**Prototype 3, correctifs (26/10/2026)** :
+- **écran noir sur Firefox en quittant la gare** : non reproduit ici (pas de Firefox dans les sessions). Cause probable : le halo des néons était flouté à chaque image sur toute la carte du lieu, trop lourd pour Firefox dans la ville. Il est désormais précalculé une fois par lieu (`bake`, au tiers de la taille, agrandi avec le reste). Garde-fou : un lieu qui ne se construit pas affiche son erreur au lieu de laisser l'écran noir. **La vraie cause**, révélée par ce garde-fou chez Maxime (« rows is null ») : `audio.js` déclarait `var AC` (le contexte audio), le même nom que le climatiseur dessiné sur les toits (`art.js`). Son coupé, `AC` valait `null` et la ville plantait, dans tous les navigateurs ; mes tests activaient le son et le masquaient. Renommé `audioCtx`. **Leçon** : les fichiers du prototype partagent une seule portée, vérifier les noms en double, et tester aussi son coupé ;
+- les passants ont la taille du héros (16 px de large).
+
+**27/10/2026 : mis en pause par Maxime.** Le dernier prototype (version 3, avec les correctifs Firefox et son coupé) reste jouable à son lien d'aperçu privé ; `python3 prototypes/genre-city/build.py` le reconstruit. Rien à faire tant que Maxime ne le redemande pas.

@@ -1,3 +1,4 @@
 data/.artists-cache.json
 __pycache__/
 data/.listen-cache.json
+prototypes/genre-city/genre-city-prototype.html
