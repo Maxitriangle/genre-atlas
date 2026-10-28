@@ -4,3 +4,4 @@ data/.listen-cache.json
 data/.mb-cache.json
 data/.examples-cache.json
 prototypes/genre-city/genre-city-prototype.html
+data/.*-cache.json.tmp
