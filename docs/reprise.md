@@ -1,4 +1,4 @@
-# Reprise — état au 27/10/2026
+# Reprise — état au 28/10/2026
 
 **La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
@@ -9,11 +9,11 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : regarder les premiers chiffres de Search Console, de Bing et de Matomo, puis faire connaître le site.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Prochaine étape** : affiner le point A avec lui. La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les sections visibilité, page légale et Matomo. La dernière section (Genre City) est en pause.
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis la dernière section (« Recul sur le projet »). Genre City, juste avant, est en pause.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -763,3 +763,33 @@ Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier
 - les passants ont la taille du héros (16 px de large).
 
 **27/10/2026 : mis en pause par Maxime.** Le dernier prototype (version 3, avec les correctifs Firefox et son coupé) reste jouable à son lien d'aperçu privé ; `python3 prototypes/genre-city/build.py` le reconstruit. Rien à faire tant que Maxime ne le redemande pas.
+
+## Recul sur le projet : vers l'écoute et la communauté (28/10/2026)
+Demande de Maxime : prendre du recul. Le site plaît quand il le montre ; son objectif est qu'il soit **utile** et qu'il crée **une vraie communauté de passionnés de musique**, la plus large possible. Avant de faire venir du monde, il veut des fonctionnalités au point : la visibilité (point 8 de « Ce qui attend ») passe après. Mon avis ci-dessous coïncide avec ses idées ; chaque point sera repris et affiné avec lui, un par un.
+
+**Ce qui est réussi** : l'identité (glyphes générés, fond noir, monospace), la rigueur (arbre cohérent, données rejouables, banc de test, référencement, vie privée), le moment (Every Noise at Once a fermé fin 2023).
+
+### Ce qui ne va pas
+1. **Un bel objet à visiter, pas un lieu où revenir.** Une fois la carte explorée, rien ne fait revenir : contenu figé, rien de neuf, rien à soi, personne à retrouver.
+2. **On n'entend pas assez la musique** — le point essentiel pour Maxime. Every Noise marchait parce qu'un clic faisait entendre le genre. Ici, l'écoute est en bas de la fiche, un titre par artiste. Mesuré le 28/10/2026 sur les CSV : **781 genres sur 2 098 (37 %) n'ont aucun son** (aucun artiste clé avec une chanson) ; 1 317 en ont au moins un (Deezer ou YouTube), 1 239 au moins un jouable sur YouTube.
+3. **Les « Community picks » ne créent pas de communauté** : formulaire anonyme, validé à la main, sans nom ni trace ni reconnaissance pour qui propose.
+4. **On a caché ce dont les passionnés aiment débattre** : filiations et influences. L'arbre strict reste juste pour la carte, mais les désaccords n'ont nulle part où vivre.
+5. **Le contenu n'est pas à nous** : textes Wikipedia, liens Wikidata, 790 genres sans texte. Ce qui est unique, c'est la structure, le visuel et la sélection d'artistes. Il manque un point de vue humain.
+6. **Sur mobile, l'identité se perd** : arbre vertical correct mais banal, alors que le trafic venu des réseaux est surtout mobile.
+7. **Pas prêt pour l'affluence** : o2switch renvoie déjà des 429 à un navigateur automatique ; un passage en une de Reddit ou de Hacker News peut faire tomber le site. Toute la modération passe par Maxime.
+
+### Où je pousserais
+Phrase d'orientation proposée : « Le meilleur endroit pour entendre un genre en 30 secondes, et pour en parler entre passionnés. »
+- **A. Faire du site un instrument** : extrait audio au survol ou au toucher d'un nœud de la carte (extraits Deezer de 30 s) ; « radio de branche » qui joue en continu en descendant dans les sous-genres ; export d'un genre en playlist Spotify ou Deezer.
+- **B. Gardiens de genre** : des passionnés adoptent un genre (texte, artistes, morceaux d'entrée), avec leur nom sur la fiche. Règlerait les 790 genres sans texte, la relecture des artistes, le contenu emprunté à Wikipedia et la reconnaissance des contributeurs.
+- **C. Parcours** : chemins guidés d'un genre à un autre (« du delta blues à la drill en 12 étapes »), un morceau par étape ; d'abord écrits par Maxime, puis par la communauté.
+- **D. Ma carte à moi** : cocher les genres écoutés (« 312 / 2 098 explorés »), carte qui s'allume là où l'on est allé ; plus loin, connecter Last.fm ou Spotify pour voir son territoire musical et partager son glyphe personnel.
+- **E. Donner une place aux débats** : « Ce genre est-il bien rangé ? » avec vote sous chaque fiche ; influences en liste sur la fiche (toujours pas sur la carte).
+- **F. Des raisons de revenir** : genre du jour, derniers ajouts, lettre mensuelle.
+- **G. Commencer la communauté hors du site** : Discord ou subreddit avant de construire des comptes.
+
+### Décisions de Maxime (28/10/2026)
+- **Priorités, dans cet ordre : A, D, E, F.** B, C et G restent des pistes, non écartées.
+- **Comptes utilisateurs** : à faire, et si possible **liés à Deezer, Spotify ou d'autres services**, pour créer ou importer des playlists et **les écouter sur le site en le parcourant**.
+- Les fonctionnalités d'abord, la venue du public ensuite.
+- Méthode : traiter chaque point avec lui et l'affiner avant toute évolution du code.
