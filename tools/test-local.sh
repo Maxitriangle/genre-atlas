@@ -220,6 +220,26 @@ global \$wp_rewrite;
 echo 'permaliens ' . get_option( 'permalink_structure' ) . \"\n\";
 "
 
+say "Exemple d ecoute de test"
+# Two made-up videos for a genre with no key artist: smoke.mjs rejects the
+# first and accepts the second in Genres > Listening examples.
+EXAMPLE_GENRE="$( php -r "
+\$_SERVER['HTTP_HOST'] = '127.0.0.1:$PORT';
+\$_SERVER['REQUEST_URI'] = '/';
+require '$SITE/wp-load.php';
+\$ids = get_posts( array( 'post_type' => 'genre', 'numberposts' => 1, 'orderby' => 'title', 'order' => 'ASC', 'fields' => 'ids',
+	'meta_query' => array( array( 'key' => 'ga_artists', 'compare' => 'NOT EXISTS' ) ) ) );
+\$id = (int) \$ids[0];
+delete_post_meta( \$id, 'ga_example_rejected' );
+genre_atlas_set_example( \$id, '', '', '' );
+\$n = genre_atlas_offer_examples( \$id, wp_json_encode( array(
+	array( 'youtube' => 'smokeExmpl1', 'title' => 'Smoke example one', 'channel' => 'Smoke Channel', 'length' => '3:00' ),
+	array( 'youtube' => 'smokeExmpl2', 'title' => 'Smoke example two', 'channel' => 'Smoke Ensemble', 'length' => '4:00' ) ) ) );
+if ( 2 !== \$n ) { fwrite( STDERR, \"exemples non proposes\n\" ); exit( 1 ); }
+echo \$id;
+" )"
+echo "genre $EXAMPLE_GENRE : deux videos proposees"
+
 say "Serveur sur http://127.0.0.1:$PORT"
 php -S "127.0.0.1:$PORT" -t "$SITE" "$SITE/router.php" > "$CACHE/server.log" 2>&1 &
 SERVER_PID=$!
@@ -239,13 +259,31 @@ if [ ! -d "$CACHE/node_modules/playwright" ]; then
 	( cd "$CACHE" && npm install playwright --no-audit --no-fund --silent )
 fi
 # The image ships a Chromium that may not match the version Playwright expects.
-CHROME="$( find /opt/pw-browsers -maxdepth 3 -path '*chrome-linux/chrome' 2>/dev/null | head -1 )"
+CHROME="$( find /opt/pw-browsers -maxdepth 3 -path '*chrome-linux*/chrome' 2>/dev/null | head -1 )"
 mkdir -p "$SHOTS"; rm -f "$SHOTS"/*.png
 
 set +e
-node "$REPO/tools/smoke.mjs" "http://127.0.0.1:$PORT" "$SHOTS" "$CACHE/node_modules" "$CHROME"
+GA_EXAMPLE_GENRE="$EXAMPLE_GENRE" node "$REPO/tools/smoke.mjs" "http://127.0.0.1:$PORT" "$SHOTS" "$CACHE/node_modules" "$CHROME"
 STATUS=$?
 set -e
+
+say "Exemple d ecoute apres un reimport"
+# Importing the same proposals again must neither replace the accepted
+# example nor bring back the rejected video.
+php -r "
+\$_SERVER['HTTP_HOST'] = '127.0.0.1:$PORT';
+\$_SERVER['REQUEST_URI'] = '/';
+require '$SITE/wp-load.php';
+\$id = $EXAMPLE_GENRE;
+\$both = wp_json_encode( array( array( 'youtube' => 'smokeExmpl1' ), array( 'youtube' => 'smokeExmpl2' ) ) );
+\$kept = genre_atlas_offer_examples( \$id, \$both ) === 0 && 'smokeExmpl2' === get_post_meta( \$id, 'ga_example_youtube', true );
+genre_atlas_set_example( \$id, '', '', '' );
+\$left = genre_atlas_offer_examples( \$id, \$both );
+\$back = genre_atlas_example_candidates( \$id );
+\$ok   = \$kept && 1 === \$left && 'smokeExmpl2' === \$back[0]['youtube'];
+echo ( \$ok ? 'OK   ' : 'ECHEC' ) . \" exemples : un reimport garde l exemple accepte et ne repropose pas la video refusee\n\";
+exit( \$ok ? 0 : 1 );
+" || STATUS=1
 
 say "Courriels du formulaire de contact"
 # smoke.mjs sends one message from the page and four through the API.

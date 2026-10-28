@@ -132,7 +132,7 @@ function genre_atlas_import_page() {
 			} elseif ( isset( $stats['artists'] ) ) {
 				echo '<div class="notice notice-success"><p>Artist import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['kept'] . ' kept (edited by hand), ' . (int) $stats['genres'] . ' genres given their key artists, ' . (int) $stats['genres_kept'] . ' genre lists kept (edited by hand), ' . (int) $stats['genres_missing'] . ' genres not found.</p></div>';
 			} else {
-				echo '<div class="notice notice-success"><p>Import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['skipped_reviewed'] . ' protected (reviewed), ' . (int) $stats['parents_set'] . ' parents set, ' . (int) $stats['parents_missing'] . ' parents not found, ' . (int) $stats['texts'] . ' descriptions added from Wikipedia.</p></div>';
+				echo '<div class="notice notice-success"><p>Import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['skipped_reviewed'] . ' protected (reviewed), ' . (int) $stats['parents_set'] . ' parents set, ' . (int) $stats['parents_missing'] . ' parents not found, ' . (int) $stats['texts'] . ' descriptions added from Wikipedia' . ( empty( $stats['examples'] ) ? '' : ', ' . (int) $stats['examples'] . ' genres with listening examples to review (Genres → Listening examples)' ) . '.</p></div>';
 			}
 		}
 	}

@@ -22,6 +22,7 @@ define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v2' );
 require_once GENRE_ATLAS_DIR . 'includes/class-genre-atlas-importer.php';
 require_once GENRE_ATLAS_DIR . 'includes/admin.php';
 require_once GENRE_ATLAS_DIR . 'includes/artists.php';
+require_once GENRE_ATLAS_DIR . 'includes/examples.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/legal.php';
@@ -186,6 +187,7 @@ function genre_atlas_dossier( $request ) {
 			'wikipedia'   => (string) get_post_meta( $post->ID, 'ga_wikipedia', true ),
 			'textSource'  => (string) get_post_meta( $post->ID, 'ga_text_source', true ),
 			'artists'     => genre_atlas_dossier_artists( $post->ID ),
+			'example'     => genre_atlas_genre_example( $post->ID ),
 			'picks'       => genre_atlas_dossier_picks( $post->ID ),
 		)
 	);

@@ -235,6 +235,15 @@ if os.path.exists(_lf):
             leads[_r['wikidata_id']] = (_r['wikipedia_title'], _r['text'])
     sys.stderr.write('introductions Wikipedia : %d genres\n' % len(leads))
 
+# Listening examples proposed for the silent genres by genre-examples.py:
+# YouTube videos Maxime accepts or rejects in WordPress, one at a time.
+examples = {}
+_ef = os.path.join(HERE, 'genre-examples.csv')
+if os.path.exists(_ef):
+    for _r in csv.DictReader(io.open(_ef, encoding='utf-8')):
+        examples[_r['wikidata_id']] = _r['candidates']
+    sys.stderr.write('exemples d\'ecoute proposes : %d genres\n' % len(examples))
+
 rows = []
 
 
@@ -264,6 +273,7 @@ def emit(g, root, level):
         family_hue='' if i is None else (HUE_START + HUE_STEP * i) % 360,
         wikipedia_title=leads.get(g, ('', ''))[0],
         description=leads.get(g, ('', ''))[1],
+        examples=examples.get(g, ''),
     ))
     # Final tie-break on the Wikidata ID: two genres can share a label and
     # have no year (there are two 'bolero' under Latin music), and without
