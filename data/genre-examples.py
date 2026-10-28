@@ -11,8 +11,8 @@ makes way for the next.
 
 A video is a candidate when:
 - its title holds the genre's name (or its MusicBrainz name), as a whole;
-- it is not a lesson, a reaction, a "type beat", a karaoke, a sped-up or
-  slowed copy, a trailer or an interview;
+- it is not a lesson, a reaction, a "type beat", a cover, a karaoke, a
+  sped-up or slowed copy, a trailer, an interview, a news item or a list;
 - it lasts from 1 to 15 minutes: a piece, not an hour-long compilation;
 - YouTube allows it to be embedded (oEmbed answers).
 
@@ -48,7 +48,8 @@ OUT = os.path.join(HERE, 'genre-examples.csv')
 KEEP = 3
 NOT_A_PIECE = re.compile(r'\b(how to|lesson|lessons|tutorial|learn|learning|reaction|reacts?|type beat|karaoke|'
                          r'nightcore|slowed|sped up|8d|bass boosted|trailer|teaser|interview|podcast|explained|'
-                         r'history of|documentary|vlog|unboxing|review)\b', re.I)
+                         r'history of|documentary|vlog|unboxing|review|cover|what is|news|picks|top \d+|best of|compilation|playlist|'
+                         r'for the first time|i made)\b', re.I)
 
 
 def seconds(text):
