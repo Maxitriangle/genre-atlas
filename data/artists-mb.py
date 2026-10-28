@@ -9,9 +9,11 @@ outside, checkable fact rather than a name typed from memory.
 
 For each silent genre:
 - its MusicBrainz name (genre lookup), and the artists tagged with exactly
-  that name, either directly or on at least three of their release groups;
+  that name, either directly (with at least a quarter of the votes of the
+  artist's main tag) or on at least three of their release groups;
 - each candidate is looked up on Deezer by name (or alias); the best followed
-  come first;
+  come first, but an artist with 100,000 fans or more needs two signals
+  (votes or tagged release groups): stars draw stray tags;
 - the MusicBrainz artist must link to Wikidata (the plugin keys artists by
   their Wikidata ID). When it also links to Deezer, that link wins over the
   name search;
@@ -52,6 +54,8 @@ OUT = os.path.join(HERE, 'artists-mb.csv')
 MAX = 8           # key artists per genre, as in artists-picks.csv
 TRIED = 30        # candidates looked up on Deezer per genre
 RELEASES = 3      # tagged release groups that make an untagged artist count
+SHARE = 0.25      # the genre's votes against the artist's best tag
+STAR = 100000     # Deezer fans past which one vote is not enough
 GROUP = {'Group', 'Orchestra', 'Choir'}
 GENRES = {}
 WORKERS = 4       # genres at a time: MusicBrainz stays at one request per second
@@ -108,13 +112,22 @@ def mb_genres():
 
 
 def tagged(tags, names):
-    return sum(t.get('count', 0) for t in tags or [] if lt.norm(t.get('name')) in names)
+    """Votes for the genre among the tags; a tag voted down counts for nothing."""
+    return sum(max(0, t.get('count', 0)) for t in tags or [] if lt.norm(t.get('name')) in names)
+
+
+def share(tags, votes):
+    """How much the genre weighs among the artist's own tags: one vote for
+    "organic house" on Daft Punk, tagged French house twenty times, is noise."""
+    top = max([t.get('count', 0) for t in tags or []] + [1])
+    return votes / top
 
 
 def candidates(genre):
     """MusicBrainz artists tagged with the genre, best tagged first.
 
-    An artist counts when it carries the tag itself, or when at least
+    An artist counts when it carries the tag itself, with at least a quarter
+    of the votes of its best tag, or when at least
     RELEASES of its release groups do: a single tagged album is how a star
     with one track in the style would slip in (Drake for zess)."""
     g = {'name': mb_genres().get(genre['musicbrainz_id'], '')}
@@ -127,7 +140,7 @@ def candidates(genre):
         q = 'tag:"%s"' % name.replace('"', '')
         for a in mb('artist', query=q, limit=100).get('artists', []):
             n = tagged(a.get('tags'), names)
-            if n:
+            if n and share(a.get('tags'), n) >= SHARE:
                 add(a)['votes'] += n
         for rg in mb('release-group', query=q, limit=100).get('release-groups', []):
             if not tagged(rg.get('tags'), names):
@@ -207,6 +220,8 @@ def one(genre, keep, known):
     for fans, a, same in scored:
         if len(out) >= MAX - len(keep):
             break
+        if a['weight'] < 2 and fans >= STAR:
+            continue                               # one stray vote on a star (Khalid, leftfield electronic)
         # The song first: Deezer answers fast, MusicBrainz once a second, so
         # MusicBrainz is only asked about an artist that has a song to give.
         best = max(same, key=lambda d: d.get('nb_fan', 0))

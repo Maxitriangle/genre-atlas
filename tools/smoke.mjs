@@ -520,7 +520,9 @@ try {
 		const live = await newPage( 1440, 900 );
 		let flashed = false;
 		await live.goto( about, { waitUntil: 'commit' } );
-		flashed = await live.locator( '.ga-fallback h1' ).evaluate( el => getComputedStyle( el.closest( '.ga-fallback' ) ).opacity !== '0' ).catch( () => false );
+		// Once the script has drawn, the plain version is gone from the page: a
+		// detached element has no style at all, which is not a flash either.
+		flashed = await live.locator( '.ga-fallback h1' ).evaluate( el => el.isConnected && getComputedStyle( el.closest( '.ga-fallback' ) ).opacity !== '0', null, { timeout: 5000 } ).catch( () => false );
 		await live.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
 		await live.close();
 		check( 'moteurs : la version sans script se lit seule, et ne s affiche pas avant la fiche', shown && ! flashed, `sans script ${ shown ? 'visible' : 'invisible' }, ${ flashed ? 'eclair' : 'pas d eclair' }` );

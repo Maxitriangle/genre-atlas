@@ -104,6 +104,12 @@ def holds(title, name):
     return n.strip() != '' and n in words(title)
 
 
+def plain(s):
+    """No straight quote nor backslash: JSON would escape them with a
+    backslash, which the importer's CSV reader takes for its own escape."""
+    return s.replace('\\', '/').replace('"', '”')
+
+
 def candidates(names):
     found, seen = [], set()
     for name in names:
@@ -115,7 +121,7 @@ def candidates(names):
             seen.add(v['id'])
             ok = lt.fetch('https://www.youtube.com/oembed?format=json&url=' + urllib.parse.quote('https://www.youtube.com/watch?v=' + v['id']), pause=0.2)
             if ok and 'status' not in ok:
-                found.append({'youtube': v['id'], 'title': title, 'channel': v['channel'], 'length': v['length']})
+                found.append({'youtube': v['id'], 'title': plain(title), 'channel': plain(v['channel']), 'length': v['length']})
             if len(found) >= KEEP:
                 return found
     return found
