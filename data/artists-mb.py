@@ -40,6 +40,7 @@ import threading
 import time
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 spec = importlib.util.spec_from_file_location('listen_tracks', os.path.join(HERE, 'listen-tracks.py'))
@@ -52,6 +53,8 @@ MAX = 8           # key artists per genre, as in artists-picks.csv
 TRIED = 30        # candidates looked up on Deezer per genre
 RELEASES = 3      # tagged release groups that make an untagged artist count
 GROUP = {'Group', 'Orchestra', 'Choir'}
+GENRES = {}
+WORKERS = 4       # genres at a time: MusicBrainz stays at one request per second
 
 mb_cache = json.load(open(MB_CACHE)) if os.path.exists(MB_CACHE) else {}
 mb_lock = threading.Lock()
@@ -90,6 +93,20 @@ def mb(path, **params):
         return data
 
 
+def mb_genres():
+    """Every MusicBrainz genre name by ID, a hundred per request."""
+    if not GENRES:
+        offset = 0
+        while True:
+            page = mb('genre/all', limit=100, offset=offset)
+            for g in page.get('genres', []):
+                GENRES[g['id']] = g['name']
+            offset += 100
+            if not page.get('genres') or offset >= page.get('genre-count', 0):
+                break
+    return GENRES
+
+
 def tagged(tags, names):
     return sum(t.get('count', 0) for t in tags or [] if lt.norm(t.get('name')) in names)
 
@@ -100,7 +117,7 @@ def candidates(genre):
     An artist counts when it carries the tag itself, or when at least
     RELEASES of its release groups do: a single tagged album is how a star
     with one track in the style would slip in (Drake for zess)."""
-    g = mb('genre/' + genre['musicbrainz_id']) if genre['musicbrainz_id'] else {}
+    g = {'name': mb_genres().get(genre['musicbrainz_id'], '')}
     names = {lt.norm(n) for n in (g.get('name'), genre['name']) if n}
     found = {}
 
@@ -171,6 +188,12 @@ def links(mbid):
     return qid, dz, a
 
 
+def song(artist, a):
+    """From a release group tagged with the genre, else the artist's best ranked."""
+    title, track = genre_song(artist, a['name'], a['albums'])
+    return (title, track) if title else lt.deezer_song(artist, a['name'])
+
+
 def one(genre, keep, known):
     """Up to MAX - len(keep) artists with a song for one silent genre."""
     cands, _ = candidates(genre)
@@ -184,20 +207,23 @@ def one(genre, keep, known):
     for fans, a, same in scored:
         if len(out) >= MAX - len(keep):
             break
+        # The song first: Deezer answers fast, MusicBrainz once a second, so
+        # MusicBrainz is only asked about an artist that has a song to give.
+        best = max(same, key=lambda d: d.get('nb_fan', 0))
+        artist, match = str(best['id']), 'name' if len(same) == 1 else 'name-ambiguous'
+        title, track = song(artist, a)
+        if not title:
+            continue
         qid, dz, full = links(a['id'])
         if not qid or qid in keep or any(r['wikidata_id'] == qid for r in out):
             continue
         if dz:
+            if dz[0] != artist:                    # MusicBrainz knows better than a name search
+                title, track = song(dz[0], a)
+                if not title:
+                    continue
             artist, match = dz[0], 'musicbrainz'
-        else:
-            best = max(same, key=lambda d: d.get('nb_fan', 0))
-            artist, match = str(best['id']), 'name' if len(same) == 1 else 'name-ambiguous'
         name = known.get(qid, {}).get('name') or a['name']
-        title, track = genre_song(artist, name, a['albums'])
-        if not title:
-            title, track = lt.deezer_song(artist, name)
-        if not title:
-            continue
         yt, ch, own = lt.youtube_video(name, title, set())
         if match == 'name-ambiguous' and not own:
             continue                               # the song may be a namesake's
@@ -223,17 +249,26 @@ def main():
     silent = [g for g in genres if not any(r['song_deezer'] or r['song_youtube'] for r in art.get(g['wikidata_id'], []))]
     if limit:
         silent = random.Random(1).sample(silent, limit)     # a trial on a fixed sample
-    out = []
+    mb_genres()
+    found, done = [None] * len(silent), [0]
+
+    def job(i):
+        g = silent[i]
+        found[i] = one(g, {r['wikidata_id'] for r in art.get(g['wikidata_id'], [])}, known)
+        with lt.lock:
+            done[0] += 1
+            n = done[0]
+        sys.stderr.write('%d/%d %s: %d\n' % (n, len(silent), g['name'], len(found[i])))
+        if n % 10 == 0:
+            lt.save()
     try:
-        for i, g in enumerate(silent, 1):
-            got = one(g, {r['wikidata_id'] for r in art.get(g['wikidata_id'], [])}, known)
-            out += got
-            sys.stderr.write('%d/%d %s: %d\n' % (i, len(silent), g['name'], len(got)))
-            if i % 10 == 0:
-                lt.save()
+        with ThreadPoolExecutor(WORKERS) as pool:
+            list(pool.map(job, range(len(silent))))
     finally:
         lt.save()
-        json.dump(mb_cache, open(MB_CACHE, 'w'))
+        with mb_lock:
+            json.dump(mb_cache, open(MB_CACHE, 'w'))
+    out = [r for rows_ in found if rows_ for r in rows_]
     fields = ['genre_id', 'genre', 'wikidata_id', 'musicbrainz_id', 'name', 'kind', 'start', 'country', 'weight',
               'deezer_fans', 'song_title', 'deezer_track', 'youtube', 'match', 'youtube_channel']
     with open(OUT, 'w', encoding='utf-8', newline='') as fh:

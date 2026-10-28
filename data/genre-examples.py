@@ -17,7 +17,7 @@ A video is a candidate when:
 - YouTube allows it to be embedded (oEmbed answers).
 
 A genre is silent when none of its key artists in artist-import.csv has a
-song: run this after artists-mb.py and artists-build.py.
+song, and when artists-mb.py found it none either (artists-mb.csv).
 
     python3 data/genre-examples.py [sample]   # resumes from its cache
 
@@ -127,12 +127,16 @@ def main():
     for r in rows('artist-import.csv'):
         if r['song_deezer'] or r['song_youtube']:
             sound.update(r['genres'].split('|'))
+    # Genres artists-mb.py gave artists with a song to, before artists-build.py
+    # carried them into artist-import.csv.
+    if os.path.exists(os.path.join(HERE, 'artists-mb.csv')):
+        sound.update(r['genre_id'] for r in rows('artists-mb.csv') if r['deezer_track'] or r['youtube'])
     mb_names = {}
     mb_cache = os.path.join(HERE, '.mb-cache.json')
     if os.path.exists(mb_cache):          # the MusicBrainz names artists-mb.py looked up
         for url, data in json.load(open(mb_cache)).items():
-            if '/ws/2/genre/' in url and data.get('name'):
-                mb_names[data.get('id')] = data['name']
+            if '/ws/2/genre/all' in url:
+                mb_names.update((g['id'], g['name']) for g in data.get('genres', []))
     silent = [g for g in rows('genre-import.csv') if g['wikidata_id'] not in sound]
     if sample:
         silent = random.Random(1).sample(silent, sample)
