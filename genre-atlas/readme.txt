@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.16.1
+Stable tag: 0.17.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -30,6 +30,12 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   Messages go to the address set in Genres > Settings, which visitors never see, with the visitor in Reply-To,
   and a copy is kept in Messages. No captcha and no outside service: a hidden field, a minimum of 3 seconds
   between loading and sending, and 5 messages an hour per connection.
+* Listening examples: a genre whose key artists have no song (often a tradition or a form: oberek, gamelan degung)
+  can have a YouTube video instead. The import file proposes up to three per genre, found under the genre's name;
+  they wait in Genres > Listening examples, counted on the menu, where each one is played in place, then accepted
+  or rejected. A rejected video makes way for the next and is never proposed again; an accepted one opens the
+  dossier's LISTEN section and survives re-imports. The genre's edit screen ("Listening example") changes or
+  removes it by hand. Nothing shows on the site before it is accepted.
 * Community picks: under LISTEN, every dossier lets anyone suggest an artist or a playlist (a link on Spotify,
   Deezer, YouTube, Apple Music, Bandcamp, SoundCloud, Tidal or Qobuz, a name, an optional note and nickname).
   Nothing shows before it is approved in Suggestions, where the menu counts what is waiting: Approve puts a
