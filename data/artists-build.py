@@ -3,8 +3,9 @@
 
     python3 data/artists-build.py
 
-Reads artists.csv, genre-artists.csv, artist-photos.csv and, when it exists,
-artist-songs.csv, and writes artist-import.csv: one row per artist linked to
+Reads artists.csv, genre-artists.csv, artist-photos.csv and, when they exist,
+artist-songs.csv and artists-mb.csv (the artists that give a sound to the
+genres that had none, from artists-mb.py), and writes artist-import.csv: one row per artist linked to
 at least one genre, with its genres (Wikidata IDs, "|"-separated), the credit
 of its photo and its song for the Listen section. The photo fields are empty
 when the photo was left out or has no mask in the plugin.
@@ -28,8 +29,20 @@ def main():
     photos = {r['wikidata_id']: r for r in rows('artist-photos.csv')
               if r['status'] == 'ok' and os.path.exists(os.path.join(MASKS, r['wikidata_id'] + '.png'))}
     songs = {r['wikidata_id']: r for r in rows('artist-songs.csv')} if os.path.exists(os.path.join(HERE, 'artist-songs.csv')) else {}
+    artists = rows('artists.csv')
+    if os.path.exists(os.path.join(HERE, 'artists-mb.csv')):
+        known = {a['wikidata_id'] for a in artists}
+        for r in rows('artists-mb.csv'):
+            q = r['wikidata_id']
+            if r['genre_id'] not in genres.setdefault(q, []):
+                genres[q].append(r['genre_id'])
+            if q not in known:
+                known.add(q)
+                artists.append(r)
+            if not songs.get(q, {}).get('deezer_track'):
+                songs[q] = r
     out = []
-    for a in rows('artists.csv'):
+    for a in artists:
         q = a['wikidata_id']
         if q not in genres:
             continue
