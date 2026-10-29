@@ -104,6 +104,10 @@ add_filter( 'pre_http_request', function ( $pre, $args, $url ) {
 		return $pre;
 	}
 	// Deezer's API, for the sound previews: every track has one.
+	// Like the real one, it answers WordPress's own user agent with a web page.
+	if ( 'api.deezer.com' === $host && 0 === strpos( (string) $args['user-agent'], 'WordPress' ) ) {
+		return array( 'headers' => array(), 'cookies' => array(), 'filename' => null, 'response' => array( 'code' => 200, 'message' => 'OK' ), 'body' => '<!DOCTYPE html><title>Deezer</title>' );
+	}
 	if ( 'api.deezer.com' === $host && preg_match( '~/track/(\d+)~', $url, $m ) ) {
 		return array( 'headers' => array(), 'cookies' => array(), 'filename' => null, 'response' => array( 'code' => 200, 'message' => 'OK' ),
 			'body' => wp_json_encode( array( 'id' => (int) $m[1], 'preview' => 'https://cdnt-preview.dzcdn.net/smoke/' . $m[1] . '.mp3' ) ) );

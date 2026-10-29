@@ -9,7 +9,7 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A. v0.17.0 publiée et installée (genres muets) ; v0.18.0 prête (lecteur permanent, son au survol et radio de branche, dernière section). Ensuite : expérience mobile et comptes utilisateurs (Maxime a des idées sur les deux). La visibilité (point 8 de « Ce qui attend ») passe après.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A. v0.17.0 publiée et installée (genres muets) ; v0.18.0 publiée le 29/10/2026, puis v0.18.1 (les extraits ne jouaient pas en ligne, dernière section). Ensuite : expérience mobile et comptes utilisateurs (Maxime a des idées sur les deux). La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
@@ -890,3 +890,18 @@ Captures `14-son.png` et `14b-son-mobile.png`.
 - **banc** : 80 vérifications. La radio d'une branche démarre à 01/NN, passe seule à 02 à la fin de l'extrait (le WAV du banc dure 1 s), puis à 03 avec ⏭, sans sortir de la branche. Capture `14c-radio.png`.
 
 Pistes non faites : un bouton radio sur les tuiles de l'accueil (une tuile est un lien, et un bouton ne peut pas y être imbriqué) et sur la fiche ; surligner sur la carte le genre en cours.
+
+## Les extraits ne jouaient pas en ligne (v0.18.1, 29/10/2026)
+Vu par Maxime sur le site, juste après la v0.18.0 : HEAR et RADIO ne font rien, même avec SOUND ON. L'adresse `/wp-json/genre-atlas/v1/sound/<id>` répondait 404 (« No preview ») pour tous les genres.
+
+**Cause** : Deezer renvoie sa page d'accueil en HTML, au lieu des données du titre, à toute requête dont l'agent commence par « WordPress/ ». C'est l'agent que `wp_remote_get` envoie par défaut. Le banc ne l'avait pas vu, parce que son faux Deezer répondait à tout le monde.
+
+**Correction** :
+- l'extension se présente sous son propre nom (`GenreAtlas/<version> (+adresse du site)`) ;
+- le faux Deezer du banc refuse maintenant l'agent WordPress, comme le vrai. Sans la correction, le banc échoue bien sur le son (« 0 extrait »), et passe avec elle (80/80) ;
+- un HEAR ou une RADIO dont l'extrait ne vient pas affiche « NO PREVIEW CAN BE PLAYED RIGHT NOW » dans la barre pendant 5 s, au lieu de ne rien faire ;
+- le banc ne s'arrête plus au milieu quand le son échoue : la fermeture de la barre ne bloque plus la suite.
+
+**Leçon** : vérifier depuis le site en ligne, et pas seulement au banc, toute API extérieure appelée par le serveur (`curl -A "WordPress/6.8; https://every-genre.com"` reproduit l'appel). Les liens vérifiés de `picks.php` passent par le même `wp_remote_get`, mais une page HTML y vaut réponse, ce qui suffit.
+
+**Chez Maxime** : mettre à jour l'extension, sans réimport.

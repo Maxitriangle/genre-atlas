@@ -411,20 +411,29 @@
     // The map is laid out to the room it has: give back or take the bar's height.
     if (was !== on && !S.about && !S.contact && !S.legal && !S.random && root.querySelector('.ga-map')) render();
   }
-  function hear(id, onAir) {
+  function hear(id, onAir, byHand) {
     var n = N[id];
     if (!onAir) PL.radio = null;                       // a genre asked for by hand ends the radio
     if (!n || !n.s || !CFG.soundApi) return;
     var ask = ++PL.ask, i = PL.next[id] || 0;
     fetch(CFG.soundApi + id + '?i=' + i).then(function (r) { return r.ok ? r.json() : null; }).then(function (t) {
       if (ask !== PL.ask) return;                      // another genre was asked for meanwhile
-      if (!t) { if (onAir && PL.radio) skip(); return; }
+      if (!t) { if (onAir && PL.radio) skip(); else if (byHand) silence(id); return; }
       PL.next[id] = t.i + 1;
       PL.kind = 'preview'; PL.genre = id; PL.track = t; PL.yt = '';
       audio.src = t.preview;
       var go = audio.play(); if (go && go.catch) go.catch(function () { drawBar(); });
       drawBar(); showBar(true);
-    }).catch(function () { if (onAir && PL.radio && ask === PL.ask) skip(); });
+    }).catch(function () { if (ask !== PL.ask) return; if (onAir && PL.radio) skip(); else if (byHand) silence(id); });
+  }
+  // A preview asked for by hand that does not come: say so, rather than nothing.
+  function silence(id) {
+    var n = N[id];
+    if (PL.kind || !n) return;
+    bar.innerHTML = '<div class="ga-bar-in" style="--fam:' + color(n) + '">' + glyph(n, 32) + '<div class="ga-bar-t"><b>' + esc(n.name) + '</b><span class="ga-micro">NO PREVIEW CAN BE PLAYED RIGHT NOW · TRY AGAIN LATER</span></div>' +
+      '<button type="button" class="ga-bar-b" data-bar="close" aria-label="Close">✕</button></div>';
+    showBar(true);
+    setTimeout(function () { if (!PL.kind) stopSound(); }, 5000);
   }
   function onAirList(n) {
     return [n].concat(descendants(n)).filter(function (k) { return k.s; });
@@ -445,7 +454,7 @@
     var r = PL.radio;
     if (!r) return;
     r.missed = played ? 0 : r.missed + 1;
-    if (r.missed >= Math.min(5, r.queue.length)) { stopSound(); return; }
+    if (r.missed >= Math.min(5, r.queue.length)) { var from = r.from; stopSound(); silence(from); return; }
     r.at++;
     if (r.at >= r.queue.length) { shuffle(r.queue); r.at = 0; }
     hear(r.queue[r.at], true);
@@ -1101,7 +1110,7 @@
       e.preventDefault();
       if (h.hasAttribute('data-sound')) setSound(!SOUND);
       else if (h.hasAttribute('data-radio')) radio(Number(h.getAttribute('data-radio')));
-      else hear(Number(h.getAttribute('data-hear')));
+      else hear(Number(h.getAttribute('data-hear')), false, true);
       return;
     }
     var p = e.target.closest('[data-play]');

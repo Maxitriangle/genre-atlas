@@ -46,7 +46,15 @@ function genre_atlas_deezer_preview( $track ) {
 	if ( false !== $cached ) {
 		return $cached;
 	}
-	$res  = wp_remote_get( 'https://api.deezer.com/track/' . rawurlencode( $track ), array( 'timeout' => 6 ) );
+	// Deezer answers a "WordPress/…" user agent with its home page instead of
+	// the track: the plugin introduces itself under its own name.
+	$res  = wp_remote_get(
+		'https://api.deezer.com/track/' . rawurlencode( $track ),
+		array(
+			'timeout'    => 6,
+			'user-agent' => 'GenreAtlas/' . GENRE_ATLAS_VERSION . ' (+' . home_url( '/' ) . ')',
+		)
+	);
 	$data = is_wp_error( $res ) ? null : json_decode( wp_remote_retrieve_body( $res ), true );
 	$url  = is_array( $data ) && ! empty( $data['preview'] ) && 0 === strpos( $data['preview'], 'https://' ) ? $data['preview'] : '';
 	if ( is_array( $data ) ) {
