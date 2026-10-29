@@ -384,11 +384,14 @@
    *   with ▶ HEAR at any time;
    * - the dossier's songs in full, in YouTube's player, which the bar holds
    *   in a card above it.
+   * The radio of a branch chains previews: one song of each genre of the
+   * branch, in a shuffled order, the next genre when a preview ends. Like the
+   * random draw, it stops at the tiles: Rock's radio leaves Metal to its own.
    * Nothing reaches Deezer or YouTube before one of those choices.
    */
   var SOUND = (function () { try { return localStorage.getItem('ga-sound') === '1'; } catch (e) { return false; } })();
   var HOVER = !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);
-  var PL = { kind: '', genre: 0, track: null, next: {}, ask: 0, yt: '' };
+  var PL = { kind: '', genre: 0, track: null, next: {}, ask: 0, yt: '', radio: null };
   var bar = document.createElement('div');
   bar.className = 'ga-bar'; bar.hidden = true; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Player');
   root.parentNode.insertBefore(bar, root.nextSibling);
@@ -408,21 +411,47 @@
     // The map is laid out to the room it has: give back or take the bar's height.
     if (was !== on && !S.about && !S.contact && !S.legal && !S.random && root.querySelector('.ga-map')) render();
   }
-  function hear(id) {
+  function hear(id, onAir) {
     var n = N[id];
+    if (!onAir) PL.radio = null;                       // a genre asked for by hand ends the radio
     if (!n || !n.s || !CFG.soundApi) return;
     var ask = ++PL.ask, i = PL.next[id] || 0;
     fetch(CFG.soundApi + id + '?i=' + i).then(function (r) { return r.ok ? r.json() : null; }).then(function (t) {
-      if (!t || ask !== PL.ask) return;               // another genre was asked for meanwhile
+      if (ask !== PL.ask) return;                      // another genre was asked for meanwhile
+      if (!t) { if (onAir && PL.radio) skip(); return; }
       PL.next[id] = t.i + 1;
       PL.kind = 'preview'; PL.genre = id; PL.track = t; PL.yt = '';
       audio.src = t.preview;
       var go = audio.play(); if (go && go.catch) go.catch(function () { drawBar(); });
       drawBar(); showBar(true);
-    }).catch(function () { /* no preview: stay silent */ });
+    }).catch(function () { if (onAir && PL.radio && ask === PL.ask) skip(); });
+  }
+  function onAirList(n) {
+    return [n].concat(descendants(n)).filter(function (k) { return k.s; });
+  }
+  function shuffle(list) {
+    for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), x = list[i]; list[i] = list[j]; list[j] = x; }
+    return list;
+  }
+  function radio(id) {
+    var n = N[id], list = n ? onAirList(n) : [];
+    if (!list.length) return;
+    PL.radio = { from: id, queue: shuffle(list.map(function (k) { return k.id; })), at: 0, missed: 0 };
+    hear(PL.radio.queue[0], true);
+  }
+  // The next genre of the radio; past the last one, a new shuffle. A genre
+  // whose preview fails is passed over, but a radio that only fails stops.
+  function skip(played) {
+    var r = PL.radio;
+    if (!r) return;
+    r.missed = played ? 0 : r.missed + 1;
+    if (r.missed >= Math.min(5, r.queue.length)) { stopSound(); return; }
+    r.at++;
+    if (r.at >= r.queue.length) { shuffle(r.queue); r.at = 0; }
+    hear(r.queue[r.at], true);
   }
   function watch(n, ids, titles) {
-    audio.pause(); PL.ask++;
+    audio.pause(); PL.ask++; PL.radio = null;
     PL.kind = 'youtube'; PL.genre = n.id; PL.yt = ids[0]; PL.track = { title: titles[0] || n.name, count: ids.length };
     // The embed plays the playlist parameter from its start and skips the
     // video in the path, so the list carries every song, the first included.
@@ -432,7 +461,7 @@
   }
   function stopSound() {
     audio.pause(); audio.removeAttribute('src'); PL.ask++;
-    PL.kind = ''; PL.track = null; PL.yt = '';
+    PL.kind = ''; PL.track = null; PL.yt = ''; PL.radio = null;
     bar.innerHTML = ''; showBar(false);
   }
   function drawBar(frame) {
@@ -441,9 +470,11 @@
     var link = '<a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + esc(n.name) + '</a>';
     var html = '<div class="ga-bar-in" style="--fam:' + color(n) + '">' + glyph(n, 32) + '<div class="ga-bar-t">';
     if (PL.kind === 'preview') {
-      html += '<b>' + esc(t.title) + '</b><span class="ga-micro">' + esc(t.artist.toUpperCase()) + ' · ' + link + '</span></div>' +
+      var r = PL.radio, on = r && N[r.from];
+      html += '<b>' + esc(t.title) + '</b><span class="ga-micro">' + (on ? '<span class="ga-bar-radio">RADIO ' + esc(on.name.toUpperCase()) + ' ' + pad(r.at + 1) + '/' + pad(r.queue.length) + '</span> · ' : '') + esc(t.artist.toUpperCase()) + ' · ' + link + '</span></div>' +
         '<button type="button" class="ga-bar-b" data-bar="toggle" aria-label="' + (audio.paused ? 'Play' : 'Pause') + '">' + (audio.paused ? '▶' : '❚❚') + '</button>' +
-        (t.count > 1 ? '<button type="button" class="ga-bar-b" data-bar="next" aria-label="Another song of ' + esc(n.name) + '">⏭</button>' : '') +
+        (PL.radio ? '<button type="button" class="ga-bar-b" data-bar="next" aria-label="Next genre on the radio">⏭</button>' :
+          t.count > 1 ? '<button type="button" class="ga-bar-b" data-bar="next" aria-label="Another song of ' + esc(n.name) + '">⏭</button>' : '') +
         '<span class="ga-micro ga-bar-time">' + clock(audio.currentTime) + ' / 0:30 · PREVIEW</span>' +
         '<a class="ga-bar-out" href="' + esc(t.deezer) + '" target="_blank" rel="noopener">FULL ON DEEZER<span aria-hidden="true">↗</span></a>';
     } else {
@@ -462,14 +493,15 @@
     if (tm) tm.textContent = clock(audio.currentTime) + ' / 0:30 · PREVIEW';
     if (ln && audio.duration) ln.style.width = f2(100 * audio.currentTime / audio.duration) + '%';
   });
-  ['play', 'pause', 'ended'].forEach(function (ev) { audio.addEventListener(ev, function () { if (PL.kind === 'preview') drawBar(); }); });
+  ['play', 'pause'].forEach(function (ev) { audio.addEventListener(ev, function () { if (PL.kind === 'preview') drawBar(); }); });
+  audio.addEventListener('ended', function () { if (PL.radio) skip(true); else if (PL.kind === 'preview') drawBar(); });
   bar.addEventListener('click', function (e) {
     var b = e.target.closest('[data-bar],[data-about]');
     if (!b) return;
     if (b.hasAttribute('data-about')) { if (e.metaKey || e.ctrlKey) return; e.preventDefault(); S.q = ''; openDossier(N[b.getAttribute('data-about')]); return; }
     var act = b.getAttribute('data-bar');
     if (act === 'close') stopSound();
-    else if (act === 'next') hear(PL.genre);
+    else if (act === 'next') { if (PL.radio) skip(true); else hear(PL.genre); }
     else if (act === 'toggle') { if (audio.paused) audio.play(); else audio.pause(); }
   });
   // Pointing at a genre plays it, once the pointer has rested a moment: a
@@ -481,11 +513,13 @@
     if (t && id === hoverT.id) return;
     clearTimeout(hoverT.t);
     hoverT = { id: id, t: 0 };
-    if (!id || !N[id] || !N[id].s || PL.kind === 'youtube' || (PL.kind === 'preview' && PL.genre === id && !audio.paused)) return;
+    if (!id || !N[id] || !N[id].s || PL.kind === 'youtube' || (PL.radio && !audio.paused) || (PL.kind === 'preview' && PL.genre === id && !audio.paused)) return;
     hoverT.t = setTimeout(function () { hear(id); }, 350);
   });
   function hearButton(n, ghost) {
-    return n.s ? '<button type="button" class="ga-cta' + (ghost ? ' ghost' : '') + ' ga-hear" data-hear="' + n.id + '"><span>HEAR ' + esc(n.name) + '</span><span class="ga-micro">30 S</span><span aria-hidden="true">▶</span></button>' : '';
+    var air = n.grp ? [] : onAirList(n);
+    return (n.s ? '<button type="button" class="ga-cta' + (ghost ? ' ghost' : '') + ' ga-hear" data-hear="' + n.id + '"><span>HEAR ' + esc(n.name) + '</span><span class="ga-micro">30 S</span><span aria-hidden="true">▶</span></button>' : '') +
+      (air.length > 1 ? '<button type="button" class="ga-cta ghost ga-hear" data-radio="' + n.id + '"><span>RADIO ' + esc(n.name) + '</span><span class="ga-micro">' + pad(air.length) + ' GENRES</span><span aria-hidden="true">◉</span></button>' : '');
   }
   function soundToggle() {
     return HOVER && !isMobile() ? '<button type="button" class="ga-sound' + (SOUND ? ' on' : '') + '" data-sound="1" aria-pressed="' + SOUND + '" title="' + (SOUND ? 'Point at a genre to hear it' : 'Switch on to hear a genre as you point at it') + '">' +
@@ -1062,10 +1096,12 @@
       else { C.sent = false; render(); var m = document.getElementById('ga-cmsg'); if (m) m.focus(); }
       return;
     }
-    var h = e.target.closest('[data-hear],[data-sound]');
+    var h = e.target.closest('[data-hear],[data-sound],[data-radio]');
     if (h && root.contains(h)) {
       e.preventDefault();
-      if (h.hasAttribute('data-sound')) setSound(!SOUND); else hear(Number(h.getAttribute('data-hear')));
+      if (h.hasAttribute('data-sound')) setSound(!SOUND);
+      else if (h.hasAttribute('data-radio')) radio(Number(h.getAttribute('data-radio')));
+      else hear(Number(h.getAttribute('data-hear')));
       return;
     }
     var p = e.target.closest('[data-play]');

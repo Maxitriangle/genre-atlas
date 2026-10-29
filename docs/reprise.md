@@ -9,7 +9,7 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A. v0.17.0 publiée et installée (genres muets) ; v0.18.0 prête (lecteur permanent et son au survol, dernière section). Ensuite : radio de branche, puis expérience mobile et comptes utilisateurs. La visibilité (point 8 de « Ce qui attend ») passe après.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A. v0.17.0 publiée et installée (genres muets) ; v0.18.0 prête (lecteur permanent, son au survol et radio de branche, dernière section). Ensuite : expérience mobile et comptes utilisateurs (Maxime a des idées sur les deux). La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
@@ -880,3 +880,13 @@ Captures `14-son.png` et `14b-son-mobile.png`.
 **Limite connue** : sur une nouvelle visite avec SOUND ON déjà choisi, le navigateur refuse de jouer un son avant le premier clic sur la page. La barre s'ouvre alors en pause, avec ▶.
 
 **Chez Maxime, après publication** : mettre à jour l'extension, sans réimport. L'arbre se reconstruit seul (nouvelle clé de cache).
+
+**Radio de branche** (ajoutée à la v0.18.0 à la demande de Maxime, avant publication) :
+- bouton **RADIO <genre> · NN GENRES ◉** sur le panneau et sur mobile, quand au moins deux genres de la branche ont un extrait ;
+- elle joue un extrait par genre, le genre lui-même et tous ses descendants, **dans un ordre mélangé**, puis passe au genre suivant à la fin de l'extrait. Une fois la liste finie, elle la remélange ;
+- **une tuile ferme la lignée**, comme pour le tirage au hasard : la radio de Rock laisse Metal et Punk à la leur ;
+- la barre affiche « RADIO <BRANCHE> 03/57 », l'artiste et le genre en cours (lien vers sa fiche) ; ⏭ passe au genre suivant ;
+- un survol ne coupe pas la radio, alors qu'un HEAR ou une liste YouTube l'arrête. Un genre dont l'extrait échoue est sauté, et la radio s'arrête après 5 échecs de suite ;
+- **banc** : 80 vérifications. La radio d'une branche démarre à 01/NN, passe seule à 02 à la fin de l'extrait (le WAV du banc dure 1 s), puis à 03 avec ⏭, sans sortir de la branche. Capture `14c-radio.png`.
+
+Pistes non faites : un bouton radio sur les tuiles de l'accueil (une tuile est un lien, et un bouton ne peut pas y être imbriqué) et sur la fiche ; surligner sur la carte le genre en cours.

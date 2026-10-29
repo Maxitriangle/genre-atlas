@@ -673,6 +673,42 @@ try {
 		check( 'son : ✕ ferme la barre, SOUND ON est garde dans le navigateur, sans cookie', closed && remembered && stored === 0, `${ stored } cookie(s)` );
 		await snd.close();
 
+		// The radio of a branch: one preview per genre, shuffled, the next
+		// genre when a preview ends (the bench's preview lasts one second).
+		const air = n => {
+			const out = [];
+			( function walk( id ) { for ( const k of tree.nodes.filter( x => x.p === id && ! x.f ) ) { out.push( k ); walk( k.id ); } } )( n.id );
+			return [ n, ...out ].filter( x => x.s );
+		};
+		const rc = tree.nodes.find( n => ! n.f && n.p && air( n ).length >= 4 && tree.nodes.filter( x => x.p === n.id ).length <= 6 );
+		if ( rc ) {
+			const onAir = new Set( air( rc ).map( x => x.id ) );
+			const rd = await newPage( 1440, 900 );
+			const played = [];
+			await rd.route( /dzcdn\.net/, r => { played.push( r.request().url() ); return r.fulfill( { status: 200, contentType: 'audio/wav', body: WAV } ); } );
+			await centre( rd, rc );
+			await rd.locator( `.ga-panel [data-radio="${ rc.id }"]` ).click();
+			await rd.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-radio', { timeout: 8000 } ).catch( () => {} );
+			const label = await rd.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
+			const genreOf = async () => Number( await rd.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => 0 ) );
+			const first = await genreOf();
+			await rd.waitForFunction( () => /\b02\//.test( document.querySelector( '.ga-bar-radio' )?.textContent || '' ), null, { timeout: 8000 } ).catch( () => {} );
+			const second = await genreOf();
+			const auto = await rd.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
+			await rd.locator( '.ga-bar [data-bar="next"]' ).click();
+			await rd.waitForFunction( () => /\b03\//.test( document.querySelector( '.ga-bar-radio' )?.textContent || '' ), null, { timeout: 8000 } ).catch( () => {} );
+			const third = await genreOf();
+			await rd.screenshot( { path: `${ SHOTS }/14c-radio.png` } );
+			check( `radio : « ${ rc.name } » enchaine ses genres, seul et avec ⏭, sans sortir de la branche`,
+				label.startsWith( `RADIO ${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
+				&& new Set( [ first, second, third ] ).size === 3 && played.length >= 3,
+				`${ label } → ${ auto }, ${ played.length } extrait(s)` );
+			await rd.locator( '.ga-bar [data-bar="close"]' ).click();
+			await rd.close();
+		} else {
+			check( 'radio : une branche de l arbre a au moins quatre genres avec extrait', false );
+		}
+
 		const tel = await newPage( 390, 844 );
 		const theard = [];
 		await tel.route( /dzcdn\.net/, r => { theard.push( r.request().url() ); return r.fulfill( { status: 200, contentType: 'audio/wav', body: WAV } ); } );

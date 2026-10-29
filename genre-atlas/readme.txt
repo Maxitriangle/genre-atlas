@@ -37,6 +37,9 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   player. Both play in a bar outside the page, which keeps playing from the map to a dossier and back; ✕ stops it.
   Nothing is asked of Deezer or YouTube before one of those choices; the SOUND ON choice is kept in the browser's
   local storage, not in a cookie (both stated on /legal/).
+  RADIO on the panel and on mobile chains the previews of a branch: one song per genre that has one, the genre
+  itself and its subgenres, shuffled, the next genre when a preview ends (⏭ skips). Like the random draw it stops
+  at the tiles: Rock's radio leaves Metal and Punk to theirs. Pointing at a genre does not cut the radio.
 * Listening examples: a genre whose key artists have no song (often a tradition or a form: oberek, gamelan degung)
   can have a YouTube video instead. The import file proposes up to three per genre, found under the genre's name;
   they wait in Genres > Listening examples, counted on the menu, where each one is played in place, then accepted
