@@ -268,7 +268,7 @@ try {
 		await page.locator( '.ga-dossier [data-close]' ).click();
 		await page.waitForSelector( '.ga-map .ga-node', { timeout: 10000 } );
 		const kept = await page.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
-		await page.locator( '.ga-bar [data-bar="close"]' ).click();
+		await page.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 		const gone = await page.locator( '.ga-bar' ).isHidden() && await page.locator( '.ga-bar iframe' ).count() === 0;
 		check( 'ecoute : le lecteur continue sur la carte, et ✕ l arrete', !! playing && kept === playing && gone, `${ kept === playing ? 'meme liste' : 'liste perdue' }, ${ gone ? 'barre fermee' : 'barre restee' }` );
 		await page.unroute( /youtube(-nocookie)?\.com/ );
@@ -664,7 +664,7 @@ try {
 		await snd.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
 		const onDossier = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
 		check( 'son : la barre continue de la carte a la fiche', onMap === title && onDossier === title && heard.length === 1, `${ heard.length } extrait(s) charge(s)` );
-		await snd.locator( '.ga-bar [data-bar="close"]' ).click();
+		await snd.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 		const closed = await snd.locator( '.ga-bar' ).isHidden();
 		await snd.reload( { waitUntil: 'networkidle' } );
 		await snd.waitForSelector( '.ga-ready', { timeout: 10000 } );
@@ -703,7 +703,7 @@ try {
 				label.startsWith( `RADIO ${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
 				&& new Set( [ first, second, third ] ).size === 3 && played.length >= 3,
 				`${ label } → ${ auto }, ${ played.length } extrait(s)` );
-			await rd.locator( '.ga-bar [data-bar="close"]' ).click();
+			await rd.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 			await rd.close();
 		} else {
 			check( 'radio : une branche de l arbre a au moins quatre genres avec extrait', false );
