@@ -411,8 +411,10 @@
 .ga-sound{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border:1px solid var(--line)!important;font-size:11px;font-weight:600;color:var(--dim)!important;flex-shrink:0}
 .ga-sound.on{border-color:var(--fam)!important;color:var(--fam)!important}
 #genre-atlas .ga-hear{width:100%;margin-top:8px;text-align:left;text-transform:uppercase;border:1px solid var(--fam)}
+#genre-atlas .ga-hear{gap:12px}
+.ga-hear span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #genre-atlas .ga-msub .ga-hear{width:calc(100% - 28px)}
-.ga-hear .ga-micro{margin-left:auto;margin-right:12px;color:inherit;opacity:.7}
+.ga-hear .ga-micro{margin-left:auto;color:inherit;opacity:.7;white-space:nowrap}
 .ga-barred #genre-atlas{padding-bottom:64px}
 .ga-bar{--bg:#121016;--ink:#E4DFF5;--dim:#9A94B5;--line:rgba(228,223,245,.16);--panel:#18151E;
   position:fixed;z-index:50;left:0;right:0;bottom:0;color:var(--ink);font-family:'Azeret Mono',ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
@@ -432,16 +434,35 @@
 .ga-bar-b:hover{border-color:var(--fam)!important;color:var(--fam)}
 .ga-bar-time{white-space:nowrap;flex-shrink:0}
 .ga-bar-out{display:flex;gap:6px;align-items:center;height:44px;padding:0 12px;border:1px solid var(--line);font-size:10px;white-space:nowrap;flex-shrink:0}
+.ga-bar-mode{height:44px;padding:0 10px;border:1px solid var(--line)!important;font-size:10px;font-weight:600;flex-shrink:0}
+.ga-bar-mode[aria-pressed="true"]{border-color:var(--fam)!important;color:var(--fam)}
+.ga-bar-note{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0;padding:10px 24px 10px 40px;background:var(--bg);border-top:1px solid var(--line);font-size:10px;line-height:1.5;color:var(--dim)}
+.ga-bar-note a{text-decoration:underline}
+.ga-bar-note button{height:32px;padding:0 10px;border:1px solid var(--line)!important;font-size:10px;font-weight:600;color:var(--ink)}
 .ga-bar-line{position:absolute;left:0;right:0;top:-1px;height:2px;background:transparent}
 .ga-bar-line i{display:block;height:2px;background:var(--fam)}
 /* YouTube's player, held above the bar so it keeps playing between pages:
-   356 x 200, the smallest YouTube allows. */
-.ga-bar-yt{position:absolute;right:16px;bottom:72px;width:356px;height:200px;background:#000;border:1px solid var(--line)}
+   200 x 200, the smallest YouTube allows, and always visible while it plays. */
+.ga-bar-yt{position:absolute;right:16px;bottom:calc(100% + 8px);width:200px;height:200px;background:#000;border:1px solid var(--line)}
+.ga-bar-yt[hidden]{display:none}
 .ga-bar-yt iframe{display:block;width:100%;height:100%;border:0}
 @media (max-width:899px){
   .ga-bar-in{padding:0 12px;gap:8px}
   .ga-bar-time,.ga-bar-out{display:none}
-  .ga-bar-yt{left:0;right:0;width:auto;height:auto;aspect-ratio:16/9;bottom:64px}
+  .ga-bar-yt{right:8px}
+  .ga-bar-note{padding:10px 12px}
+  /* A phone has no room for a floating card: the bar takes the video in,
+     beside the song and its buttons, and the page makes room for it. */
+  .ga-bar.ga-bar-video{display:grid;grid-template-columns:200px minmax(0,1fr);grid-template-areas:"note note" "card info";background:var(--panel)}
+  .ga-bar.ga-bar-video .ga-bar-note{grid-area:note}
+  .ga-bar.ga-bar-video .ga-bar-yt{grid-area:card;position:static;width:200px;height:200px;border:0;border-top:1px solid var(--fam)}
+  .ga-bar.ga-bar-video .ga-bar-in{grid-area:info;height:200px;flex-wrap:wrap;align-content:center;gap:10px 5px;padding:8px 6px 8px 10px}
+  .ga-bar.ga-bar-video .ga-bar-in>.ga-glyph{display:none}
+  .ga-bar.ga-bar-video .ga-bar-t{flex:0 0 100%}
+  .ga-bar.ga-bar-video .ga-bar-t b{white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+  .ga-bar.ga-bar-video .ga-bar-b{width:36px;height:36px}
+  .ga-bar.ga-bar-video .ga-bar-mode{height:36px;padding:0 6px}
+  .ga-barred-video #genre-atlas{padding-bottom:208px}
 }
 
 /* mobile: the map turned upright (lineage on top, the genre in the middle,

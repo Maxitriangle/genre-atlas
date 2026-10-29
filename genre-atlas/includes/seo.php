@@ -445,7 +445,7 @@ function genre_atlas_page_summary() {
 		return 'Write to ' . get_bloginfo( 'name' ) . ': feedback, a correction, a missing genre.';
 	}
 	if ( 'legal' === $kind ) {
-		return 'Who publishes ' . get_bloginfo( 'name' ) . ', where it is hosted, what it keeps (no cookie, no tracker) and where its data and pictures come from.';
+		return 'Who publishes ' . get_bloginfo( 'name' ) . ', where it is hosted, what it keeps (no cookie of its own) and where its data and pictures come from.';
 	}
 	if ( 'home' === $kind ) {
 		return genre_atlas_home_summary();

@@ -9,7 +9,7 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Point A fait** : v0.17.0 (genres muets) et v0.18.1 (son au survol, lecteur permanent, radio de branche), publiées et installées le 29/10/2026. Maxime juge le lecteur « parfait » ; il garde des améliorations d'UX pour plus tard. **En cours** : l'expérience mobile, v0.19.0 prête (carte pivotée, dernière section). **Ensuite** : les comptes utilisateurs (Maxime a des idées, à recueillir avant de proposer quoi que ce soit). La visibilité (point 8 de « Ce qui attend ») passe après.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Point A fait** : v0.17.0 (genres muets) et v0.18.1 (son au survol, lecteur permanent, radio de branche), publiées et installées le 29/10/2026. Maxime juge le lecteur « parfait » ; il garde des améliorations d'UX pour plus tard. v0.19.0 (carte pivotée sur mobile) publiée et installée le 29/10/2026. **En cours** : v0.20.0, titres entiers sur YouTube par défaut (dernière section). **Ensuite** : les comptes utilisateurs, en plusieurs étapes avec Maxime. La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
@@ -934,3 +934,46 @@ Remarque de Maxime : sur téléphone, il n'y a pas de carte avec les nœuds, seu
   Captures `07-mobile.png` (carte), `07c-mobile-liste.png` et `14d-appui-long.png`.
 
 **Chez Maxime, après publication** : mettre à jour l'extension, sans réimport.
+
+## Titres entiers sur YouTube par défaut (v0.20.0, 30/10/2026, pas encore publiée)
+v0.19.0 publiée ; la carte pivotée marche sur le téléphone de Maxime.
+
+**Demande de Maxime** : écouter les titres en entier, idéalement en se connectant à sa plateforme (il a Deezer). **Constat, vérifié le 29/10/2026** :
+- **Deezer** : le lecteur intégrable (widget) est limité à 30 s pour la musique, même pour un abonné connecté. Et plus aucune nouvelle application n'est acceptée, donc pas de connexion « avec Deezer ».
+- **Spotify** : en mode développeur, 5 comptes au plus, ajoutés à la main (le 6e visiteur est refusé, même avec son propre abonnement), et Premium exigé. L'accès élargi est réservé aux entreprises d'au moins 250 000 utilisateurs par mois.
+- **Apple Music** : possible (MusicKit JS, compte développeur à 99 $ par an), mais pour ses seuls abonnés.
+- **YouTube Music** : rien pour un site extérieur.
+- **Tidal** : peut-être, à vérifier.
+
+À garder pour l'étape « comptes ».
+
+**Choix de Maxime** (toutes mes recommandations) :
+1. **titre entier par défaut** ; le survol garde l'extrait, puisqu'un titre YouTube par survol serait lent et chargé de pubs ;
+2. **vidéo visible en petit**, pas masquée. Les règles de YouTube l'exigent (200 × 200 au moins), et une pub jouée sans être vue passe pour du trafic invalide, la sanction la plus rapide ;
+3. **lecteur youtube.com** (et non plus youtube-nocookie.com), pour que les abonnés **YouTube Premium** connectés n'aient pas de pubs. YouTube peut alors poser ses cookies : le clic sur HEAR, RADIO, PLAY ou un appui long vaut choix, et la barre l'annonce la première fois.
+
+**Ce que fait la v0.20.0** :
+- **le lecteur YouTube passe par son API** (`iframe_api`, chargée au premier titre entier). La barre le pilote : lecture et pause, ⏭, temps qui défile, fin d'un titre qui fait avancer la radio. Il s'affiche dans une carte de 200 × 200 au-dessus de la barre, toujours visible pendant la lecture, et cachée seulement à l'arrêt ou en mode extrait ;
+- **par défaut, FULL** : HEAR (« FULL TRACK »), RADIO, l'appui long sur mobile et les chansons de la fiche jouent le titre entier. `/sound/<id>?full=1` renvoie, à tour de rôle, une chanson qui a une vidéo, sans rien demander à Deezer ; un genre sans vidéo se rabat sur l'extrait ;
+- **FULL / 30 S** dans la barre : le choix est gardé dans le navigateur (`ga-full`), et ce qui joue repart sous l'autre forme ;
+- **la note YouTube** apparaît au-dessus de la barre la première fois (« YouTube may set its cookies and show its ads, none for its Premium subscribers »), avec OK, USE 30 S PREVIEWS et MORE (vers la page légale). Elle est gardée en `ga-yt-ok` ;
+- **les publicités** ne sont ni bloquées ni sautées, ce qui serait contraire aux règles de YouTube. L'API ne dit pas de façon fiable qu'une pub joue : pas d'étiquette « AD » pour l'instant ;
+- **textes** :
+  - pied de page « NO COOKIE · NO AD OF ITS OWN » (au lieu de « NO COOKIE · NO ADVERTISING ») ;
+  - compteurs de la page légale « COOKIES OF ITS OWN 00 · THIRD PARTIES, ON YOUR CLICK 02 » ;
+  - section Cookies réécrite (titres entiers sur youtube.com au clic, cookies et pubs de YouTube, Premium, 30 S comme alternative, extraits Deezer) ;
+  - « What this site keeps » cite les trois choix gardés dans le navigateur. Date : 30/10/2026.
+
+**Banc** : 84 vérifications, deux passes vertes de suite. Un **faux YouTube** (`FAKE_YT` dans `smoke.mjs`, servi à la place de `iframe_api`) note ce qu'on lui demande dans `window.__yt` et termine chaque titre en 1,5 s. Vérifications adaptées ou nouvelles :
+- la liste de la fiche se charge entière et visible en 200 × 200, et ▶ repart du titre choisi ;
+- elle continue sur la carte, et ✕ l'arrête ;
+- la radio avance au fil des titres entiers ;
+- HEAR et l'appui long jouent le titre entier sur mobile ;
+- l'exemple d'écoute se joue ;
+- titre entier par défaut avec la note, puis 30 S passe aux extraits, et le choix tient au rechargement.
+
+Capture `14e-titre-entier.png`. La vérification « pas d'éclair » a encore échoué une fois par lenteur, puis passé deux fois : à surveiller.
+
+**Chez Maxime, après publication** : mettre à jour l'extension, sans réimport. À vérifier sur le vrai site : que YouTube joue bien dans la carte, qu'une pub éventuelle s'y affiche, et que la barre suit.
+
+**Vidéo sur téléphone** (question de Maxime avant la PR) : le carré de 200 × 200 flottait au-dessus de la barre et cachait la moitié de l'écran (OPEN DOSSIER, HEAR). Choix de Maxime : **intégrer la vidéo dans la barre**. Sous 900 px, pendant un titre entier, la barre passe en grille : la vidéo à gauche (200 × 200), le titre, l'artiste et les boutons à droite. La page gagne 208 px de marge en bas, ce qui la raccourcit sans rien cacher. Classes `ga-bar-video` sur la barre et `ga-barred-video` sur la page, posées par `video()`. Sur ordinateur, le carré reste au-dessus de la barre. Au passage, le bouton HEAR coupe le nom du genre plutôt que de le faire chevaucher « FULL TRACK ». Banc : 85 vérifications, dont « un titre entier met la vidéo dans la barre, la page reste lisible jusqu'en bas ». Capture `14f-video-mobile.png`.

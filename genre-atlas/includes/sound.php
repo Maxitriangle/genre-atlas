@@ -3,7 +3,7 @@
  * Sound previews: the 30-second extract Deezer gives of every track, so a
  * genre can be heard by pointing at it on the map, or by pressing ▶.
  *
- * GET /wp-json/genre-atlas/v1/sound/<genre id>?i=<n> answers with the n-th
+ * GET /wp-json/genre-atlas/v1/sound/<genre id>?i=<n>[&full=1] answers with the n-th
  * song of the genre's key artists that Deezer knows (A to Z, as the dossier
  * lists them, round and round), and the address of its preview. Deezer signs
  * that address for 15 minutes, so it is asked on demand and kept 10.
@@ -83,6 +83,17 @@ function genre_atlas_sound( $request ) {
 		return new WP_Error( 'genre_atlas_not_found', 'No such genre.', array( 'status' => 404 ) );
 	}
 	$tracks = genre_atlas_sound_tracks( $post->ID );
+	// Full tracks play on YouTube: the songs that have a video, in turn, with
+	// no need to ask Deezer. A genre with none falls back on its previews.
+	if ( ! empty( $request['full'] ) ) {
+		$videos = array_values( array_filter( $tracks, function ( $t ) { return '' !== $t['youtube']; } ) );
+		if ( $videos ) {
+			$i = max( 0, (int) $request['i'] ) % count( $videos );
+			$t = $videos[ $i ];
+			unset( $t['track'] );
+			return rest_ensure_response( array_merge( $t, array( 'genre' => (int) $post->ID, 'i' => $i, 'count' => count( $videos ), 'preview' => '' ) ) );
+		}
+	}
 	$n      = count( $tracks );
 	// A track Deezer no longer has is skipped, up to the whole list once.
 	for ( $k = 0; $k < $n; $k++ ) {

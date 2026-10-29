@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const GENRE_ATLAS_LEGAL_UPDATED = '2026-10-29'; // Change it with the text.
+const GENRE_ATLAS_LEGAL_UPDATED = '2026-10-30'; // Change it with the text.
 
 add_action( 'init', 'genre_atlas_legal_route', 11 );
 function genre_atlas_legal_route() {
@@ -59,14 +59,15 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
-			'<b>Your sound choice</b>: when you switch SOUND ON, your browser remembers it in its own storage (local storage, not a cookie), so the map stays audible on your next visit. It never leaves your device; switching SOUND OFF erases it.',
+			'<b>Your sound choices</b>: SOUND ON, FULL or 30 S, and having read the note on YouTube are remembered by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
 			'There is no account, no newsletter and no advertising.',
 		),
 		'Cookies'                   => array(
 			$matomo
 				? 'This site sets no cookie on your device, which is why it asks for no consent. The one exception is a cookie you ask for: if you choose not to be counted, a cookie named mtm_consent_removed remembers that choice. (WordPress uses cookies for the publisher’s own login, never for visitors.)'
 				: 'This site sets no cookie on your device and uses no tracker, which is why it asks for no consent. (WordPress uses cookies for the publisher’s own login, never for visitors.)',
-			'Previews of 30 seconds play from Deezer’s servers only once you switch SOUND ON or press HEAR: from then on, Deezer sees your IP address when a preview loads, under its own privacy policy, and sets no cookie through this site. Songs play in full from YouTube only when you press PLAY, in YouTube’s privacy-enhanced mode (youtube-nocookie.com). From then on, Google’s privacy policy applies to the player. The links to Spotify, Deezer, Wikipedia and the other platforms take you to those sites, under their own rules.',
+			'<b>Full songs</b> play in YouTube’s own player (youtube.com), loaded only when you ask for a song: HEAR, RADIO, PLAY, or holding a genre on a phone. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under Google’s privacy policy; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires. Switch the player bar to 30 S to hear previews instead, with no YouTube at all.',
+			'<b>Previews</b> of 30 seconds play from Deezer’s servers when you point at a genre with SOUND ON, or when the player is set to 30 S: Deezer then sees your IP address when a preview loads, under its own privacy policy, and sets no cookie through this site. The links to Spotify, Deezer, Wikipedia and the other platforms take you to those sites, under their own rules.',
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
 		'Your rights'               => array(
