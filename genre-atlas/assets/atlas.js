@@ -17,7 +17,7 @@
   var ROOTS = [];        // roots of the tree: genres with no parent
   var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
-  var S = { view: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false, legal: false };
+  var S = { view: 'map', mview: 'map', centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false, legal: false };
   var R = { within: 0, sub: false, all: false }; // the random draw's filter
   var DRAWN = {};        // ids drawn this visit: not drawn again until the pool runs out
   var DOS = {};          // id -> what a dossier adds to the tree, fetched on demand
@@ -371,7 +371,7 @@
       }
       return h;
     }).join('');
-    return '<main class="ga-mobile" style="--fam:' + color(centre) + '"><nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
+    return '<main class="ga-mobile" style="--fam:' + color(centre) + '">' + mobileToggle(centre) + '<nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
       (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad"><a class="ga-cta" href="' + esc(url(centre)) + 'about/" data-about="' + centre.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>' + hearButton(centre, true) + '</div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div>' + foot() + '</main>';
   }
 
@@ -534,6 +534,94 @@
     return HOVER && !isMobile() ? '<button type="button" class="ga-sound' + (SOUND ? ' on' : '') + '" data-sound="1" aria-pressed="' + SOUND + '" title="' + (SOUND ? 'Point at a genre to hear it' : 'Switch on to hear a genre as you point at it') + '">' +
       '<span aria-hidden="true">' + (SOUND ? '♪' : '♪̸') + '</span>SOUND ' + (SOUND ? 'ON' : 'OFF') + '</button>' : '';
   }
+
+  /* ---------- mobile: the map turned upright ----------
+   * The lineage on top (two levels, then how many more), the genre in the
+   * middle, its subgenres fanned out below in two rows of four at most: the
+   * same eight seats and editorial groups as the desktop ring. A tap glides a
+   * subgenre into the centre; holding a genre plays its 30 seconds. The
+   * vertical tree stays one tap away (MAP / LIST).
+   */
+  function mobileToggle(n) {
+    return '<div class="ga-mbar"><span class="ga-micro">' + (isTile(n) ? 'FAMILY' : n.grp ? 'GROUP' : 'LEVEL ' + pad(depth(n))) + '</span><div class="ga-toggle" role="group" aria-label="View">' +
+      '<button data-mview="map"' + (S.mview === 'map' ? ' class="on" aria-pressed="true"' : '') + '>◎ MAP</button><button data-mview="list"' + (S.mview === 'list' ? ' class="on" aria-pressed="true"' : '') + '>≡ LIST</button></div></div>';
+  }
+  function viewMobileMap(n) {
+    var anc = path(n).slice(0, -1), shown = anc.slice(-2), hidden = anc.length - shown.length, y = 8, html = '';
+    if (hidden) { var up = anc[hidden - 1]; html += '<a class="ga-mmore" href="' + esc(url(up)) + '#centre" data-centre="' + up.id + '" style="top:' + y + 'px">↑ ' + pad(hidden) + ' LEVEL' + (hidden > 1 ? 'S' : '') + ' ABOVE</a>'; y += 28; }
+    var lineTop = y + 14;
+    shown.forEach(function (a) {
+      html += '<a class="ga-manc" href="' + esc(url(a)) + '#centre" data-centre="' + a.id + '" style="top:' + y + 'px">' + glyph(a, 28) + '<span><b>' + esc(a.name) + '</b><i>' + (isTile(a) ? 'FAMILY' : a.grp ? 'GROUP' : 'LEVEL ' + pad(depth(a))) + '</i></span></a>';
+      y += 44;
+    });
+    var top = y + (shown.length ? 8 : 4);
+    html += '<div class="ga-mctr" data-id="' + n.id + '" style="top:' + top + 'px">' + glyph(n, 104) + '<h1>' + esc(n.name) + '</h1><p class="ga-micro">' + esc([micro(n), pad(n.total) + ' SUB'].filter(Boolean).join(' · ')) + '</p></div>';
+    n.kids.forEach(function (k, i) {
+      html += '<a class="ga-mnd' + (k.grp ? ' grp' : '') + '" href="' + esc(url(k)) + '#centre" data-centre="' + k.id + '" style="--k:' + i + '">' + glyph(k, 48) +
+        '<b>' + esc(k.name) + '</b><i>' + esc(k.grp ? pad(k.kids.length) + ' GENRES' : (k.y || '') + (k.total ? (k.y ? ' · ' : '') + '+' + pad(k.total) : '')) + '</i></a>';
+    });
+    if (!n.kids.length) html += '<p class="ga-micro ga-mnone">NO SUBGENRE</p>';
+    return '<main class="ga-mobile" style="--fam:' + color(n) + '">' + mobileToggle(n) +
+      '<div class="ga-mmap" data-line="' + (shown.length ? lineTop : 0) + '"><svg class="ga-mlinks" aria-hidden="true"></svg>' + html + '</div>' +
+      '<p class="ga-micro ga-mhint">TAP A GENRE TO CENTRE IT · HOLD IT TO HEAR 30 S</p>' +
+      '<section class="ga-mabout">' + (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') +
+      (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : '<a class="ga-cta" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') +
+      hearButton(n, true) + '</section>' + foot() + '</main>';
+  }
+  // Second pass, once the centre's name is laid out: the rows go under it,
+  // and so do the links, which would otherwise run across the name.
+  function layoutMobileMap() {
+    var m = root.querySelector('.ga-mmap'); if (!m) return;
+    var n = N[S.open] || N[S.centre], ctr = m.querySelector('.ga-mctr'), svg = m.querySelector('.ga-mlinks'), W = m.clientWidth, cell = W / 4, cx = W / 2, lx = cx - 60, col = color(n);
+    var g = ctr.querySelector('.ga-glyph'), box = m.getBoundingClientRect(), gb = g.getBoundingClientRect();
+    var gy = gb.bottom - box.top, from = ctr.offsetTop + ctr.offsetHeight + 8, lines = '';
+    var lineTop = Number(m.getAttribute('data-line'));
+    if (lineTop) {
+      lines += '<line x1="' + f2(lx) + '" y1="' + lineTop + '" x2="' + f2(lx) + '" y2="' + f2(ctr.offsetTop + 6) + '" stroke="' + col + '" stroke-opacity=".5" stroke-dasharray="1 5"/>' +
+        '<line x1="' + f2(lx) + '" y1="' + f2(ctr.offsetTop + 6) + '" x2="' + f2(cx - 30) + '" y2="' + f2(gb.top - box.top + 22) + '" stroke="' + col + '" stroke-opacity=".5" stroke-dasharray="1 5"/>';
+    }
+    var nodes = [].slice.call(m.querySelectorAll('.ga-mnd')), k = nodes.length, rows = k <= 4 ? [k] : [Math.ceil(k / 2), k - Math.ceil(k / 2)];
+    var rowY = from + 34, idx = 0, bottom = from + 44;
+    rows.forEach(function (count, r) {
+      var tallest = 0;
+      for (var j = 0; j < count; j++) {
+        var off = j - (count - 1) / 2, x = cx + off * cell, yy = rowY - (r ? 0 : 8 * off * off), el = nodes[idx++];
+        el.style.width = f2(cell - 6) + 'px'; el.style.left = f2(x) + 'px'; el.style.top = f2(yy) + 'px';
+        lines += '<line x1="' + cx + '" y1="' + f2(from) + '" x2="' + f2(x) + '" y2="' + f2(yy + 2) + '" stroke="' + col + '" stroke-opacity="' + (r ? 0.13 : 0.35) + '"/>';
+        tallest = Math.max(tallest, el.offsetHeight + (r ? 0 : 8 * off * off));
+        bottom = Math.max(bottom, yy + el.offsetHeight + 16);
+      }
+      rowY += tallest + 22;
+    });
+    if (k) lines += '<line x1="' + cx + '" y1="' + f2(gy) + '" x2="' + cx + '" y2="' + f2(from) + '" stroke="' + col + '" stroke-opacity="0.12" stroke-dasharray="1 4"/>';
+    var none = m.querySelector('.ga-mnone'); if (none) none.style.top = f2(from + 6) + 'px';
+    svg.setAttribute('width', W); svg.setAttribute('height', f2(bottom)); svg.innerHTML = lines;
+    m.style.height = f2(bottom) + 'px';
+  }
+  // The tapped subgenre glides into the centre before the map is redrawn around it.
+  function glide(el, n) {
+    var ctr = root.querySelector('.ga-mctr .ga-glyph'), g = el.querySelector('.ga-glyph');
+    if (!ctr || !g || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { select(n, true); return; }
+    var a = g.getBoundingClientRect(), b = ctr.getBoundingClientRect();
+    root.querySelectorAll('.ga-mnd,.ga-manc,.ga-mmore,.ga-mctr,.ga-mlinks').forEach(function (x) { if (x !== el) x.classList.add('ga-fade'); });
+    el.style.transform = 'translate(calc(-50% + ' + f2(b.left + b.width / 2 - a.left - a.width / 2) + 'px),' + f2(b.top + b.height / 2 - a.top - a.height / 2) + 'px) scale(' + f2(b.width / a.width) + ')';
+    setTimeout(function () { select(n, true); root.classList.add('ga-enter'); setTimeout(function () { root.classList.remove('ga-enter'); }, 900); }, 330);
+  }
+  // Holding a genre plays it: the phone's answer to pointing with a mouse.
+  var held = { t: 0, fired: false };
+  root.addEventListener('pointerdown', function (e) {
+    var t = e.target.closest('.ga-mnd,.ga-manc,.ga-mctr .ga-glyph');
+    if (!t) return;
+    var el = t.closest('.ga-mnd,.ga-manc,.ga-mctr'), id = Number(el.getAttribute('data-centre') || el.getAttribute('data-id'));
+    held.fired = false; clearTimeout(held.t);
+    held.t = setTimeout(function () {
+      held.fired = true; el.classList.add('ga-press');
+      setTimeout(function () { el.classList.remove('ga-press'); }, 500);
+      hear(id, false, true);
+    }, 450);
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) { root.addEventListener(ev, function () { clearTimeout(held.t); }); });
+  root.addEventListener('contextmenu', function (e) { if (e.target.closest('.ga-mnd,.ga-manc,.ga-mctr')) e.preventDefault(); });
 
   /* ---------- dossier: a full page per genre ----------
    * Same grid for every block: a 220 px column on the left (the glyph, or the
@@ -1059,7 +1147,7 @@
     else if (S.legal) html += viewLegal();
     else if (S.about && N[S.about]) html += viewDossier(N[S.about]);
     else if (!centre) html += viewIndex();
-    else if (isMobile()) html += viewMobile(centre, open);
+    else if (isMobile()) html += S.mview === 'list' ? viewMobile(centre, open) : viewMobileMap(open || centre);
     else {
       html += subbar(open || centre);
       html += S.view === 'list' ? viewList(open || centre) : '<div class="ga-stage"><main class="ga-map" aria-label="Genre map" style="--fam:' + color(centre) + '"></main>' + panel(open || centre) + '</div>';
@@ -1071,6 +1159,7 @@
     count();
     var map = root.querySelector('.ga-map');
     if (map) map.innerHTML = viewMap(centre, open);   // second pass: needs the real size of the map
+    layoutMobileMap();
     if (focus) { var q = document.getElementById('ga-q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); results(); }
   }
   function results() {
@@ -1082,6 +1171,11 @@
   }
 
   root.addEventListener('click', function (e) {
+    if (held.fired) { held.fired = false; e.preventDefault(); return; }   // a long press played the genre
+    var mv = e.target.closest('[data-mview]');
+    if (mv && root.contains(mv)) { e.preventDefault(); S.mview = mv.getAttribute('data-mview'); render(); window.scrollTo(0, 0); return; }
+    var gl = e.target.closest('.ga-mnd');
+    if (gl && root.contains(gl) && !e.metaKey && !e.ctrlKey) { e.preventDefault(); S.q = ''; glide(gl, N[gl.getAttribute('data-centre')]); return; }
     var oo = e.target.closest('[data-optout]');
     if (oo && window._paq) {
       var stop = oo.getAttribute('data-optout') === '1';

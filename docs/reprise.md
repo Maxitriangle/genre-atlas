@@ -1,4 +1,4 @@
-# Reprise — état au 28/10/2026
+# Reprise — état au 29/10/2026
 
 **La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
@@ -9,7 +9,7 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A. v0.17.0 publiée et installée (genres muets) ; v0.18.0 publiée le 29/10/2026, puis v0.18.1 (les extraits ne jouaient pas en ligne, dernière section). Ensuite : expérience mobile et comptes utilisateurs (Maxime a des idées sur les deux). La visibilité (point 8 de « Ce qui attend ») passe après.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Point A fait** : v0.17.0 (genres muets) et v0.18.1 (son au survol, lecteur permanent, radio de branche), publiées et installées le 29/10/2026. Maxime juge le lecteur « parfait » ; il garde des améliorations d'UX pour plus tard. **En cours** : l'expérience mobile, v0.19.0 prête (carte pivotée, dernière section). **Ensuite** : les comptes utilisateurs (Maxime a des idées, à recueillir avant de proposer quoi que ce soit). La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
@@ -905,3 +905,32 @@ Vu par Maxime sur le site, juste après la v0.18.0 : HEAR et RADIO ne font rien,
 **Leçon** : vérifier depuis le site en ligne, et pas seulement au banc, toute API extérieure appelée par le serveur (`curl -A "WordPress/6.8; https://every-genre.com"` reproduit l'appel). Les liens vérifiés de `picks.php` passent par le même `wp_remote_get`, mais une page HTML y vaut réponse, ce qui suffit.
 
 **Chez Maxime** : mettre à jour l'extension, sans réimport.
+
+**Publiée et vérifiée le 29/10/2026** : v0.18.1 installée chez Maxime, le son marche. Vérifié en ligne : `/wp-json/genre-atlas/v1/sound/2108` renvoie « Lip up Fatty » de Bad Manners (2 Tone) avec son extrait Deezer. Avis de Maxime : « le lecteur est parfait ». Il reste des améliorations d'UX, qu'il veut voir plus tard ; les lui demander le moment venu.
+
+## Carte mobile pivotée : maquette (29/10/2026)
+Remarque de Maxime : sur téléphone, il n'y a pas de carte avec les nœuds, seulement la liste, « moins visuelle et moins fluide ».
+
+**Choix faits avec lui** :
+- **la carte pivotée** : la lignée en haut (deux niveaux au plus, puis « ↑ NN LEVELS ABOVE »), le genre au centre en grand, ses sous-genres en éventail dessous, en deux rangées de 4 au plus. On garde les règles de la carte : 8 nœuds au plus, les mêmes groupes éditoriaux ;
+- toucher un sous-genre le fait **glisser au centre** ; toucher un genre de la lignée fait remonter ;
+- **un appui long** sur un nœud joue ses 30 s, à la place du survol et de SOUND ON ;
+- **la liste reste**, derrière un bouton MAP / LIST comme sur ordinateur.
+
+Écarté : la roue complète en petit (les noms se chevauchent sur 390 px) et une roue qu'on fait tourner du doigt (trop proche du cadran supprimé en v0.7.0).
+
+**Maquette cliquable**, privée, à ouvrir sur téléphone : https://claude.ai/artifact/5Jj4R5UVypbHYSRe2fK4wr. Elle contient les 2 098 vrais genres (arbre du site en ligne du 29/10), ainsi que le code des glyphes et des groupes copié d'`atlas.js`. Le son y est simulé. Les fiches ouvrent le vrai site. Le placement de l'éventail se fait en deux temps : on mesure d'abord le bloc du nom au centre, puis on place les rangées et les liens dessous. En attente des retours de Maxime avant de l'intégrer à l'extension.
+
+**Intégrée au site (v0.19.0, 29/10/2026, pas encore publiée)**. Maxime a trouvé la maquette « parfaite », sans retouche demandée.
+- **Script** : `viewMobileMap()` dessine la lignée, le centre et les nœuds. `layoutMobileMap()` les place ensuite, une fois le nom du centre mesuré (rangées, liens, hauteur). `glide()` fait glisser le nœud touché au centre. L'appui long passe par `pointerdown` et `hear(id, false, true)`, et le clic qui suit est avalé. `S.mview` vaut `map` (par défaut) ou `list` ; la liste est l'ancien `viewMobile()`, avec le même bouton MAP / LIST.
+- Le genre affiché au centre est le genre ouvert s'il y en a un (`S.open || S.centre`) : arriver sur l'adresse d'un genre le montre au centre, pas son parent.
+- **CLAUDE.md** : la règle « Mobile : un seul arbre vertical » est remplacée par la carte pivotée.
+- **Banc** : 83 vérifications. Elles contrôlent que :
+  - Rock tient sur la carte pivotée en 8 nœuds, sans chevauchement ni débordement à 390 px ;
+  - toucher un sous-genre le centre, et toucher la lignée fait remonter ;
+  - la liste reste à un toucher ;
+  - un appui long fait entendre un genre sans changer le centre.
+  
+  Captures `07-mobile.png` (carte), `07c-mobile-liste.png` et `14d-appui-long.png`.
+
+**Chez Maxime, après publication** : mettre à jour l'extension, sans réimport.
