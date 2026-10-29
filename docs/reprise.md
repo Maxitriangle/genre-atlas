@@ -1,4 +1,4 @@
-# Reprise — état au 27/10/2026
+# Reprise — état au 28/10/2026
 
 **La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
@@ -9,11 +9,11 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Prochaine étape convenue** : la suite du plan de visibilité (point 8 de « Ce qui attend ») : regarder les premiers chiffres de Search Console, de Bing et de Matomo, puis faire connaître le site.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A, première étape faite (v0.17.0, genres muets : artistes MusicBrainz et exemples d'écoute validés par Maxime, section en bas). Ensuite : lecteur permanent, son au survol, radio de branche, puis expérience mobile et comptes utilisateurs. La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les sections visibilité, page légale et Matomo. La dernière section (Genre City) est en pause.
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis la dernière section (« Recul sur le projet »). Genre City, juste avant, est en pause.
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -763,3 +763,85 @@ Idée de Maxime : une ville où l'on se promène, vue de dessus comme le premier
 - les passants ont la taille du héros (16 px de large).
 
 **27/10/2026 : mis en pause par Maxime.** Le dernier prototype (version 3, avec les correctifs Firefox et son coupé) reste jouable à son lien d'aperçu privé ; `python3 prototypes/genre-city/build.py` le reconstruit. Rien à faire tant que Maxime ne le redemande pas.
+
+## Recul sur le projet : vers l'écoute et la communauté (28/10/2026)
+Demande de Maxime : prendre du recul. Le site plaît quand il le montre ; son objectif est qu'il soit **utile** et qu'il crée **une vraie communauté de passionnés de musique**, la plus large possible. Avant de faire venir du monde, il veut des fonctionnalités au point : la visibilité (point 8 de « Ce qui attend ») passe après. Mon avis ci-dessous coïncide avec ses idées ; chaque point sera repris et affiné avec lui, un par un.
+
+**Ce qui est réussi** : l'identité (glyphes générés, fond noir, monospace), la rigueur (arbre cohérent, données rejouables, banc de test, référencement, vie privée), le moment (Every Noise at Once a fermé fin 2023).
+
+### Ce qui ne va pas
+1. **Un bel objet à visiter, pas un lieu où revenir.** Une fois la carte explorée, rien ne fait revenir : contenu figé, rien de neuf, rien à soi, personne à retrouver.
+2. **On n'entend pas assez la musique** — le point essentiel pour Maxime. Every Noise marchait parce qu'un clic faisait entendre le genre. Ici, l'écoute est en bas de la fiche, un titre par artiste. Mesuré le 28/10/2026 sur les CSV : **781 genres sur 2 098 (37 %) n'ont aucun son** (aucun artiste clé avec une chanson) ; 1 317 en ont au moins un (Deezer ou YouTube), 1 239 au moins un jouable sur YouTube.
+3. **Les « Community picks » ne créent pas de communauté** : formulaire anonyme, validé à la main, sans nom ni trace ni reconnaissance pour qui propose.
+4. **On a caché ce dont les passionnés aiment débattre** : filiations et influences. L'arbre strict reste juste pour la carte, mais les désaccords n'ont nulle part où vivre.
+5. **Le contenu n'est pas à nous** : textes Wikipedia, liens Wikidata, 790 genres sans texte. Ce qui est unique, c'est la structure, le visuel et la sélection d'artistes. Il manque un point de vue humain.
+6. **Sur mobile, l'identité se perd** : arbre vertical correct mais banal, alors que le trafic venu des réseaux est surtout mobile.
+7. **Pas prêt pour l'affluence** : o2switch renvoie déjà des 429 à un navigateur automatique ; un passage en une de Reddit ou de Hacker News peut faire tomber le site. Toute la modération passe par Maxime.
+
+### Où je pousserais
+Phrase d'orientation proposée : « Le meilleur endroit pour entendre un genre en 30 secondes, et pour en parler entre passionnés. »
+- **A. Faire du site un instrument** : extrait audio au survol ou au toucher d'un nœud de la carte (extraits Deezer de 30 s) ; « radio de branche » qui joue en continu en descendant dans les sous-genres ; export d'un genre en playlist Spotify ou Deezer.
+- **B. Gardiens de genre** : des passionnés adoptent un genre (texte, artistes, morceaux d'entrée), avec leur nom sur la fiche. Règlerait les 790 genres sans texte, la relecture des artistes, le contenu emprunté à Wikipedia et la reconnaissance des contributeurs.
+- **C. Parcours** : chemins guidés d'un genre à un autre (« du delta blues à la drill en 12 étapes »), un morceau par étape ; d'abord écrits par Maxime, puis par la communauté.
+- **D. Ma carte à moi** : cocher les genres écoutés (« 312 / 2 098 explorés »), carte qui s'allume là où l'on est allé ; plus loin, connecter Last.fm ou Spotify pour voir son territoire musical et partager son glyphe personnel.
+- **E. Donner une place aux débats** : « Ce genre est-il bien rangé ? » avec vote sous chaque fiche ; influences en liste sur la fiche (toujours pas sur la carte).
+- **F. Des raisons de revenir** : genre du jour, derniers ajouts, lettre mensuelle.
+- **G. Commencer la communauté hors du site** : Discord ou subreddit avant de construire des comptes.
+
+### Décisions de Maxime (28/10/2026)
+- **Priorités, dans cet ordre : A, D, E, F.** B, C et G restent des pistes, non écartées.
+- **Comptes utilisateurs** : à faire, et si possible **liés à Deezer, Spotify ou d'autres services**, pour créer ou importer des playlists et **les écouter sur le site en le parcourant**.
+- Les fonctionnalités d'abord, la venue du public ensuite.
+- Méthode : traiter chaque point avec lui et l'affiner avant toute évolution du code.
+
+## Les genres muets : artistes MusicBrainz et exemples d'écoute (v0.17.0, 28/10/2026, pas encore publiée)
+Première étape du point A (« faire du site un instrument »), décidée avec Maxime : **combler les genres sans aucun son** avant le lecteur permanent et l'écoute au survol. Ordre convenu ensuite : la suite du point A (lecteur permanent, son au survol avec un bouton SOUND ON à activer une fois, radio de branche en extraits de 30 s avec le titre entier au clic), puis **l'expérience mobile et les comptes utilisateurs** (Maxime a des idées sur les deux).
+
+**Contraintes vérifiées le 28/10/2026** (à revérifier avant de construire les comptes) :
+- **Spotify** : depuis février 2026, une application en mode développement est limitée à 5 utilisateurs (et son auteur doit être Premium). L'accès élargi est réservé aux entreprises qui ont au moins 250 000 utilisateurs actifs par mois. Lire Spotify sur le site pour tout le monde est donc impossible.
+- **Deezer** : n'accepte plus la création de nouvelles applications, et son SDK de lecture n'est plus maintenu. L'API publique sans compte répond toujours (extraits de 30 s, playlists publiques, recherche).
+- Conséquence : la lecture sur le site repose sur YouTube (titres entiers, sans compte) et les extraits Deezer. « Lier son compte » passera d'abord par l'import d'une playlist publique par son lien.
+
+**Le constat** : 781 genres sur 2 098 (37 %) n'avaient aucun son, faute d'artiste clé avec une chanson. Ce sont surtout des genres folk (219) et de musique savante (149), souvent des traditions ou des formes.
+
+**1. Artistes MusicBrainz** (`data/artists-mb.py` → `artists-mb.csv`, fusionné par `artists-build.py`) :
+- tous les genres ont un identifiant MusicBrainz, et MusicBrainz classe artistes et albums par genre. Le script prend, pour chaque genre muet, les artistes classés dans ce genre, les retrouve sur Deezer, et prend une chanson **tirée d'un album classé dans le genre** quand Deezer l'a (sinon leur titre le mieux classé), puis la même sur YouTube. L'artiste doit avoir un lien Wikidata dans MusicBrainz, puisque l'extension range les artistes par identifiant Wikidata ;
+- **règles**, chacune ajoutée après une erreur vue sur un échantillon :
+  - un artiste compte s'il porte le genre lui-même, ou si au moins trois de ses albums le portent. Sans cette règle, Drake passait pour du zess et Bad Bunny pour du Philly club, chacun pour un seul album ;
+  - le genre doit peser au moins le quart du vote principal de l'artiste. Sans cette règle, Daft Punk et Prince passaient en « organic house » et Juice WRLD en « nightcore », sur un vote isolé ;
+  - un vote négatif ne compte pas ;
+  - un artiste de 100 000 fans Deezer ou plus doit avoir deux signaux (Khalid en « leftfield electronic », Moby en « demostyle ») ;
+  - parmi des homonymes Deezer, la chanson n'est gardée que si YouTube l'a sur la chaîne de l'artiste (règle reprise de `listen-tracks.py`) ;
+- **résultat** : 203 genres trouvent un son, avec 597 artistes, dont 476 nouveaux dans l'atlas (**sans photo** : `artists-photos.py` ne lit que `artists.csv`). `artist-import.csv` passe à 5 980 artistes ;
+- MusicBrainz n'accepte qu'une requête par seconde, et répond parfois en 9 s : le passage complet a pris environ 3 h, en deux fois (le cache reprend). Le script traite quatre genres à la fois et ne questionne MusicBrainz sur un artiste qu'une fois que Deezer lui a trouvé une chanson.
+
+**2. Exemples d'écoute** (`data/genre-examples.py` → `genre-examples.csv` → colonne `examples` de `genre-import.csv`) :
+- pour chacun des 578 genres encore muets, jusqu'à trois vidéos YouTube **portant le nom du genre** dans leur titre (mot entier), de 1 à 15 minutes, intégrables. Sont écartés : leçons, réactions, « type beat », reprises, karaokés, versions ralenties ou accélérées, bandes-annonces, entretiens, actualités et listes ;
+- **488 genres ont au moins une proposition** (1 342 vidéos en tout), et 90 restent sans rien. Sur un échantillon de 30, environ deux sur trois tombent juste. Erreurs typiques : un groupe ou un titre qui porte le nom du genre (Goombay Dance Band, « BOP »), ou une actualité (« cruise ») ;
+- **piège** : dans le CSV, le JSON échappe les guillemets droits par une barre oblique inverse, que le lecteur CSV de PHP (`fgetcsv`, échappement `\\`) prend pour le sien. 64 genres sur 488 perdaient ainsi leurs propositions. Les guillemets et les barres obliques sont remplacés dans les titres (`plain()`).
+
+**Dans l'extension** (`includes/examples.php`) :
+- **Genres → Listening examples** : une ligne par genre en attente, avec le compteur au menu. Pour chaque genre, la vidéo se joue sur place (« ▶ Play here », chargée au clic), avec **Accept** et **Reject**. Un refus passe à la proposition suivante, et la vidéo refusée n'est jamais reproposée. La vue « Accepted » permet de retirer un exemple ;
+- boîte **Listening example** sur l'écran du genre, pour coller ou changer une vidéo à la main, ou la vider ;
+- un réimport ne touche ni un exemple accepté ni un refus. Les métadonnées sont `ga_example_youtube`, `_title`, `_channel`, `ga_example_candidates` (JSON) et `ga_example_rejected` ;
+- **la fiche** : l'exemple accepté ouvre la section LISTEN (« LISTENING EXAMPLE · interprète »), avec le même lecteur YouTube chargé au clic. Il figure aussi dans la version sans script (« Example: … »). Rien ne change pour la page légale : YouTube au clic y est déjà déclaré.
+
+**Banc** : 73 vérifications plus une côté PHP. `test-local.sh` propose deux fausses vidéos à un genre sans artiste, et `smoke.mjs` vérifie que :
+- elles sont en attente avec le compteur au menu, sans rien sur la fiche ;
+- le refus passe à la suivante ;
+- l'acceptation la montre dans LISTEN, la joue au clic et l'écrit dans la page sans script.
+
+Après le navigateur, un réimport des mêmes propositions ne doit ni remplacer l'exemple accepté ni reproposer la vidéo refusée. Captures `13-exemples.png` et `13b-exemple-fiche.png`.
+
+Deux corrections du banc :
+- il retrouve le Chromium de l'image (dossier `chrome-linux64`) ;
+- la vérification « pas d'éclair » prenait pour un éclair la version texte déjà retirée par le script, qui n'a plus de style. Faux échec selon la vitesse.
+
+**Piège rencontré, encore** : arrêter un script avec `for p in $(pgrep -f "[a]rtists-mb.py")` dans une commande qui contient aussi `data/artists-mb.py` tue le shell, car le motif se retrouve dans la commande elle-même. Viser la commande exacte : `pgrep -f "python3 -u data/[a]rtists-mb"`.
+
+**Chez Maxime, après publication** :
+1. mettre à jour l'extension ;
+2. réimporter **`genre-import.csv` puis `artist-import.csv`** (Genres → Import CSV), dans cet ordre ;
+3. ouvrir **Genres → Listening examples** : 488 genres attendent une décision, à son rythme.
+
+Rien ne s'affiche avant qu'il accepte. Les 476 nouveaux artistes s'affichent sans photo.

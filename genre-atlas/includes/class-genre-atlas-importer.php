@@ -3,13 +3,15 @@
  * CSV importer. Expected columns (header row, any order):
  * wikidata_id, musicbrainz_id, name, parent_wikidata_id, epoch_year, origin,
  * bpm_min, bpm_max, parent_choice, wikidata_parents_raw, featured,
- * family_shape, family_hue, group, wikipedia_title, description
+ * family_shape, family_hue, group, wikipedia_title, description, examples
  *
  * Genres are matched on wikidata_id, so the same file can be imported again
  * safely: existing genres are updated, never duplicated. Fields already
  * reviewed by hand (status "reviewed") are left untouched. The description
  * (the lead of the Wikipedia article) only fills a genre that has no text:
- * a text written or edited in WordPress is never replaced.
+ * a text written or edited in WordPress is never replaced. The examples
+ * (YouTube videos proposed for a genre with no song, as JSON) only wait in
+ * Genres > Listening examples: nothing shows before one is accepted there.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -83,7 +85,7 @@ class Genre_Atlas_Importer {
 			}
 		}
 
-		$stats = array( 'rows' => count( $rows ), 'created' => 0, 'updated' => 0, 'skipped_reviewed' => 0, 'parents_set' => 0, 'parents_missing' => 0, 'texts' => 0 );
+		$stats = array( 'rows' => count( $rows ), 'created' => 0, 'updated' => 0, 'skipped_reviewed' => 0, 'parents_set' => 0, 'parents_missing' => 0, 'texts' => 0, 'examples' => 0 );
 		$ids   = $existing;
 
 		// Pass 1: create / update the genres.
@@ -160,7 +162,14 @@ class Genre_Atlas_Importer {
 			}
 		}
 
-		// Pass 2: set the single parent of each genre.
+		// Pass 2: the listening examples proposed for the silent genres.
+		foreach ( $rows as $row ) {
+			if ( ! empty( $row['examples'] ) && isset( $ids[ $row['wikidata_id'] ] ) && genre_atlas_offer_examples( $ids[ $row['wikidata_id'] ], $row['examples'] ) ) {
+				$stats['examples']++;
+			}
+		}
+
+		// Pass 3: set the single parent of each genre.
 		foreach ( $rows as $row ) {
 			$qid = $row['wikidata_id'];
 			$pid = $row['parent_wikidata_id'];

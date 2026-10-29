@@ -520,7 +520,9 @@ try {
 		const live = await newPage( 1440, 900 );
 		let flashed = false;
 		await live.goto( about, { waitUntil: 'commit' } );
-		flashed = await live.locator( '.ga-fallback h1' ).evaluate( el => getComputedStyle( el.closest( '.ga-fallback' ) ).opacity !== '0' ).catch( () => false );
+		// Once the script has drawn, the plain version is gone from the page: a
+		// detached element has no style at all, which is not a flash either.
+		flashed = await live.locator( '.ga-fallback h1' ).evaluate( el => el.isConnected && getComputedStyle( el.closest( '.ga-fallback' ) ).opacity !== '0', null, { timeout: 5000 } ).catch( () => false );
 		await live.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
 		await live.close();
 		check( 'moteurs : la version sans script se lit seule, et ne s affiche pas avant la fiche', shown && ! flashed, `sans script ${ shown ? 'visible' : 'invisible' }, ${ flashed ? 'eclair' : 'pas d eclair' }` );
@@ -693,6 +695,50 @@ try {
 		await admin.waitForSelector( '.ga-pick', { timeout: 10000 } );
 		const still = await admin.locator( '.ga-pick', { hasText: goneName.toUpperCase() } ).count();
 		check( 'liens : un lien signale reste sur la fiche, la decision revient a Maxime', still === 1 );
+	}
+	// 9c. Listening examples: test-local.sh proposed two made-up videos for a
+	// genre with no key artist. Nothing shows before a decision; a rejected
+	// video makes way for the next; an accepted one plays on the dossier.
+	const exNode = byId.get( Number( process.env.GA_EXAMPLE_GENRE || 0 ) );
+	if ( exNode ) {
+		const exAbout = `${ permalink( exNode ) }about/`;
+		const listenNow = async () => {
+			await admin.goto( exAbout, { waitUntil: 'networkidle' } );
+			await admin.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
+			await admin.waitForTimeout( 300 );
+			return admin.locator( '#ga-d-listen' ).count();
+		};
+		const hidden = await listenNow() === 0 && ! /Example:/.test( await ( await fetch( exAbout ) ).text() );
+		const screen = `${ BASE }/wp-admin/edit.php?post_type=genre&page=genre-atlas-examples&genre=${ exNode.id }`;
+		await admin.goto( screen, { waitUntil: 'networkidle' } );
+		const badge = ( await admin.locator( '#menu-posts-genre a[href*="genre-atlas-examples"] .awaiting-mod' ).innerText().catch( () => '' ) ).trim();
+		const first = await admin.locator( '.ga-examples tbody tr' ).innerText();
+		const frames = await admin.locator( '.ga-examples iframe' ).count();
+		check( 'exemples : propose dans Listening examples, compte au menu, rien sur la fiche avant validation',
+			hidden && Number( badge ) >= 1 && /Smoke example one/.test( first ) && /Proposal 1 of 2/.test( first ) && frames === 0,
+			`pastille « ${ badge } », fiche ${ hidden ? 'muette' : 'deja sonore' }, ${ frames } lecteur(s)` );
+		await admin.screenshot( { path: `${ SHOTS }/13-exemples.png`, fullPage: true } );
+		await admin.locator( '.ga-examples [data-ga-act="reject"]' ).click();
+		await admin.waitForLoadState( 'networkidle' );
+		const next = await admin.locator( '.ga-examples tbody tr' ).innerText();
+		check( 'exemples : refuser passe a la video suivante', /Smoke example two/.test( next ) && /the last one/.test( next ) && ! /Smoke example one/.test( next ) );
+		await admin.locator( '.ga-examples [data-ga-act="accept"]' ).click();
+		await admin.waitForLoadState( 'networkidle' );
+		const accepted = await admin.locator( '.notice-success', { hasText: 'Accepted' } ).count();
+		await listenNow();
+		const row = await admin.locator( '.ga-dossier .ga-track' ).allInnerTexts();
+		await admin.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
+		await admin.locator( '.ga-dossier .ga-listen-head [data-play]' ).click();
+		const src = await admin.locator( '.ga-dossier .ga-player iframe' ).getAttribute( 'src' ).catch( () => '' );
+		await admin.unroute( /youtube(-nocookie)?\.com/ );
+		const plain = await ( await fetch( exAbout ) ).text();
+		check( 'exemples : accepte, il s affiche dans LISTEN, se joue au clic et figure dans la page sans script',
+			accepted === 1 && row.length === 1 && /smoke example two/i.test( row[ 0 ] ) && /LISTENING EXAMPLE · SMOKE ENSEMBLE/.test( row[ 0 ] )
+			&& /youtube-nocookie\.com\/embed\/smokeExmpl2\?.*playlist=smokeExmpl2/.test( src || '' ) && /Example: Smoke Ensemble, “Smoke example two”/.test( plain ),
+			`${ accepted } avis, ${ row.join( ' | ' ).replace( /\s+/g, ' ' ) }, lecteur ${ ( src || '-' ).slice( 0, 90 ) }, sans script ${ /Example:/.test( plain ) ? 'oui' : 'non' }` );
+		await admin.locator( '.ga-dsec:has(#ga-d-listen)' ).screenshot( { path: `${ SHOTS }/13b-exemple-fiche.png` } ).catch( () => {} );
+	} else {
+		check( 'exemples : le banc a propose des videos a un genre (GA_EXAMPLE_GENRE)', false );
 	}
 	check( 'import : l ecran d import repond', fileInput > 0, fileInput ? '' : 'pas de champ fichier' );
 	await admin.close();

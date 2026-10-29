@@ -286,14 +286,18 @@ function genre_atlas_dossier_html( $post ) {
 			$out .= '<li>' . esc_html( $a['name'] ) . ( $more ? ' (' . esc_html( implode( ', ', $more ) ) . ')' : '' ) . '</li>';
 		}
 		$out .= '</ul>';
-		$songs = array_filter( $artists, function ( $a ) { return ! empty( $a['song'] ); } );
-		if ( $songs ) {
-			$out .= '<h2>Listen</h2><ol>';
-			foreach ( $songs as $a ) {
-				$out .= '<li>' . esc_html( $a['name'] ) . ', “' . esc_html( $a['song']['title'] ) . '”</li>';
-			}
-			$out .= '</ol>';
+	}
+	$songs   = array_filter( $artists, function ( $a ) { return ! empty( $a['song'] ); } );
+	$example = genre_atlas_genre_example( $id );
+	if ( $songs || $example ) {
+		$out .= '<h2>Listen</h2><ol>';
+		if ( $example ) {
+			$out .= '<li>Example: ' . ( $example['channel'] ? esc_html( $example['channel'] ) . ', ' : '' ) . '“' . esc_html( $example['title'] ? $example['title'] : $name ) . '”</li>';
 		}
+		foreach ( $songs as $a ) {
+			$out .= '<li>' . esc_html( $a['name'] ) . ', “' . esc_html( $a['song']['title'] ) . '”</li>';
+		}
+		$out .= '</ol>';
 	}
 
 	$picks = genre_atlas_dossier_picks( $id );

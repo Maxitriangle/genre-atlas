@@ -406,18 +406,25 @@
   // One song per key artist, in the same A-to-Z order. YouTube plays the whole
   // list in one embedded player, loaded only when asked for (nothing reaches
   // YouTube before the click); Spotify and Deezer open the song in their app.
+  // The tracks of the Listen section: the listening example first, when a
+  // genre has one (a piece chosen by hand for a genre no key artist gives a
+  // song to), then one song per key artist.
+  function listenTracks(n, d) {
+    var ex = d.example, out = ex && ex.youtube ? [{ name: ex.channel || '', example: 1, song: { title: ex.title || n.name, youtube: ex.youtube } }] : [];
+    return out.concat((d.artists || []).filter(function (a) { return a.song; }));
+  }
   function listenRow(a, i) {
     var s = a.song, play = s.youtube ? '<button type="button" class="ga-play" data-play="' + i + '" aria-label="Play ' + esc(s.title) + '"><span aria-hidden="true">▶</span></button>' : '<span class="ga-play none" aria-hidden="true"></span>';
     var out = [['SPOTIFY', s.spotify], ['DEEZER', s.deezer], ['YOUTUBE', s.youtube ? 'https://www.youtube.com/watch?v=' + s.youtube : '']]
       .filter(function (l) { return l[1]; })
       .map(function (l) { return '<a href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + l[0] + '<span aria-hidden="true">↗</span></a>'; }).join('');
     return '<li class="ga-track"><span class="ga-micro ga-tno">' + pad(i + 1) + '</span>' + play +
-      '<span class="ga-tname"><b>' + esc(s.title) + '</b><span class="ga-micro">' + esc(a.name.toUpperCase()) + '</span></span><span class="ga-tout">' + out + '</span></li>';
+      '<span class="ga-tname"><b>' + esc(s.title) + '</b><span class="ga-micro">' + esc((a.example ? ['LISTENING EXAMPLE', a.name.toUpperCase()].filter(Boolean).join(' · ') : a.name.toUpperCase())) + '</span></span><span class="ga-tout">' + out + '</span></li>';
   }
   function listenPlay(i) {
     var n = N[S.about], d = n && DOS[n.id], box = root.querySelector('.ga-player');
     if (!d || !box) return;
-    var ids = d.artists.filter(function (a) { return a.song; }).map(function (a) { return a.song.youtube || ''; });
+    var ids = listenTracks(n, d).map(function (a) { return a.song.youtube || ''; });
     var from = ids.slice(i).concat(ids.slice(0, i)).filter(Boolean); // from the clicked song, then round
     if (!from.length) return;
     // The embed now plays the playlist parameter from its start and skips the
@@ -468,14 +475,15 @@
       var shot = d.artists.some(function (a) { return a.mask; });
       html += section('artists', 'KEY ARTISTS', [pad(d.artists.length) + ' / 08 ENTRIES', 'SORTED A TO Z'].concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []),
         '<ul class="ga-artists">' + d.artists.map(artistCard).join('') + '</ul>');
-      var songs = d.artists.filter(function (a) { return a.song; });
-      if (songs.length) {
-        var yt = songs.some(function (a) { return a.song.youtube; });
-        html += section('listen', 'LISTEN', [pad(songs.length) + ' / 08 TRACKS', 'ONE PER KEY ARTIST', 'MOST PLAYED ON DEEZER'],
-          (yt ? '<div class="ga-listen-head"><button type="button" class="ga-cta" data-play="' + songs.map(function (a) { return !!a.song.youtube; }).indexOf(true) + '"><span>PLAY ALL ON YOUTUBE</span><span aria-hidden="true">▶</span></button>' +
-            '<span class="ga-micro">THE PLAYER LOADS FROM YOUTUBE WHEN YOU PRESS PLAY</span></div><div class="ga-player" hidden></div>' : '') +
-          '<ol class="ga-tracks">' + songs.map(listenRow).join('') + '</ol>');
-      }
+    }
+    var songs = listenTracks(n, d), only = songs.length === 1 && songs[0].example;
+    if (songs.length) {
+      var yt = songs.some(function (a) { return a.song.youtube; });
+      html += section('listen', 'LISTEN', only ? ['01 TRACK', 'LISTENING EXAMPLE', 'CHOSEN BY HAND'] :
+        [pad(songs.length) + ' / ' + (songs[0].example ? '09' : '08') + ' TRACKS', 'ONE PER KEY ARTIST', 'MOST PLAYED ON DEEZER'],
+        (yt ? '<div class="ga-listen-head"><button type="button" class="ga-cta" data-play="' + songs.map(function (a) { return !!a.song.youtube; }).indexOf(true) + '"><span>' + (only ? 'PLAY ON YOUTUBE' : 'PLAY ALL ON YOUTUBE') + '</span><span aria-hidden="true">▶</span></button>' +
+          '<span class="ga-micro">THE PLAYER LOADS FROM YOUTUBE WHEN YOU PRESS PLAY</span></div><div class="ga-player" hidden></div>' : '') +
+        '<ol class="ga-tracks">' + songs.map(listenRow).join('') + '</ol>');
     }
 
     if (d.picks) html += picksSection(n, d); // once the dossier is loaded: the form needs nothing more

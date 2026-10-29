@@ -1,0 +1,598 @@
+genre_id,genre,wikidata_id,musicbrainz_id,name,kind,start,country,weight,deezer_fans,song_title,deezer_track,youtube,match,youtube_channel
+Q613874,neoclassical new-age music,Q187576,4ac60dc3-8e50-4c70-be0e-4a4a1298f7ba,Secret Garden,group,1995,Norway,1,30291,Nocturne,504219992,y5beWOIecS4,musicbrainz,Secret Garden - Official
+Q613874,neoclassical new-age music,Q56070803,393b5619-bc5f-4a15-aec9-6bda1a57195d,Alexandra Stréliski,person,1985,Canada,1,20138,The hills,1992048737,UYUiTutePMQ,musicbrainz,ALEXANDRA STRELISKI
+Q613874,neoclassical new-age music,Q1969125,40b4f9ff-a3e4-4d0e-91e3-1019647212c8,Nox Arcana,group,2003,United States,5,15450,Labyrinth of Dreams,926219642,5hRTjLd3iQ8,musicbrainz,Nox Arcana
+Q613874,neoclassical new-age music,Q333168,8f88db93-5914-4754-82ee-7d889bbc573e,Karl Jenkins,person,1944,United Kingdom,1,11347,Adiemus,609936412,CdXj6swKmR8,musicbrainz,Bel Canto Choir Vilnius
+Q613874,neoclassical new-age music,Q952499,f3df0b46-d21a-4230-9a94-4082e8d6860b,Rodrigo Leão,person,1964,Portugal,1,11109,Florestas Submersas,3235420001,-smjVNvFik4,musicbrainz,Nuno Guronsan
+Q613874,neoclassical new-age music,Q1273595,391c9402-6688-4c3d-8f3d-d320d31b4de9,E.S. Posthumus,group,2000,United States,3,10253,Nara (Theme to Cold Case),9671337,,musicbrainz,
+Q613874,neoclassical new-age music,Q357077,4dbeae7a-6906-4d85-95df-2b51b4a5d113,Adiemus,group,1994,United Kingdom,1,8038,Jenkins: Adiemus,609937682,GCsQZSB1gZg,musicbrainz,Sir Karl Jenkins
+Q613874,neoclassical new-age music,Q432302,a6b93c3c-88bc-431c-a46c-155dee9371aa,George Winston,person,1949,United States,2,7041,Carol of the Bells,2580997112,rlH6MIua3lw,musicbrainz,George Winston
+Q622688,Andean new age music,Q387053,9948e846-8743-442f-9ff0-fb01401bbfe0,Cusco,group,1979,Germany,4,1369,Athos,16927217,m6rmYmjVR7E,name,Cusco Music Fans
+Q106642137,black ambient,Q656860,4ab7ef36-5111-44d0-8104-54f884724eae,Leviathan,person,1969,United States,1,6783,The Idiot Sun,1472436,LQiMT23QqXM,musicbrainz,theoctavarius
+Q106642137,black ambient,Q259640,faf9cc45-7618-4e59-b964-c8e72138e917,Dornenreich,group,1995,Austria,1,1715,Reime Faucht Der Märchensarg,1336306,cckxnJU95tY,musicbrainz,SkogensHjarta
+Q106642137,black ambient,Q22908676,02605fbf-04b5-4270-81eb-72c079c4b4c6,Gnaw Their Tongues,person,2004,Netherlands,3,1364,The Doctrine of Paranoid Seraphims,649905492,Z4wRMPTz9YA,musicbrainz,Dominic F. Marceau (DFM)
+Q106642137,black ambient,Q480084,de78313a-cf5d-46ed-a071-5f50e29b60e6,Vinterriket,person,,Germany,1,871,Boten der Rückkehr,2152910467,UnkxL7vdwu0,name,Back On Black Records
+Q12671486,ritual ambient,Q56367442,3ed6dce5-c14b-4569-83e6-f700e1118519,Forndom,group,2012,Sweden,2,8771,Resan,2589951152,TesrqKeyGHE,musicbrainz,Nordvis
+Q12671486,ritual ambient,Q913245,15f2bb82-bce4-44c9-863a-995ae9bde0b4,Lustmord,person,1964,Wales,3,5844,Prime,1595131991,II3jKe9xIRk,musicbrainz,Pelagic Records
+Q12671486,ritual ambient,Q1788002,7d461c29-63bd-4fdf-b3f3-1f8d25de1fff,SPK,group,1978,Australia,2,1532,• TRIBÙ BINEURALE •,1303416962,Z4zbnoHFq-o,name,P4Kid3RM
+Q12671486,ritual ambient,Q57398548,31eeabec-6656-47b6-8256-6b4beb5352e4,Paleowolf,person,,Beograd,2,838,Etmn,1150806552,79YU9sEj4_8,musicbrainz,Paleowolf
+Q12671486,ritual ambient,Q67204919,e946a71d-1ccd-4945-9318-24aaeedc3176,Trepaneringsritualen,group,,Gothenburg,2,728,Alone/A/Cross/Abyss,81774374,yPd_pk4HzNY,name,Trevor Barrow
+Q12671486,ritual ambient,Q7294283,d90aa39d-3a02-41d8-bc5f-f6600d94d087,Rapoon,person,1955,United Kingdom,1,680,Morning Calls,4037880871,,musicbrainz,
+Q5655695,hardbag,Q2066061,a49e313b-9fa4-42a4-89cb-c0b7409a3602,FELIX,person,1973,Los Angeles,2,3771,Don't You Want Me 2015,98411670,iTBpvf8t5hw,musicbrainz,Armada Music TV
+Q5655695,hardbag,Q1322694,840ececd-65de-4fd9-8e7d-52d10fd4dc47,Tony De Vit,person,1957,United Kingdom,1,909,The Dawn,3763389072,dfzkHmCQySQ,musicbrainz,magoo4president
+Q111678759,guaracha,Q474045,7b8e1188-9ca4-4aa5-8393-172de6fa04de,Celia Cruz,person,1925,Cuba,9,309207,La Vida Es Un Carnaval,429989292,x4oN50uhSII,musicbrainz,Celia Cruz
+Q111678759,guaracha,Q1155712,4cdf47ff-256c-40c7-b722-03809b5a23ba,La Sonora Matancera,group,1924,Cuba,14,56507,Mala Mujer,58479081,CwMaumcqpK4,musicbrainz,Salsa Lovers
+Q111678759,guaracha,Q3324896,2a4a80fa-dae0-4d2e-832f-f68b6789a6be,Bienvenido Granda,person,1915,Cuba,1,10939,Percal,861575412,9A9OtSWQFm8,name,Ricardo CB
+Q111678759,guaracha,Q5490416,c06d3377-3ff5-41bb-8e1b-23998922ce9b,Aníbal Velásquez,person,1936,Colombia,1,3914,Un Poquito de Cariño,11764241,XWs-0OUiHTQ,name,audiocolombia
+Q111678759,guaracha,Q323509,87acb6fa-86a4-4e0c-ba2f-41516cbc15e0,Cándido Fabré,person,1957,Cuba,1,1075,Yo No Viro los Canones,1164699152,5TdSbdxvj5A,name,Theiris4949
+Q111678759,guaracha,Q535092,962dd3f3-97cc-4ce3-8ada-ae2163f2aa63,Pío Leyva,person,1917,Cuba,1,398,El Gallo De Moron,62135696,j1Gp67NDdbQ,name,TheEtnomleb
+Q106522190,scouse house,Q89689870,99ba2559-4e71-4b8c-adc0-b4dae82257d7,XS Project,group,,Russia,5,10057,"Bochka, Bass, Kolbaser",129107338,mM14xW7edWM,musicbrainz,XS Project
+Q106522190,scouse house,Q4356488,0038bcbd-5f12-4a05-9f77-324652334345,Ultrabeat,group,2002,United Kingdom,1,7486,Pretty Green Eyes,379139391,iNSsdVUK4HI,musicbrainz,UltrabeatVEVO
+Q112829330,deep tech,Q165138,8eeecca3-3e44-4311-93e5-e67decfafc06,Groove Coverage,group,2001,Germany,1,28881,Moonlight Shadow,677027542,5gHGIY1Q-yU,musicbrainz,suprimerecords
+Q112829330,deep tech,Q1488898,40bd56ef-fdbd-4ebe-a8cb-37127c09bcfe,Gabriel Ananda,person,1977,Germany,1,8975,Solitary Daze,2200125307,oed40p0t1aE,musicbrainz,Gabriel Ananda
+Q112829330,deep tech,Q689002,d4dae588-8b66-4aa9-877f-04c604f552a8,Arms and Sleepers,group,2006,United States,1,6881,Kepesh,1575052112,2ZKaqahk48k,musicbrainz,DailyMorningMusic
+Q112829330,deep tech,Q1726459,a41190c8-9a18-4b74-92c6-7d9c013b5a08,Martin Landsky,person,,Germany,1,2842,2000 Miles,1628125022,J9gfzI_m9bM,name,MrMinimaLand
+Q112829330,deep tech,Q134367438,5871a0e8-b938-4d70-838a-ad0291d443cf,Toman,person,,Netherlands,1,1596,Verano En NY,3388638171,I0qW5eLg_YE,musicbrainz,TOMAN
+Q112829330,deep tech,Q116682,d14b3769-5d33-4085-8f76-88663e7e897f,Samim,person,,Switzerland,1,691,Heater,1917660537,z5VlvxfrvtM,musicbrainz,Building Records
+Q112829330,deep tech,Q4229975,fa619fc7-37c2-4414-8658-b6cf48fd7670,Sebastian Komor,person,1976,Canada,6,420,Pedal to the Metal,2483506811,,musicbrainz,
+Q112829330,deep tech,Q2141071,7cce124a-0720-4062-8313-bc3686b408d6,Reinhard Voigt,person,,Germany,1,381,Supertiel,858289732,zY4SDLh7Dcs,musicbrainz,pachumir
+Q108321657,jackin' house,Q585886,97e22c69-536b-4365-9934-13426a5da923,Antoine Clamaran,person,1964,France,2,50840,Gold,4656758,laO91yhxobc,musicbrainz,Recovery 1
+Q108321657,jackin' house,Q108526574,fa9dc2ea-f390-4f2e-a789-fac53d2171b5,Tony Romera,person,1991,Lyon,2,16337,Time To Move,3310388531,u1qG4br1mY0,musicbrainz,Toolroom Records
+Q108321657,jackin' house,Q1154267,0319d75e-4100-4cd0-aa84-175335ed6e42,DJ Sneak,person,1969,United States,2,14346,Show Me The Way,140799343,H7VumxPlPkI,name,Cedric Fc
+Q108321657,jackin' house,Q1351465,d3d20e96-5783-4126-9d64-075566611c5e,Fatman Scoop,person,1968,United States,2,14088,Be Faithful,9849814,SmnEhmjgZ9s,musicbrainz,XtendaMix
+Q108321657,jackin' house,Q108633063,00d37ae3-fe24-49b8-855d-29df409c9229,AC Slater,person,1979,United States,2,9608,Seismic,2449195025,vjxVMQHIli4,musicbrainz,Music_Center7
+Q108321657,jackin' house,Q7812349,fa0e2024-95ff-44b6-9a86-f0ab120b6a72,Todd Edwards,person,1972,United States,2,6456,The Chant,1269822192,fU3tXW5Nt1c,musicbrainz,Todd Edwards Fan Crew
+Q108321657,jackin' house,Q130223625,5e23e428-d9f5-4679-bd7c-8254d6f0a437,Fcukers,group,2022,New York,10,5236,Feel The Real,3772064532,55P_4SuHwlM,musicbrainz,Fcukers
+Q109378734,popcorn music,Q18547695,effec721-02c8-4f09-9a88-ce6ef522bcad,Sasha Lopez,person,1980,Moldova,1,27579,Koukou Move,1411356462,qAJLUExwgAg,musicbrainz,Cat Music
+Q109378734,popcorn music,Q5232905,43b079f9-551f-441f-bd54-9b20e19c6fbb,David Deejay,person,,,2,4278,Sexy Thing,1539052992,cxmNGApk4yo,musicbrainz,DAVID DeeJay
+Q109148913,organic house,Q2020350,f4cc6a8c-d762-436b-87b1-0579bbcfd2dd,Oliver Koletzki,person,1974,Germany,1,82314,No Man No Cry,395143972,YjuMv1PqeOc,musicbrainz,Run Rest Reset
+Q109148913,organic house,Q556024,68be8273-cb12-4053-964d-157b7e5cf265,Sasha,person,1969,United Kingdom,1,50860,Xpander,995732,2qXqaZGrP2g,musicbrainz,gapi27
+Q109148913,organic house,Q1374993,fbea756d-95e1-4a55-b6a2-05b5535722d7,Sébastien Léger,person,1979,France,1,28668,Ashes in the Wind,2208354697,FdrhS5Uq2t0,musicbrainz,AllDayIDreamOfYou
+Q109148913,organic house,Q1366223,8c0a04b6-8a33-4f6b-9cc5-bc2bbec03d31,John O'Callaghan,person,1982,Ireland,1,7372,Music Takes Me Higher,3535191271,VMxCOskd2Cw,musicbrainz,John O'Callaghan
+Q109148913,organic house,Q819299,49c5cce4-aaa6-4600-a9a2-2b045fb6a87b,Hardfloor,group,1991,Germany,1,3719,Acperience 1,2480462,Un4CeV_l3pI,musicbrainz,HRDFLR
+Q18358879,outsider house,Q44279160,2d781050-032a-4a4f-b0a9-7b4bc99449e1,Yaeji,person,1993,United States,3,28778,Raingurl,946253572,_3T8KznhThQ,musicbrainz,Yaeji
+Q18358879,outsider house,Q131553813,cc26d3e4-7c22-45da-8d70-111e2b7f517b,박혜진 Park Hye Jin,person,1994,United States,4,10647,Like this,948467582,T393m6cKxos,musicbrainz,박혜진 Park Hye Jin
+Q18358879,outsider house,Q140368426,f2f3998a-9155-44b8-8c88-d604883aefa4,Cult Member,person,,Québec,4,3635,U Weren't Here I Really Miss You,2941526731,N87E3Kz3Hmo,musicbrainz,XD4rkify
+Q18358879,outsider house,Q59241691,595058cd-36fe-4994-8933-df92ff68ebd7,DJ Seinfeld,person,,Barcelona,2,3531,Hopecore,3041744371,X8KlEg9tl-4,musicbrainz,DJ Seinfeld
+Q18358879,outsider house,Q140129508,9e71603a-47f8-4848-a56e-17f5a7aee8b4,Soft Blade,person,1993,Russia,1,1979,Yugoslavskiy Groove,2945795411,E5iiTx7zsg4,musicbrainz,Margaret Po
+Q18358879,outsider house,Q111070606,51a580f0-4f2d-4b2e-80d7-89dca5917943,Illum Sphere,person,,United Kingdom,1,1752,Ritual,117435822,3PlC_15IYhs,name,Ninja Tune
+Q18358879,outsider house,Q116730449,a298f4c7-eb90-41e1-b5dc-0895b55e0278,DJ Sabrina the Teenage DJ,group,,London,9,619,Next To Me,1164588422,XVQfWK16GJg,musicbrainz,DJ Sabrina The Teenage DJ
+Q106634926,future bounce,Q3414998,eb0fbe2c-6eb7-40bc-900b-3e056c158125,R3hab,person,1986,Netherlands,3,1815672,Believe (Shooting Stars),3050727361,iGAqNgQEA0A,musicbrainz,R3HAB
+Q106634926,future bounce,Q27449445,10539fc9-7b6a-4a95-8b9b-cd8d6c7e8a87,Mike Williams,person,1996,Netherlands,3,41278,Living On Video,2298912045,sJzELfLShO8,musicbrainz,Mike Williams
+Q106634926,future bounce,Q28555305,85188b12-0c2a-4879-a98d-fa0f6efb4e89,Aiobahn,person,1996,South Korea,2,3493,Shiawaseni nante naranaide,2545333311,uYomUMaSwWs,musicbrainz,Chitosa
+Q107697041,g-house,Q15985135,dc230fc4-36b7-4842-b847-9f836dc5d1a0,Hedegaard,person,1988,Denmark,1,11809,BAD GIRL,3446270001,s03xjNl4Jj0,musicbrainz,Spinnin' Records
+Q107697041,g-house,Q108633063,00d37ae3-fe24-49b8-855d-29df409c9229,AC Slater,person,1979,United States,2,9608,Seismic,2449195025,vjxVMQHIli4,musicbrainz,Music_Center7
+Q107697041,g-house,Q131538340,97946faa-bf9a-48fc-aa36-fb04c9dc9e26,BIJOU,person,,Phoenix,2,1779,6AM,4113419371,2TgPv8HthOE,musicbrainz,Bijou Diamentine
+Q107697041,g-house,Q139738222,ba59ae8a-20dc-44f3-8186-674cabdd7790,REYSHA RAMI,person,,Los Angeles,6,663,black0ut,3167738441,6-qSAb1dI70,musicbrainz,Reysha Rami
+Q16951912,Birmingham sound,Q7309318,8c68233c-c4e2-495d-8ee1-120a600edcc0,Regis,person,,United Kingdom,6,668,Knecklace D2 Mark Broom Edits,4105249711,Sv9owXcHbmA,musicbrainz,Techno Before Everything
+Q10856835,wonky techno,Q453691,a4a3048f-3968-4848-9f53-94e3d4f88b53,Quentin Dupieux,person,1974,France,6,177125,Flat Beat,3748159,,musicbrainz,
+Q10856835,wonky techno,Q1966560,a77f6f2f-19a2-4648-9018-3ad3aa4c1b9b,Nathan Fake,person,1983,United Kingdom,1,18245,Gonggong,4210906282,M8sxfYzlnSU,musicbrainz,InFiné Music
+Q10856835,wonky techno,Q28803195,c27d4389-390e-497c-9a41-dd446ace742c,Blawan,person,1987,United Kingdom,1,13031,Close the Cycle,1528244182,Y44d6JPDFpo,musicbrainz,Blawan
+Q10856835,wonky techno,Q11661688,ce30feb8-6664-4262-8bf3-4e30f4730fc9,青木孝允,person,1976,Berlin,1,1069,Ritual and Condition,3944888901,,name,
+Q10856835,wonky techno,Q1081150,727ab9ab-741f-4272-91eb-ccbbfa40626c,Christian Morgenstern,person,1975,Germany,1,140,Hawaii Blue,131877394,MRrfZTd-_Fc,name,Masterwaves
+Q2634010,acid breaks,Q105038535,c7df5ec5-380a-40f9-856f-28fb4a33d946,Machine Girl,group,2012,United States,4,20880,Athoth a Go!! Go!!,4208226512,4LZGIkag9Z8,musicbrainz,Accursed Alucard
+Q2634010,acid breaks,Q1154584,a3494b6a-32b5-416c-8dea-dce62c8e9244,DMX Krew,person,,United Kingdom,2,2731,On The Beach,4158119192,APVewJJaiwE,musicbrainz,Electronic Love Collective
+Q2634010,acid breaks,Q1399103,996a7ed9-d3ae-4a09-819d-c864e7056b47,Wink,person,1970,United States,1,2167,Evil Acid,6321867,LzE3h0n0OTA,musicbrainz,Alex Kondusov
+Q2634010,acid breaks,Q4036234,53a53473-a6e6-421e-875d-45eee18827f2,Cirrus,group,1995,United States,1,85,Lifeson,4229923572,,musicbrainz,
+Q11680297,psybreaks,Q2362276,9cd39202-6c67-400a-b96e-df351c9f9484,Eat Static,group,1989,England,1,6897,Pharaoh,648912082,UK_1oYo_NZI,musicbrainz,AmbientCulture
+Q105404852,hi-tech psytrance,Q98074563,90165cd6-f56e-4b26-9efa-fc30a1d05141,Pixx,person,1995,United Kingdom,1,1408,Funsize,681337972,lMPz56NjENE,musicbrainz,Pixx
+Q114107195,psycore,Q11837020,1ea9bc33-cb0d-4fc2-9a7e-96c88a2db68f,Dymytry,group,2003,Czechia,2,3321,Adieu,2807283622,l0YScUFm6ls,name,Dymytry
+Q109714096,forest psytrance,Q5261349,b37769ce-acb1-4be1-b206-77f75c4f51b0,Derango,group,,Sweden,2,807,Saturnuts,119646506,,musicbrainz,
+Q5402470,hard NRG,Q1114196,8bc67d17-d775-4a20-8a80-0005f45d4ef7,Proteus,person,1977,Finland,2,1073,Haven,2102597497,HFxUJAL03Qw,name-ambiguous,ProteusOfficial
+Q5402470,hard NRG,Q115529436,b17e8126-7642-44a8-a311-6fb6546cf672,Yuta Imai,person,,Tokyo,2,942,Friends,1468453262,HgxDsmKEqYQ,musicbrainz,Dirty Workz
+Q132165415,buchiage trance,Q11250191,8432b25e-4a1d-475c-ae74-a974c22f2e3b,TSUKASA,person,,Japan,1,42,Vertical Floating,2363259585,AQDfyASsHig,name,DJMAX ARCHIVE
+Q108831582,big room trance,Q323187,370bd5a3-4abf-4356-8576-3a8fc0c11d65,Above & Beyond,group,2000,United Kingdom,4,306475,Nights Like This,4302392102,L8YS4f2Ws-E,musicbrainz,Above & Beyond
+Q108831582,big room trance,Q1095397,a90cbe49-705a-49d4-931b-8a8841f431b0,Andrew Rayel,person,1992,Moldova,3,71633,Neon Glow,4180410692,72dk9i_-gPc,musicbrainz,Andrew Rayel
+Q108831582,big room trance,Q23710573,37457e92-471b-469e-ae6d-448fdbbd0109,Andrew Bayer,person,1987,United States,3,12601,Midnight,1787362307,kKOTUk9wQgw,musicbrainz,Anjunabeats
+Q108831582,big room trance,Q129405721,d313ecf6-9256-41cd-9923-82f7a510357c,ilan Bluestone,person,,London,3,11093,Save A Prayer,4150581702,YctfNPMu44E,musicbrainz,Black Hole Recordings
+Q108831582,big room trance,Q140816669,055588a2-61cb-4765-913a-e2ebec204165,MagneticMark,person,1999,Poland,1,54,Foot On The Gas,3324935021,0rj6093fQow,name,MagneticMark
+Q2640307,hardstep,Q326768,2b905913-171b-411a-bdfa-56295455f63d,Ed Rush,person,1973,United Kingdom,1,4122,Chubrub,407394402,eTP-zhhnCzM,musicbrainz,Ed Rush
+Q1166321,darkstep,Q18967146,caf4109a-05e5-4067-b619-b705d137f68d,Current Value,person,,Berlin,2,6351,Changes,2516275381,RBQW5pTswdA,musicbrainz,Inspector Dubplate
+Q1166321,darkstep,Q17579863,f6bf05a4-1846-4f32-92cf-9281f8c1f284,Audio,person,,United Kingdom,4,4369,Collision,407989922,J7IYhmcUAGs,musicbrainz,S.B.H.M.N.
+Q1166321,darkstep,Q5111694,96ef39a7-578d-4446-8a27-04e1d3c52484,Christoph de Babalon,person,1973,Germany,2,845,Release,83128282,o4_kyCLwtWA,name,Mia Goth
+Q108716407,skullstep,Q18967146,caf4109a-05e5-4067-b619-b705d137f68d,Current Value,person,,Berlin,1,6351,Changes,2516275381,RBQW5pTswdA,musicbrainz,Inspector Dubplate
+Q646165,trancestep,Q1124054,ac0aa7e2-cb46-4e01-a8e5-d265548411c2,Concord Dawn,group,1999,New Zealand,3,4222,Morning Light,3050475961,jxDZ-1sf9Bg,musicbrainz,Concord Dawn
+Q10268931,dubwise drum and bass,Q720649,ee459bd7-9768-4cc2-9452-a09700c4aeaa,Shy FX,person,1977,United Kingdom,1,37881,Soon Come,444534312,rW-AHPZ5YEM,musicbrainz,SHY FX
+Q10268931,dubwise drum and bass,Q321748,c0515731-5824-458f-a38c-fc463c9157fa,General Levy,person,1971,United Kingdom,2,9962,Jah Jah Bless,8768021,2iAFP785tzg,musicbrainz,Generallevy Official
+Q10268931,dubwise drum and bass,Q1337319,26ef2dac-1644-4757-91c6-ae04cb5faba3,Rebel MC,person,1965,London,2,5203,Get Ready,67226813,XUm9mC3yl_c,musicbrainz,Panda Drum & Bass Mix Show
+Q4177625,hardcore breaks,Q7256860,4a4ee089-93b1-4470-af9a-6ff575d32704,The Prodigy,group,1990,United Kingdom,4,1744614,Breathe,62126185,6_PAHbqq-o4,musicbrainz,The Prodigy
+Q4177625,hardcore breaks,Q105038535,c7df5ec5-380a-40f9-856f-28fb4a33d946,Machine Girl,group,2012,United States,24,20880,Athoth a Go!! Go!!,4208226512,4LZGIkag9Z8,musicbrainz,Accursed Alucard
+Q4177625,hardcore breaks,Q131318965,eb3c021d-e056-42d6-8fad-064205a90527,femtanyl,group,2023,Toronto,4,15064,ALL THE TIME,4329828132,ZlKSjeYIxr8,musicbrainz,Femtanyl
+Q4177625,hardcore breaks,Q124250693,842cfb88-786e-405f-8351-c5c80644caff,LustSickPuppy,person,1997,United States,6,1140,SHAKER,4296718822,xly1kfOATxI,name,LustSickPuppy
+Q4177625,hardcore breaks,Q3351901,8b165256-c588-4fc7-a642-93747f7acd50,Omar Santana,person,,United States,1,492,"Omar, Rip It Up",2832055642,6vhjfj_2KJg,musicbrainz,PlaylistOfHardcore
+Q341396,acidcore,Q3286720,b0afb77f-65aa-4782-a809-b32c868db013,Manu le Malin,person,1970,France,1,17933,On the Way Home,64213891,C64W9OI92Fs,musicbrainz,vssssss
+Q341396,acidcore,Q139901760,0668368f-9736-43b6-baee-d4f3b5fbeb1b,Acid Souljah,person,,New York,1,372,Off The Yae,3025722351,OPZxekNgHRg,musicbrainz,Wh1teTip
+Q1275972,raggacore,Q2090932,2c1b9d00-3ff0-4ba8-9d3d-0a3197a0bbcd,Cardopusher,person,,Spain,2,1291,In The Power Of XTC,16157897,yFvg5yEQVc0,musicbrainz,drunkyokai
+Q1275972,raggacore,Q3482391,2ce550e2-9045-480f-9e60-ae764f5b2ca8,Shitmat,person,,United Kingdom,11,950,Whitelabel Unity,71544879,gKdDGScGoec,musicbrainz,earlcash05
+Q1275972,raggacore,Q2282994,84a47945-7a31-4765-b08e-a4928384f0e7,Knifehandchop,person,,Canada,3,515,Girlfriend,2831088162,aLi8-O9bSnE,name,J J
+Q5978495,lolicore,Q113361759,eb0cf932-29f0-4e42-a866-2440b18dc182,goreshit,person,,England,10,8181,Fine Night,810382142,wNShCHNCfUM,musicbrainz,Irreversible Damage
+Q848457,speedcore,Q113361759,eb0cf932-29f0-4e42-a866-2440b18dc182,goreshit,person,,England,5,8181,Fine Night,810382142,wNShCHNCfUM,musicbrainz,Irreversible Damage
+Q848457,speedcore,Q1231669,a9860233-7d7d-432c-9feb-8f850e2a1963,The Speed Freak,person,,Kaiserslautern,1,5606,The name of the dj,2891217,,musicbrainz,
+Q848457,speedcore,Q24872872,d72ae77d-ca32-498d-870e-8204165b8ee4,Tomoyuki Hamada,person,1985,Japan,4,5526,Pandemonium,2228555787,,musicbrainz,
+Q848457,speedcore,Q2379193,edaaa29f-bfed-4317-ad5c-5074ca4cd1df,Akira,person,,Netherlands,3,3303,Aoki Tsuki Michite,975979782,xLOUMqyp_-M,musicbrainz,AkiraOfficialVEVO
+Q848457,speedcore,Q108109321,2ac4d851-c5d9-48f7-8164-699cc5ce02d1,Kobaryo,person,,Japan,5,3239,Screaming Steel Sheet,4338550152,Q4ODZKj0u4I,musicbrainz,HARDCORE TANO*C and Kobaryo
+Q848457,speedcore,Q2162641,1c922598-3a37-49f6-a51f-ba07d84bdeac,M1dy,person,1973,Japan,9,722,Bad Girl,123939478,OZ3Zn1AdFOw,musicbrainz,m1dy official channel
+Q848457,speedcore,Q47201676,22a68678-82d9-4f35-a848-f5a5922f388f,Passenger of Shit,person,1979,Australia,2,592,Severed Penis Orgy,1916280747,,name,
+Q848457,speedcore,Q1154264,196eb856-9b51-44c4-a188-e6ac244e77fe,DJ Sharpnel,group,1999,Tokyo,1,511,WE LUV LAMA,2634219512,CQAcrUX5UZE,musicbrainz,bestofsharpnelsound
+Q3062629,extratone,Q40857248,151bb385-1af0-40b6-9269-bf2ed982311f,かめりあ,person,1992,Japan,4,12209,Flamewall,1076250592,,musicbrainz,
+Q1265050,terrorcore,Q2379193,edaaa29f-bfed-4317-ad5c-5074ca4cd1df,Akira,person,,Netherlands,2,3303,Aoki Tsuki Michite,975979782,xLOUMqyp_-M,musicbrainz,AkiraOfficialVEVO
+Q1265050,terrorcore,Q47201676,22a68678-82d9-4f35-a848-f5a5922f388f,Passenger of Shit,person,1979,Australia,1,592,Severed Penis Orgy,1916280747,,name,
+Q106594174,uptempo hardcore,Q100414305,97aafe0a-1119-4fdb-977a-dfd20921a9aa,GPF,group,2017,Scotland,1,5392,Virgin,651910792,4Vb28UFBjWk,musicbrainz,GPF
+Q106594174,uptempo hardcore,Q108109321,2ac4d851-c5d9-48f7-8164-699cc5ce02d1,Kobaryo,person,,Japan,3,3239,Screaming Steel Sheet,4338550152,Q4ODZKj0u4I,musicbrainz,HARDCORE TANO*C and Kobaryo
+Q106594174,uptempo hardcore,Q109322019,ecee3c15-0b45-4abe-b0b0-964c85f90551,Laur,person,1997,Japan,3,2751,Calamity of the Mystic Garden : Doom,3616717172,--lu7TkJodM,musicbrainz,Laur
+Q123543092,darkcore,Q139974131,4666ad3e-455d-4443-af03-b53d9466a4da,Vana,person,,Auckland,2,3704,Bleeding Heart,4262864611,hiYMiZsjJE0,musicbrainz,Vanaluvr
+Q1987980,breakstep,Q64009886,bca46a0c-25c9-42ca-98c2-e64c8a5e337e,Fred Again,person,1993,United Kingdom,4,127269,Marea (we’ve lost dancing),1239694902,l4UkYBr1NnA,musicbrainz,Fred again . .
+Q106520965,nerdcore techno,Q1154264,196eb856-9b51-44c4-a188-e6ac244e77fe,DJ Sharpnel,group,1999,Tokyo,4,511,WE LUV LAMA,2634219512,CQAcrUX5UZE,musicbrainz,bestofsharpnelsound
+Q106876075,bubbling,Q6935664,804ab621-6327-4411-be19-b74dba69bfd3,Munchi,person,1989,Netherlands,2,2463,Sandungueo,78497056,rK1ngP6nQhs,musicbrainz,Mad Decent
+Q110967939,footwork jungle,Q105038535,c7df5ec5-380a-40f9-856f-28fb4a33d946,Machine Girl,group,2012,United States,4,20880,Athoth a Go!! Go!!,4208226512,4LZGIkag9Z8,musicbrainz,Accursed Alucard
+Q110967939,footwork jungle,Q594166,d1785218-d8f4-4a83-a33d-8cf737eef918,Machinedrum,person,1982,United States,1,12314,ZOOM,2662623502,JlV8zVUgdLM,musicbrainz,machinedrum
+Q114594005,rawphoric,Q60733760,d0deaa96-033c-4ab9-bbe5-68004c6757ef,Stonebank,person,,United Kingdom,3,8997,Stronger,92386730,I1NuCWfYeYc,musicbrainz,Monstercat Uncaged
+Q114743580,psystyle,Q40857248,151bb385-1af0-40b6-9269-bf2ed982311f,かめりあ,person,1992,Japan,3,12209,Flamewall,1076250592,,musicbrainz,
+Q118798959,tearout dubstep,Q6557399,c1281222-c989-4987-a87e-9a42a65727f0,Liquid Stranger,person,1978,Scottsdale,1,18826,Crush,3913213311,8n-5bwijkd4,musicbrainz,Dubstep uNk
+Q24876318,drumstep,Q14546605,c764f48c-8ed7-46aa-8d1e-b1df6ec0f2ef,Zomboy,person,1989,United Kingdom,3,300028,Nuclear (Hands Up),480450382,GGKPiTFmzrw,musicbrainz,Zomboy Official
+Q24876318,drumstep,Q20888,c729681b-c5c1-4509-a6d1-f916c51aefd7,Pegboard Nerds,group,2012,Denmark,8,240058,Swamp Thing,102157272,yIP_QVroZo0,musicbrainz,Pegboard Nerds
+Q24876318,drumstep,Q557415,a9930a14-8fbb-435a-ad25-f4b6cae71523,Kill the Noise,person,1981,United States,4,189625,I Do Coke,108578422,oSPT27XyY1U,musicbrainz,OWSLA
+Q24876318,drumstep,Q5411618,5afa8cdc-6cd5-426a-a265-7e0b5c5c5bb1,Eptic,person,1993,Belgium,1,52451,Like A Boss,480470842,r2tWYgyXA4E,musicbrainz,Eptic Official
+Q24876318,drumstep,Q20432443,1849970f-0c71-4f80-89d3-0704797df50e,Tristam,person,1995,Canada,5,23403,Frame of Mind,1353068802,SCD2tB1qILc,musicbrainz,Monstercat Uncaged
+Q24876318,drumstep,Q61773714,dc936e53-749a-4414-a3a1-a7b58b693f09,Bossfight,group,2009,Hässleholm Municipality,3,10698,Nock Em,391237652,ePv2X_CCaGg,musicbrainz,BOSSFIGHT
+Q24876318,drumstep,Q60733760,d0deaa96-033c-4ab9-bbe5-68004c6757ef,Stonebank,person,,United Kingdom,3,8997,Stronger,92386730,I1NuCWfYeYc,musicbrainz,Monstercat Uncaged
+Q106528420,deathstep,Q23923,d113f6b4-f01f-4632-9cd3-743cc299574e,12th Planet,person,1982,United States,1,52419,We Don't Play,730946142,,musicbrainz,
+Q106528420,deathstep,Q137505995,1f8ef6a0-6d01-4ea2-92d4-693bc565fb61,Caster,person,1999,Denver,4,132,Moonlight,3024459111,Q8NpRu-sYEE,musicbrainz,NIGHTMODE
+Q119259589,tearout brostep,Q85816153,d5d38024-4428-4ef8-9c0c-2b78efa097ad,Wooli,person,,New York,1,11560,Dopamine,2417012585,lKdFZ05eXUo,musicbrainz,Wooli Music
+Q119259589,tearout brostep,Q61773714,dc936e53-749a-4414-a3a1-a7b58b693f09,Bossfight,group,2009,Hässleholm Municipality,5,10698,Nock Em,391237652,ePv2X_CCaGg,musicbrainz,BOSSFIGHT
+Q123421084,briddim,Q85816153,d5d38024-4428-4ef8-9c0c-2b78efa097ad,Wooli,person,,New York,1,11560,Dopamine,2417012585,lKdFZ05eXUo,musicbrainz,Wooli Music
+Q123421084,briddim,Q61773714,dc936e53-749a-4414-a3a1-a7b58b693f09,Bossfight,group,2009,Hässleholm Municipality,7,10698,Nock Em,391237652,ePv2X_CCaGg,musicbrainz,BOSSFIGHT
+Q123421084,briddim,Q22909295,ee57144c-bdcb-4740-92ca-235a678fd5e7,Teddy Killerz,group,,Russia,1,9529,We Love Drum & Bass,3283669181,54U2aMPOWzk,musicbrainz,UKF Drum & Bass
+Q111442385,Japanese artcore,Q7094467,dc4caab0-9fdb-4dca-9b10-257fa7393e3e,onoken,person,,Japan,4,247,COLOR CHART,2075498387,5syfPKerqj4,musicbrainz,onoken (owl*tree) | official channel
+Q9364028,UK funky,Q11838808,dacc2d64-7e59-42a8-87a9-10c53919aff2,Clean Bandit,group,2008,United Kingdom,4,4175765,Rather Be,73982869,m-M1AtrxztU,musicbrainz,Clean Bandit
+Q9364028,UK funky,Q1228440,ae65c507-d9a0-4d42-9a6c-2b1f82158b9f,Disclosure,group,2010,United Kingdom,6,987347,Latch,75526535,93ASUImTedo,musicbrainz,Disclosure
+Q9364028,UK funky,Q120527,feea8ed3-eb47-44d6-a480-f6ee85d95411,Katy B,person,1989,United Kingdom,4,103587,I Wanna Be,123341168,9K1jmwIgH5s,musicbrainz,Katy B
+Q9364028,UK funky,Q263726,d1515727-4a93-4c0d-88cb-d7a9fce01879,Jamie xx,person,1988,United Kingdom,4,101301,KILL DEM,1892750597,6NLEp6awMQQ,musicbrainz,Jamie xx
+Q9364028,UK funky,Q708129,6e5c1366-5891-4e01-bb13-6c8b2c8cdd35,M. J. Cole,person,1973,United Kingdom,4,7174,Waking Up,631353162,SHKxRwrYFaw,musicbrainz,MJ Cole
+Q9364028,UK funky,Q29378958,f9e52b78-5499-4897-b979-7f430ec5b5cd,Lil Silva,person,,United Kingdom,8,2988,Making Sense,539254492,Zu54jzBIMqE,musicbrainz,Lil Silva
+Q9364028,UK funky,Q115244429,8e018193-119b-42f3-8ef8-b9575b0208ca,Logic1000,person,1986,Berlin,4,2421,The Only One,4110605061,50qtfr6lFu8,musicbrainz,Logic1000 and Christine and the Queens 
+Q18432631,neurohop,Q6334752,0cc1935d-712d-40b0-b1a9-27e23777a302,KOAN Sound,group,2008,United Kingdom,11,27822,Lost In Thought,96255028,0lCH4gGillI,musicbrainz,KOAN Sound
+Q18432631,neurohop,Q5240437,c3cf7f15-4a5e-4e9e-bce7-5e5b101fa29c,David Tipper,person,1976,United Kingdom,1,4333,Illabye,86208523,,musicbrainz,
+Q111628716,festival trap,Q5461990,8ca3f991-47c7-4506-8fa2-327e376c71b4,Flosstradamus,group,2006,United States,1,52024,Soundclash,94555892,dDczhTMla7k,musicbrainz,Flosstradamus
+Q111628716,festival trap,Q16234136,c046b587-5e98-4631-a5c0-e5d8e18d6b13,RL Grime,person,,United States,1,31381,come aliv3,3088569911,zQEbq2Lxm14,musicbrainz,Knock2
+Q111628716,festival trap,Q21512884,e92d6330-65d2-445e-82e5-b98c683e727b,Good Times Ahead,group,,United States,1,3099,Mic Check,96856438,tuvK49z_L7o,musicbrainz,Good Times Ahead
+Q111653578,hybrid trap,Q14546605,c764f48c-8ed7-46aa-8d1e-b1df6ec0f2ef,Zomboy,person,1989,United Kingdom,4,300028,Nuclear (Hands Up),480450382,GGKPiTFmzrw,musicbrainz,Zomboy Official
+Q111653578,hybrid trap,Q20888,c729681b-c5c1-4509-a6d1-f916c51aefd7,Pegboard Nerds,group,2012,Denmark,3,240058,Swamp Thing,102157272,yIP_QVroZo0,musicbrainz,Pegboard Nerds
+Q111653578,hybrid trap,Q16234136,c046b587-5e98-4631-a5c0-e5d8e18d6b13,RL Grime,person,,United States,2,31381,come aliv3,3088569911,zQEbq2Lxm14,musicbrainz,Knock2
+Q111653578,hybrid trap,Q53341957,16d90c52-1ac0-4ba7-9ab7-66efed0594fb,Boombox Cartel,group,2012,United States,3,13115,Heartbreak,3101010571,bX4rMC8SQ9k,musicbrainz,Boombox Cartel
+Q111653578,hybrid trap,Q61773714,dc936e53-749a-4414-a3a1-a7b58b693f09,Bossfight,group,2009,Hässleholm Municipality,6,10698,Nock Em,391237652,ePv2X_CCaGg,musicbrainz,BOSSFIGHT
+Q111653578,hybrid trap,Q60733760,d0deaa96-033c-4ab9-bbe5-68004c6757ef,Stonebank,person,,United Kingdom,6,8997,Stronger,92386730,I1NuCWfYeYc,musicbrainz,Monstercat Uncaged
+Q111653578,hybrid trap,Q130295327,4a5d133b-46f3-4c19-aae1-ec199787658d,Knock2,person,1999,San Diego,5,4007,dashstar*,1210098022,MgQPSSU1S2s,musicbrainz,Knock2
+Q111653578,hybrid trap,Q60652112,17cf6265-7c39-4f2d-9fcc-8425431e4c34,SLUMBERJACK,group,2014,Perth,1,3583,RA,831264292,gk02toAlAj4,musicbrainz,SLUMBERJACK
+Q109753757,twerk,Q6935664,804ab621-6327-4411-be19-b74dba69bfd3,Munchi,person,1989,Netherlands,1,2463,Sandungueo,78497056,rK1ngP6nQhs,musicbrainz,Mad Decent
+Q111971785,heaven trap,Q6470365,8ec9a41c-9857-458b-9619-3e14dc5321fe,Lady Luck,person,,United States,1,352,Up on the Rooftop,1529177812,,musicbrainz,
+Q6907397,moombahcore,Q20888,c729681b-c5c1-4509-a6d1-f916c51aefd7,Pegboard Nerds,group,2012,Denmark,4,240058,Swamp Thing,102157272,yIP_QVroZo0,musicbrainz,Pegboard Nerds
+Q109873537,dark disco,Q8253479,b70a0f2f-1573-4d28-ab25-8eedaf2e6b25,Theus Mago,person,1986,Mexico,2,1027,Piel De Oso,1585945232,YfdC6unr8Wk,musicbrainz,Sinchi Collective
+Q135493744,melodic bass,Q27662462,5f43abf6-92a5-468a-a633-b73f94627972,Illenium,person,1990,United States,3,129985,All That Really Matters,1819163237,3gxxW5NqICc,musicbrainz,ILLENIUM
+Q106388388,hardwave,Q58823902,4cb4ebd9-3a15-406b-aadd-b5401754ba40,skeler.,person,,Perth,3,10470,Tel Aviv,469359522,IIK-4MGGgOQ,musicbrainz,skeler.
+Q106388388,hardwave,Q59618180,d963619d-0a49-4c91-94d7-1f49f48b9355,Sublab,person,,Dresden,27,3133,Maera,397274472,l1BNilg-Knw,musicbrainz,Sublab
+Q106388388,hardwave,Q58716029,47c6de56-414b-4355-8ff9-58bff9eabecf,Juche,person,,France,1,1261,Spacing,773964922,yw-W8Gvh53s,musicbrainz,DSWL
+Q106388388,hardwave,Q58298114,f81dce77-a8be-480f-8308-0a1d69809aac,MYSTXRIVL,person,,Poland,1,867,Hexan,416927972,0-t1bp0GE0k,musicbrainz,MYSTXRIVL
+Q106388388,hardwave,Q124799842,37137469-e40d-49da-8c4a-ea52bf81bf57,Affectwave,person,,Anapa,14,388,NPG,2515674591,Wjev0ZkHhiU,musicbrainz,Tribal Trap
+Q126335126,hypertechno,Q110147631,e5eec9a6-9193-4096-875a-bcbc47bc8fe9,Panteros666,person,,France,1,17038,Bomba,4117144091,,musicbrainz,
+Q126335126,hypertechno,Q2160165,ea25106f-3603-4b7e-8097-16e8288e5fc2,Rocco,person,,Germany,1,5632,Everybody,81881756,kOM1spu1TE8,musicbrainz,You Love Dance.TV
+Q131529620,krushclub,Q123241445,2d8be86e-dccf-481a-a01c-faf9e48edd6d,Odetari,person,2000,Houston,3,108582,I'M A BLACKHOLE (STAR),4326426772,sjbHHnuIRSk,musicbrainz,Odetari Songs Lyricist
+Q131529620,krushclub,Q123739661,a8a8e422-4e3c-4c2e-842a-a6407357ae1d,6arelyhuman,person,2001,United States,1,64799,Faster n Harder,3304806951,BTksETlbL8E,musicbrainz,6arelyhuman
+Q113600471,hardtek,Q77727875,c8fd8932-5a2f-4fff-ad9c-a8016c4c1de6,Billx,person,,France,4,58759,Chichovite,649019272,EGDwQbXBpZc,musicbrainz,Billx
+Q113600471,hardtek,Q9261055,ea76faa6-8dce-4b83-9712-56a31358ace8,Floxytek,person,,France,2,17585,Micro tribe,3558551451,Xnujx2IptqQ,musicbrainz,UndergroundTekno
+Q106422444,bit music,Q98783337,e9dfa562-b429-42e4-88e1-f080b6c57632,ELECTRONICOS FANTASTICOS!,group,2015,Japan,1,409,Electromagnetic Matsuri Bayashi in Neo Tokyo,2339000145,D6Vjq5FfbuA,name,Milton F
+Q106424145,FM synthesis,Q107803424,f217f62b-953b-4091-91b1-50c5275f473e,Capcom Sound Team,person,,Japan,4,8635,DEVILS NEVER CRY(スタッフロール),2705819942,lwp6sLIvCGg,musicbrainz,Nutt_Bizkt
+Q106424145,FM synthesis,Q948524,a4cda071-2ba4-4fa9-a50d-4378c408676d,古代祐三,person,1967,Japan,4,2347,Go Straight,955969422,,musicbrainz,
+Q106424145,FM synthesis,Q724016,ccd52f00-cdd6-4551-984b-e045be63c2f5,中村正人,person,1958,Japan,4,1363,Sth1 Green Hill Zone Mega Drive Version,1402032692,,name,
+Q106424145,FM synthesis,Q2698275,17dbd4b4-6e92-4027-a64f-659258f4e775,山根ミチル,person,1963,Japan,4,948,Requiem,4041498301,,name,
+Q106424145,FM synthesis,Q1399435,21848b19-5a20-4a58-b168-0b5f95524cdc,Alexander Brandon,person,1974,United States,4,435,So It Begins (Deus Ex Main Title),1402729332,11uB6rsKNug,musicbrainz,Nice Car
+Q1091056,funktronica,Q81637,8dd98bdc-80ec-4e93-8509-2f46bafc09a7,Calvin Harris,person,1984,Scotland,2,12339338,This Is What You Came For,123883254,kOkQ4T5WO9E,musicbrainz,Calvin Harris
+Q1091056,funktronica,Q19810390,525f1f1c-03f0-4bc8-8dfd-e7521f87631b,Charlie Puth,person,1991,United States,6,2310058,Attention,349385251,nfs8NYg7yQM,musicbrainz,Charlie Puth
+Q1091056,funktronica,Q17403494,b2029169-2574-4305-820f-252a5fde3697,Meghan Trainor,person,1993,United States,6,1719010,NO,358920101,cMTAUr3Nm6I,musicbrainz,Meghan Trainor
+Q1091056,funktronica,Q329178,860b2707-6153-4e3a-aa57-74d2b42c55b5,Justice,group,2003,France,3,812921,Flower In A Hurricane,4342358342,5dPwBWvmcbQ,musicbrainz,Justice
+Q1091056,funktronica,Q111381707,1ee37742-1e3d-4e61-84d2-bc85f4c1459a,LE SSERAFIM,group,2022,South Korea,6,334988,ICONIC BY MISTAKE,4076508991,vabI31VfOeI,musicbrainz,LE SSERAFIM
+Q1091056,funktronica,Q17405943,6bbb3983-ce8a-4971-96e0-7cae73268fc4,Jungle,group,2013,United Kingdom,6,266678,Back On 74,2181330357,q3lX2p_Uy9I,musicbrainz,Jungle4eva
+Q1091056,funktronica,Q903674,64c9974f-20a9-491d-bd94-2168cd738e2a,Breakbot,person,1981,France,3,184592,Baby I'm Yours,57630641,6okxuiiHx2w,musicbrainz,Ed Banger Records and Breakbot
+Q1091056,funktronica,Q1087706,647221d0-f6b1-4e03-924c-c59b8059536f,Chromeo,group,2001,Canada,8,157229,One Track Mind,509698132,2snpXb3DSlw,musicbrainz,Chromeo
+Q4993553,ambient trance,Q64746371,13e2db47-3010-48b8-a8b9-667551f37119,Oklou,person,1993,Paris,7,34675,blade bird,4182297682,Tgw9cFdCPxU,musicbrainz,Oklou
+Q4993553,ambient trance,Q140368426,f2f3998a-9155-44b8-8c88-d604883aefa4,Cult Member,person,,Québec,1,3635,U Weren't Here I Really Miss You,2941526731,N87E3Kz3Hmo,musicbrainz,XD4rkify
+Q4993553,ambient trance,Q2215346,af2e4bbe-e6b4-4e34-9930-d402c84f9b13,Salt Tank,group,1991,United Kingdom,1,392,Charged Up,3728280432,lkkjqEH9zY0,musicbrainz,Shoomer
+Q4993553,ambient trance,Q750455,70e05ac6-030f-4a1b-837f-ea3b0376d90f,Astralasia,group,1990,United Kingdom,2,389,Bitchin' the Brew,884969062,M1Ul4Q_OJmk,musicbrainz,Dohna Joy-Kurukulla
+Q1658757,illbient,Q3542599,89d21333-d040-4602-9dac-b565651f5a92,Two Fingers,group,2007,United States,1,8062,Fools Rhythm,57213671,bvttDWdl0OQ,musicbrainz,Maas Melody
+Q1658757,illbient,Q2150733,eddd6562-ab2a-4a26-a53a-2141854a57df,The Bug,person,,United Kingdom,3,5137,Poison Dart,66225694,-aW7NFSGklM,musicbrainz,Ninja Tune
+Q1658757,illbient,Q1366325,dcb2955e-ff59-4ff2-a608-cbb90ee3ac38,Meat Beat Manifesto,group,1987,United Kingdom,1,3173,She's Unreal,64593525,YGwDaUPwPtU,musicbrainz,Luigi Miolli
+Q1658757,illbient,Q895429,89cbe6ac-80af-421b-9276-cf373a1480c3,Bowery Electric,group,1994,United States,1,3034,Lushlife,942278,J9QO59j1D3E,musicbrainz,Awkadan
+Q1658757,illbient,Q1814269,b55479cc-e078-49e2-9ff5-52ace46802d9,Scorn,group,1991,United Kingdom,4,2645,Exodus,70989664,uCDxCaCOKQA,musicbrainz,Earache Catalog
+Q1658757,illbient,Q6788610,357ead49-ffbe-4b1b-91f6-862abab355b1,The Third Eye Foundation,person,,United Kingdom,1,1527,A Galaxy Of Scars,71990590,SHXEB0JEzac,musicbrainz,jackbt79
+Q1658757,illbient,Q18162708,e9a7c1b9-dcb6-4cf5-b200-f9630ac68ec7,Techno Animal,group,1990,United Kingdom,4,1238,Freefall,2528192631,E-ylBWM4mNM,name,Oyasumi
+Q115063474,digital fusion,Q86351247,f1693075-b637-49f8-8d0e-8cee8bec77cb,Lena Raine,person,1984,United States,6,24708,otherside,1522831532,YZzi6XKHSMg,musicbrainz,The 10 Hourglass
+Q115063474,digital fusion,Q140031649,1006728a-2d33-424f-b41d-32fbf278e7e4,FLOOR BABA,person,,,4,341,WIGGLECORE,1873895377,DJKMklKQeCg,musicbrainz,Jōzu Music
+Q140005978,dreamwave,Q18150560,a0b2868c-22c7-49eb-b227-3c4251a6c88f,Electric Youth,group,2011,Canada,4,15178,The Best Thing,84360127,Ph6fl7o7AnY,musicbrainz,Electric Youth (Official)
+Q140005978,dreamwave,Q48720109,cf4eab9f-c584-48eb-b115-5b3148535ab9,Dynatron,person,1980,Denmark,1,5826,Intergalactic Highway,137922795,e2f0YbwCR20,musicbrainz,Rad Rush Records
+Q140005978,dreamwave,Q22007420,1da2e13f-b482-4341-a3c2-f0df2758fd3f,Dana Jean Phoenix,person,1987,Canada,1,895,Le Mirage,143064922,iE0kKESI-QE,name,Dana Jean Phoenix
+Q106594177,utopian virtual,Q4483079,2ad18a65-2298-4902-aae9-fe81c111bb09,James Ferraro,person,1986,United States,2,1504,Global Lunch,66683464,AZwcFv0L6SM,musicbrainz,VvporTV
+Q117193815,slushwave,Q121816154,ab838393-92c6-403e-8987-a936b3e934c2,t e l e p a t h テレパシー能力者,person,1997,United States,7,2621,アトラクション,107642208,r50clSDBM5M,musicbrainz,Hermes Acosta HA
+Q117193815,slushwave,Q112128163,395ab645-19d3-471b-b3eb-897caff1ace9,desert sand feels warm at night,person,2001,England,3,1006,"Follow Him, For He Is the One",1377371582,8fP2BV89NvY,musicbrainz,xtål
+Q106583068,dreampunk,Q28843403,09981380-534b-46f8-8767-ddfe67e3c0c3,２８１４,group,2014,,5,3469,Eyes of the Temple,128056317,FdpD1CScm8s,musicbrainz,ＩｍｐｅｎｄｉｎｇＲｉｏｔ８３
+Q106583068,dreampunk,Q3569812,bc34e547-c749-4718-a94a-397c9481acf4,Woob,person,,United Kingdom,1,374,Ghostvision TM,2852630722,3NbBgNTbP-o,musicbrainz,NewRetroWave
+Q3476798,seapunk,Q7884779,7b0b360a-f43b-48d7-9ba6-1d1aca83b7b5,Unicorn Kid,person,1991,United Kingdom,1,5648,Wee Monsters,6302122,NoVZK9Tz3HU,name,TheChucckk
+Q3476798,seapunk,Q131705976,030cf5e5-b5d8-4a66-a291-0a7fe4b4b075,Black Kray,person,1994,United States,7,2194,Yng16,501506872,UQ364HwIHlc,musicbrainz,BLACK KRAY
+Q106582942,cyberpunk music,Q15052733,170ab39b-3863-45b4-89ef-13d019deaa4f,Scandroid,group,2013,United States,3,25584,Neo-Tokyo,420331342,BxYSa3DPYxo,musicbrainz,Scandroid
+Q106582942,cyberpunk music,Q7228948,d2802858-16f7-4c81-a6d5-05ff237d7723,Pop. 1280,group,2009,United States,1,744,Noncompliant,1425852622,We-sBLmdrj8,musicbrainz,Profound Lore Records
+Q5597175,graphical sound,Q98783337,e9dfa562-b429-42e4-88e1-f080b6c57632,ELECTRONICOS FANTASTICOS!,group,2015,Japan,1,409,Electromagnetic Matsuri Bayashi in Neo Tokyo,2339000145,D6Vjq5FfbuA,name,Milton F
+Q65937906,leftfield electronic,Q1933793,1a120ec5-35b3-4f3e-aa49-7201550d9feb,RJD2,person,1976,United States,1,99099,Ghostwriter,4563487,jg7LDvE5gMM,musicbrainz,AAA FM
+Q65937906,leftfield electronic,Q25095414,7cb6e306-a75b-48b4-be00-2c4aa6bbe3a8,GoldLink,person,1993,United States,1,48130,Crew,144944648,nhNqbe6QENY,musicbrainz,GoldLink
+Q65937906,leftfield electronic,Q118780350,66188f23-a995-43ec-82f8-27610e6bfce9,Arbol,group,2002,,1,23010,El Fantasma,2287684,extN3AdocCc,name-ambiguous,ÁRBOL
+Q65937906,leftfield electronic,Q20711766,72034a05-bcd8-40c2-8255-3ee4ac0e7ef0,Maribou State,group,2011,London,1,22492,Tongue,2397092995,fMZpb9vfiOM,musicbrainz,MrSuicideSheep
+Q65937906,leftfield electronic,Q5653472,5739643e-3037-4349-8ceb-73e337158f2c,Har Mar Superstar,person,1978,United States,1,6841,Prisoner,745896682,Zve7n3gZ-4k,name,HarMarSuperstar
+Q65937906,leftfield electronic,Q930143,31e7b30b-f960-408f-908b-c8e277308eab,平沢進,person,1954,Japan,1,6172,BERSERK-Forces-,2439874845,,musicbrainz,
+Q65937906,leftfield electronic,Q4659912,73571028-9318-4090-ab36-c111974e195b,A Sunny Day in Glasgow,group,2006,United States,1,2278,Passionate introverts (Dinosaurs),3266343401,Vh2HwH3RXDk,musicbrainz,Merkwurdichliebe
+Q65937906,leftfield electronic,Q541260,d9d01a26-c0f9-427e-94e3-2afa01e7a5cf,Tarwater,group,1995,Germany,1,1729,The Watersample,4343389,VjK8tHlo7_Q,name,musicvideoloverboy
+Q2097664,Indorock,Q2295431,a36d5b2b-ccd3-47ec-83fb-73bd69f5687c,Dewa 19,group,1986,Indonesia,8,52021,Tak Kan Ada Cinta Yang Lain,76056797,NSXpWdLcva0,name,Dewa19
+Q2097664,Indorock,Q710695,0f272089-81c4-4b83-8c93-a90ac88cf81a,Bobbejaan Schoepen,person,1925,Belgium,2,349,De lichtjes van de Schelde,8035784,CQQMspoCbWE,musicbrainz,Bobbejaan Schoepen & Bobbejaanland: Videos
+Q2097664,Indorock,Q12499621,17f50a08-390d-431e-8950-e25149753959,Mus Mulyadi,person,1945,Indonesia,8,138,Rondo Ngarep Omah,138574979,dpGV2fjdmvo,name,Pop Music Station
+Q4390945,rautalanka,Q2826781,8fa7b39a-6faa-49ab-8a62-8dc6b71c1947,Agents,group,1979,Finland,3,2769,Jykevää On Rakkaus,3369236,GsZOMQIAbRI,musicbrainz,patkajape
+Q4390945,rautalanka,Q1364561,fc2dd4f0-17f4-4792-8536-51036e1b1ee2,Topi Sorsakoski,person,1952,Finland,4,1972,Luotu lähtemään,80308084,S8fIGSRHINo,musicbrainz,muhviputki
+Q126281483,cuddlecore,Q1891518,5089b746-7612-4a13-9153-33ff2560e161,少年ナイフ,group,1981,Japan,21,3550,Top Of The World,2320548,,musicbrainz,
+Q126281483,cuddlecore,Q7765133,3daebde2-4630-40d8-be75-438edea4b281,The Softies,group,1994,United States,1,982,You and Only You,102620962,uYqL6rE9mXI,musicbrainz,krecs
+Q126281483,cuddlecore,Q5191908,4e8ef969-bc70-4382-a098-e4f2ade95e33,cub,group,1992,Canada,7,191,Magic 8 Ball,64932429,R9ZJ1xp2zzQ,musicbrainz,Mintrecs
+Q109050964,Burmese stereo,Q17402960,67d28603-69a2-442e-8950-a4e069c5af53,စိုးလွင်လွင်,person,1962,Myanmar,2,77,Kaung Ma Lay,1953144957,,name,
+Q135112758,xian psych,Q6545657,ea60471e-ef13-4391-a86f-aa7d3e71309f,Lift to Experience,group,1996,United States,2,1053,Falling From Cloud 9,141357823,cI7k2tolfF0,musicbrainz,🦄 Josh T. Pearson 🦄
+Q124361699,loud kei,Q256319,8d4c13de-6e61-4a8e-ac4d-d0e1996bcef8,the GazettE,group,2002,Japan,3,59549,Shiver,1100818892,ly5v0Lg3KnE,musicbrainz,the GazettE OFFICIAL YouTube CHANNEL
+Q124361699,loud kei,Q65228145,7994522c-e4b8-498e-bafc-1067df60e004,DEVILOOF,group,2015,Japan,13,2534,GAMUROU,4319016612,Jp24qN_STWs,musicbrainz,DEVILOOF Official and UNIVERSAL MUSIC JAPAN
+Q124361699,loud kei,Q2672625,e55aa79e-e1a6-4e01-81c9-d90cdbc832af,lynch.,group,2004,Japan,1,2526,DEVIL,2227253307,M5RPuphYry0,musicbrainz,lynch. OFFICIAL CHANNEL
+Q124361699,loud kei,Q2735579,4f9541e2-1a8c-4303-a87a-7dbe0d80a6be,12012,group,2003,Japan,1,2063,Cyclone,433324822,Pwo0EEKUCMI,musicbrainz,heart69attack
+Q124361699,loud kei,Q60986075,b989f2ba-4b10-4e26-adbd-b734250311af,ザアザア,group,2014,Japan,1,206,Kagomeyakagome,1766271257,,name,
+Q133826304,soft visual,Q218866,62b61409-d13e-4281-9e3f-06941c2c5f5f,L'Arc-en-Ciel,group,1991,Japan,1,44316,Driver's High,976294042,bzuuxp7dsxQ,musicbrainz,L'Arc-en-Ciel
+Q133826304,soft visual,Q3459899,c461611b-403f-478a-a044-64ea21d3167e,SOPHIA,group,1994,Japan,1,16538,Schmetterling,1805112047,TkyBkUZmubc,name-ambiguous,SOPHIA
+Q133826304,soft visual,Q999313,a70fca82-889a-4f70-98bb-39f7ec968566,Buck-Tick,group,1984,Japan,1,13615,Dress,2120716257,zOxhjqHlVpQ,name,Svartas
+Q133826304,soft visual,Q24760,e7ab70fc-ae7b-4321-a9d1-4c2e9440e0f5,Luna Sea,group,1990,Japan,1,9264,Dejavu,2122843267,NktuP0ZMqdE,musicbrainz,toufu1028
+Q133826304,soft visual,Q1070457,4bd477e1-0144-4e2f-910a-829aa539b6b8,Plastic Tree,group,1993,Japan,1,7944,Slide.,1468500152,TIQqmjJpaSE,musicbrainz,fraises-sucrées!
+Q133826304,soft visual,Q1057960,051b8830-8aae-4b4e-a48c-ee8d6a2dec50,GLAY,group,1988,Tokyo,1,1744,Kaishin no ichigeki,2914086141,FHhwjfJDiWw,name,D180223
+Q133826304,soft visual,Q10316283,5f15c09f-4ca3-4af2-aae6-a754cfe735be,Lapis Lazuli,group,1998,Japan,1,804,The Downfall of Humanity: The Downfall,94068364,RtvOxbFW5E0,name,LapisLazuliOfficial
+Q133826304,soft visual,Q1115775,ec93e078-ef9c-4f0b-aab0-6eec009443dc,シド,group,2003,Japan,1,80,Ranbu No Melody,975992652,,musicbrainz,
+Q65936391,acoustic rock,Q484255,4bd95eea-b9f6-4d70-a36c-cfea77431553,Alice in Chains,group,1987,United States,8,1303011,Nutshell,1038552,G23iLGhh9lo,musicbrainz,Alice In Chains
+Q65936391,acoustic rock,Q175097,2386cd66-e923-4e8e-bf14-2eebe2e9b973,3 Doors Down,group,1996,United States,5,1272364,Here Without You,2172900,kPBzTxZQG5Q,musicbrainz,3doorsdown
+Q65936391,acoustic rock,Q215215,144ef525-85e9-40c3-8335-02c32d0861f3,John Mayer,person,1977,United States,4,1039231,Tom and Jerry,4359007202,jSI0Kz9hfTw,musicbrainz,John Mayer
+Q65936391,acoustic rock,Q207306,ac2d1c91-3667-46aa-9fe7-170ca7fce9e2,Godsmack,group,1995,United States,3,514830,I Stand Alone,914234,OYjZK_6i37M,musicbrainz,Godsmack
+Q65936391,acoustic rock,Q221535,1a60d6dd-9d3e-40fc-a66d-3184f9ee0d61,Eddie Vedder,person,1964,Seattle,4,448142,Society,407643972,,musicbrainz,
+Q65936391,acoustic rock,Q205780,148ddea2-6839-4354-8e2c-5dfadf136b7f,Tenacious D,group,1994,United States,2,431983,Wicked Game,2263251207,Sfz9jQ3KI5k,musicbrainz,Tenacious D
+Q65936391,acoustic rock,Q270935,cbf9738d-8f81-4a92-bc64-ede09341652d,Chris Cornell,person,1964,United States,6,342741,You Know My Name,584262412,YnzgdBAKyJo,musicbrainz,MovieSounds
+Q65936391,acoustic rock,Q1469093,a8ed28e3-5c08-4448-b889-867483e251f5,Rodrigo y Gabriela,group,2000,Mexico,5,181296,Weird Fishes/ Arpeggi,1815825497,,musicbrainz,
+Q1784032,viking rock,Q682457,a5335dce-82d4-4e25-a669-4df098c17572,Hel,group,,Sweden,2,987,Is,580170942,ai-Cr0F_qFQ,musicbrainz,Sergej Vlastimil
+Q1784032,viking rock,Q1531529,d0e9a61a-cf2c-4976-92f8-bfd20a7ed657,Glittertind,group,2001,Norway,1,969,Rolandskvadet,137815083,bBlixPMAkR8,name,BakelsPower
+Q1784032,viking rock,Q10601444,b87b69c6-16aa-4aa5-a88a-e42a8eecc461,Njord,group,,Sweden,2,405,Winter Snow,1874415507,d7RJDNdllis,name-ambiguous,Njord Janssen
+Q584752,pornogrind,Q3116926,8df4c010-e716-493a-81d4-27649e1cce11,Gronibard,group,1998,Lille,3,3401,March of the Gronibard / Je te Déchire L'Anus,1477495842,,musicbrainz,
+Q584752,pornogrind,Q670403,6fa94794-75d4-4688-87bc-8697fcd48cbe,GUT,group,1991,Germany,12,565,Hypnotized Harem,913501342,I8S7MSv7OGI,musicbrainz,GUT Official
+Q3008180,cybergrind,Q395414,62aef01b-e0f3-4545-a0b4-29cb3670de0f,Agoraphobic Nosebleed,group,1994,United States,8,6139,National Stem Cell and Clone,11033703,DvUjtYQ2nQM,musicbrainz,The Grind Show
+Q3008180,cybergrind,Q2042222,2d3fce56-b69f-4385-a2e4-0a70fbf5f2ee,Bong-Ra,person,1972,Netherlands,2,3979,666MPH,10730670,0X34Lgmz8PI,musicbrainz,Jason Köhnen
+Q3008180,cybergrind,Q3100719,42d79b6b-2cfe-43f4-b5d9-239503074153,Genghis Tron,group,2004,United States,3,2967,Dream Weapon,1180499222,tMS_Mvp8wjw,musicbrainz,RelapseRecords
+Q3008180,cybergrind,Q48995913,95338939-471f-417a-aaa4-6add62782c3e,Drumcorps,person,,Genève,5,2013,The Importance of Stealth,1265014792,E6PWWVt7wH4,musicbrainz,drumcorps
+Q3008180,cybergrind,Q139819958,9b9cc1b5-68ed-413b-9b2c-1f825ce84222,Thotcrime,group,2019,Urbana,4,138,Behind The Cracks,2723508002,PVj7GSmvOl8,musicbrainz,Thotcrime
+Q5724040,beatdown hardcore,Q268359,40b7efb7-1268-4a80-b354-600afdcbe9e2,Hatebreed,group,1995,United States,4,154464,Destroy Everything,660685,DBwgX8yBqsw,musicbrainz,Martin Kames
+Q5724040,beatdown hardcore,Q764671,c9e0a0f5-9f53-4247-a52d-a3f29d975e17,Madball,group,1988,United States,3,49799,Don't MisStep,3962063121,Blu3GYwIDo0,musicbrainz,Nuclear Blast Records and Madball NYHC
+Q5724040,beatdown hardcore,Q2293533,697eba1a-bf52-46b1-a19f-4d7190b63e5c,Terror,group,2002,United States,4,47472,Keepers of the Faith,108574130,UonmopFossY,musicbrainz,Century Media Records
+Q5724040,beatdown hardcore,Q27817179,9ca10859-49e2-44e3-b3d6-04c535207bc2,Knocked Loose,group,2013,United States,4,33478,Suffocate,2787874792,RAuuVY__KQ0,musicbrainz,Pure Noise Records and Knocked Loose
+Q5724040,beatdown hardcore,Q130375272,4ccddb42-9be6-46d8-822c-d9974962abec,SPEED,group,2019,Sydney,5,2919,Not That Nice,3890991781,EfCROIuI9VE,musicbrainz,Flatspot Records and 2 more
+Q5724040,beatdown hardcore,Q122363008,1b53aa11-ccef-457f-90d9-5165b270fdc5,SUNAMI,group,2019,San Jose,3,2599,Weak Die First,737230982,RLc6Ls9txgs,musicbrainz,Slatez
+Q5724040,beatdown hardcore,Q16852759,a247f076-24de-4072-a24c-a7b9a6a03201,Knuckledust,group,1996,United Kingdom,2,1620,Time's Up,1778706547,PhmUPbJM6bQ,name,biff1777
+Q65936979,alternative punk,Q110269845,c69af97b-4d3b-4f72-9746-829b6b9d5f88,Yard Act,group,2019,Leeds,1,11165,The Overload,1621264552,tQ2ANR_vF2E,musicbrainz,Yard Act
+Q65936979,alternative punk,Q104865154,f423ca7f-b0f5-480a-be96-ed36a191ad8b,almost monday,group,2015,United States,1,5027,enjoy the ride,3487038771,nNYOk4y8RsA,musicbrainz,almost monday
+Q65936979,alternative punk,Q22080536,74d76812-2ebf-4850-938b-2c3e02b0eb9f,ROAM,group,2012,United Kingdom,1,3715,Playing Fiction,413619692,-lfsJohrGGY,musicbrainz,Hopeless Records
+Q65936979,alternative punk,Q7758619,efbbb96f-7c02-4428-802b-e60335fbb118,The Protomen,group,2003,United States,1,3610,Light Up The Night,63943654,B8pywyGywWg,musicbrainz,The Protomen
+Q65936979,alternative punk,Q113714552,d10d6441-dcc1-4202-93bf-0c0acf72913a,Soul Glo,group,,United States,1,2643,Ppl Worried,4224462682,X975wXnStWw,musicbrainz,Epitaph Records and Soul Glo
+Q65936979,alternative punk,Q61841809,5bba23fa-23ad-4129-8a67-245d373be0ee,Fiddlehead,group,,United States,2,2192,Baby I'll Change,4022085491,hK5FuEMdVho,musicbrainz,Fiddlehead and Run For Cover Records
+Q65936979,alternative punk,Q1419043,63e95d40-d8af-410d-880a-21271470000a,Firewater,group,1995,United States,1,1916,Life During Wartime,4262178051,,musicbrainz,
+Q65936979,alternative punk,Q131126394,081f8fb5-1a58-4bb1-a184-4ccdb2869d07,Leftovers,group,2019,Wien,2,919,Marmelade Und Himbeereis,2141675777,zwuG-YyxphI,musicbrainz,attentionseeker
+Q1692318,modinha,Q10390227,5054d99e-1468-4fca-84f7-d6aa43ae801b,Vicente Celestino,person,1894,Brazil,1,2993,Luar Do Sertão,13320160,yQ_lTlTlxB0,name,VicenteCelestinoVEVO
+Q208341,pasodoble,Q354141,7880a76e-09fb-48b5-a9f3-faab0167c877,Manolo Escobar,person,1931,Spain,3,10086,Y Viva España,11914110,IPSfFz6S8A8,name,VICTOR ENGUIDANOS SEQUERO
+Q208341,pasodoble,Q20828859,0e0db6fc-0632-4f71-967a-fd09c71bd479,Memo Morales,person,1937,Venezuela,1,79,Veneración,546728442,,name,
+Q1414130,filk,Q2714506,50a45c3d-b54b-4fd5-bb83-5046e4ff6813,David Arkenstone,person,1952,United States,11,9361,The Secret Wedding,3139062,7ld8HIsjj2w,musicbrainz,Ariel10097
+Q1414130,filk,Q7698360,03ee484a-55d2-4bdb-ab8d-153f17b61563,Tempest,group,1988,United States,5,2031,Whoever You Are,10967655,,musicbrainz,
+Q1414130,filk,Q3398618,82662aa0-cfa5-4d0b-b366-edcd23497ff0,Heather Dale,person,,Canada,7,1463,The Maiden and the Selkie,114422048,ryKdMQPJOYM,name,Silver Valentine
+Q1414130,filk,Q7387549,54df2272-7da7-4a04-a794-5390ece56525,S.J. Tucker,person,1980,United States,5,1335,The Pixie Can't Sleep,69504891,h7n4UWKoad4,musicbrainz,LifeofQSeattle
+Q1414130,filk,Q7743481,4b1ef8b3-cec0-48d9-8ef4-c32eb09fd837,The Jolly Rogers,group,1991,United States,4,1020,The Flying Dutchman,132179706,lRla9z7xbUI,name-ambiguous,The Jolly Rogers
+Q1414130,filk,Q7817622,3158bd43-cc99-44d9-a0a7-943c937d2556,Tom Smith,person,,United States,11,1014,A Pirate Christmas,8563517,wqLk86d02AA,musicbrainz,A Pirate's Life
+Q1414130,filk,Q5370479,2a15c46c-a082-45fe-8bdb-1d09b8831580,Emerald Rose,group,,Georgia,6,260,"Freya, Shakti",9686922,Aq46c-hQUWo,name,Emerald Rose
+Q134889869,wyrd folk,Q144232,b8570b23-8936-4578-9f8a-612a8215aa2f,Comus,group,1968,United Kingdom,1,2003,Diana,3785932302,BdAPXpgDLy0,musicbrainz,Accursed Alucard
+Q134889869,wyrd folk,Q1368192,2d227ed0-0136-49d5-b2e0-97ea1e17bb83,Espers,group,2002,United States,1,1229,Dead Queen,477766872,2A3d1Q9zFz4,musicbrainz,Suha Önder
+Q134889869,wyrd folk,Q109341162,63c5e98c-0b24-4939-ad8c-f6ed235b7980,Big Blood,group,2006,United States,1,426,Graceless Lady,2744127551,EC_mU8tNJU0,musicbrainz,Musiq of The Zpheres
+Q5934478,campus folk song,Q698735,099ea308-febe-4387-8fb8-004e81e15d76,蔡琴,person,1957,Taiwan,2,341,魂萦旧梦 (修复版),4095457231,,musicbrainz,
+Q5934478,campus folk song,Q710713,76379657-bdf5-4ea1-9da5-84adc9da17d8,陳淑樺,person,1958,Taiwan,1,117,Xue Hua Piao,3282481,,name,
+Q5934478,campus folk song,Q9320140,ec8146ff-381e-4c31-8fe2-10ebcc83a37d,潘越雲,person,1957,Taiwan,1,31,Time to Wake Up,3875505,,name,
+Q5934478,campus folk song,Q9208231,ba994ba5-d717-4d56-8b57-d89f4526335a,李碧華,person,1961,Taiwan,1,5,Qi Dao,3671142462,,name,
+Q22949256,aita,Q3125794,c5116a8a-510f-4d4d-b022-7460fd6efa8a,Haja El Hamdaouia,person,1930,Morocco,1,1982,Hazou Bina laalam,73523105,,name,
+Q19754215,cante alentejano,Q2385827,fb196c7b-9eaf-471f-b392-cfc9d4b61a9a,António Zambujo,person,1975,Portugal,2,17135,O Mesmo Fado,1440798,H7CZWzqWT1o,musicbrainz,SevenMusesMusicBooks
+Q107254627,cantoria,Q10394248,73d4b7ff-b8ea-4689-a83c-ebd8bddb3e11,Xangai,person,1948,Brazil,1,7831,Bolero de Isabel,126340913,7eDe23QwjIM,name,Paulo Vanderley Tomaz
+Q107254627,cantoria,Q10272047,f51477ed-d409-42e9-9b94-f6117f095328,Elomar,person,1937,Brazil,2,5606,Sabor Colorido / Moça Bonita,63792572,,musicbrainz,
+Q107254627,cantoria,Q1791390,ae56bf5a-d7aa-482f-b514-508a271578e0,Juca Chaves,person,1938,Brazil,1,3255,Take Me Back To Piauí,137167486,ApW0Gggu2ZU,name,DJ JHOW SMERIL
+Q107254627,cantoria,Q10392058,361938ff-ebcf-492a-8ff8-6d2911055084,Vital Farias,person,1943,Brazil,1,2226,Veja (Margarida),2350056185,5uIgJUEHkrg,musicbrainz,Alfredo Pessoa
+Q106634987,Chinese classical music,Q113620877,ee0358ab-47c3-4e5e-aac9-81f7825fe552,陈致逸,person,1984,China,1,6995,Genshin Impact Main Theme,995694672,,musicbrainz,
+Q106634987,Chinese classical music,Q234802,bb8eab6c-7334-454e-84f6-9605f7d1fefd,劉芳,person,1974,Canada,3,1892,Fleur de jasmin,112406712,,musicbrainz,
+Q106634987,Chinese classical music,Q7258189,f49081a2-92e3-433f-9688-102e40de255b,俞逊发,person,1946,China,1,22,Moderato Decorated Six Beat,11648237,,name,
+Q89423571,contra dance music,Q5533638,2413a7d5-1cbb-4f67-b0d1-272e1ed040e4,Genticorum,group,2000,Montréal,3,589,Reel Circulaire,65392179,cgpd3zZRpqA,name,beigebeige2000
+Q89423571,contra dance music,Q12857868,af77e5c9-2b17-4c8a-8d3f-40b18720cbbb,Bruce Molsky,person,1955,United States,3,255,The Blackest Crow,699064562,gHa70BLg7B8,musicbrainz,BBC ALBA
+Q89423571,contra dance music,Q60744016,26193e12-d2c3-4e2e-ae07-afdefa73b8d2,The Great Bear Trio,group,,,2,17,Cosmic Tim,71589013,voFUT0ilNkw,name,andrewandnoahmusic
+Q1130969,fandango,Q56317439,921783c1-526e-41e6-ba7e-b4a4a1b06eb2,Juan Solo,person,1983,Ciudad de México,1,19510,Corazones Incompletos,2114347457,MdUookZmjPo,musicbrainz,Juan Solo
+Q1130969,fandango,Q6071828,61b2e06e-8cf5-41c6-acee-78be2566fc32,Pepe Pinto,person,1903,Sevilla,1,387,Mi Nina Lola,1906555047,9Y_CdexmBas,name,Flamenco Zaragoza
+Q13164291,red music,Q9209742,b6f171f0-0354-46a7-b25f-ef70f3a026bf,李谷一,person,1944,China,1,3,Singing Of Our Motherland,11646578,,name,
+Q771291,sean-nós singing,Q120599868,4e93ff19-4cbf-4f7d-aa8f-d611946b582f,Róis,person,,County Fermanagh,1,186,CAOINE,4262013271,VEWwdtR8laQ,name-ambiguous,RÓIS
+Q771291,sean-nós singing,Q16269419,f16e18f6-e704-4d4d-aa7f-e4702bbf276c,Róisín Elsafty,person,1976,Ireland,2,28,Donall og,231066,,musicbrainz,
+Q3160589,Jaipongan,Q12486251,d250249a-0407-4db4-bc9d-241bd5ad95dd,Idjah Hadidjah,person,1956,Indonesia,2,19,Tonggeret,63998385,hMXl1G9oErA,name,kennedi cotarelo
+Q6444335,kundiman,Q3548056,030742b1-e314-486e-b2c5-80e23ab59a86,Sylvia La Torre,person,1933,Philippines,1,59,Maalaala Mo Kaya,79911690,tj_ZgCjTpvw,musicbrainz,Maricel Logrosa
+Q193605,lullaby,Q7354927,5a045b09-af06-4348-9ce6-d51b6a370770,Rockabye Baby!,group,,United States,14,116983,Bad Romance,544222682,ygoxJXywij0,musicbrainz,Rockabye Baby!
+Q663833,unyago,Q1775226,cce86049-37c7-4c8e-8921-9a410bc7ea82,Bi Kidude,person,,Tanzania,2,407,Alaminadura,294276,ITpvAQBoRKw,musicbrainz,riki77do
+Q3347093,néo-trad,Q681234,0fb04a47-2c27-4598-9fbc-b90ac573cb97,Les Cowboys Fringants,group,1995,Québec,17,180434,Les étoiles filantes,109374130,InCeVCGtHak,musicbrainz,Les Cowboys Fringants
+Q3347093,néo-trad,Q1143294,b5db5abc-65fa-40fd-8655-7936eed77387,Les Colocs,group,1990,Québec,6,23163,Le p'tit bonheur,635040692,,musicbrainz,
+Q3347093,néo-trad,Q2583955,6bba0cc9-74c4-4a83-8171-a225726e9644,Lena Chamamyan,person,1980,Syria,1,22136,Lamma Bada Yatathana,11470260,7B2DH5eBvXc,name,Ehab Abdelkarim
+Q3347093,néo-trad,Q2567516,a320d461-a689-4946-a686-70a6eaebdffb,Mes Aïeux,group,1996,Québec,9,11368,Dégénérations / Le reel du fossé,208864,KDEduvF7MXM,musicbrainz,Disques Victoire
+Q3347093,néo-trad,Q1344639,2d3d529f-f959-4d0d-b345-cc0cffccbc2e,La Bottine Souriante,group,1976,Canada,18,6179,La ziguezon,66534140,KQE5xYxlCF4,name,Giuseppe SALVAGGIO - Traduisons des chansons
+Q3347093,néo-trad,Q3287332,92c0009e-55d7-465e-b896-aa19754e2809,Mara Tremblay,person,1969,Québec,9,3514,Les Aurores,128234277,BvFZDgkvDCs,musicbrainz,linuskun1
+Q3347093,néo-trad,Q3228051,39b2c0db-1837-4e1b-b3d1-dcb6f9425cfe,Le Vent du Nord,group,2002,Québec,11,2721,Amériquois,3563909491,enPFOitUIBg,musicbrainz,atigay47
+Q3347093,néo-trad,Q3165808,090f78a0-8fb8-4f2e-9e1f-d2b563176131,Jean-François Pauzé,person,1975,Canada,1,1982,Puisqu'il faut,3539198071,FZxRwABh6gw,musicbrainz,Marc-André Gendron
+Q1540495,puirt à beul,Q7320514,3f7574d9-94f3-46dc-8228-9d7358019d9f,Rhiannon Giddens,person,1977,United States,1,10096,Hope Is the Thing with Feathers,4048895851,NEfmRXYCguc,musicbrainz,Rhiannon Giddens and Nonesuch Records
+Q7810544,tizita,Q2915163,0aba82ae-573d-40c2-9efe-4cd5a09a2c10,ማሕሙድ አሕመድ,person,1941,Ethiopia,1,6556,Tezeta,2904178091,,name,
+Q7810544,tizita,Q335753,6847c3df-a5ec-4ce8-882e-258ea0988c46,ጥላሁን ገሠሠ,person,1940,Ethiopia,2,1069,Sethed Seketelat,225074,,name,
+Q7810544,tizita,Q114347025,34592236-31a6-42f4-8f0d-ddd281eefcae,ማዲንጎ አፈወርቅ,person,1978,Ethiopia,1,533,Keteleyayen,78289117,,name,
+Q3482281,visa,Q982319,ca264abf-3eb6-4d53-827b-6ab16988a4a3,Cornelis Vreeswijk,person,1937,Sweden,3,3079,Somliga går med trasiga skor,16502265,IWHxsqOl_v0,musicbrainz,Arowanadude
+Q3482281,visa,Q1711259,60a5c096-d963-40ea-8226-f04dc18772d9,Marius Müller,person,1958,Norway,1,863,Den du veit,737053372,drh28WJXeNc,musicbrainz,tisell
+Q3482281,visa,Q6514021,ebfd8174-1b6b-4aca-a596-717fe9df9d35,Øystein Sunde,person,1947,Norway,1,764,Campingvogna,591398872,_zYEe_bYyUw,name,Øystein Buvik
+Q3482281,visa,Q1771939,9e51895c-9414-4935-9367-f7a74ab02016,Ole Paus,person,1947,Norway,1,506,Mitt lille land,3319976,DomK1alNOSI,musicbrainz,NRK
+Q3482281,visa,Q455625,1bc834da-eb1d-4ee2-87df-0d04daceed08,Evert Taube,person,1890,Sweden,1,491,Stockholmsmelodi,2016573807,,name,
+Q3482281,visa,Q113537,769c301f-f70d-4390-8fe1-19d65ca23492,Halvdan Sivertsen,person,1950,Norway,10,472,Sommerfuggel I Vinterland,1592564101,11dOtqJFImM,musicbrainz,Mona Andresen
+Q3482281,visa,Q1786329,4f68737e-c4e5-4cac-a264-2ee4dfce88a8,Kraja,group,2002,Sweden,7,411,Limu limu lima / Lille lasse,72274066,5if8RaF-DCc,name-ambiguous,krajamusic
+Q3482281,visa,Q1398777,05baf3eb-81ca-4e23-9f0c-955a8cbddaec,Fred Åkerström,person,1937,Sweden,1,400,Jag ger dig min morgon,3614925,50Wa7ZWnG0U,musicbrainz,Munkerudspeter
+Q127624,white voice,Q4155339,208334a1-abf0-4791-9705-b45838244b29,DakhaBrakha,group,2004,Kyïv,2,22589,Baby,74470343,bJvbC1MREuQ,musicbrainz,olegintro
+Q127624,white voice,Q96627308,564e54c6-0e81-481b-a76a-9b49a0ee55c3,Laboratorium Pieśni,group,2013,Poland,1,10320,Sztoj pa moru,443144092,04fEWQOwUD4,musicbrainz,Laboratoriumpiesni
+Q108556056,samba soul,Q1262590,446ac261-09ae-43f4-a7e1-2c753c0813ce,Tim Maia,person,1942,Brazil,6,1115471,Azul Da Cor Do Mar,543138072,45T6cK94GPQ,musicbrainz,Márcia Pereira
+Q108556056,samba soul,Q328449,2ec73913-df20-484f-b638-cd63a5122b9f,Wilson Simonal,person,1939,Brazil,1,37891,Coisa de Louco,141824393,3hDZOFddS8Y,musicbrainz,Marcelo Pinheiro
+Q108556056,samba soul,Q10396340,8873cd3a-eebc-4c96-9eb8-364d6f75f8ee,Érlon Chaves,person,1933,Brazil,1,370,Carly & Carole,537430252,,name,
+Q19816,batucada,Q275939,cf07508b-4762-4650-990a-23376e023f55,Xuxa,person,1963,Brazil,3,107069,Estátua,108214630,6ePEQrD7xkQ,name,Xuxa
+Q19816,batucada,Q2940179,cb2efa34-ced3-4e7b-99c6-4a03d2454c71,Carrapicho,group,1983,Brazil,1,3801,"Tic, tic, tac",3030263841,MDAdr9L2H_Q,musicbrainz,Jhojann Noreña
+Q3470692,samba-enredo,Q10364765,54306abb-1bba-49a2-a67c-54c24e96042d,Royce do Cavaco,person,1961,Brazil,1,1947,Fora de Ocasião,775201522,8xTHf5g_wzY,name,Royce do Cavaco Oficial
+Q3470692,samba-enredo,Q61000631,b4846072-f92f-4b26-96ea-f6cd0a590600,Pedrinho da Flor,person,1948,Brazil,1,622,Você Me Abandonou,111508332,kEV979GcLL4,name,Douglas Dias
+Q3470692,samba-enredo,Q10346385,eb4494c2-6dac-478c-86f3-d96c83059c6c,Paulinho Mocidade,person,1960,Brazil,1,510,Sonhar Não Custa Nada! Ou Quase Nada,75724901,i5pHnNklGBc,name,Paulinho Mocidade Oficial
+Q20016116,salsa choke,Q107256169,14868cce-df1b-4ae8-9714-e3f234fd9cc4,Junior Jein,person,,Colombia,1,1788,Bambambilan,89823781,d7ngI3pIVcA,musicbrainz,JUNIOR JEIN CHANNEL
+Q1061165,champeta,Q23002579,d580d73e-769e-44e2-af25-0593e2309a04,Zaider,person,1998,Colombia,1,23513,Alma,3138570961,Dbn2X9EvgzY,musicbrainz,LatinHype
+Q1061165,champeta,Q130425890,86174c3f-3ea4-4348-a6b2-ae47c72490e5,África Negra,group,1974,Sao Tome and Principe,1,580,Carambola,96984032,-VtKoaqAZ6k,musicbrainz,Roque Varelo
+Q5618068,gumbé,Q7642563,0896c83a-66e8-4515-a680-0abff3c9d4e4,Super Mama Djombo,group,,Guinea-Bissau,4,2656,Dissan na m'bera,76991389,L1Dg3bg1cmk,musicbrainz,Super Mama Djombo
+Q5618068,gumbé,Q28942321,db7f3c1c-3f14-4e33-ba8a-c589a08b13a0,Manecas Costa,person,1967,Guinea-Bissau,2,597,Palavras,7217999,Wc1m0ZNCXrM,name,Músicas do país
+Q119580609,funk de BH,Q107332943,e9d432ca-2ad3-4685-b8ce-b45afe4ca387,MC Dricka,person,1998,Brazil,2,382965,Vou Raspar Seu Bigodin,3186471121,Mv026dXXfl8,musicbrainz,MC Dricka
+Q383530,afoxê,Q2021108,6171965e-3875-4101-bf19-688e1317d90d,Olodum,group,1979,Brazil,3,109331,Ginga Olodum,3720751302,MQgGejsSDUA,musicbrainz,joaokilombolas
+Q1634085,tecno brega,Q1627158,b1985fc6-0a34-4159-adfa-2332e6b4beab,Monobloco,group,,Brazil,1,21936,Taj Mahal / Filho Maravilha / País Tropical (Ao Vivo),1781555987,,name,
+Q108297224,cumbia sonidera,Q5981294,dcb5e5c6-5f21-4266-b5b6-556f54a6b6b5,Los Ángeles Azules,group,1976,Mexico,2,1524963,17 Años,136335122,kcKOd_wy0XI,musicbrainz,Los Ángeles Azules
+Q108297224,cumbia sonidera,Q5058467,2367fff3-4d28-4a3a-bae5-769186b85a1d,Celso Piña,person,1953,Mexico,3,62463,Cumbia Sobre El Río,863203682,9jy0DCE0BfM,musicbrainz,Celso Piña Oficial
+Q125850367,cuplé,Q268587,686c18e1-c145-483f-bd03-08286eaff543,Sara Montiel,person,1928,Spain,1,1430,"Quizás, quizás, quizás",66674769,iOsTU5CuQYc,musicbrainz,Yegor Savin
+Q106634508,junkanoo,Q788589,00f82af1-6537-4d4b-9e03-103fffe19999,Baha Men,group,1977,Bahamas,6,5047,Best Years Of Our Lives,1565001,oiMabwNT0hw,musicbrainz,AllRareMusicVideos
+Q106634508,junkanoo,Q534862,a4b03ed4-14bf-4493-acff-743fa14ad9ec,Exuma,person,1942,Bahamas,4,1252,"Exuma, The Obeah Man",683395992,Q-4gnxxtPtI,musicbrainz,RougesFoam
+Q60722009,Kasékò,Q2361146,58bbcfba-1829-4787-81da-aae218f3c17b,La Rouge,group,,Suriname,2,1455,Lala Melodie,519886132,g8ovGj0Emh8,name-ambiguous,larouge lala
+Q60722009,Kasékò,Q3929644,81b769cc-95be-4b6b-a963-c50aeb99fdce,Lieve Hugo,person,1934,Suriname,2,1376,Mi Swieti Booi,823731752,UNBFD7HSuXM,name,Univations Music Collection
+Q60722009,Kasékò,Q1158226,a6ea5f8c-71b3-44ba-98f4-07be90fb13e3,Damaru,person,1986,Suriname,4,815,"Mi Rowsu, Tuintje In Mijn Hart",140899421,JGsGAJIYDRo,musicbrainz,TopNotch
+Q3419744,rara,Q85985733,36c02586-a1aa-4ad9-9b3e-d0411b7c7c68,Lakou Mizik,group,2010,Haiti,2,406,Kite Zo A,1450205872,HRFoDVbwGec,musicbrainz,Anjunadeep
+Q7560612,son calentano,Q65117835,d858ca71-6ff0-42af-967c-4c11008cb104,"La Dinastía de Tuzantla, Michoacán",group,1986,Michoacán,1,1044,Macario Leyva,122489402,,musicbrainz,
+Q7560584,son huasteco,Q6147722,dfd1aa26-929f-4b5c-b1fe-60844600dda4,Tlen Huicani,group,1973,Veracruz,1,613,Jarochódromo,4236196972,4ba18BLjDVg,name,Vive el Folklore
+Q21684437,rumba,Q40586,44a7f7d5-79df-4f44-8f5e-02dfc0626904,Gipsy Kings,group,1978,France,3,259225,Mil Años,4045206811,GqjhuGpmKLY,musicbrainz,Gee Six
+Q21684437,rumba,Q251210,1adaad67-5db8-46cd-8a03-00262316b081,Rosario Flores,person,1963,Spain,1,67230,¡Que Bonito!,4310773,UDJLQtE5kFQ,musicbrainz,Daniel Morales (DMorales)
+Q21684437,rumba,Q16202213,56595ec5-4f31-480d-a615-8f30b001d6a8,Canelita,person,1989,Spain,1,20537,Dale Comba,1463802132,mMnnstQ9iCo,name,CANELITA Jonatan
+Q21684437,rumba,Q3330642,d54ea4a6-0b9c-4e47-bed0-289ae9ff4037,Los Chichos,group,1973,Spain,5,17241,Bailarás Con Alegría (Remasterizado 2015),100747292,,name,
+Q21684437,rumba,Q2743754,85a694a0-dde9-4d79-a3b5-11950be0f3de,Tabu Ley Rochereau,person,1940,Democratic Republic of the Congo,3,14374,Maze,70848153,cnb2h4wOJPg,musicbrainz,JIMMY'S PRODUCTION
+Q21684437,rumba,Q2387209,058e9e82-7efe-4fbd-9035-229e4e6e29ef,Nyboma,person,1952,Democratic Republic of the Congo,4,5272,Keva,2933169731,AMRGVuKl8sI,name,PL PUATI LUTONADIO FLAT-HOTEL
+Q21684437,rumba,Q3122713,9993c88e-3ba1-4df7-91a3-b8d000e96094,Gypsy Pistoleros,group,2005,United Kingdom,1,291,Living La Vida Loca,3346458811,TN9uVvCfhWc,name,ZuluThrashAttack
+Q21684437,rumba,Q118558353,8508f8bd-979d-42fe-8712-2d6ee6afb2de,Argentina Coral,person,1936,Spain,1,24,Amor Fugaz,3532499121,pOb7odzCruA,name,La Música del Recuerdo 
+Q290869,son montuno,Q1155712,4cdf47ff-256c-40c7-b722-03809b5a23ba,La Sonora Matancera,group,1924,Cuba,3,56507,Mala Mujer,58479081,CwMaumcqpK4,musicbrainz,Salsa Lovers
+Q290869,son montuno,Q7351923,a3bbee3c-ef45-43e7-bf4f-ba0f871ea716,Roberto Torres,person,1940,New York,4,4443,Caballo Viejo,12093800,Si3CF-BqgkA,musicbrainz,Alejandro Petro
+Q290869,son montuno,Q18216976,48110c88-e4f5-472b-b6e6-db665aab47e0,Los Nemus del Pacífico,group,,Colombia,2,483,Para la Luna,3960912801,k1-_C1TDQs0,name,Discos Fuentes Edimusica
+Q290869,son montuno,Q934652,36d7768d-6005-4df4-9203-7f65f25cea88,Abelardo Barroso,person,1905,Cuba,1,453,Lágrimas Negras (Bolero),84507813,ADXKC6D5jNo,name,VintageMusicFm
+Q1756680,songo music,Q1672362,70365513-39d7-47e3-b898-1f70f607b1fe,Irakere,group,1973,Cuba,1,4668,Bacalao con pan,444737152,kBeXIfwRpog,musicbrainz,SleazyEmotions
+Q115327281,tropicanibalismo,Q18629150,ff08b3bb-559e-4635-b3f5-f37a212231e4,Meridian Brothers,group,1998,Colombia,2,6473,Es mi nueva era,3039853461,,musicbrainz,
+Q105697818,neoromantic music,Q44634,37c61bf2-5fb1-47ae-9605-80025d956958,Nico,person,1938,Germany,1,88118,These Days,549277422,52ZdwZ7Ig-8,musicbrainz,The Velvet Underground
+Q109678435,microtonal classical music,Q365243,7bf257bf-19a8-4205-8ae8-98511e50b719,Terry Riley,person,1935,United States,2,7505,Llanto,63803992,,musicbrainz,
+Q109678435,microtonal classical music,Q79786367,a0cd6f82-db9d-44b4-a4fb-197ccb3c5973,Kali Malone,person,1994,Stockholm,2,2491,Passage Through The Spheres,2474632941,PPv6GDey3YQ,name,Kali Malone
+Q836571,fantasia,Q7312,f91e3a88-24ee-4563-8963-fab73d2765ed,Franz Schubert,person,1797,Austria,3,168297,Moment Musical No. 3,92467838,X3xTEo3B2iY,musicbrainz,La Pomme Music
+Q836571,fantasia,Q41309,2cd475bb-1abd-40c4-9904-6d4b691c752c,Franz Liszt,person,1811,Hungary,3,85127,Consolation No. 3,74783758,mob3myHuGmE,musicbrainz,pianistericlevan
+Q202287,overture,Q152222,dea28aa9-1086-4ffa-8739-0ccc759de1ce,Berliner Philharmoniker,group,1882,Berlin,3,628272,"J. Strauss II: An der schönen blauen Donau, Waltz, Op. 314 (Recorded 1980)",4152842,,musicbrainz,
+Q202287,overture,Q863397,fa37018e-3557-4cb7-973f-555003c30174,London Philharmonic Orchestra,group,1932,United Kingdom,5,270566,Stairway To Heaven,4183572,,musicbrainz,
+Q202287,overture,Q7298,819eaeb2-8dd8-48a5-ad07-0bcd137985ef,Antonín Dvořák,person,1841,Czechia,4,37821,Serenade For Strings,890885932,GOPsXJoatEI,musicbrainz,Norwegian Chamber Orchestra
+Q202287,overture,Q179631,4e60a56a-514a-4a19-a3cc-49927c96b3cb,Edward Elgar,person,1857,United Kingdom,3,5854,Nimrod,900431812,7iM5dymBBI4,musicbrainz,Queensland Symphony Orchestra
+Q202287,overture,Q356161,8a1d9496-603f-40b1-a38d-2e8985834940,Neeme Järvi,person,1937,Estonia,3,5587,Masquerade Suite: I. Waltz,2898722721,,musicbrainz,
+Q202287,overture,Q181894,95f7c24e-2879-4abb-ba35-906c467fc704,Pietro Mascagni,person,1863,Italy,1,2400,"Cavalliera Rusticana: ""O Lola ch'hai di latti la camisa"" (Turiddu)",61211388,,name,
+Q116158395,polka criolla,Q3061231,57ed5f18-ac09-4870-ad97-c2a410caad6f,Eva Ayllón,person,1956,Peru,1,10024,Mal Paso,128487477,NvxQMshAhb4,name,Eva Ayllon
+Q116158395,polka criolla,Q3324949,6ac07217-5942-4afd-8bd1-6da8e80daf3a,Arturo Cavero Velásquez,person,1940,Peru,1,3176,Se Acabó y Punto,104438322,,musicbrainz,
+Q116158395,polka criolla,Q11501995,7e48d085-1d36-44c8-9866-04ec6527ed86,Óscar Avilés,person,1924,Peru,1,1608,El Chacombo,110501272,ndKp-E4eYNQ,musicbrainz,Jean Urbano Vargas
+Q116158395,polka criolla,Q6700246,53bad57d-31df-4242-8415-b2238961a98c,Luis Abanto Morales,person,1923,Peru,1,572,Cholo Soy y No Me Compadezcas,105170914,Zv83goZisAA,musicbrainz,Walter Torres
+Q116158395,polka criolla,Q5982203,515d48b1-8ee7-488f-9f93-384dbcc84ff2,Lucila Campos,person,1938,Peru,1,485,Mayoral,113466636,pqSB_9iZ-SM,musicbrainz,My ibon
+Q116158395,polka criolla,Q5759771,e70108fc-94f2-4e98-86af-cb7fad741c5e,Cecilia Barraza,person,1952,Peru,1,327,Negrito Chichivi,106799170,9feZJVZSEjI,musicbrainz,Brunella Escate
+Q116158395,polka criolla,Q16303135,674c1b29-e0f8-46e4-95c6-c56a89a076ac,Edith Barr,person,1936,Peru,1,28,El ultimo brindis,3190962991,MLVfi5S5AXs,musicbrainz,Producciones Iempsa
+Q2743,musical play,Q1646482,925c7673-0e85-410f-b7e4-d9705a7aa619,Lin‐Manuel Miranda,person,1980,United States,10,74940,My Shot,107832272,AH7rPkRRJZ8,musicbrainz,The Graham Norton Show
+Q2743,musical play,Q317272,817c68f4-e110-4529-82fa-aec902e9768f,Alan Menken,person,1949,United States,4,61350,Farewell,104617072,y3mMQ6BzkVY,musicbrainz,Mark Henry
+Q2743,musical play,Q180975,980ee2d8-2ee9-407b-b48e-48360fbc7437,Andrew Lloyd Webber,person,1948,United Kingdom,18,50616,The Phantom of the Opera,3582507891,G2zxzaWgVRA,musicbrainz,Andrew Lloyd Webber Musicals
+Q2743,musical play,Q153579,bcd6af9f-afa8-43fd-b1be-acbbbb2f7dc7,Stephen Sondheim,person,1930,United States,10,4582,The Ballad of Sweeney Todd,735697,,musicbrainz,
+Q2743,musical play,Q712004,e605aaba-e920-456a-9c8a-0836c46d4764,Claude‐Michel Schönberg,person,1944,France,6,2659,Le Premier Pas,6015488,yKOz5is8ArM,musicbrainz,chansons françaises
+Q2743,musical play,Q214582,2f031686-3f01-4f33-a4fc-fb3944532efa,Benny Andersson,person,1946,Sweden,2,2074,Thank You for the Music,410090812,rC4hgWQHH-8,name,Deutsche Grammophon - DG
+Q2743,musical play,Q982182,ff693144-69be-4ec5-9150-cb3c5652e430,Richard O’Brien,person,1942,United Kingdom,2,1452,Science Fiction / Double Feature,4184461242,8lywvXZSCFI,musicbrainz,sacolton
+Q2743,musical play,Q542484,57df78f7-085d-4322-9589-fd41c1e1e869,Stephen Schwartz,person,1948,United States,3,1171,Light Of The World,66001254,BG2FfcJPnn4,musicbrainz,Famous In NY Video
+Q108297215,chazzanut,Q1981308,7e799c04-dffa-4d9a-a435-9c327771cab1,Moishe Oysher,person,1907,United States,1,27,Kiddush - Sanctification,77164527,,name,
+Q108297215,chazzanut,Q7213181,525de623-2577-439e-b630-03e9a8fa566c,Yitzchak Meir Helfgot,person,1969,Borough Park,1,18,B'tzet Israel,841277092,,musicbrainz,
+Q108297215,chazzanut,Q3659826,86619b36-db87-4995-9916-96e01625a1a5,Pierre Pinchik,person,1893,United States,1,17,Rozo D'shabbos,2771236441,WX1yBxMwXjE,name,Institut Européen des Musiques Juives
+Q106810831,Byzantine chant,Q6102198,c7864e08-d135-40bc-8d8a-f95b4a6649a7,Πέτρος Γαϊτάνος,person,1967,Greece,2,593,"Agni, Parthene, Despoina, Ixos Plagios Tou A΄, Staseis A΄& B΄",2223144827,,name,
+Q2707688,plainsong,Q70991,2d923f7b-45a1-4204-beb8-5b106e913b58,Hildegard of Bingen,person,1098,Germany,3,3978,Caritas abundat (Antifona con note lunghe),1077734952,,musicbrainz,
+Q26473,Gregorian chant,Q161552,18a0d72d-0be0-4196-a340-035163bfae1c,Gregorian,group,1998,Germany,32,31080,So Sad,64699436,V7lCxM8x8so,musicbrainz,Gregorian
+Q26473,Gregorian chant,Q290083,ea7aba28-8853-4e30-83b7-7deeb3da36cd,Jan Garbarek,person,1947,Norway,2,27024,"Garbarek, Morales: Parce Mihi Domine",65797737,,musicbrainz,
+Q26473,Gregorian chant,Q1884241,f70c74b7-a9d7-4da9-8079-14c50e374f67,Magna Canta,group,,Germany,2,1284,Kyrie,11367589,9iGIJNfOBnQ,name,SrIbiza
+Q26473,Gregorian chant,Q5395443,0ff284e2-78fa-4762-a049-cc22060bbd2e,Iégor Reznikoff,person,1938,France,2,97,Voix flûtée 1 (Isturitz) et Célébration 2 (Arcy-sur-Cure),2812241032,,name,
+Q26473,Gregorian chant,Q121769836,5f6d02da-e996-46d2-9c24-6f1182126585,Capella Antiqua München,group,,Germany,4,72,The Moosburg Gradual of 1360 : Floricet vox dulcisonans (Item de Sancta Maria),589142162,,name,
+Q26473,Gregorian chant,Q108479062,e200fba2-9b41-47fb-aef2-7860ac788530,Janalynn Castelino,person,1998,Los Angeles,4,14,Fire on Fire,4162429122,tWVnoPSzNCo,name,Janalynn Castelino
+Q952404,drumline,Q908540,2e689868-e387-4a62-b956-76ba84519497,Jerry Jones,person,,Upper Marlboro,1,187,Common People,1474190492,mJC01UYgGW4,name,Jorge M
+Q59158,dhrupad,Q2744425,34ed22a5-add4-41d6-8538-f303cf277343,Asad Ali Khan,person,1937,India,1,158,Raga Joyiga: Alap,122806384,,name,
+Q623904,Andalusi classical music,Q317182,9a4bb654-35c5-4c88-8460-39d5bb01aa57,Jordi Savall,person,1941,Spain,3,164675,Marche pour la cérémonie des Turcs,1668768,GaKPo_Ngv2s,musicbrainz,Jordi Savall
+Q623904,Andalusi classical music,Q1615681,3a9f0e21-5796-4f04-bd4c-3deafd59ad80,Hespèrion XXI,group,1974,Switzerland,3,6153,Faronell's Division,1356737,,musicbrainz,
+Q623904,Andalusi classical music,Q2814138,2cf13b58-7de2-4d80-a977-5fb51b505480,Amina Alaoui,person,1964,Spain,3,2016,Fado Al-Mu'tamid,11272668,j4rw5KM6tFk,name,O music
+Q623904,Andalusi classical music,Q2156989,96a5d7f3-1fca-47f7-81a3-a3b430d302a2,Maurice El Médioni,person,1928,France,1,597,Ana Ouana,37616661,mObpMbLwQtU,name,Álvaro Másmela Latin Jazz
+Q12193614,Iraqi maqam,Q1398923,842267e2-bffd-40df-a28f-46a27cd3ee18,منير بشير,person,1930,Iraq,2,1754,Taqsim in Maqam Rahawi,880381522,,musicbrainz,
+Q1518063,Ottoman classical music,Q1395064,104ed17c-1e58-4cf6-aa11-722341032571,Müslüm Gürses,person,1953,Türkiye,5,769726,Seni Yazdım,3480944821,wtOHNhG0EZc,musicbrainz,Bayar Müzik
+Q1518063,Ottoman classical music,Q187272,9fcda3ab-a467-4ea9-8569-ae975de0f473,Zeki Müren,person,1931,Türkiye,7,62320,Bir Gülü Sevdim,117768862,sGzzOTJdBKQ,musicbrainz,AJS Müzik
+Q1518063,Ottoman classical music,Q505692,b78346af-e3ce-4b36-a0d5-032414de8a27,Peter Murphy,person,1957,United Kingdom,1,33444,Cuts You Up,936379,UrfFHzqGBZI,musicbrainz,Beggars Banquet Records
+Q7438911,screamer,Q926082,a0fc8f79-fa55-406d-8a5e-b1ed237c1b70,Frederick Fennell,person,1914,United States,1,49,"Holst: Suite No. 2 for Military Band in F Major, Op. 28, H. 106: I. March",1736534037,,name,
+Q122616091,muzika yehudit mekorit,Q18147844,4d5abad8-d57b-4c3f-b477-043214e96dc4,ישי ריבו,person,1989,Israel,1,29929,אוחילה,746328062,,musicbrainz,
+Q122616091,muzika yehudit mekorit,Q76999,a42a9fa4-42f7-4bb1-a40b-aa7c5395f02d,Shlomo Carlebach,person,1925,United States,1,762,Haneshama Lach,128773509,z-JTyb8FUCE,musicbrainz,Shlomo Carlebach
+Q108297205,Burmese classical music,Q13072581,b033d2e4-b476-4fe0-8eea-17d45a419caa,မျိုးကျော့မြိုင်,person,1971,Myanmar,1,29,ခေတ်,3568828251,,name,
+Q194492,gamelan,Q2655754,8ee72e86-d75b-4e18-9116-41a10ff92703,OOIOO,group,1995,Japan,1,1549,THE HORIZON,3818512271,,musicbrainz,
+Q194492,gamelan,Q590911,27e42fd5-8110-4260-8f3c-9476a4f0403b,Lou Harrison,person,1917,United States,1,512,Four Pieces for Harp: Avalokiteshvara (Produced),64161195,,name,
+Q194492,gamelan,Q19560978,d7e40021-e86e-4f64-85d5-6c36770fd2f3,Jessika Kenney,person,,United States,2,140,Figura Nox,2282879017,Eok7vdpTuMU,musicbrainz,ovenlovesyou
+Q109382160,plugg music,Q27671080,2baf3276-ed6a-4349-8d2e-f4601e7b2167,Playboi Carti,person,1995,United States,5,846598,Sky,1189531242,KnumAWWWgUE,musicbrainz,Playboi Carti
+Q109382160,plugg music,Q23772141,a668565b-41b8-44a8-9d5c-8e609dbf69fc,Lil Yachty,person,1997,United States,4,459299,drive ME crazy!,2125612367,dGgBzSfgVsA,musicbrainz,lil boat
+Q109382160,plugg music,Q127362,9118f524-be76-4eaf-875c-ccf15e2a2ad6,Chief Keef,person,1995,United States,3,400180,Love Sosa,62892170,YWyHZNBz6FE,musicbrainz,DGainz
+Q109382160,plugg music,Q123980600,2c832944-52b6-428e-8d36-5d2cbc7121d9,La Fève,person,1999,Aulnay-sous-Bois,2,243288,APPELLE LA POLICE,4342466362,sYawKqr1-kw,musicbrainz,La Fève_
+Q109382160,plugg music,Q108761978,9e6a6a2f-f696-4cc0-87f1-e4f712e46802,Yeat,person,2000,United States,7,231419,COMË N GO,3486842891,QqzXvvdk3bQ,musicbrainz,Yeat
+Q109382160,plugg music,Q114050700,860d7dc2-618d-437e-a3bb-7b91c2d40095,Ken Carson,person,2000,United States,4,112233,ss,2868707392,TMzs6GvsZXU,musicbrainz,Ken Carson
+Q109382160,plugg music,Q124338068,35214d53-009b-45d9-8a00-6664325b9e2a,OsamaSon,person,2003,United States,14,20797,Made Sum Plans,3198315941,ViRzkfbicgI,musicbrainz,OsamaSon
+Q109382160,plugg music,Q124250887,807cc179-4f36-4f05-b285-21689debed47,Serane,person,1999,Paris,1,14210,High Five,1448181582,Zily4DBoqL8,musicbrainz,STANKO
+Q120715924,asian rock,Q55694865,4da158cc-4d03-48d6-aefc-6726e4f9a149,ReoNa,person,1998,Japan,11,17248,ANIMA,1086620732,Qo_4XqKwrSM,musicbrainz,ReoNa official YouTube channel
+Q120715924,asian rock,Q307388,7d9851d2-0b28-4ce6-9571-59132aa0c9bc,nano.RIPE,group,1998,Japan,17,765,Snow Drop,2810072642,aCIsEOp8CS0,musicbrainz,Weeaboo Lucknut
+Q120715924,asian rock,Q1074952,7b8c4e81-9ec7-400f-abf5-7be8da80487b,黒崎真音,person,1988,Japan,7,309,DEAD OR LIE,3296343941,,name,
+Q136348971,terror plugg,Q138580882,dfbf8c6d-d4f9-44b5-8390-a6f38e09b647,2Slimey,person,2006,United States,5,852,times changin,4270923252,-PC49dWgTPc,musicbrainz,2Slimey
+Q115485183,sigilkore,Q123740965,917220a7-bd52-432c-b167-8da78c27b299,Luci4,person,2002,United States,1,5417,b52 (stop it),2321005445,yttPGT_Iwtw,musicbrainz,buddah
+Q115485183,sigilkore,Q136458677,bb7959ac-84cc-45c4-8138-d80ee5f2bd9a,Lucy Bedroque,person,2006,Los Angeles,9,3733,How to Pretend,4052646431,HDgR9KV1HZQ,musicbrainz,Araiguma
+Q116960000,no melody trap,Q27680796,0d98c341-e1a2-4734-9adf-1207abad6f65,Sam Hyde,person,1985,United States,2,64,Bouncin n Zoomin,2906878961,XlmqZ9HRhko,musicbrainz,Nick Rochefort
+Q122474221,regalia,Q175305,4730a989-8cf4-437b-9825-135f01644eab,Dirt Nasty,person,1974,United States,1,3881,I Can't Dance,14348834,DCjxd2rehaQ,musicbrainz,Simon Rex
+Q108297200,bop,Q2274,1ba1d493-7114-45e2-b163-a36d49a0c065,Chet Baker,person,1929,United States,3,529318,The Thrill Is Gone,3147908,fw1991aZ3us,musicbrainz,Alex Zanet
+Q108297200,bop,Q208205,8247a3f2-3a8e-4256-b322-6c57b03a4e36,Bill Evans,person,1929,United States,3,272711,You Must Believe In Spring,1444366372,koSoQRfG3wI,musicbrainz,Bill Evans
+Q108297200,bop,Q105349,ed801bdd-f057-41c0-94fb-76cb5676cd59,Oscar Peterson,person,1925,Canada,5,166869,Just One Of Those Things,606129202,PgS7zygypLo,musicbrainz,davidhertzberg
+Q108297200,bop,Q299208,3b47247e-5b57-49b6-a0ed-bad80243802a,Sonny Rollins,person,1930,United States,3,123730,The Night Has a Thousand Eyes,573059,qvcc7xNXVfA,musicbrainz,hermannsattic
+Q108297200,bop,Q118116,cc1588e1-5ba3-45a6-b80c-b31035c89339,Dexter Gordon,person,1923,United States,2,37165,Don't Explain,3437575,k2Lx3n10fkc,musicbrainz,Nephi Wallace
+Q108297200,bop,Q468202,266b9126-4a40-4b9b-b21e-422d72e64254,Art Pepper,person,1925,United States,1,28998,These Foolish Things (Remind Me Of You),411187332,0qs173uZVEU,musicbrainz,Art Pepper
+Q122474149,lowend,Q135402741,9ca998cf-c1cd-493b-9a5d-a32fd33859ea,Jim Legxacy,person,,London,3,4347,idk idk,3911459211,sZzvQP2fV-c,musicbrainz,Jim Legxacy
+Q3305039,malhun,Q378979,6c7e691e-1e41-439a-9bd5-c47d6b3a3737,الحسين التولالي,person,1924,Morocco,1,380,Sidi ya rassoul allah,559102652,,name,
+Q4400837,Russian romance,Q130286348,f1a0b8ba-a037-41ac-b18f-e28dabd4e2e8,Sadraddin,person,2003,Kazakhstan,2,527,Jauap bar ma?,2852156042,an8juF1vtz8,musicbrainz,SADRADDIN
+Q108297199,bolero-beat,Q6683478,3febb873-0757-47a2-b9cb-baa2cf0e5b91,Los Ángeles Negros,group,1968,Chile,2,119608,Y Volveré,726597702,5uDXS4LPIUY,name-ambiguous,Los Ángeles Negros
+Q108297199,bolero-beat,Q604795,edcac1ff-f653-424d-b847-dbfbaac12495,Los Galos,group,1966,Chile,1,11135,Cancion para una Esposa Triste,64823501,kavAZwRjvrU,name,supercristales
+Q108297199,bolero-beat,Q6170824,0c9ef712-6dc2-4520-886e-a59506a36780,Zalo Reyes,person,1952,Chile,1,1285,Motivo Y Razón,721336172,t5xPymWlSKw,name,ZaloReyesVEVO
+Q85787413,música cebolla,Q2836528,ab966c0f-e526-46ae-b492-82c27b87f81f,Mon Laferte,person,1983,Mexico,4,710261,Tu Falta De Querer,105000658,WT-VE9OyAJk,musicbrainz,Mon Laferte
+Q85787413,música cebolla,Q604795,edcac1ff-f653-424d-b847-dbfbaac12495,Los Galos,group,1966,Chile,1,11135,Cancion para una Esposa Triste,64823501,kavAZwRjvrU,name,supercristales
+Q85787413,música cebolla,Q6170824,0c9ef712-6dc2-4520-886e-a59506a36780,Zalo Reyes,person,1952,Chile,1,1285,Motivo Y Razón,721336172,t5xPymWlSKw,name,ZaloReyesVEVO
+Q85787413,música cebolla,Q6059049,1e050aef-60c2-4041-b1d2-6ab2688eab4f,Palmenia Pizarro,person,1941,Chile,1,465,Regresa,3265000751,Gd83nzXP2KQ,name,MEGA Oficial
+Q11319232,techno kayō,Q854590,ac5af671-1df0-4312-8b7b-e61992ecc883,Yellow Magic Orchestra,group,1978,Japan,4,12210,Rydeen (2018 Bob Ludwig Remastering),678243332,fALcv8UrN4I,musicbrainz,The Music Channel 
+Q11319232,techno kayō,Q1138433,c10fe17c-d4e3-4620-8632-90d0cb4cb08c,TMNETWORK,group,1983,Japan,1,1431,Get Wild Continual,2737182591,DD_a9nM0Jnk,musicbrainz,TMNETWORK
+Q11319232,techno kayō,Q107424,b215b03a-8e0b-48ca-b832-bbbd0db504f0,矢野顕子,person,1955,Japan,1,1367,TONG POO,2896009721,,name,
+Q11319232,techno kayō,Q11350323,e4f83b54-83c3-4189-9ce7-0b7a9c6e7cb1,Logic System,group,,Japan,1,341,Unit,442003402,aIBHspB9LDU,name,松武秀樹 / Logic System Official Channel
+Q11319232,techno kayō,Q7815241,e6264df0-1f3f-4573-bc89-ded915ee6ed8,TOM★CAT,group,1984,Japan,1,314,TOUGH BOY,1190401512,Mdju-W_ZAnw,musicbrainz,ChadVision
+Q11319232,techno kayō,Q11595143,4f845406-0c59-4b35-a946-53504b77ee04,秋本奈緒美,person,1963,Japan,1,277,BEWITCHED（ARE YOU LEAVING SOON),2127569507,,name,
+Q11319232,techno kayō,Q11467431,108a6d7f-7c6e-43d5-8788-87c7bb246053,山口美央子,person,1959,Japan,3,273,Itsuka Yurarete Toi Kuni,761231812,,musicbrainz,
+Q11319232,techno kayō,Q11081038,10041f2c-17b0-42b1-89a1-f836664d6289,和田加奈子,person,1961,Japan,2,168,Sunday Brunch,442271312,,musicbrainz,
+Q3032090,Salegy,Q1686237,0d7b216d-821e-4227-9314-dd51521d298c,Jef Gilson,person,1926,France,4,178,Valiha Del,76347614,v_EEmXiB8eE,name,oujouh
+Q119844080,moe song,Q123171748,c8c45e44-b84e-4c1f-8bdd-ed766698b9f2,BOTASHE,group,2021,Ukraine,2,1735,ПНХ,1681961367,tgbCrSimQDQ,name,BOTASHE
+Q119844080,moe song,Q2475314,b75c2432-6a6f-489b-83d2-05f55631cf09,Mosaic.wav,group,2004,Japan,2,331,Look at Me Tenderly (NewTake),1576053592,,musicbrainz,
+Q119844080,moe song,Q89771228,6eac2e29-944c-4fe6-97bf-5af3c93d5442,兎田ぺこら,person,2019,Japan,4,119,PEKORANDOMBRAIN,2556504482,,musicbrainz,
+Q133520038,J-euro,Q10852432,3e46dcce-77fe-4fa3-965b-f513189e97e3,SOUND HOLIC,group,,Japan,9,465,DUAL ROZES),1678995867,0agFqPkJIQ0,musicbrainz,SOUND HOLIC
+Q11282754,Akishibu-kei,Q65230992,aedb1c05-5011-40b0-8b44-373be7b1a4d8,RAY,group,2019,Japan,6,984,Become the Wind,1487550182,iotvsc6R9cE,musicbrainz,BORUTO HUB
+Q11282754,Akishibu-kei,Q614980,eac9f2e2-a698-4b04-a471-d6498a24a766,ROUND TABLE,group,1993,Japan,2,302,Let Me Be With You,2116054937,0UBgYLjTERs,musicbrainz,NHKniYokoso
+Q11282754,Akishibu-kei,Q55526224,39099fdd-62c0-4b05-80e5-75be9bafe911,tipToe.,group,2016,Japan,46,22,Syrup Time,1802642837,,musicbrainz,
+Q784310,electro hop,Q134541,d5be5333-4171-427e-8e12-732087c6b78e,Black Eyed Peas,group,1995,United States,6,6117239,Pump It,7375556,ZaI2IlHwmgQ,musicbrainz,Black Eyed Peas
+Q784310,electro hop,Q221155,ce55e49a-32f4-4757-9849-bf04d06d5fcc,T‐Pain,person,1985,United States,3,1938328,Up Down (Do This All Day),87675719,45Q4Zk3CN8k,musicbrainz,T Pain
+Q784310,electro hop,Q1140997,ff711332-b409-44dd-ad1d-f7714f8906db,Crookers,group,2003,Italy,3,126457,Knobbers,14233870,3iCYeslMDg0,musicbrainz,KOBRO // Charon
+Q784310,electro hop,Q2337999,960afc67-9c21-46dd-9c7f-ff2b509e3150,Danny Brown,person,1981,United States,3,55804,Ain't it Funny,130700444,7L4JnAuW00k,musicbrainz,dannybrownbruhbruh
+Q784310,electro hop,Q20039817,e5e045da-59a3-4b65-8bb4-3c7f3ac9a529,Creepy Nuts,group,2013,Japan,1,49461,Bling-Bang-Bang-Born,2580253682,mLW35YMzELE,musicbrainz,Creepy Nuts
+Q784310,electro hop,Q4974413,4298f9c0-4311-4411-9153-da73775b0b0c,Brooke Candy,person,1989,United States,1,32673,POGO,3981636001,oWUJfVq3wFk,musicbrainz,Brooke Candy
+Q784310,electro hop,Q121745420,ab1a3f85-e0ea-470a-af5c-175447ae774c,underscores,person,2000,New York,3,10130,The Peace,3896751371,Gf-fCJ6TkRU,musicbrainz,underscores
+Q784310,electro hop,Q2841024,a6cf5c5c-7432-4ac7-801a-cef2b03e81bb,Amanda Blank,person,1983,United States,2,7113,A Love Song,71999639,hR13Nph0Lbc,musicbrainz,p1990
+Q2867170,assiko,Q3586228,25b0d755-16e6-4ff8-ab4f-7226279019c2,Élage Diouf,person,,Montréal,1,10958,I Am a Man of Constant Sorrow,66614588,OWTBBSzdm04,musicbrainz,Waleed Al-Ahmad
+Q17053024,folkhop,Q80808767,45d9e75f-cbdf-47df-b4e6-1578d8a17e25,Kalush Orchestra,group,2021,Ukraine,1,5272,Ushme Uturbe,2220486917,zQmk8obxl7E,musicbrainz,Kalush Orchestra
+Q17053024,folkhop,Q2881398,4e01e834-c872-4c76-87ab-c2304efa5e7e,Bally Sagoo,person,1964,Birmingham,1,2323,Choli Ke Peeche,3984092071,,musicbrainz,
+Q17053024,folkhop,Q222911,d6be4b5a-87c1-4781-91ff-aa56c5d305ab,2econd Class Citizen,person,,United Kingdom,1,835,On Emptyness,478275352,duhSDS_o1u0,musicbrainz,Together we will live forever
+Q15720097,bhavageete,Q156347,aeb71bd8-447d-4415-8ea1-2b7d664f67e1,Lata Mangeshkar,person,1929,India,3,88436,Tujhe Dekha To,464492152,AKfo1uE2-ws,musicbrainz,Lata Mangeshkar Sadabahar Gaane
+Q15720097,bhavageete,Q38393,79c5547a-e098-495c-8dac-7e99546aa46b,Asha Bhosle,person,1933,Mumbai,6,29079,Radha Kaise Na Jale,13175609,qNnvL0ztJhA,musicbrainz,Sony Music India
+Q15720097,bhavageete,Q3630686,9602a9b0-c292-4a39-ad07-09a8b6c650b3,Suman Kalyanpur,person,1937,India,2,109,Na Tum Hamen Jano,468366702,4l1v9XZDIvQ,musicbrainz,Old Hindi Songs
+Q15720097,bhavageete,Q3633266,66326bbc-6449-4764-b3fb-cf969784730f,Sudhir Phadke,person,1919,Maharashtra,1,86,"Toch Chandrama Nabhant, Pt. 1",519552302,,musicbrainz,
+Q15720097,bhavageete,Q13115524,80c9fa2a-9ffb-4928-a065-826cb589c766,Arun Date,person,1934,Maharashtra,3,15,Shukratara Mand Vara,3064193581,kNElcYYU9Mw,musicbrainz,Sudhir Naware
+Q109050954,Burmese mono,Q6401677,73b2c5a1-c8be-47ea-946e-a53fbfafe55b,ခင်မောင်တိုး,person,1950,Myanmar,2,101,Waidanar Nya Nay Khin,1570527792,,name,
+Q109050954,Burmese mono,Q65338358,a409e9a9-fe04-442e-b0b6-a8f6ac19e95e,လွှမ်းမိုး,person,1954,Myanmar,4,22,Lwan Moe Hu Khaw Thi,2953324291,,name,
+Q6016474,Fantezi,Q541724,0a394d24-f82a-4c73-9d20-2ad20dcf96ff,Yıldız Tilbe,person,1966,Türkiye,4,521585,Delikanlım,66157537,6pYgGItOqtE,musicbrainz,MuzikPlay
+Q6016474,Fantezi,Q542368,9fc39c14-c7e1-472b-8a70-5d01175e5b14,Sibel Can,person,1970,Türkiye,2,209692,KIYAMAM,4122155411,qgSVE71wNec,name,Sibel Can and Eypio Official
+Q6016474,Fantezi,Q709859,8ed7d42f-1fae-4461-a41b-47fae9630bba,Ferdi Tayfur,person,1945,Türkiye,2,169510,Bana Sor,3432357271,AYktQlOpWGk,musicbrainz,Ferdi Tayfur Fans
+Q6016474,Fantezi,Q6895627,d8c9e377-5377-4854-9d8f-b83336f15520,Azer Bülbül,person,1967,Türkiye,8,148316,Duygularım,3674855002,yQFXIe1xRbA,musicbrainz,AZER BÜLBÜL 
+Q6016474,Fantezi,Q5058837,e6846bd8-a9a9-438a-8858-7006b38ceae1,Cengiz Kurtoğlu,person,1959,Türkiye,2,134320,Küllenen Aşk,77573116,qn40mvT_lGw,name,Cengiz Kurtoğlu 
+Q6016474,Fantezi,Q307737,b03697b8-6dfd-4346-93f8-d463ce1a8e42,Özcan Deniz,person,1972,Türkiye,2,84188,Derin Duygular,76812301,efqS4eQSQ8s,musicbrainz,Avrupa Müzik
+Q6016474,Fantezi,Q334814,6d8fcd3d-32a2-408e-b73d-e39bae0aac06,Ümit Besen,person,1956,Türkiye,2,42197,Seni Unutmaya Ömrüm Yeter mi,126206893,DcgPCU10Bek,musicbrainz,netd müzik
+Q6016474,Fantezi,Q434903,7601f1f9-31f9-4c50-b826-5079849bbb98,Gülben Ergen,person,1972,Türkiye,2,31804,Şıkır Şıkır,3281801231,8eWvfGNI5g4,musicbrainz,Seyhan Müzik
+Q1673922,isicathamiya,Q258686,c1982570-8efb-4cf7-bb5b-c9c026c0e8f4,Ladysmith Black Mambazo,group,1964,Ladysmith,12,45129,Shosholoza (Inspiration),1779690067,,musicbrainz,
+Q112066384,oriental ballad,Q130286348,f1a0b8ba-a037-41ac-b18f-e28dabd4e2e8,Sadraddin,person,2003,Kazakhstan,1,527,Jauap bar ma?,2852156042,an8juF1vtz8,musicbrainz,SADRADDIN
+Q112066384,oriental ballad,Q488689,27e484c5-e9c2-40ae-8216-3765b99ee6af,이수영,person,1979,South Korea,1,210,얼마나 좋을까,3289795951,,name,
+Q1930107,kroncong,Q5896813,5734821b-3f7c-449b-8131-1e9cec4b93cd,Hetty Koes Endang,person,1957,Indonesia,2,386,Berdiri Bulu Romaku,73889346,4vSK5cGpsiI,musicbrainz,Hetty Koes Endang Musica Official
+Q665286,luk thung,Q16140485,2189aa25-0786-49f6-9919-aea9bdb9c86b,Angkanang Kunchai,person,1956,Thailand,3,66,Lam Plearn Mee Mia Laew Pai,1672700067,hVK4iZzp78A,name,Thai Funk
+Q665286,luk thung,Q16139357,554063c0-d631-417e-b77a-b07e3653e3bd,ดาว บ้านดอน,person,1947,Thailand,2,39,Mae Jom Ka Lon,1672718807,,name,
+Q665286,luk thung,Q20564091,270161b8-9b52-431e-8f9b-962dd01a7704,สรวง สันติ,person,,Thailand,3,27,Aow Pai Pao,1083039732,,name,
+Q109426115,maloya élektrik,Q64590259,e1bebc39-d00b-414d-bbca-950fc5317d3a,Maya Kamaty,person,1985,France,1,8614,Ansanm,3750604652,bgyrOxnO5HQ,musicbrainz,Maya Kamaty
+Q109426115,maloya élektrik,Q23021832,19948fb5-2d08-41ba-aff8-c74706d19964,Christine Salem,person,1971,Réunion,1,5420,Mi larg'ra pa lo kor,113411924,hrdxsHJhNic,musicbrainz,ERIC G.974
+Q109426115,maloya élektrik,Q78496220,c71ad97b-eb99-4d22-a2b1-4a4c33d21c56,Hervé Imare,person,1946,Réunion,1,32,Mêle-Mêle Pas Toué P'tit Pierre,349961611,M3LkIaEe2Ho,name,ΛʌʌяяʀɢɢннH
+Q6783396,maskandi,Q17386487,bc44cd50-ffb9-4921-8ac3-ab284d4998ae,Okmalumkoolkat,person,1983,South Africa,1,21227,Free 100k Macassette (Scoop's Mapakisha Skit),1383674762,,name,
+Q6799787,mbube,Q258686,c1982570-8efb-4cf7-bb5b-c9c026c0e8f4,Ladysmith Black Mambazo,group,1964,Ladysmith,3,45129,Shosholoza (Inspiration),1779690067,,musicbrainz,
+Q2961759,Moroccan chaabi,Q3125794,c5116a8a-510f-4d4d-b022-7460fd6efa8a,Haja El Hamdaouia,person,1930,Morocco,2,1982,Hazou Bina laalam,73523105,,name,
+Q133687529,toypop,Q3197871,7d1c54f7-04ab-4136-b135-30a533a908a8,Klimperei,group,1985,France,3,256,Le jardin des fleurs vivantes,14342394,,name,
+Q133862566,toytown pop,Q1812612,a39b2077-8acb-456e-b3bf-d78db9a0b2e2,The Idle Race,group,1966,United Kingdom,2,919,I Like My Toys,3248892,Bv5YHX4OwcA,musicbrainz,fullalbumsntunes
+Q2798694,marabi,Q146256,bc5c2918-4aba-4ef6-a245-100563a4487f,Miriam Makeba,person,1932,South Africa,3,41848,Pata pata,103006776,FptofC0lKnk,musicbrainz,Miriam Makeba Official Channel
+Q80725067,mallsoft,Q60169662,68c6d24f-1750-485b-9763-59cf7ca2a6b1,猫 シ Corp.,person,1989,Netherlands,4,1463,Online Office V4.20,2312664065,lj9vYROA1SA,musicbrainz,SuperVHSMusic
+Q26906566,Beat poetry,Q188626,5cbef01b-cc35-4f52-af7b-d0df0c4f61b9,Sonic Youth,group,1981,United States,4,344466,Kool Thing,912072,SDTSUwIZdMk,musicbrainz,Sonic Youth
+Q26906566,Beat poetry,Q312264,a1594afa-2f6b-4596-a156-a35853dca691,Captain Beefheart,person,1941,United States,2,18430,Frownland,77859104,r9lpLm7jwQY,musicbrainz,Revanlation
+Q26906566,Beat poetry,Q108912,fe93a178-183a-42c9-b3c7-53102b8c724d,Ray Manzarek,person,1939,United States,4,14499,The Moorish Idol,1280027392,XfZ_fMc4q3g,name,Simagga
+Q26906566,Beat poetry,Q973818,8067c102-4996-42bc-9980-06ce2e644eae,Soul Coughing,group,1992,United States,4,5825,Circles,1855536297,6Y_eZvWJfqY,musicbrainz,Brazen Upstarts
+Q26906566,Beat poetry,Q1382232,996b444f-2f1c-4f41-bb85-c3b9a709c9bf,Al Cohn,person,1925,United States,2,2369,The Red Door,2770557921,-tjQ-H-kwTw,musicbrainz,Erlendur Svavarsson
+Q26906566,Beat poetry,Q928304,88b1dd15-34d9-4214-861c-045e872162a6,The Fugs,group,1963,United States,6,1241,CIA Man,32611381,iL3yPjFBlhE,musicbrainz,Bostonian Bob's Midnight Music
+Q26906566,Beat poetry,Q160534,ccf81e74-b701-4277-a599-3e0942e70b53,Jack Kerouac,person,1922,United States,4,815,American Haikus (Excerpt),16159101,,musicbrainz,
+Q26906566,Beat poetry,Q6711,8fc551bc-0c60-43fd-a234-2776561c2b18,Allen Ginsberg,person,1926,United States,4,634,Sickness Blues,91188497,BjG1prZWIlc,musicbrainz,jrgbello
+Q65937893,instrumental jazz,Q30587,8f2422ab-0ec6-4c92-80c4-afe9622fab32,Stan Getz,person,1927,United States,3,349271,The Girl From Ipanema,602454222,sx0TLkdWFEU,musicbrainz,Jazz & Blues
+Q65937893,instrumental jazz,Q265252,b5179744-f217-4455-9d8b-17b8d4fdeb93,Buckethead,person,1969,United States,1,55559,Disintegration Mirrors,81282872,,musicbrainz,
+Q65937893,instrumental jazz,Q1370642,6e8f82ea-9e6d-4fdd-9b32-32feef13186b,Robert Glasper,person,1978,United States,1,44010,AJ’s Vibe,3509403551,vJMpjazdfz8,musicbrainz,Robert Glasper
+Q65937893,instrumental jazz,Q982783,b5fb0f1a-2cd4-4759-9d80-648643f70c43,シートベルツ,group,1998,Japan,1,7750,Tank!,1006888182,,musicbrainz,
+Q65937893,instrumental jazz,Q97002708,bc309411-2b96-479c-9462-c0275535e278,Kim Waters,person,1965,United States,1,4704,Nightfall,1353105262,D9Hefor7fGo,musicbrainz,Albert Browne
+Q65937893,instrumental jazz,Q2297958,b8e2848f-f5e1-448d-94cf-990c2983c05c,SOIL&“PIMP”SESSIONS,group,2001,Japan,1,2474,Blue Eyed Monster,2116562367,,musicbrainz,
+Q65937893,instrumental jazz,Q123406072,2f39bcb3-6fbe-4579-9842-990d385b4689,ミツキヨ,person,1995,South Korea,3,188,Cobalt Rhapsody,2755062011,,name,
+Q65937893,instrumental jazz,Q1509278,2dfb426f-4a02-4321-9d32-4c3490f71f0b,Jyoti,person,,United States,1,181,"Mama, You Can Bet!",1021611362,8OPC5K6Y7aU,musicbrainz,TheVoiceNewspaper
+Q591990,jazz standard,Q275616,8833389f-b7fa-47f4-affe-f2e96d056dc2,Marian McPartland,person,1918,United Kingdom,1,1276,Love Is Here To Stay,561884132,kPLkLNyVRq8,musicbrainz,SavoyJazz
+Q3487358,death industrial,Q233483,f569a00a-a5d4-4269-b383-e125a0b515a4,Diamanda Galás,person,1955,United States,1,10233,Skotoseme,659303382,nj_VnokeSWk,musicbrainz,pecho2006
+Q3487358,death industrial,Q64744924,5d12543f-4b37-4e6f-adb1-0e38f23e04b3,Lingua Ignota,person,1986,United States,4,6982,I WHO BEND THE TALL GRASSES,3325154331,0l3dEB_AVsc,musicbrainz,FleshCop
+Q3487358,death industrial,Q287486,99061e9e-51f2-4db8-9827-4621d9e9f8cb,Dominick Fernow,person,,United States,2,2070,A Meal Can Be Made,1182140572,,musicbrainz,
+Q3487358,death industrial,Q19664997,9f41b731-60a8-4811-a4a3-bdd61ef668af,Pharmakon,person,1990,New York,1,2040,Body Betrays Itself,85516026,ZI7KVV13PTY,musicbrainz,Nefastuoso
+Q3487358,death industrial,Q1502454,81fee804-8c9a-4bd3-8410-4b4b94927d9f,Genocide Organ,group,1986,Germany,1,983,Burn,570927222,hILFS142fFY,musicbrainz,Listen and Die!
+Q3487358,death industrial,Q67204919,e946a71d-1ccd-4945-9318-24aaeedc3176,Trepaneringsritualen,group,,Gothenburg,4,728,Alone/A/Cross/Abyss,81774374,yPd_pk4HzNY,name,Trevor Barrow
+Q112593459,data sonification music,Q98783337,e9dfa562-b429-42e4-88e1-f080b6c57632,ELECTRONICOS FANTASTICOS!,group,2015,Japan,1,409,Electromagnetic Matsuri Bayashi in Neo Tokyo,2339000145,D6Vjq5FfbuA,name,Milton F
+Q1744327,sound art,Q1971542,bba24968-a575-4b38-8c38-06f7ab6de8c8,Ryoji Ikeda,person,1966,Paris,1,3808,ultratronics 01,1953488197,33nOYyv_fKY,name,Fear Of Symmetry
+Q1744327,sound art,Q3356097,73d27773-4600-4a46-b933-4d1c84922434,Machinefabriek,person,1978,Netherlands,2,1154,Stemcassette,3835767421,,musicbrainz,
+Q1744327,sound art,Q18921696,9b150267-5b24-4e57-bae6-59612bf5a4d7,Eli Keszler,person,1983,New York,2,536,Wild Wild West,3226493791,ObSOFDvFFEA,musicbrainz,subsuelo
+Q1744327,sound art,Q505933,59f8af87-4640-46d6-acdd-704fcebc0d40,Andrew Liles,person,1969,United Kingdom,1,338,Annie,89391563,,musicbrainz,
+Q1808721,sound poetry,Q526788,d8c1c853-98bb-47c0-8223-cf05d4fba705,Andy Moor,person,1962,United Kingdom,1,40842,The Whiteroom,1275150302,9Jf83hgli20,name-ambiguous,Andy Moor
+Q1808721,sound poetry,Q610427,5d961da6-517e-4f74-a7f3-5cd8a68b1dc0,AGF,person,1969,Germany,3,848,"M A R I A S I M O I N T Y T Ä R (Maria Simointytär, 1683)",71086839,yWwtc-tT1z0,name,MrPipecockJackson
+Q108297235,epic collage,Q286346,9cea062d-d476-447f-98b4-e67e14bfd1e4,Oneohtrix Point Never,person,1982,United States,4,199597,Nothing’s Special,1374548832,OX98ZrVoaGw,musicbrainz,Oneohtrix Point Never
+Q2742436,porn groove,Q3796674,19c68c2c-5034-4c20-8c12-4468e06caa3f,Immanuel Casto,person,1983,Italy,1,5762,Tropicanal,2881695562,QSmDyazPv8s,musicbrainz,Immanuelofficial
+Q2742436,porn groove,Q448180,19fc62c0-3241-499d-bc75-739e50cab1c1,Alessandro Alessandroni,person,1925,Italy,1,1208,White Sands,63519201,CtN75cOtOfk,musicbrainz,Easy Sounds
+Q110226234,red disco,Q4295505,f1abe724-c26a-4ff4-bbf0-d28ed9f7740a,Мираж,group,1986,,1,3183,Музыка нас связала,4110016851,,musicbrainz,
+Q807820,barbershop music,Q20684676,0c4b9c1c-604f-4975-9f3f-19d2d55e67b3,Main Street,group,2011,United States,4,497667,Assault (Angra),1163248072,qxB3anjq4Pc,name-ambiguous,Mainstreet Records
+Q807820,barbershop music,Q1364592,997117eb-5a4c-4a37-99f9-f2515e2d9739,The Chordettes,group,1946,United States,4,13405,Eddie My Love,2515998981,fI0BgeZs2Kk,musicbrainz,Joe Simonetta
+Q807820,barbershop music,Q4674740,0f48b2c3-d236-460a-9ef2-8231cf9ae054,Acoustix,group,,,2,3619,Don't Stop Believin',3015242241,10ovW9_bg2s,name,Acoustix
+Q807820,barbershop music,Q456516,53a61b1f-dd88-45e7-b5d8-3e84038aa81a,The Four Freshmen,group,1948,United States,2,870,Let Me Love You,954325702,,musicbrainz,
+Q807820,barbershop music,Q7939189,54d2336b-39ae-40d2-bc98-b76889f70379,Vocal Spectrum,group,2003,United States,3,279,The Headless Horseman,2700315432,9amckLp1kRc,name,Barbershop Harmony Society
+Q807820,barbershop music,Q6795147,32915314-b14e-45e6-962a-448e9b897a7f,Max Q,group,2003,United States,2,122,You Can Fly,12520423,yyAI6BftONo,musicbrainz,HiMay
+Q807820,barbershop music,Q16221240,6b425ae0-bd26-46f7-8b97-da8b139d4e3a,Tim Waurick,person,1981,,1,113,Ebb Tide,2174666487,G1UF6eQJjss,name,Tim Waurick
+Q807820,barbershop music,Q7939186,3906f519-5e00-4a56-9105-883e88c71f5b,The Vocal Majority,group,,United States,1,40,"O Come, O Come Emmanuel",1675694167,lev0t3iDBkk,name-ambiguous,Vocal Majority
+Q5179572,cowboy poetry,Q175362,120e728a-4078-47b7-a31c-d581ade28bde,Urge Overkill,group,1985,Chicago,1,11211,"Girl, You'll Be a Woman Soon",125978155,1fr1iyhkyVs,musicbrainz,Vangelis Bakos
+Q5179572,cowboy poetry,Q1474525,98298c40-5977-4fa2-9085-db36ee51b90b,Tuxedomoon,group,1977,United States,1,9682,In a Manner of Speaking,3848074,l6H-ESkf2bU,musicbrainz,RileyELFuk
+Q5179572,cowboy poetry,Q1927585,f4eea5a3-5ce5-4b3a-82ef-884c797b391f,The Unseen,group,1994,United States,1,6231,Paint It Black,378350401,QAowDvxJN1A,musicbrainz,Rockschuppen
+Q5179572,cowboy poetry,Q16873085,34191410-3023-4a06-bb99-65cf7a5e6de9,The Mob,group,1980,United States,1,3884,La Choré Des Shattas,879848822,YBrAWprwMb0,name-ambiguous,M.O.B
+Q5179572,cowboy poetry,Q3309104,cdd2e0f0-703d-454d-b5c7-cc3bb6dd5552,The Dead Milkmen,group,1979,United States,2,3662,Punk Rock Girl,2525825101,ZyaK3jo4Sl4,musicbrainz,TimothyTim PSP
+Q5179572,cowboy poetry,Q7396595,0bd450a7-32dd-496f-a0d4-1f71a2226add,Saccharine Trust,group,1980,United States,1,456,I Am Right,4316610,fTwFaLQanLs,name,TheGloryofMan
+Q5179572,cowboy poetry,Q7304931,e0b8a1d9-d73b-4df9-be33-f73d1b8d6b82,Red Rockers,group,1979,United States,1,344,China,3017571,My0gWfhKMEg,musicbrainz,RedRockersVEVO
+Q5179572,cowboy poetry,Q7728264,efe79e45-5dcd-4099-9438-e4aff57bbeb3,The Crucifucks,group,,United States,1,277,Democracy Spawns Bad Taste,11499991,,name,
+Q5110317,Christian country music,Q42775,d43d12a1-2dc9-4257-a2fd-0a3bb1081b86,Johnny Cash,person,1932,United States,5,1827668,Hurt,128846783,8AHCfZTRGiI,musicbrainz,Johnny Cash
+Q5110317,Christian country music,Q380927,7291957b-c463-4275-a41c-a104c9e2337f,Alan Jackson,person,1958,United States,4,472392,Little Bitty,534011,Eo2OIUpWznY,musicbrainz,Alan Jackson
+Q5110317,Christian country music,Q180453,1d543e07-d0d2-4834-a8db-d65c50c2a856,Dolly Parton,person,1946,United States,3,459236,Bound to Ride,4236501432,vmhrzdy943Q,musicbrainz,Glitz Gazette USA
+Q5110317,Christian country music,Q206112,668fd73c-bf54-4310-a139-305517f05311,Willie Nelson,person,1933,United States,3,371624,I've Got You Under My Skin,1241758572,,musicbrainz,
+Q5110317,Christian country music,Q183092,deb2448c-6fdf-4d31-921e-757630515dbd,Merle Haggard,person,1937,United States,4,109271,Pancho and Lefty,102021909,UoKvUYbGu7A,musicbrainz,Merle Haggard
+Q5110317,Christian country music,Q452682,3c418647-3aa0-4f0b-b043-306f47855f52,Josh Turner,person,1977,United States,2,106095,Your Man,2533451,nADTbWQof7Y,musicbrainz,Josh Turner
+Q5110317,Christian country music,Q467519,09b697e3-a849-4670-ae49-e0b821a6271a,Randy Travis,person,1959,United States,5,99054,"Forever and Ever, Amen",7172209,KtKXc_v2iLE,musicbrainz,Randy Travis
+Q5110317,Christian country music,Q362435,2c05faf7-5cc8-4476-9daa-d177ad75cd34,Jim Reeves,person,1923,United States,1,49227,Welcome to My World,2552851,CZQO7bBfmgs,musicbrainz,The Jim Reeves Archive
+Q1127539,Delta blues,Q220707,f86f1f07-d182-45ce-ae93-ef610880ca72,Muddy Waters,person,1913,United States,16,1463036,I'm Your Hoochie Coochie Man,595056,,musicbrainz,
+Q1127539,Delta blues,Q44570,b0122194-c49a-46a1-ade7-84d1d76bd8e9,John Lee Hooker,person,1917,United States,41,1378964,Boom Boom,12291998,o_6SlT3Yy10,musicbrainz,John Lee Hooker Official
+Q1075338,jug band,Q884158,8904d59e-a62d-4ada-b4f6-3a0a9f1f3a3f,Blind Roosevelt Graves,person,1909,United States,1,20,Woke Up This Morning,2026350,VAfng2XlA-8,name,soluna37
+Q3931695,gospel reggae,Q5109053,78cc43b5-5b68-4bb1-ade4-54993417e086,Christafari,group,1990,United States,1,38142,Yeshua (My Beloved),4312041182,63A6P5Hs-dc,musicbrainz,christafariband
+Q3931695,gospel reggae,Q16738942,dbf0d18e-2952-4571-9114-b7c026bbe3ad,Chevelle Franklyn,person,1974,Jamaica,1,2218,King Jesus,29596981,CQpQnzxb4cI,musicbrainz,Chevelle Franklyn
+Q3931695,gospel reggae,Q5041158,aee9de98-6166-4754-881b-4d0cbab1c4bc,Carlene Davis,person,,Jamaica,2,1781,Stealing Love,63398027,wSeK2DBSl7A,name,dj busher
+Q109653544,shatta,Q133830669,477cfc09-97c8-4a80-84fd-b2db0e6f2d2b,DJ Kawest,person,1994,France,1,57178,Chambre 04,3198428431,4e6-6NT9z7Q,musicbrainz,DjKawest Officiel
