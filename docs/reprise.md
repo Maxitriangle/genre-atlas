@@ -9,7 +9,7 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Point A fait** : v0.17.0 (genres muets) et v0.18.1 (son au survol, lecteur permanent, radio de branche), publiées et installées le 29/10/2026. Maxime juge le lecteur « parfait » ; il garde des améliorations d'UX pour plus tard. **Prochaine étape** : l'expérience mobile et les comptes utilisateurs (Maxime a des idées sur les deux, à recueillir avant de proposer quoi que ce soit). La visibilité (point 8 de « Ce qui attend ») passe après.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Point A fait** : v0.17.0 (genres muets) et v0.18.1 (son au survol, lecteur permanent, radio de branche), publiées et installées le 29/10/2026. Maxime juge le lecteur « parfait » ; il garde des améliorations d'UX pour plus tard. **En cours** : l'expérience mobile, v0.19.0 prête (carte pivotée, dernière section). **Ensuite** : les comptes utilisateurs (Maxime a des idées, à recueillir avant de proposer quoi que ce soit). La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
@@ -920,3 +920,17 @@ Remarque de Maxime : sur téléphone, il n'y a pas de carte avec les nœuds, seu
 Écarté : la roue complète en petit (les noms se chevauchent sur 390 px) et une roue qu'on fait tourner du doigt (trop proche du cadran supprimé en v0.7.0).
 
 **Maquette cliquable**, privée, à ouvrir sur téléphone : https://claude.ai/artifact/5Jj4R5UVypbHYSRe2fK4wr. Elle contient les 2 098 vrais genres (arbre du site en ligne du 29/10), ainsi que le code des glyphes et des groupes copié d'`atlas.js`. Le son y est simulé. Les fiches ouvrent le vrai site. Le placement de l'éventail se fait en deux temps : on mesure d'abord le bloc du nom au centre, puis on place les rangées et les liens dessous. En attente des retours de Maxime avant de l'intégrer à l'extension.
+
+**Intégrée au site (v0.19.0, 29/10/2026, pas encore publiée)**. Maxime a trouvé la maquette « parfaite », sans retouche demandée.
+- **Script** : `viewMobileMap()` dessine la lignée, le centre et les nœuds. `layoutMobileMap()` les place ensuite, une fois le nom du centre mesuré (rangées, liens, hauteur). `glide()` fait glisser le nœud touché au centre. L'appui long passe par `pointerdown` et `hear(id, false, true)`, et le clic qui suit est avalé. `S.mview` vaut `map` (par défaut) ou `list` ; la liste est l'ancien `viewMobile()`, avec le même bouton MAP / LIST.
+- Le genre affiché au centre est le genre ouvert s'il y en a un (`S.open || S.centre`) : arriver sur l'adresse d'un genre le montre au centre, pas son parent.
+- **CLAUDE.md** : la règle « Mobile : un seul arbre vertical » est remplacée par la carte pivotée.
+- **Banc** : 83 vérifications. Elles contrôlent que :
+  - Rock tient sur la carte pivotée en 8 nœuds, sans chevauchement ni débordement à 390 px ;
+  - toucher un sous-genre le centre, et toucher la lignée fait remonter ;
+  - la liste reste à un toucher ;
+  - un appui long fait entendre un genre sans changer le centre.
+  
+  Captures `07-mobile.png` (carte), `07c-mobile-liste.png` et `14d-appui-long.png`.
+
+**Chez Maxime, après publication** : mettre à jour l'extension, sans réimport.

@@ -345,12 +345,34 @@ try {
 	await page.screenshot( { path: `${ SHOTS }/06-liste.png`, fullPage: true } );
 	await page.close();
 
-	// 7. Mobile: a single vertical tree, no radial map.
+	// 7. Mobile: the map turned upright, the vertical tree one tap away.
 	const phone = await newPage( 390, 844 );
-	await centre( phone, mid ? mid.node : byId.get( tree.nodes[ 0 ].id ) );
-	const vertical = await phone.locator( '.ga-mobile, .ga-mtree' ).count() > 0;
-	check( 'mobile : arbre vertical, carte radiale absente', vertical && await phone.locator( '.ga-map' ).count() === 0 );
+	const mnode = territoryRoot || ( mid ? mid.node : byId.get( tree.nodes[ 0 ].id ) );   // Rock: the full eight seats
+	await centre( phone, mnode );
+	const boxes = await phone.locator( '.ga-mmap .ga-mnd' ).evaluateAll( l => l.map( e => { const r = e.getBoundingClientRect(); return [ r.left, r.top, r.right, r.bottom ]; } ) );
+	const clash = boxes.some( ( a, i ) => boxes.some( ( b, j ) => j > i && a[ 0 ] < b[ 2 ] - 1 && b[ 0 ] < a[ 2 ] - 1 && a[ 1 ] < b[ 3 ] - 1 && b[ 1 ] < a[ 3 ] - 1 ) );
+	const mwide = await phone.evaluate( () => document.documentElement.scrollWidth );
+	const mname = ( await phone.locator( '.ga-mctr h1' ).innerText().catch( () => '' ) ).toLowerCase();
+	check( `mobile : carte pivotee, « ${ mnode.name } » au centre, 8 noeuds au plus, sans chevauchement ni debordement`,
+		mname === mnode.name.toLowerCase() && boxes.length > 0 && boxes.length <= 8 && ! clash && mwide <= 390 && await phone.locator( '.ga-map' ).count() === 0,
+		`${ boxes.length } noeud(s), ${ clash ? 'chevauchement' : 'net' }, ${ mwide } px` );
 	await phone.screenshot( { path: `${ SHOTS }/07-mobile.png`, fullPage: true } );
+	const first = phone.locator( '.ga-mmap .ga-mnd' ).first();
+	const firstName = ( await first.locator( 'b' ).innerText() ).toLowerCase();
+	await first.click();
+	await phone.waitForTimeout( 800 );
+	const now = ( await phone.locator( '.ga-mctr h1' ).innerText().catch( () => '' ) ).toLowerCase();
+	const lineage = await phone.locator( '.ga-manc' ).allInnerTexts();
+	await phone.locator( '.ga-manc' ).last().click();
+	await phone.waitForTimeout( 500 );
+	const back = ( await phone.locator( '.ga-mctr h1' ).innerText().catch( () => '' ) ).toLowerCase();
+	check( 'mobile : toucher un sous-genre le centre, toucher la lignee fait remonter',
+		now === firstName && lineage.some( t => t.toLowerCase().includes( mnode.name.toLowerCase() ) ) && back === mnode.name.toLowerCase(), `${ firstName } → ${ now } → ${ back }` );
+	await phone.locator( '[data-mview="list"]' ).click();
+	const listed = await phone.locator( '.ga-mtree .ga-mrow' ).count();
+	await phone.screenshot( { path: `${ SHOTS }/07c-mobile-liste.png`, fullPage: true } );
+	await phone.locator( '[data-mview="map"]' ).click();
+	check( 'mobile : la liste reste a un toucher (MAP / LIST)', listed > 0 && await phone.locator( '.ga-mmap' ).count() === 1, `${ listed } ligne(s)` );
 	if ( ring ) {
 		await phone.goto( `${ permalink( ring.node ) }about/`, { waitUntil: 'networkidle' } );
 		await phone.waitForSelector( '.ga-dossier', { timeout: 10000 } );
@@ -719,6 +741,23 @@ try {
 		const tw = await tel.evaluate( () => Math.max( document.documentElement.scrollWidth, document.querySelector( '.ga-bar' ).scrollWidth ) );
 		await tel.screenshot( { path: `${ SHOTS }/14b-son-mobile.png` } );
 		check( 'mobile : HEAR joue l extrait sans interrupteur, la barre tient dans la largeur', theard.length === 1 && hasToggle === 0 && tw <= 390, `${ theard.length } extrait(s), ${ tw } px` );
+		// Holding a subgenre on the upright map plays it, without moving the map.
+		await tel.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await centre( tel, sc );
+		const held = tel.locator( `.ga-mmap .ga-mnd[data-centre="${ sk.id }"]` );
+		const hb = await held.boundingBox();
+		if ( hb ) {
+			await tel.mouse.move( hb.x + hb.width / 2, hb.y + 20 );
+			await tel.mouse.down();
+			await tel.waitForTimeout( 700 );
+			await tel.mouse.up();
+		}
+		await tel.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
+		const stay = ( await tel.locator( '.ga-mctr h1' ).innerText().catch( () => '' ) ).toLowerCase();
+		const heldOn = await tel.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => '' );
+		check( 'mobile : un appui long sur un genre de la carte le fait entendre, sans changer de centre', !! hb && Number( heldOn ) === sk.id && stay === sc.name.toLowerCase() && theard.length === 2,
+			`${ theard.length } extrait(s), centre « ${ stay } »` );
+		await tel.screenshot( { path: `${ SHOTS }/14d-appui-long.png` } );
 		await tel.close();
 	} else {
 		check( 'son : un genre de l arbre a des extraits a jouer', false );

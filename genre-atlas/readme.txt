@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.18.1
+Stable tag: 0.19.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -30,6 +30,10 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   Messages go to the address set in Genres > Settings, which visitors never see, with the visitor in Reply-To,
   and a copy is kept in Messages. No captcha and no outside service: a hidden field, a minimum of 3 seconds
   between loading and sending, and 5 messages an hour per connection.
+* Mobile (under 900 px): the map turned upright. The lineage on top (two levels, then how many more), the genre in
+  the middle, its subgenres fanned out below in two rows of four at most: the same eight seats and editorial groups
+  as the desktop ring. A tap glides a subgenre into the centre, a tap on the lineage goes back up, and holding a
+  genre plays its 30 seconds. MAP / LIST switches to the vertical tree.
 * Sound: SOUND ON (in the header, on screens with a mouse) plays 30 seconds of a genre when the pointer rests on it,
   on the map, the list, the tiles and the search results; HEAR on the panel and on mobile plays it at any time.
   The preview is Deezer's extract of one of the genre's songs, the next one each time (GET /wp-json/genre-atlas/v1/
