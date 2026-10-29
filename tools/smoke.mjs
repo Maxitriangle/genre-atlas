@@ -66,6 +66,27 @@ async function glyphColour( page, node ) {
 
 const browser = await chromium.launch( BIN ? { executablePath: BIN } : {} );
 
+// YouTube's player API, played by the bench: it logs what it is asked to
+// play in window.__yt and ends every song after 1.5 s, moving on through a
+// list as YouTube does.
+const FAKE_YT = `window.__yt = [];
+window.YT = { PlayerState: { ENDED: 0, PLAYING: 1, PAUSED: 2 }, Player: function ( el, o ) {
+	var self = this, box = document.getElementById( el ), f = document.createElement( 'iframe' ), list = [], i = 0, t = 0, state = -1, timer = 0;
+	f.title = 'YouTube'; f.width = o.width; f.height = o.height; box.replaceWith( f );
+	function set( s ) { state = s; o.events.onStateChange( { data: s, target: self } ); }
+	function start() { t = 0; set( 1 ); clearInterval( timer ); timer = setInterval( function () { t += 0.25; if ( t >= 1.5 ) { clearInterval( timer ); if ( i < list.length - 1 ) { i++; start(); } else { set( 0 ); } } }, 250 ); }
+	self.loadVideoById = function ( id ) { window.__yt.push( [ 'video', id ] ); list = [ id ]; i = 0; start(); };
+	self.loadPlaylist = function ( ids, at ) { window.__yt.push( [ 'list', ids.slice(), at || 0 ] ); list = ids.slice(); i = at || 0; start(); };
+	self.playVideo = function () { window.__yt.push( [ 'play' ] ); set( 1 ); };
+	self.pauseVideo = function () { window.__yt.push( [ 'pause' ] ); clearInterval( timer ); set( 2 ); };
+	self.stopVideo = function () { clearInterval( timer ); state = 5; };
+	self.nextVideo = function () { if ( i < list.length - 1 ) { i++; start(); } };
+	self.getCurrentTime = function () { return t; }; self.getDuration = function () { return 1.5; };
+	self.getPlayerState = function () { return state; }; self.getPlaylistIndex = function () { return i; };
+	setTimeout( function () { o.events.onReady( { target: self } ); }, 30 );
+} };
+setTimeout( function () { window.onYouTubeIframeAPIReady && window.onYouTubeIframeAPIReady(); }, 10 );`;
+
 async function newPage( width, height ) {
 	const page = await browser.newPage( { viewport: { width, height } } );
 	// The bench must not depend on the outside world (gravatar, fonts, ...).
@@ -73,6 +94,7 @@ async function newPage( width, height ) {
 		const host = new URL( route.request().url() ).hostname;
 		return host === '127.0.0.1' || host === 'localhost' ? route.continue() : route.abort();
 	} );
+	await page.route( /youtube\.com\/iframe_api/, r => r.fulfill( { status: 200, contentType: 'text/javascript', body: FAKE_YT } ) );
 	page.on( 'console', m => m.type() === 'error' && noise.push( `console: ${ m.text() }` ) );
 	page.on( 'pageerror', e => noise.push( `js: ${ e.message }` ) );
 	page.on( 'requestfailed', r => noise.push( `requete: ${ r.url() } ${ r.failure()?.errorText }` ) );
@@ -245,33 +267,32 @@ try {
 			`${ tracks.length } titre(s), ${ spotify } lien(s) Spotify` );
 		const before = await page.locator( '.ga-bar .ga-bar-yt iframe' ).count();
 		await page.locator( '.ga-dsec:has(.ga-tracks)' ).screenshot( { path: `${ SHOTS }/05d-ecoute.png` } ).catch( () => {} );
-		await page.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
-		// YouTube plays the playlist parameter from its start and skips the
-		// video in the path: the list must open on the song clicked.
+		// PLAY ALL loads the whole list in YouTube's player; ▶ on a song starts
+		// the same list from that song.
 		const videos = await page.locator( '.ga-dossier .ga-track a[href^="https://www.youtube.com/watch?v="]' ).evaluateAll( l => l.map( a => a.href.split( 'v=' )[ 1 ] ) );
-		const playlist = async sel => {
+		const asked = async sel => {
 			await page.locator( sel ).click();
-			const src = await page.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
-			const m = ( src || '' ).match( /^https:\/\/www\.youtube-nocookie\.com\/embed\/([\w-]{11})\?.*playlist=([\w,-]+)/ );
-			return m && m[ 2 ].split( ',' )[ 0 ] === m[ 1 ] ? m[ 2 ].split( ',' ) : [];
+			await page.waitForFunction( () => ( window.__yt || [] ).some( x => x[ 0 ] === 'list' ), null, { timeout: 8000 } ).catch( () => {} );
+			const log = await page.evaluate( () => ( window.__yt || [] ).filter( x => x[ 0 ] === 'list' ) );
+			return log.length ? log[ log.length - 1 ] : [ '', [], -1 ];
 		};
-		const all = await playlist( '.ga-dossier .ga-listen-head [data-play]' );
-		check( 'ecoute : le lecteur YouTube ne se charge qu au clic, puis enchaine la liste depuis le premier titre', before === 0 && all.length > 1 && all.join() === videos.join(),
-			`${ before } lecteur avant, ${ all.length } video(s) apres, premiere ${ all[ 0 ] || '-' } pour ${ videos[ 0 ] || '-' }` );
-		const second = videos.length > 1 ? await playlist( '.ga-dossier .ga-track:has(a[href*="' + videos[ 1 ] + '"]) .ga-play' ) : [];
-		check( 'ecoute : le bouton d un titre lance ce titre, puis la suite', second[ 0 ] === videos[ 1 ] && second.length === videos.length,
-			`premiere ${ second[ 0 ] || '-' } pour ${ videos[ 1 ] || '-' }` );
+		const all = await asked( '.ga-dossier .ga-listen-head [data-play]' );
+		const shown = await page.locator( '.ga-bar .ga-bar-yt' ).boundingBox();
+		check( 'ecoute : YouTube ne se charge qu au clic, puis joue toute la liste, lecteur visible en 200 x 200', before === 0 && all[ 1 ].length > 1 && all[ 1 ].join() === videos.join() && all[ 2 ] === 0 && !! shown && Math.round( shown.width ) >= 200 && Math.round( shown.height ) >= 200,
+			`${ before } lecteur avant, ${ all[ 1 ].length } video(s), depart ${ all[ 2 ] }, lecteur ${ shown ? Math.round( shown.width ) + ' x ' + Math.round( shown.height ) : 'cache' }` );
+		const second = videos.length > 1 ? await asked( '.ga-dossier .ga-track:has(a[href*="' + videos[ 1 ] + '"]) .ga-play' ) : [ '', [], -1 ];
+		check( 'ecoute : le bouton d un titre lance ce titre, puis la suite', second[ 2 ] === 1 && second[ 1 ].join() === videos.join(), `depart ${ second[ 2 ] }` );
 		// The player lives in the bar, outside the page: back on the map, the
 		// same list keeps playing; ✕ stops it and takes the bar away.
-		const playing = await page.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
+		const loads = () => page.evaluate( () => window.__yt.filter( x => x[ 0 ] === 'list' || x[ 0 ] === 'video' ).length );
+		const calls = await loads();
 		await page.screenshot( { path: `${ SHOTS }/05c-fiche-wikipedia.png`, fullPage: true } );
 		await page.locator( '.ga-dossier [data-close]' ).click();
 		await page.waitForSelector( '.ga-map .ga-node', { timeout: 10000 } );
-		const kept = await page.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
+		const kept = await loads() === calls && await page.locator( '.ga-bar .ga-bar-yt' ).isVisible();
 		await page.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
-		const gone = await page.locator( '.ga-bar' ).isHidden() && await page.locator( '.ga-bar iframe' ).count() === 0;
-		check( 'ecoute : le lecteur continue sur la carte, et ✕ l arrete', !! playing && kept === playing && gone, `${ kept === playing ? 'meme liste' : 'liste perdue' }, ${ gone ? 'barre fermee' : 'barre restee' }` );
-		await page.unroute( /youtube(-nocookie)?\.com/ );
+		const gone = await page.locator( '.ga-bar' ).isHidden() && await page.locator( '.ga-bar .ga-bar-yt' ).isHidden();
+		check( 'ecoute : le lecteur continue sur la carte, et ✕ l arrete', kept && gone, `${ kept ? 'meme liste' : 'liste relancee' }, ${ gone ? 'barre fermee' : 'barre restee' }` );
 	} else {
 		check( 'fiche : le genre Shoegaze existe pour tester le credit Wikipedia', false );
 	}
@@ -695,7 +716,8 @@ try {
 		check( 'son : ✕ ferme la barre, SOUND ON est garde dans le navigateur, sans cookie', closed && remembered && stored === 0, `${ stored } cookie(s)` );
 		await snd.close();
 
-		// The radio of a branch: one preview per genre, shuffled, the next
+		const videosOf = pg => pg.evaluate( () => ( window.__yt || [] ).filter( x => x[ 0 ] === 'video' ).length );
+		// The radio of a branch: one song per genre, shuffled, the next
 		// genre when a preview ends (the bench's preview lasts one second).
 		const air = n => {
 			const out = [];
@@ -723,13 +745,45 @@ try {
 			await rd.screenshot( { path: `${ SHOTS }/14c-radio.png` } );
 			check( `radio : « ${ rc.name } » enchaine ses genres, seul et avec ⏭, sans sortir de la branche`,
 				label.startsWith( `RADIO ${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
-				&& new Set( [ first, second, third ] ).size === 3 && played.length >= 3,
-				`${ label } → ${ auto }, ${ played.length } extrait(s)` );
+				&& new Set( [ first, second, third ] ).size === 3 && played.length + await videosOf( rd ) >= 3,
+				`${ label } → ${ auto }, ${ played.length } extrait(s), ${ await videosOf( rd ) } titre(s) entier(s)` );
 			await rd.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 			await rd.close();
 		} else {
 			check( 'radio : une branche de l arbre a au moins quatre genres avec extrait', false );
 		}
+
+		// Full tracks by default, from YouTube, with a note the first time;
+		// 30 S switches to Deezer's previews, and the choice holds.
+		let sv = null;
+		for ( const x of tree.nodes.filter( y => y.s ).slice( 0, 40 ) ) {
+			const r = await fetch( `${ BASE }/wp-json/genre-atlas/v1/sound/${ x.id }?i=0&full=1` ).then( q => q.json() );
+			if ( r.youtube ) { sv = x; break; }
+		}
+		sv = sv || sk;
+		const md = await newPage( 1440, 900 );
+		const mdHeard = [];
+		await md.route( /dzcdn\.net/, r => { mdHeard.push( r.request().url() ); return r.fulfill( { status: 200, contentType: 'audio/wav', body: WAV } ); } );
+		await centre( md, sv );
+		const label = await md.locator( `.ga-panel [data-hear="${ sv.id }"]` ).innerText().catch( () => '' );
+		await md.locator( `.ga-panel [data-hear="${ sv.id }"]` ).click();
+		await md.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-note', { timeout: 8000 } ).catch( () => {} );
+		await md.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
+		const fullFirst = await videosOf( md ) === 1 && mdHeard.length === 0 && /FULL TRACK/.test( label ) && await md.locator( '.ga-bar .ga-bar-yt' ).isVisible();
+		const note = await md.locator( '.ga-bar .ga-bar-note' ).innerText().catch( () => '' );
+		await md.screenshot( { path: `${ SHOTS }/14e-titre-entier.png` } );
+		await md.locator( '.ga-bar-note [data-bar="mode"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await md.waitForFunction( () => document.querySelector( '.ga-bar-time' ) && /PREVIEW/.test( document.querySelector( '.ga-bar-time' ).textContent ), null, { timeout: 8000 } ).catch( () => {} );
+		for ( let w = 0; w < 25 && ! mdHeard.length; w++ ) { await md.waitForTimeout( 200 ); }
+		await md.waitForTimeout( 300 );
+		const why = [ mdHeard.length, await md.locator( '.ga-bar .ga-bar-yt' ).isHidden(), await md.locator( '.ga-bar .ga-bar-note' ).count(), await md.locator( '.ga-bar-time' ).innerText().catch( () => '' ) ];
+		const toPreview = why[ 0 ] === 1 && why[ 1 ] && why[ 2 ] === 0;
+		await md.reload( { waitUntil: 'networkidle' } );
+		await md.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		const keeps = /30 S/.test( await md.locator( `.ga-panel [data-hear="${ sv.id }"]` ).innerText().catch( () => '' ) );
+		check( 'son : titre entier sur YouTube par defaut, avec la note la premiere fois ; 30 S passe aux extraits, et le choix tient',
+			fullFirst && /COOKIES/.test( note ) && /ADS/.test( note ) && toPreview && keeps, `${ fullFirst ? 'entier' : 'pas entier' }, ${ toPreview ? 'puis extrait' : 'pas d extrait ' + JSON.stringify( why ) }, ${ keeps ? 'garde' : 'oublie' }` );
+		await md.close();
 
 		const tel = await newPage( 390, 844 );
 		const theard = [];
@@ -740,10 +794,12 @@ try {
 		await tel.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
 		const tw = await tel.evaluate( () => Math.max( document.documentElement.scrollWidth, document.querySelector( '.ga-bar' ).scrollWidth ) );
 		await tel.screenshot( { path: `${ SHOTS }/14b-son-mobile.png` } );
-		check( 'mobile : HEAR joue l extrait sans interrupteur, la barre tient dans la largeur', theard.length === 1 && hasToggle === 0 && tw <= 390, `${ theard.length } extrait(s), ${ tw } px` );
+		const theardAll = async () => theard.length + await videosOf( tel );
+		check( 'mobile : HEAR joue le titre sans interrupteur, la barre tient dans la largeur', await theardAll() === 1 && hasToggle === 0 && tw <= 390, `${ await theardAll() } titre(s), ${ tw } px` );
 		// Holding a subgenre on the upright map plays it, without moving the map.
 		await tel.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 		await centre( tel, sc );
+		const beforeHold = theard.length;
 		const held = tel.locator( `.ga-mmap .ga-mnd[data-centre="${ sk.id }"]` );
 		const hb = await held.boundingBox();
 		if ( hb ) {
@@ -755,8 +811,8 @@ try {
 		await tel.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
 		const stay = ( await tel.locator( '.ga-mctr h1' ).innerText().catch( () => '' ) ).toLowerCase();
 		const heldOn = await tel.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => '' );
-		check( 'mobile : un appui long sur un genre de la carte le fait entendre, sans changer de centre', !! hb && Number( heldOn ) === sk.id && stay === sc.name.toLowerCase() && theard.length === 2,
-			`${ theard.length } extrait(s), centre « ${ stay } »` );
+		check( 'mobile : un appui long sur un genre de la carte le fait entendre, sans changer de centre', !! hb && Number( heldOn ) === sk.id && stay === sc.name.toLowerCase() && await theardAll() - beforeHold === 1,
+			`${ await theardAll() - beforeHold } titre(s), centre « ${ stay } »` );
 		await tel.screenshot( { path: `${ SHOTS }/14d-appui-long.png` } );
 		await tel.close();
 	} else {
@@ -875,15 +931,14 @@ try {
 		const accepted = await admin.locator( '.notice-success', { hasText: 'Accepted' } ).count();
 		await listenNow();
 		const row = await admin.locator( '.ga-dossier .ga-track' ).allInnerTexts();
-		await admin.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
 		await admin.locator( '.ga-dossier .ga-listen-head [data-play]' ).click();
-		const src = await admin.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
-		await admin.unroute( /youtube(-nocookie)?\.com/ );
+		await admin.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
+		const src = JSON.stringify( await admin.evaluate( () => window.__yt || [] ) );
 		const plain = await ( await fetch( exAbout ) ).text();
 		check( 'exemples : accepte, il s affiche dans LISTEN, se joue au clic et figure dans la page sans script',
 			accepted === 1 && row.length === 1 && /smoke example two/i.test( row[ 0 ] ) && /LISTENING EXAMPLE · SMOKE ENSEMBLE/.test( row[ 0 ] )
-			&& /youtube-nocookie\.com\/embed\/smokeExmpl2\?.*playlist=smokeExmpl2/.test( src || '' ) && /Example: Smoke Ensemble, “Smoke example two”/.test( plain ),
-			`${ accepted } avis, ${ row.join( ' | ' ).replace( /\s+/g, ' ' ) }, lecteur ${ ( src || '-' ).slice( 0, 90 ) }, sans script ${ /Example:/.test( plain ) ? 'oui' : 'non' }` );
+			&& src.includes( '["video","smokeExmpl2"]' ) && /Example: Smoke Ensemble, “Smoke example two”/.test( plain ),
+			`${ accepted } avis, ${ row.join( ' | ' ).replace( /\s+/g, ' ' ) }, lecteur ${ src.slice( 0, 90 ) }, sans script ${ /Example:/.test( plain ) ? 'oui' : 'non' }` );
 		await admin.locator( '.ga-dsec:has(#ga-d-listen)' ).screenshot( { path: `${ SHOTS }/13b-exemple-fiche.png` } ).catch( () => {} );
 	} else {
 		check( 'exemples : le banc a propose des videos a un genre (GA_EXAMPLE_GENRE)', false );
