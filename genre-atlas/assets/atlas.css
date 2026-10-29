@@ -451,6 +451,18 @@
   .ga-bar-time,.ga-bar-out{display:none}
   .ga-bar-yt{right:8px}
   .ga-bar-note{padding:10px 12px}
+  /* A phone has no room for a floating card: the bar takes the video in,
+     beside the song and its buttons, and the page makes room for it. */
+  .ga-bar.ga-bar-video{display:grid;grid-template-columns:200px minmax(0,1fr);grid-template-areas:"note note" "card info";background:var(--panel)}
+  .ga-bar.ga-bar-video .ga-bar-note{grid-area:note}
+  .ga-bar.ga-bar-video .ga-bar-yt{grid-area:card;position:static;width:200px;height:200px;border:0;border-top:1px solid var(--fam)}
+  .ga-bar.ga-bar-video .ga-bar-in{grid-area:info;height:200px;flex-wrap:wrap;align-content:center;gap:10px 5px;padding:8px 6px 8px 10px}
+  .ga-bar.ga-bar-video .ga-bar-in>.ga-glyph{display:none}
+  .ga-bar.ga-bar-video .ga-bar-t{flex:0 0 100%}
+  .ga-bar.ga-bar-video .ga-bar-t b{white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+  .ga-bar.ga-bar-video .ga-bar-b{width:36px;height:36px}
+  .ga-bar.ga-bar-video .ga-bar-mode{height:36px;padding:0 6px}
+  .ga-barred-video #genre-atlas{padding-bottom:208px}
 }
 
 /* mobile: the map turned upright (lineage on top, the genre in the middle,

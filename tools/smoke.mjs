@@ -814,6 +814,23 @@ try {
 		check( 'mobile : un appui long sur un genre de la carte le fait entendre, sans changer de centre', !! hb && Number( heldOn ) === sk.id && stay === sc.name.toLowerCase() && await theardAll() - beforeHold === 1,
 			`${ await theardAll() - beforeHold } titre(s), centre « ${ stay } »` );
 		await tel.screenshot( { path: `${ SHOTS }/14d-appui-long.png` } );
+		// A full track on a phone: the video goes into the bar, which grows,
+		// and the page makes room for it, so nothing is hidden under a card.
+		await tel.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await centre( tel, sv );
+		await tel.locator( `.ga-mobile [data-hear="${ sv.id }"]` ).click();
+		await tel.waitForFunction( () => ( window.__yt || [] ).some( x => x[ 0 ] === 'video' ), null, { timeout: 8000 } ).catch( () => {} );
+		await tel.locator( '.ga-bar-note [data-bar="ok"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await tel.evaluate( () => window.scrollTo( 0, document.documentElement.scrollHeight ) );
+		await tel.waitForTimeout( 300 );
+		const fit = await tel.evaluate( () => {
+			const bar = document.querySelector( '.ga-bar' ).getBoundingClientRect(), card = document.querySelector( '.ga-bar-yt' ).getBoundingClientRect();
+			const foot = [ ...document.querySelectorAll( '#genre-atlas .ga-foot' ) ].pop().getBoundingClientRect();
+			return { inBar: card.top >= bar.top - 1 && card.bottom <= bar.bottom + 1 && card.width >= 200 && card.height >= 200, footClear: foot.bottom <= bar.top + 1, wide: document.documentElement.scrollWidth };
+		} );
+		await tel.screenshot( { path: `${ SHOTS }/14f-video-mobile.png` } );
+		check( 'mobile : un titre entier met la video dans la barre, la page reste lisible jusqu en bas', fit.inBar && fit.footClear && fit.wide <= 390,
+			`${ fit.inBar ? 'video dans la barre' : 'video hors de la barre' }, ${ fit.footClear ? 'pied visible' : 'pied cache' }, ${ fit.wide } px` );
 		await tel.close();
 	} else {
 		check( 'son : un genre de l arbre a des extraits a jouer', false );

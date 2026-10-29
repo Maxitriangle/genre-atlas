@@ -461,6 +461,13 @@
     audio.pause();
     if (YTP && YTP.stopVideo) YTP.stopVideo();
     card.hidden = true; clearInterval(tick);
+    video(false);
+  }
+  // While YouTube plays, the bar holds its card: above the bar on a wide
+  // screen, inside it on a phone, where a floating card would hide the page.
+  function video(on) {
+    bar.classList.toggle('ga-bar-video', on);
+    document.documentElement.classList.toggle('ga-barred-video', on);
   }
   function playPreview(id, t) {
     quiet();
@@ -474,7 +481,7 @@
     var ask = PL.ask;
     audio.pause();
     PL.kind = 'full'; PL.list = list; PL.at = at || 0; PL.track = list[PL.at]; PL.genre = PL.track.genre;
-    card.hidden = false;
+    card.hidden = false; video(true);
     drawBar(); showBar(true);
     youtube().then(function (p) {
       if (ask !== PL.ask || PL.kind !== 'full') return;

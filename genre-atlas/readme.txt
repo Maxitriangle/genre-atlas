@@ -35,7 +35,8 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   as the desktop ring. A tap glides a subgenre into the centre, a tap on the lineage goes back up, and holding a
   genre plays its 30 seconds. MAP / LIST switches to the vertical tree.
 * Sound: full songs by default, in YouTube's own player (youtube.com, so its Premium subscribers hear no ads),
-  which the player bar drives and shows in a 200 x 200 card while it plays, as YouTube requires: HEAR on the panel
+  which the player bar drives and shows in a 200 x 200 card while it plays, as YouTube requires (above the bar on
+  a wide screen, inside it on a phone, where the bar grows and the page makes room rather than hide under the card): HEAR on the panel
   and on mobile, RADIO, holding a genre on a phone, and the dossier's songs. The first time, the bar says that
   YouTube may set its cookies and show its ads. FULL / 30 S in the bar switches to Deezer's 30-second previews,
   which also play when the pointer rests on a genre once SOUND ON (header, screens with a mouse) is chosen, and for
