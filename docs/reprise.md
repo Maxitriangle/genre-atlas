@@ -907,3 +907,16 @@ Vu par Maxime sur le site, juste après la v0.18.0 : HEAR et RADIO ne font rien,
 **Chez Maxime** : mettre à jour l'extension, sans réimport.
 
 **Publiée et vérifiée le 29/10/2026** : v0.18.1 installée chez Maxime, le son marche. Vérifié en ligne : `/wp-json/genre-atlas/v1/sound/2108` renvoie « Lip up Fatty » de Bad Manners (2 Tone) avec son extrait Deezer. Avis de Maxime : « le lecteur est parfait ». Il reste des améliorations d'UX, qu'il veut voir plus tard ; les lui demander le moment venu.
+
+## Carte mobile pivotée : maquette (29/10/2026)
+Remarque de Maxime : sur téléphone, il n'y a pas de carte avec les nœuds, seulement la liste, « moins visuelle et moins fluide ».
+
+**Choix faits avec lui** :
+- **la carte pivotée** : la lignée en haut (deux niveaux au plus, puis « ↑ NN LEVELS ABOVE »), le genre au centre en grand, ses sous-genres en éventail dessous, en deux rangées de 4 au plus. On garde les règles de la carte : 8 nœuds au plus, les mêmes groupes éditoriaux ;
+- toucher un sous-genre le fait **glisser au centre** ; toucher un genre de la lignée fait remonter ;
+- **un appui long** sur un nœud joue ses 30 s, à la place du survol et de SOUND ON ;
+- **la liste reste**, derrière un bouton MAP / LIST comme sur ordinateur.
+
+Écarté : la roue complète en petit (les noms se chevauchent sur 390 px) et une roue qu'on fait tourner du doigt (trop proche du cadran supprimé en v0.7.0).
+
+**Maquette cliquable**, privée, à ouvrir sur téléphone : https://claude.ai/artifact/5Jj4R5UVypbHYSRe2fK4wr. Elle contient les 2 098 vrais genres (arbre du site en ligne du 29/10), ainsi que le code des glyphes et des groupes copié d'`atlas.js`. Le son y est simulé. Les fiches ouvrent le vrai site. Le placement de l'éventail se fait en deux temps : on mesure d'abord le bloc du nom au centre, puis on place les rangées et les liens dessous. En attente des retours de Maxime avant de l'intégrer à l'extension.
