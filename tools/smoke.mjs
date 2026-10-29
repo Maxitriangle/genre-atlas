@@ -243,7 +243,7 @@ try {
 		const spotify = await page.locator( '.ga-dossier .ga-track a[href^="https://open.spotify.com/search/"]' ).count();
 		check( 'ecoute : un titre par artiste cle, dans le meme ordre, chacun avec Spotify', tracks.length > 0 && tracks.length <= names.length && inOrder && spotify === tracks.length,
 			`${ tracks.length } titre(s), ${ spotify } lien(s) Spotify` );
-		const before = await page.locator( '.ga-dossier .ga-player iframe' ).count();
+		const before = await page.locator( '.ga-bar .ga-bar-yt iframe' ).count();
 		await page.locator( '.ga-dsec:has(.ga-tracks)' ).screenshot( { path: `${ SHOTS }/05d-ecoute.png` } ).catch( () => {} );
 		await page.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
 		// YouTube plays the playlist parameter from its start and skips the
@@ -251,7 +251,7 @@ try {
 		const videos = await page.locator( '.ga-dossier .ga-track a[href^="https://www.youtube.com/watch?v="]' ).evaluateAll( l => l.map( a => a.href.split( 'v=' )[ 1 ] ) );
 		const playlist = async sel => {
 			await page.locator( sel ).click();
-			const src = await page.locator( '.ga-dossier .ga-player iframe' ).getAttribute( 'src' ).catch( () => '' );
+			const src = await page.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
 			const m = ( src || '' ).match( /^https:\/\/www\.youtube-nocookie\.com\/embed\/([\w-]{11})\?.*playlist=([\w,-]+)/ );
 			return m && m[ 2 ].split( ',' )[ 0 ] === m[ 1 ] ? m[ 2 ].split( ',' ) : [];
 		};
@@ -261,8 +261,17 @@ try {
 		const second = videos.length > 1 ? await playlist( '.ga-dossier .ga-track:has(a[href*="' + videos[ 1 ] + '"]) .ga-play' ) : [];
 		check( 'ecoute : le bouton d un titre lance ce titre, puis la suite', second[ 0 ] === videos[ 1 ] && second.length === videos.length,
 			`premiere ${ second[ 0 ] || '-' } pour ${ videos[ 1 ] || '-' }` );
-		await page.unroute( /youtube(-nocookie)?\.com/ );
+		// The player lives in the bar, outside the page: back on the map, the
+		// same list keeps playing; ✕ stops it and takes the bar away.
+		const playing = await page.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
 		await page.screenshot( { path: `${ SHOTS }/05c-fiche-wikipedia.png`, fullPage: true } );
+		await page.locator( '.ga-dossier [data-close]' ).click();
+		await page.waitForSelector( '.ga-map .ga-node', { timeout: 10000 } );
+		const kept = await page.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
+		await page.locator( '.ga-bar [data-bar="close"]' ).click();
+		const gone = await page.locator( '.ga-bar' ).isHidden() && await page.locator( '.ga-bar iframe' ).count() === 0;
+		check( 'ecoute : le lecteur continue sur la carte, et ✕ l arrete', !! playing && kept === playing && gone, `${ kept === playing ? 'meme liste' : 'liste perdue' }, ${ gone ? 'barre fermee' : 'barre restee' }` );
+		await page.unroute( /youtube(-nocookie)?\.com/ );
 	} else {
 		check( 'fiche : le genre Shoegaze existe pour tester le credit Wikipedia', false );
 	}
@@ -615,6 +624,106 @@ try {
 		await phone4.close();
 	}
 
+	// 8c. Sound: pointing at a genre plays Deezer's 30-second preview, once
+	// SOUND ON is chosen, in a bar that keeps playing from page to page. The
+	// bench plays Deezer: the API through fake-platforms.php, the preview here.
+	const sc = tree.nodes.find( n => {
+		const k = tree.nodes.filter( x => x.p === n.id );
+		return ! n.g && k.length >= 2 && k.length <= 6 && k.some( x => x.s ) && ! k.some( x => x.g );
+	} );
+	if ( sc ) {
+		const sk = tree.nodes.find( x => x.p === sc.id && x.s );
+		const snd = await newPage( 1440, 900 );
+		const WAV = Buffer.alloc( 44 + 8000 );
+		WAV.write( 'RIFF', 0 ); WAV.writeUInt32LE( 36 + 8000, 4 ); WAV.write( 'WAVEfmt ', 8 ); WAV.writeUInt32LE( 16, 16 ); WAV.writeUInt16LE( 1, 20 ); WAV.writeUInt16LE( 1, 22 );
+		WAV.writeUInt32LE( 8000, 24 ); WAV.writeUInt32LE( 8000, 28 ); WAV.writeUInt16LE( 1, 32 ); WAV.writeUInt16LE( 8, 34 ); WAV.write( 'data', 36 ); WAV.writeUInt32LE( 8000, 40 ); WAV.fill( 128, 44 );
+		const heard = [], asked = [];
+		await snd.route( /dzcdn\.net/, r => { heard.push( r.request().url() ); return r.fulfill( { status: 200, contentType: 'audio/wav', body: WAV } ); } );
+		snd.on( 'request', r => r.url().includes( '/genre-atlas/v1/sound/' ) && asked.push( r.url() ) );
+		await centre( snd, sc );
+		const node = snd.locator( `.ga-map .ga-node[data-go="${ sk.id }"], .ga-map .ga-node[data-centre="${ sk.id }"]` ).first();
+		await node.hover();
+		await snd.waitForTimeout( 900 );
+		const silent = asked.length === 0 && heard.length === 0 && await snd.locator( '.ga-bar' ).isHidden();
+		check( 'son : rien ne joue ni ne part chez Deezer avant SOUND ON', silent && /SOUND OFF/.test( await snd.locator( '.ga-sound' ).innerText() ), `${ asked.length } demande(s), ${ heard.length } extrait(s)` );
+		await snd.locator( '.ga-sound' ).click();
+		await snd.locator( '.ga-map .ga-node.centre' ).hover();
+		await snd.waitForTimeout( 100 );
+		await snd.locator( `.ga-map .ga-node[data-go="${ sk.id }"], .ga-map .ga-node[data-centre="${ sk.id }"]` ).first().hover();
+		await snd.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
+		const want = await fetch( `${ BASE }/wp-json/genre-atlas/v1/sound/${ sk.id }?i=0` ).then( r => r.json() );
+		const title = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
+		check( 'son : SOUND ON, pointer un genre joue 30 s de lui dans la barre', title === want.title && heard.length === 1 && heard[ 0 ].includes( 'dzcdn.net' ) && /SOUND ON/.test( await snd.locator( '.ga-sound' ).innerText() ),
+			`« ${ title } » pour « ${ want.title } », ${ heard.length } extrait(s)` );
+		await snd.screenshot( { path: `${ SHOTS }/14-son.png` } );
+		// Clicking the genre redraws the page: the bar plays on, then on the dossier too.
+		await node.click();
+		await snd.waitForTimeout( 300 );
+		const onMap = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
+		await snd.locator( '.ga-panel [data-about]' ).first().click();
+		await snd.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
+		const onDossier = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
+		check( 'son : la barre continue de la carte a la fiche', onMap === title && onDossier === title && heard.length === 1, `${ heard.length } extrait(s) charge(s)` );
+		await snd.locator( '.ga-bar [data-bar="close"]' ).click();
+		const closed = await snd.locator( '.ga-bar' ).isHidden();
+		await snd.reload( { waitUntil: 'networkidle' } );
+		await snd.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		const remembered = /SOUND ON/.test( await snd.locator( '.ga-sound' ).innerText().catch( () => '' ) );
+		const stored = ( await snd.context().cookies() ).length;
+		check( 'son : ✕ ferme la barre, SOUND ON est garde dans le navigateur, sans cookie', closed && remembered && stored === 0, `${ stored } cookie(s)` );
+		await snd.close();
+
+		// The radio of a branch: one preview per genre, shuffled, the next
+		// genre when a preview ends (the bench's preview lasts one second).
+		const air = n => {
+			const out = [];
+			( function walk( id ) { for ( const k of tree.nodes.filter( x => x.p === id && ! x.f ) ) { out.push( k ); walk( k.id ); } } )( n.id );
+			return [ n, ...out ].filter( x => x.s );
+		};
+		const rc = tree.nodes.find( n => ! n.f && n.p && air( n ).length >= 4 && tree.nodes.filter( x => x.p === n.id ).length <= 6 );
+		if ( rc ) {
+			const onAir = new Set( air( rc ).map( x => x.id ) );
+			const rd = await newPage( 1440, 900 );
+			const played = [];
+			await rd.route( /dzcdn\.net/, r => { played.push( r.request().url() ); return r.fulfill( { status: 200, contentType: 'audio/wav', body: WAV } ); } );
+			await centre( rd, rc );
+			await rd.locator( `.ga-panel [data-radio="${ rc.id }"]` ).click();
+			await rd.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-radio', { timeout: 8000 } ).catch( () => {} );
+			const label = await rd.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
+			const genreOf = async () => Number( await rd.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => 0 ) );
+			const first = await genreOf();
+			await rd.waitForFunction( () => /\b02\//.test( document.querySelector( '.ga-bar-radio' )?.textContent || '' ), null, { timeout: 8000 } ).catch( () => {} );
+			const second = await genreOf();
+			const auto = await rd.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
+			await rd.locator( '.ga-bar [data-bar="next"]' ).click();
+			await rd.waitForFunction( () => /\b03\//.test( document.querySelector( '.ga-bar-radio' )?.textContent || '' ), null, { timeout: 8000 } ).catch( () => {} );
+			const third = await genreOf();
+			await rd.screenshot( { path: `${ SHOTS }/14c-radio.png` } );
+			check( `radio : « ${ rc.name } » enchaine ses genres, seul et avec ⏭, sans sortir de la branche`,
+				label.startsWith( `RADIO ${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
+				&& new Set( [ first, second, third ] ).size === 3 && played.length >= 3,
+				`${ label } → ${ auto }, ${ played.length } extrait(s)` );
+			await rd.locator( '.ga-bar [data-bar="close"]' ).click();
+			await rd.close();
+		} else {
+			check( 'radio : une branche de l arbre a au moins quatre genres avec extrait', false );
+		}
+
+		const tel = await newPage( 390, 844 );
+		const theard = [];
+		await tel.route( /dzcdn\.net/, r => { theard.push( r.request().url() ); return r.fulfill( { status: 200, contentType: 'audio/wav', body: WAV } ); } );
+		await centre( tel, sk );
+		const hasToggle = await tel.locator( '.ga-sound' ).count();
+		await tel.locator( '.ga-mobile [data-hear]' ).first().click();
+		await tel.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
+		const tw = await tel.evaluate( () => Math.max( document.documentElement.scrollWidth, document.querySelector( '.ga-bar' ).scrollWidth ) );
+		await tel.screenshot( { path: `${ SHOTS }/14b-son-mobile.png` } );
+		check( 'mobile : HEAR joue l extrait sans interrupteur, la barre tient dans la largeur', theard.length === 1 && hasToggle === 0 && tw <= 390, `${ theard.length } extrait(s), ${ tw } px` );
+		await tel.close();
+	} else {
+		check( 'son : un genre de l arbre a des extraits a jouer', false );
+	}
+
 	// 9. Import screen, behind the login.
 	const admin = await newPage( 1440, 900 );
 	await admin.goto( `${ BASE }/wp-login.php`, { waitUntil: 'networkidle' } );
@@ -729,7 +838,7 @@ try {
 		const row = await admin.locator( '.ga-dossier .ga-track' ).allInnerTexts();
 		await admin.route( /youtube(-nocookie)?\.com/, r => r.fulfill( { status: 200, contentType: 'text/html', body: '<!doctype html><title>player</title>' } ) );
 		await admin.locator( '.ga-dossier .ga-listen-head [data-play]' ).click();
-		const src = await admin.locator( '.ga-dossier .ga-player iframe' ).getAttribute( 'src' ).catch( () => '' );
+		const src = await admin.locator( '.ga-bar .ga-bar-yt iframe' ).getAttribute( 'src' ).catch( () => '' );
 		await admin.unroute( /youtube(-nocookie)?\.com/ );
 		const plain = await ( await fetch( exAbout ) ).text();
 		check( 'exemples : accepte, il s affiche dans LISTEN, se joue au clic et figure dans la page sans script',

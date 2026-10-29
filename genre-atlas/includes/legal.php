@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const GENRE_ATLAS_LEGAL_UPDATED = '2026-10-23'; // Change it with the text.
+const GENRE_ATLAS_LEGAL_UPDATED = '2026-10-29'; // Change it with the text.
 
 add_action( 'init', 'genre_atlas_legal_route', 11 );
 function genre_atlas_legal_route() {
@@ -59,22 +59,23 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
+			'<b>Your sound choice</b>: when you switch SOUND ON, your browser remembers it in its own storage (local storage, not a cookie), so the map stays audible on your next visit. It never leaves your device; switching SOUND OFF erases it.',
 			'There is no account, no newsletter and no advertising.',
 		),
 		'Cookies'                   => array(
 			$matomo
 				? 'This site sets no cookie on your device, which is why it asks for no consent. The one exception is a cookie you ask for: if you choose not to be counted, a cookie named mtm_consent_removed remembers that choice. (WordPress uses cookies for the publisher’s own login, never for visitors.)'
 				: 'This site sets no cookie on your device and uses no tracker, which is why it asks for no consent. (WordPress uses cookies for the publisher’s own login, never for visitors.)',
-			'Songs play from YouTube only when you press PLAY, in YouTube’s privacy-enhanced mode (youtube-nocookie.com). From then on, Google’s privacy policy applies to the player. The links to Spotify, Deezer, Wikipedia and the other platforms take you to those sites, under their own rules.',
+			'Previews of 30 seconds play from Deezer’s servers only once you switch SOUND ON or press HEAR: from then on, Deezer sees your IP address when a preview loads, under its own privacy policy, and sets no cookie through this site. Songs play in full from YouTube only when you press PLAY, in YouTube’s privacy-enhanced mode (youtube-nocookie.com). From then on, Google’s privacy policy applies to the player. The links to Spotify, Deezer, Wikipedia and the other platforms take you to those sites, under their own rules.',
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
 		'Your rights'               => array(
 			'Under the GDPR and the French data protection act, you can see, correct or have deleted what the site keeps about you, and object to its use' . ( $matomo ? ' (for the visit counter, the button above is enough)' : '' ) . '. Write through the ' . $contact . '. If you think your rights have not been respected, you can complain to the CNIL (<a href="https://www.cnil.fr/">cnil.fr</a>).',
 		),
 		'Sources and credits'       => array(
-			'<b>Genres</b>, their lineage, origin and epoch come from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), checked and arranged by hand; genre identifiers also link to <a href="https://musicbrainz.org/">MusicBrainz</a>.',
+			'<b>Genres</b>, their lineage, origin and epoch come from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), checked and arranged by hand; genre identifiers also link to <a href="https://musicbrainz.org/">MusicBrainz</a>. Some key artists were found through MusicBrainz’s genre tags (<a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>).',
 			'<b>Texts</b> marked “Text from Wikipedia” are the introductions of the English <a href="https://en.wikipedia.org/">Wikipedia</a> articles, under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> licence, linked to their article on every page.',
-			'<b>Artist photos</b> come from <a href="https://commons.wikimedia.org/">Wikimedia Commons</a>, reworked as halftone pictures; each one names its author and licence beside it. <b>Songs</b> are the artists’ most played tracks on Deezer.',
+			'<b>Artist photos</b> come from <a href="https://commons.wikimedia.org/">Wikimedia Commons</a>, reworked as halftone pictures; each one names its author and licence beside it. <b>Songs</b> are the artists’ most played tracks on Deezer, or a track from an album MusicBrainz files under the genre; previews are Deezer’s. <b>Listening examples</b> are YouTube videos chosen by hand for genres no key artist gives a song to.',
 			'<b>The font</b> is Azeret Mono, under the SIL Open Font License.',
 			'The rest, the tree as it is arranged, its editorial groups, the glyphs drawn from the data and the code, is the publisher’s own work. Found a mistake, or a credit that is missing? The ' . $contact . ' is the place.',
 		),

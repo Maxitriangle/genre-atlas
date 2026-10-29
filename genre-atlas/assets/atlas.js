@@ -242,7 +242,7 @@
     return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
       '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.contact && !S.legal && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
       '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a>' +
-      '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a></nav>' +
+      '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a></nav>' + soundToggle() +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
   function subbar(sel) {
@@ -275,7 +275,7 @@
     return '<aside class="ga-panel" aria-label="Selected genre" style="--fam:' + color(n) + '"><div class="ga-panel-top"><span>LEVEL ' + pad(depth(n)) + '</span><span class="fam">' + (n.grp ? '[GROUP]' : '[SELECTED]') + '</span></div>' +
       '<div class="ga-panel-head">' + glyph(n, 120) + '<div><h1>' + esc(n.name) + '</h1>' + (lineage ? '<p class="fam">↳ ' + esc(lineage) + '</p>' : '<p class="fam">FAMILY</p>') + (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : '') + '</div></div>' +
       (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') + '<div>' + rows + '</div>' +
-      (n.grp ? '' : '<a class="ga-cta" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') +
+      (n.grp ? '' : '<a class="ga-cta" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') + hearButton(n, true) +
       (n.kids.length && !isCentre ? '<a class="ga-cta ghost" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>CENTRE ON ' + esc(n.name) + '</span><span>⊕</span></a>' : '') +
       (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — A TO Z</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + foot() + '</aside>';
   }
@@ -329,7 +329,8 @@
       var k = arc[j];
       html += '<a class="ga-leaf" href="' + esc(url(k)) + '" data-go="' + k.id + '" style="left:' + f2(p[0]) + 'px;top:' + f2(p[1]) + 'px">' + glyph(k, 40) + '<span><b>' + esc(k.name) + '</b><i>' + esc(micro(k)) + (k.total ? ' · +' + pad(k.total) + ' SUB' : '') + '</i></span></a>';
     });
-    var info = '<div class="ga-mapinfo"><p class="ga-micro">MAP NODE — ' + esc(centre.name) + '</p><p class="ga-micro">LEVELS ' + pad(anc.length + 1) + ' → ' + pad(anc.length + 2) + ' · CLICK TO OPEN · CLICK AGAIN TO CENTRE</p>';
+    var info = '<div class="ga-mapinfo"><p class="ga-micro">MAP NODE — ' + esc(centre.name) + '</p><p class="ga-micro">LEVELS ' + pad(anc.length + 1) + ' → ' + pad(anc.length + 2) + ' · CLICK TO OPEN · CLICK AGAIN TO CENTRE</p>' +
+      (HOVER ? '<p class="ga-micro">' + (SOUND ? 'SOUND ON · POINT AT A GENRE TO HEAR 30 S OF IT' : 'SOUND OFF · SWITCH IT ON TO HEAR A GENRE AS YOU POINT AT IT') + '</p>' : '');
     if (centre.grouped) {
       info += '<p class="ga-micro">' + pad(centre.grouped) + ' SUBGENRES GROUPED INTO ' + pad(all.length) + ' — TOO WIDE TO SHOW ONE BY ONE</p>';
     }
@@ -365,13 +366,164 @@
       if (on) {
         h += '<div class="ga-msub">' + (k.d ? '<p class="ga-desc">' + esc(k.d) + '</p>' : '') + '<p class="ga-micro">' + esc([k.o, k.y, k.b ? bpmText(k) : ''].filter(Boolean).join(' · ') || 'NO DATA YET') + '</p>' +
           k.kids.map(function (g) { return '<a class="ga-mrow sub" href="' + esc(url(g)) + '" data-go="' + g.id + '">' + glyph(g, 32) + '<span><b>' + esc(g.name) + '</b><i>' + esc(micro(g)) + '</i></span>' + (g.total ? '<em>+' + pad(g.total) + '</em>' : '') + '</a>'; }).join('') +
-          (k.grp ? '' : '<a class="ga-cta" href="' + esc(url(k)) + 'about/" data-about="' + k.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') +
+          (k.grp ? '' : '<a class="ga-cta" href="' + esc(url(k)) + 'about/" data-about="' + k.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') + hearButton(k, true) +
           (k.kids.length ? '<a class="ga-cta ghost" href="' + esc(url(k)) + '#centre" data-centre="' + k.id + '"><span>CENTRE ON ' + esc(k.name) + '</span><span>⊕</span></a>' : '') + '</div>';
       }
       return h;
     }).join('');
     return '<main class="ga-mobile" style="--fam:' + color(centre) + '"><nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
-      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad"><a class="ga-cta" href="' + esc(url(centre)) + 'about/" data-about="' + centre.id + '"><span>OPEN DOSSIER</span><span>↗</span></a></div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div>' + foot() + '</main>';
+      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad"><a class="ga-cta" href="' + esc(url(centre)) + 'about/" data-about="' + centre.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>' + hearButton(centre, true) + '</div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div>' + foot() + '</main>';
+  }
+
+  /* ---------- sound ----------
+   * One player for the whole visit, kept outside the page that render()
+   * rewrites, so it plays on while the map, the list or a dossier changes
+   * under it. Two kinds of sound:
+   * - a preview, Deezer's 30-second extract of one of a genre's songs: played
+   *   when the pointer rests on a genre, once SOUND ON has been chosen, or
+   *   with ▶ HEAR at any time;
+   * - the dossier's songs in full, in YouTube's player, which the bar holds
+   *   in a card above it.
+   * The radio of a branch chains previews: one song of each genre of the
+   * branch, in a shuffled order, the next genre when a preview ends. Like the
+   * random draw, it stops at the tiles: Rock's radio leaves Metal to its own.
+   * Nothing reaches Deezer or YouTube before one of those choices.
+   */
+  var SOUND = (function () { try { return localStorage.getItem('ga-sound') === '1'; } catch (e) { return false; } })();
+  var HOVER = !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);
+  var PL = { kind: '', genre: 0, track: null, next: {}, ask: 0, yt: '', radio: null };
+  var bar = document.createElement('div');
+  bar.className = 'ga-bar'; bar.hidden = true; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Player');
+  root.parentNode.insertBefore(bar, root.nextSibling);
+  var audio = document.createElement('audio');
+  audio.preload = 'none';
+  function clock(t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + pad(t % 60); }
+  function setSound(on) {
+    SOUND = on;
+    try { if (on) localStorage.setItem('ga-sound', '1'); else localStorage.removeItem('ga-sound'); } catch (e) { /* private mode: for this visit only */ }
+    if (!on && PL.kind === 'preview') stopSound();
+    render();
+  }
+  function showBar(on) {
+    var was = !bar.hidden;
+    bar.hidden = !on;
+    document.documentElement.classList.toggle('ga-barred', on);
+    // The map is laid out to the room it has: give back or take the bar's height.
+    if (was !== on && !S.about && !S.contact && !S.legal && !S.random && root.querySelector('.ga-map')) render();
+  }
+  function hear(id, onAir) {
+    var n = N[id];
+    if (!onAir) PL.radio = null;                       // a genre asked for by hand ends the radio
+    if (!n || !n.s || !CFG.soundApi) return;
+    var ask = ++PL.ask, i = PL.next[id] || 0;
+    fetch(CFG.soundApi + id + '?i=' + i).then(function (r) { return r.ok ? r.json() : null; }).then(function (t) {
+      if (ask !== PL.ask) return;                      // another genre was asked for meanwhile
+      if (!t) { if (onAir && PL.radio) skip(); return; }
+      PL.next[id] = t.i + 1;
+      PL.kind = 'preview'; PL.genre = id; PL.track = t; PL.yt = '';
+      audio.src = t.preview;
+      var go = audio.play(); if (go && go.catch) go.catch(function () { drawBar(); });
+      drawBar(); showBar(true);
+    }).catch(function () { if (onAir && PL.radio && ask === PL.ask) skip(); });
+  }
+  function onAirList(n) {
+    return [n].concat(descendants(n)).filter(function (k) { return k.s; });
+  }
+  function shuffle(list) {
+    for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), x = list[i]; list[i] = list[j]; list[j] = x; }
+    return list;
+  }
+  function radio(id) {
+    var n = N[id], list = n ? onAirList(n) : [];
+    if (!list.length) return;
+    PL.radio = { from: id, queue: shuffle(list.map(function (k) { return k.id; })), at: 0, missed: 0 };
+    hear(PL.radio.queue[0], true);
+  }
+  // The next genre of the radio; past the last one, a new shuffle. A genre
+  // whose preview fails is passed over, but a radio that only fails stops.
+  function skip(played) {
+    var r = PL.radio;
+    if (!r) return;
+    r.missed = played ? 0 : r.missed + 1;
+    if (r.missed >= Math.min(5, r.queue.length)) { stopSound(); return; }
+    r.at++;
+    if (r.at >= r.queue.length) { shuffle(r.queue); r.at = 0; }
+    hear(r.queue[r.at], true);
+  }
+  function watch(n, ids, titles) {
+    audio.pause(); PL.ask++; PL.radio = null;
+    PL.kind = 'youtube'; PL.genre = n.id; PL.yt = ids[0]; PL.track = { title: titles[0] || n.name, count: ids.length };
+    // The embed plays the playlist parameter from its start and skips the
+    // video in the path, so the list carries every song, the first included.
+    drawBar('<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(ids[0]) + '?autoplay=1&rel=0&playlist=' + ids.map(encodeURIComponent).join(',') +
+      '" title="' + esc(n.name) + ' on YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>');
+    showBar(true);
+  }
+  function stopSound() {
+    audio.pause(); audio.removeAttribute('src'); PL.ask++;
+    PL.kind = ''; PL.track = null; PL.yt = ''; PL.radio = null;
+    bar.innerHTML = ''; showBar(false);
+  }
+  function drawBar(frame) {
+    var n = N[PL.genre], t = PL.track;
+    if (!n || !t) return;
+    var link = '<a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + esc(n.name) + '</a>';
+    var html = '<div class="ga-bar-in" style="--fam:' + color(n) + '">' + glyph(n, 32) + '<div class="ga-bar-t">';
+    if (PL.kind === 'preview') {
+      var r = PL.radio, on = r && N[r.from];
+      html += '<b>' + esc(t.title) + '</b><span class="ga-micro">' + (on ? '<span class="ga-bar-radio">RADIO ' + esc(on.name.toUpperCase()) + ' ' + pad(r.at + 1) + '/' + pad(r.queue.length) + '</span> · ' : '') + esc(t.artist.toUpperCase()) + ' · ' + link + '</span></div>' +
+        '<button type="button" class="ga-bar-b" data-bar="toggle" aria-label="' + (audio.paused ? 'Play' : 'Pause') + '">' + (audio.paused ? '▶' : '❚❚') + '</button>' +
+        (PL.radio ? '<button type="button" class="ga-bar-b" data-bar="next" aria-label="Next genre on the radio">⏭</button>' :
+          t.count > 1 ? '<button type="button" class="ga-bar-b" data-bar="next" aria-label="Another song of ' + esc(n.name) + '">⏭</button>' : '') +
+        '<span class="ga-micro ga-bar-time">' + clock(audio.currentTime) + ' / 0:30 · PREVIEW</span>' +
+        '<a class="ga-bar-out" href="' + esc(t.deezer) + '" target="_blank" rel="noopener">FULL ON DEEZER<span aria-hidden="true">↗</span></a>';
+    } else {
+      html += '<b>' + esc(n.name) + '</b><span class="ga-micro">' + pad(t.count) + ' TRACK' + (t.count > 1 ? 'S' : '') + ' ON YOUTUBE · ' + link + '</span></div>';
+    }
+    html += '<button type="button" class="ga-bar-b" data-bar="close" aria-label="Stop and close the player">✕</button>' +
+      '<span class="ga-bar-line"><i style="width:' + (PL.kind === 'preview' && audio.duration ? f2(100 * audio.currentTime / audio.duration) : 0) + '%"></i></span></div>';
+    // The YouTube card is written once per list: redrawing it would restart the song.
+    var card = bar.querySelector('.ga-bar-yt'), info = bar.querySelector('.ga-bar-in');
+    if (frame) { bar.innerHTML = '<div class="ga-bar-yt">' + frame + '</div>' + html; return; }
+    if (card && PL.kind !== 'youtube') bar.removeChild(card);
+    if (info) info.outerHTML = html; else bar.insertAdjacentHTML('beforeend', html);
+  }
+  audio.addEventListener('timeupdate', function () {
+    var tm = bar.querySelector('.ga-bar-time'), ln = bar.querySelector('.ga-bar-line i');
+    if (tm) tm.textContent = clock(audio.currentTime) + ' / 0:30 · PREVIEW';
+    if (ln && audio.duration) ln.style.width = f2(100 * audio.currentTime / audio.duration) + '%';
+  });
+  ['play', 'pause'].forEach(function (ev) { audio.addEventListener(ev, function () { if (PL.kind === 'preview') drawBar(); }); });
+  audio.addEventListener('ended', function () { if (PL.radio) skip(true); else if (PL.kind === 'preview') drawBar(); });
+  bar.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bar],[data-about]');
+    if (!b) return;
+    if (b.hasAttribute('data-about')) { if (e.metaKey || e.ctrlKey) return; e.preventDefault(); S.q = ''; openDossier(N[b.getAttribute('data-about')]); return; }
+    var act = b.getAttribute('data-bar');
+    if (act === 'close') stopSound();
+    else if (act === 'next') { if (PL.radio) skip(true); else hear(PL.genre); }
+    else if (act === 'toggle') { if (audio.paused) audio.play(); else audio.pause(); }
+  });
+  // Pointing at a genre plays it, once the pointer has rested a moment: a
+  // sweep across the map stays silent. Not while YouTube plays in full.
+  var hoverT = {}, HEARD = '.ga-node,.ga-leaf,.ga-kid,.ga-tile,.ga-lrow a,.ga-subs a,.ga-results a';
+  root.addEventListener('mouseover', function (e) {
+    if (!SOUND || !HOVER || isMobile()) return;
+    var t = e.target.closest(HEARD), id = t ? Number(t.getAttribute('data-go') || t.getAttribute('data-centre') || t.getAttribute('data-about')) : 0;
+    if (t && id === hoverT.id) return;
+    clearTimeout(hoverT.t);
+    hoverT = { id: id, t: 0 };
+    if (!id || !N[id] || !N[id].s || PL.kind === 'youtube' || (PL.radio && !audio.paused) || (PL.kind === 'preview' && PL.genre === id && !audio.paused)) return;
+    hoverT.t = setTimeout(function () { hear(id); }, 350);
+  });
+  function hearButton(n, ghost) {
+    var air = n.grp ? [] : onAirList(n);
+    return (n.s ? '<button type="button" class="ga-cta' + (ghost ? ' ghost' : '') + ' ga-hear" data-hear="' + n.id + '"><span>HEAR ' + esc(n.name) + '</span><span class="ga-micro">30 S</span><span aria-hidden="true">▶</span></button>' : '') +
+      (air.length > 1 ? '<button type="button" class="ga-cta ghost ga-hear" data-radio="' + n.id + '"><span>RADIO ' + esc(n.name) + '</span><span class="ga-micro">' + pad(air.length) + ' GENRES</span><span aria-hidden="true">◉</span></button>' : '');
+  }
+  function soundToggle() {
+    return HOVER && !isMobile() ? '<button type="button" class="ga-sound' + (SOUND ? ' on' : '') + '" data-sound="1" aria-pressed="' + SOUND + '" title="' + (SOUND ? 'Point at a genre to hear it' : 'Switch on to hear a genre as you point at it') + '">' +
+      '<span aria-hidden="true">' + (SOUND ? '♪' : '♪̸') + '</span>SOUND ' + (SOUND ? 'ON' : 'OFF') + '</button>' : '';
   }
 
   /* ---------- dossier: a full page per genre ----------
@@ -422,17 +574,13 @@
       '<span class="ga-tname"><b>' + esc(s.title) + '</b><span class="ga-micro">' + esc((a.example ? ['LISTENING EXAMPLE', a.name.toUpperCase()].filter(Boolean).join(' · ') : a.name.toUpperCase())) + '</span></span><span class="ga-tout">' + out + '</span></li>';
   }
   function listenPlay(i) {
-    var n = N[S.about], d = n && DOS[n.id], box = root.querySelector('.ga-player');
-    if (!d || !box) return;
-    var ids = listenTracks(n, d).map(function (a) { return a.song.youtube || ''; });
-    var from = ids.slice(i).concat(ids.slice(0, i)).filter(Boolean); // from the clicked song, then round
-    if (!from.length) return;
-    // The embed now plays the playlist parameter from its start and skips the
-    // video in the path, so the list carries every song, the first included.
-    box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(from[0]) + '?autoplay=1&rel=0' +
-      '&playlist=' + from.map(encodeURIComponent).join(',') +
-      '" title="' + esc(n.name) + ' playlist on YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
-    box.hidden = false;
+    var n = N[S.about], d = n && DOS[n.id];
+    if (!d) return;
+    var all = listenTracks(n, d).filter(function (a) { return a.song.youtube; }), at = 0;
+    var tracks = listenTracks(n, d), want = tracks[i] && tracks[i].song.youtube;
+    all.forEach(function (a, j) { if (a.song.youtube === want) at = j; });
+    var from = all.slice(at).concat(all.slice(0, at));                 // from the clicked song, then round
+    if (from.length) watch(n, from.map(function (a) { return a.song.youtube; }), from.map(function (a) { return a.song.title; }));
   }
   function viewDossier(n) {
     var d = DOS[n.id] || {}, trail = path(n), fam = family(n), subs = n.real || [];
@@ -482,7 +630,7 @@
       html += section('listen', 'LISTEN', only ? ['01 TRACK', 'LISTENING EXAMPLE', 'CHOSEN BY HAND'] :
         [pad(songs.length) + ' / ' + (songs[0].example ? '09' : '08') + ' TRACKS', 'ONE PER KEY ARTIST', 'MOST PLAYED ON DEEZER'],
         (yt ? '<div class="ga-listen-head"><button type="button" class="ga-cta" data-play="' + songs.map(function (a) { return !!a.song.youtube; }).indexOf(true) + '"><span>' + (only ? 'PLAY ON YOUTUBE' : 'PLAY ALL ON YOUTUBE') + '</span><span aria-hidden="true">▶</span></button>' +
-          '<span class="ga-micro">THE PLAYER LOADS FROM YOUTUBE WHEN YOU PRESS PLAY</span></div><div class="ga-player" hidden></div>' : '') +
+          '<span class="ga-micro">THE PLAYER LOADS FROM YOUTUBE WHEN YOU PRESS PLAY, AND KEEPS PLAYING AS YOU BROWSE</span></div>' : '') +
         '<ol class="ga-tracks">' + songs.map(listenRow).join('') + '</ol>');
     }
 
@@ -946,6 +1094,14 @@
       if (c.hasAttribute('data-contact')) openContact(Number(c.getAttribute('data-contact')));
       else if (c.hasAttribute('data-cgenre')) setGenre(Number(c.getAttribute('data-cgenre')));
       else { C.sent = false; render(); var m = document.getElementById('ga-cmsg'); if (m) m.focus(); }
+      return;
+    }
+    var h = e.target.closest('[data-hear],[data-sound],[data-radio]');
+    if (h && root.contains(h)) {
+      e.preventDefault();
+      if (h.hasAttribute('data-sound')) setSound(!SOUND);
+      else if (h.hasAttribute('data-radio')) radio(Number(h.getAttribute('data-radio')));
+      else hear(Number(h.getAttribute('data-hear')));
       return;
     }
     var p = e.target.closest('[data-play]');

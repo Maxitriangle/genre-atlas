@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.17.0
+Stable tag: 0.18.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -30,6 +30,16 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   Messages go to the address set in Genres > Settings, which visitors never see, with the visitor in Reply-To,
   and a copy is kept in Messages. No captcha and no outside service: a hidden field, a minimum of 3 seconds
   between loading and sending, and 5 messages an hour per connection.
+* Sound: SOUND ON (in the header, on screens with a mouse) plays 30 seconds of a genre when the pointer rests on it,
+  on the map, the list, the tiles and the search results; HEAR on the panel and on mobile plays it at any time.
+  The preview is Deezer's extract of one of the genre's songs, the next one each time (GET /wp-json/genre-atlas/v1/
+  sound/<id>?i=<n>; Deezer signs its address for 15 minutes, kept 10). The dossier's songs play in full in YouTube's
+  player. Both play in a bar outside the page, which keeps playing from the map to a dossier and back; ✕ stops it.
+  Nothing is asked of Deezer or YouTube before one of those choices; the SOUND ON choice is kept in the browser's
+  local storage, not in a cookie (both stated on /legal/).
+  RADIO on the panel and on mobile chains the previews of a branch: one song per genre that has one, the genre
+  itself and its subgenres, shuffled, the next genre when a preview ends (⏭ skips). Like the random draw it stops
+  at the tiles: Rock's radio leaves Metal and Punk to theirs. Pointing at a genre does not cut the radio.
 * Listening examples: a genre whose key artists have no song (often a tradition or a form: oberek, gamelan degung)
   can have a YouTube video instead. The import file proposes up to three per genre, found under the genre's name;
   they wait in Genres > Listening examples, counted on the menu, where each one is played in place, then accepted
