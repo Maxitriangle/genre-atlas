@@ -411,8 +411,10 @@
 .ga-sound{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border:1px solid var(--line)!important;font-size:11px;font-weight:600;color:var(--dim)!important;flex-shrink:0}
 .ga-sound.on{border-color:var(--fam)!important;color:var(--fam)!important}
 #genre-atlas .ga-hear{width:100%;margin-top:8px;text-align:left;text-transform:uppercase;border:1px solid var(--fam)}
+#genre-atlas .ga-hear{gap:12px}
+.ga-hear span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #genre-atlas .ga-msub .ga-hear{width:calc(100% - 28px)}
-.ga-hear .ga-micro{margin-left:auto;margin-right:12px;color:inherit;opacity:.7}
+.ga-hear .ga-micro{margin-left:auto;color:inherit;opacity:.7;white-space:nowrap}
 .ga-barred #genre-atlas{padding-bottom:64px}
 .ga-bar{--bg:#121016;--ink:#E4DFF5;--dim:#9A94B5;--line:rgba(228,223,245,.16);--panel:#18151E;
   position:fixed;z-index:50;left:0;right:0;bottom:0;color:var(--ink);font-family:'Azeret Mono',ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
