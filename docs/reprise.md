@@ -9,7 +9,7 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A, première étape faite (v0.17.0, genres muets : artistes MusicBrainz et exemples d'écoute validés par Maxime, section en bas). Ensuite : lecteur permanent, son au survol, radio de branche, puis expérience mobile et comptes utilisateurs. La visibilité (point 8 de « Ce qui attend ») passe après.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A. v0.17.0 publiée et installée (genres muets) ; v0.18.0 prête (lecteur permanent et son au survol, dernière section). Ensuite : radio de branche, puis expérience mobile et comptes utilisateurs. La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
@@ -845,3 +845,38 @@ Deux corrections du banc :
 3. ouvrir **Genres → Listening examples** : 488 genres attendent une décision, à son rythme.
 
 Rien ne s'affiche avant qu'il accepte. Les 476 nouveaux artistes s'affichent sans photo.
+
+## Lecteur permanent et son au survol (v0.18.0, 29/10/2026, pas encore publiée)
+La v0.17.0 est publiée et installée chez Maxime, avec les deux CSV réimportés (29/10/2026). Deuxième étape du point A, selon les choix faits avec lui le 28/10 : un bouton SOUND ON à activer une fois, puis le son au survol, et un lecteur qui continue pendant la navigation.
+
+**Ce que fait la v0.18.0** :
+- **SOUND ON / SOUND OFF**, dans l'en-tête, seulement sur un écran large avec une souris. Allumé, il joue **30 secondes** d'un genre quand le pointeur reste 350 ms sur lui (nœuds et feuilles de la carte, tuiles, liste, sous-genres du panneau, résultats de recherche). Un balayage rapide reste silencieux. Chaque nouveau survol du même genre passe à la chanson suivante. Le choix est gardé dans le stockage local du navigateur (`ga-sound`), pas dans un cookie. La carte rappelle l'état sous son titre ;
+- **HEAR <genre> · 30 S** sur le panneau de la carte, et sur mobile (genre au centre et genre ouvert) : il joue à tout moment, sans interrupteur, puisque le clic vaut choix ;
+- **la barre** (`.ga-bar`) est placée **hors de `#genre-atlas`**, que chaque rendu réécrit. Elle continue donc de la carte à la fiche et retour. Elle montre le glyphe, le titre, l'artiste, le genre (lien vers sa fiche), lecture ou pause, ⏭ (une autre chanson du genre), le temps, FULL ON DEEZER ↗ et ✕. Elle porte ses propres couleurs, puisqu'elle est hors du conteneur ;
+- **les chansons de la fiche** (PLAY ALL, ▶) jouent maintenant **dans la barre**, avec le lecteur YouTube dans une carte de 356 × 200 au-dessus d'elle (la taille minimale demandée par YouTube ; pleine largeur en 16:9 sur mobile). La liste continue donc pendant la navigation. Un survol ne coupe jamais une écoute YouTube.
+
+**Serveur** (`includes/sound.php`) :
+- `GET /wp-json/genre-atlas/v1/sound/<id>?i=<n>` renvoie la n-ième chanson Deezer des artistes clés (ordre A → Z de la fiche, en boucle) avec l'adresse de son extrait. Deezer signe cette adresse pour 15 minutes, et elle est gardée 10 (transient `ga_dz_<piste>`) ;
+- l'arbre porte `s` (le nombre de chansons avec extrait) : seuls ces genres réagissent au survol. La clé du cache passe à `genre_atlas_tree_v3`, et l'enregistrement d'un artiste vide le cache ;
+- le navigateur charge l'extrait chez Deezer (`cdnt-preview.dzcdn.net`).
+
+**Page légale** (mise à jour le 29/10/2026) :
+- le choix SOUND ON est gardé dans le navigateur ;
+- les extraits viennent de Deezer seulement après SOUND ON ou HEAR, et Deezer voit alors l'adresse IP ;
+- crédits : chansons tirées d'un album classé par MusicBrainz et exemples d'écoute choisis à la main. **Les étiquettes de genre de MusicBrainz sont des « données complémentaires » sous CC BY-NC-SA 3.0** (les données de base sont en CC0), ce que la page dit maintenant. C'est compatible avec un site non commercial, mais à revoir si le site devenait commercial.
+
+**Banc** : 79 vérifications, dont 6 sur le son. `fake-platforms.php` joue l'API Deezer (un extrait par piste), et `smoke.mjs` sert un WAV d'une seconde à la place de l'extrait. Elles contrôlent que :
+- rien ne part chez Deezer avant SOUND ON ;
+- SOUND ON joue l'extrait du genre survolé ;
+- la barre continue de la carte à la fiche ;
+- ✕ ferme la barre, et SOUND ON survit au rechargement sans cookie ;
+- sur mobile, HEAR joue l'extrait, sans interrupteur, et la barre tient en 390 px ;
+- la liste YouTube de la fiche continue sur la carte.
+
+Captures `14-son.png` et `14b-son-mobile.png`.
+
+**Piège** : le navigateur du banc à 390 px a une souris, et l'interrupteur s'y affichait et faisait déborder l'en-tête. L'interrupteur et le survol sont donc coupés sous 900 px (`isMobile()`), en plus du test `(hover: hover) and (pointer: fine)`.
+
+**Limite connue** : sur une nouvelle visite avec SOUND ON déjà choisi, le navigateur refuse de jouer un son avant le premier clic sur la page. La barre s'ouvre alors en pause, avec ▶.
+
+**Chez Maxime, après publication** : mettre à jour l'extension, sans réimport. L'arbre se reconstruit seul (nouvelle clé de cache).

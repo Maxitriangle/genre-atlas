@@ -103,6 +103,11 @@ add_filter( 'pre_http_request', function ( $pre, $args, $url ) {
 	if ( ! preg_match( '/(spotify|deezer|youtube|youtu\.be|apple|bandcamp|soundcloud|tidal|qobuz)/', $host ) ) {
 		return $pre;
 	}
+	// Deezer's API, for the sound previews: every track has one.
+	if ( 'api.deezer.com' === $host && preg_match( '~/track/(\d+)~', $url, $m ) ) {
+		return array( 'headers' => array(), 'cookies' => array(), 'filename' => null, 'response' => array( 'code' => 200, 'message' => 'OK' ),
+			'body' => wp_json_encode( array( 'id' => (int) $m[1], 'preview' => 'https://cdnt-preview.dzcdn.net/smoke/' . $m[1] . '.mp3' ) ) );
+	}
 	$gone = false !== strpos( rawurldecode( $url ), 'smoke-gone' );
 	return array( 'headers' => array(), 'body' => '', 'cookies' => array(), 'filename' => null,
 		'response' => array( 'code' => $gone ? 404 : 200, 'message' => $gone ? 'Not Found' : 'OK' ) );

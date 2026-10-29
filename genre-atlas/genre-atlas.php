@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.17.0
+ * Version: 0.18.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,15 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.17.0' );
+define( 'GENRE_ATLAS_VERSION', '0.18.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
-define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v2' );
+define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v3' );
 
 require_once GENRE_ATLAS_DIR . 'includes/class-genre-atlas-importer.php';
 require_once GENRE_ATLAS_DIR . 'includes/admin.php';
 require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/examples.php';
+require_once GENRE_ATLAS_DIR . 'includes/sound.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/legal.php';
@@ -209,6 +210,7 @@ function genre_atlas_tree() {
 		)
 	);
 	$editorial_groups = '1' === get_option( 'genre_atlas_groups', '1' );
+	$sounding         = genre_atlas_sounding_artists();
 	$nodes            = array();
 	foreach ( $posts as $p ) {
 		$node = array(
@@ -265,6 +267,11 @@ function genre_atlas_tree() {
 		// Whether the dossier lists artists: the random draw skips sparse dossiers.
 		if ( get_post_meta( $p->ID, 'ga_artists', true ) ) {
 			$node['a'] = 1;
+			// How many songs have a Deezer preview: the map plays them on hover.
+			$songs = count( array_intersect_key( $sounding, array_flip( genre_atlas_genre_artist_ids( $p->ID ) ) ) );
+			if ( $songs ) {
+				$node['s'] = $songs;
+			}
 		}
 		$nodes[] = $node;
 	}
@@ -330,6 +337,7 @@ function genre_atlas_enqueue() {
 			'contactApi'   => esc_url_raw( rest_url( 'genre-atlas/v1/contact' ) ),
 			'contactToken' => genre_atlas_contact_token(),
 			'pickApi'      => esc_url_raw( rest_url( 'genre-atlas/v1/pick' ) ),
+			'soundApi'     => esc_url_raw( rest_url( 'genre-atlas/v1/sound/' ) ),
 			'title'        => get_bloginfo( 'name' ),
 		)
 	);
