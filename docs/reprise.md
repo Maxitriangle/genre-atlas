@@ -1,4 +1,4 @@
-# Reprise — état au 28/10/2026
+# Reprise — état au 29/10/2026
 
 **La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
 
@@ -9,7 +9,7 @@ Versions des 22 et 23/10/2026, toutes publiées :
 
 CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **En cours** : point A. v0.17.0 publiée et installée (genres muets) ; v0.18.0 publiée le 29/10/2026, puis v0.18.1 (les extraits ne jouaient pas en ligne, dernière section). Ensuite : expérience mobile et comptes utilisateurs (Maxime a des idées sur les deux). La visibilité (point 8 de « Ce qui attend ») passe après.
+**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Point A fait** : v0.17.0 (genres muets) et v0.18.1 (son au survol, lecteur permanent, radio de branche), publiées et installées le 29/10/2026. Maxime juge le lecteur « parfait » ; il garde des améliorations d'UX pour plus tard. **Prochaine étape** : l'expérience mobile et les comptes utilisateurs (Maxime a des idées sur les deux, à recueillir avant de proposer quoi que ce soit). La visibilité (point 8 de « Ce qui attend ») passe après.
 
 **Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
 
@@ -905,3 +905,5 @@ Vu par Maxime sur le site, juste après la v0.18.0 : HEAR et RADIO ne font rien,
 **Leçon** : vérifier depuis le site en ligne, et pas seulement au banc, toute API extérieure appelée par le serveur (`curl -A "WordPress/6.8; https://every-genre.com"` reproduit l'appel). Les liens vérifiés de `picks.php` passent par le même `wp_remote_get`, mais une page HTML y vaut réponse, ce qui suffit.
 
 **Chez Maxime** : mettre à jour l'extension, sans réimport.
+
+**Publiée et vérifiée le 29/10/2026** : v0.18.1 installée chez Maxime, le son marche. Vérifié en ligne : `/wp-json/genre-atlas/v1/sound/2108` renvoie « Lip up Fatty » de Bad Manners (2 Tone) avec son extrait Deezer. Avis de Maxime : « le lecteur est parfait ». Il reste des améliorations d'UX, qu'il veut voir plus tard ; les lui demander le moment venu.
