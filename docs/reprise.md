@@ -1,19 +1,24 @@
-# Reprise — état au 29/10/2026
+# Reprise — état au 02/11/2026
 
-**La v0.16.1 est publiée et installée chez Maxime le 23/10/2026** (PR [#26](https://github.com/Maxitriangle/genre-atlas/pull/26)) : page légale `/legal/` avec Matomo déclaré et bouton de refus, chaque page comptée, lien légal au pied de chaque page. Rien n'est en attente de son côté. `main` contient tout le travail.
+**La v0.20.0 est publiée et installée chez Maxime** (PR [#34](https://github.com/Maxitriangle/genre-atlas/pull/34)) : titres entiers sur YouTube par défaut, pilotés par la barre de lecture. Maxime a vérifié en ligne : « les titres entiers marchent bien, c'est parfait ». Rien n'est en attente de son côté. `main` contient tout le travail.
 
-Versions des 22 et 23/10/2026, toutes publiées :
-- 0.14.0 : vérification des liens validés ;
-- 0.15.0 et 0.15.1 : référencement, aperçus de partage, favicon ;
-- 0.16.0 et 0.16.1 : page légale, Matomo.
+Versions du 28/10 au 02/11/2026, toutes publiées et installées :
+- **0.17.0** : les genres muets. Artistes trouvés par MusicBrainz, et exemples d'écoute YouTube validés à la main dans Genres → Listening examples ;
+- **0.18.0 et 0.18.1** : le son. SOUND ON et l'extrait au survol, une barre de lecture qui continue d'une page à l'autre, la radio de branche ; la 0.18.1 corrige l'agent refusé par Deezer ;
+- **0.19.0** : la carte pivotée sur téléphone. Lignée en haut, genre au centre, sous-genres en éventail ; appui long pour écouter ; la liste à un toucher ;
+- **0.20.0** : titres entiers sur YouTube par défaut, avec la vidéo visible (au-dessus de la barre sur ordinateur, dans la barre sur téléphone), le lecteur youtube.com (pas de pub pour les abonnés Premium) et le bouton FULL / 30 S.
 
-CookieAdmin, CookieAdmin Pro et FormLayer sont retirés du site. Search Console est validée pour le domaine, et **Bing Webmaster Tools l'a importé le 25/10/2026**.
+**Direction depuis le 28/10/2026** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir « Recul sur le projet » plus bas : la critique, les propositions A à G et les priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir). **Le point A et l'expérience mobile sont faits.**
 
-**Nouvelle direction (28/10/2026)** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir la section « Recul sur le projet », en bas : critique, propositions A à G, et priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir, plus des comptes liés à Deezer ou Spotify). **Point A fait** : v0.17.0 (genres muets) et v0.18.1 (son au survol, lecteur permanent, radio de branche), publiées et installées le 29/10/2026. Maxime juge le lecteur « parfait » ; il garde des améliorations d'UX pour plus tard. v0.19.0 (carte pivotée sur mobile) publiée et installée le 29/10/2026. **En cours** : v0.20.0, titres entiers sur YouTube par défaut (dernière section). **Ensuite** : les comptes utilisateurs, en plusieurs étapes avec Maxime. La visibilité (point 8 de « Ce qui attend ») passe après.
+**Prochaine étape convenue : les comptes utilisateurs, en plusieurs étapes, avec Maxime.** Il veut idéalement que chacun écoute en entier en se connectant à sa propre plateforme. Constat du 29/10 (section « Titres entiers sur YouTube », en bas) :
+- Deezer est fermé, Spotify limité à 5 comptes, YouTube Music n'offre rien ;
+- **Apple Music** est possible, pour ses seuls abonnés (99 $ par an de compte développeur), et Tidal est à vérifier.
 
-**Mis de côté le 27/10/2026** : Genre City, le mini-jeu. Maxime le juge trop ambitieux pour l'instant et le résultat ne le convainc pas ; il veut y réfléchir et traiter d'autres idées avant. Rien n'est sur le site. Tout est gardé (point 10 de « Ce qui attend » et dernière section) ; **ne pas le relancer sans demande de Maxime**.
+Partir de ce que Maxime veut qu'un compte apporte (favoris, « ma carte » du point D, playlists, débats du point E), et lui poser la question avant de proposer.
 
-**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis la dernière section (« Recul sur le projet »). Genre City, juste avant, est en pause.
+**Mis de côté le 27/10/2026** : Genre City, le mini-jeu (point 10 de « Ce qui attend »). **Ne pas le relancer sans demande de Maxime.**
+
+**Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les dernières sections, à partir de « Recul sur le projet ».
 
 ## Lire d'abord
 Ce fichier est chronologique : les sections les plus récentes sont **en bas**, et elles annulent parfois une décision plus haut. Pour le site actuel, lire à partir de « La fiche genre dans l'extension (v0.8.0) » jusqu'à la fin.
@@ -23,9 +28,15 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 - **Fiche genre** à sa propre adresse `/about/`. Elle comporte :
   - le texte (introduction Wikipedia pour 1 308 genres, créditée CC BY-SA 4.0 ; un texte écrit à la main n'est jamais remplacé) ;
   - la lignée ;
-  - les artistes clés (type `ga_artist`, 5 529 artistes, 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
-  - l'écoute (LISTEN) : une chanson pour 4 171 artistes, dont 3 760 jouables sur YouTube ;
+  - les artistes clés (type `ga_artist`, 5 980 artistes, dont 451 venus de MusicBrainz en v0.17.0 et sans photo ; 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
+  - l'écoute (LISTEN) : une chanson par artiste clé quand elle existe (1 520 genres ont au moins un titre), plus un **exemple d'écoute** YouTube pour les genres sans artiste qui chante, une fois validé par Maxime ;
   - les sources.
+- **Le son** (v0.18 à v0.20). Une **barre de lecture** hors de la page continue de jouer pendant la navigation :
+  - **titre entier sur YouTube par défaut** pour HEAR, RADIO, l'appui long sur téléphone et les chansons de la fiche. La vidéo reste visible (200 × 200 au-dessus de la barre, ou dans la barre sur téléphone), et la barre la pilote ;
+  - **extrait Deezer de 30 s** au survol avec SOUND ON, ou partout quand la barre est réglée sur 30 S ;
+  - **RADIO** : un titre par genre d'une branche, mélangés ;
+  - la page légale déclare les cookies et pubs de YouTube et les extraits Deezer.
+- **Carte pivotée sur téléphone** (v0.19.0) : lignée en haut, genre au centre, sous-genres en éventail (8 au plus) ; MAP / LIST.
 - **Page RANDOM** (`/genre/random/`, v0.11.0) : un genre tiré au hasard, avec un filtre par branche.
 - **Propositions de la communauté** (v0.13.0) : section COMMUNITY PICKS sur chaque fiche, sous LISTEN. N'importe qui propose un artiste ou une playlist ; rien n'apparaît avant validation dans le menu Suggestions. Depuis la v0.14.0, les liens validés sont vérifiés chaque semaine et un lien mort est signalé dans Suggestions, sans être retiré de la fiche.
 - **Contact** (`/contact/`, v0.12.0) : formulaire, entrée CONTACT au menu, bloc SUGGEST A CORRECTION au pied de chaque fiche. Les messages partent vers l'adresse réglée dans Genres → Settings et sont gardés dans Messages.
@@ -34,9 +45,10 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - genres : `wikidata-build.py` → `build-groups.py` → `wikidata-build.py` ;
   - textes : `wikipedia-fetch.py` ;
   - artistes : `artists-verify.py` → `artists-photos.py` → `artists-build.py` ;
-  - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py`.
+  - chansons : `listen-ids.py` → `listen-tracks.py` → `artists-build.py` ;
+  - genres muets : `artists-mb.py` (MusicBrainz) → `artists-build.py` → `genre-examples.py` (vidéos à valider) → `wikidata-build.py`.
   Ce qui interroge Wikimedia tourne sur **GitHub Actions** (« Verify artists », « Artist photos », « Wikipedia leads », « Listen IDs »), parce que Wikidata bloque l'adresse des sessions Claude.
-- **Banc de test** : `tools/test-local.sh`, 70 vérifications au navigateur et 2 sur les courriels, à faire passer avant toute version. Les plateformes d'écoute et Matomo y sont simulés par des mu-plugins.
+- **Banc de test** : `tools/test-local.sh`, 85 vérifications au navigateur, une sur les exemples d'écoute après réimport et 2 sur les courriels, à faire passer avant toute version. Sont simulés : les plateformes d'écoute, l'API Deezer (en refusant l'agent « WordPress », comme le vrai) et Matomo par des mu-plugins ; YouTube par un faux `iframe_api` (`FAKE_YT` dans `smoke.mjs`).
 - **Visibilité** :
   - Google Search Console est validée pour le domaine `every-genre.com` (Bing Webmaster Tools l'a importée le 25/10/2026), par un enregistrement TXT dans la zone DNS o2switch, **à ne jamais supprimer**. Le plan du site a été envoyé le 22/10/2026 ;
   - depuis la v0.15, chaque page est lisible sans script : titre, résumé, canonique vers la fiche `/about/`, aperçu de partage dessiné par genre, données structurées, favicon (section « Visibilité ») ;
@@ -71,6 +83,15 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
    - **pas convaincu** : l'ensemble (« trop ambitieux », « le résultat ne me convient pas ») ; la navigation restait plus proche d'un couloir que d'une ville, malgré les quartiers en étoile ;
    - **idée à garder** : la musique réelle via les extraits Deezer, en fondu selon la proximité ; le son généré n'a pas été jugé ;
    - **avant de reprendre** : repartir du besoin (faire découvrir des genres de façon ludique) plutôt que du jeu, et envisager plus petit, par exemple une seule rue explorable ou un mode promenade dans une branche.
+
+11. **Comptes utilisateurs** : prochaine étape (voir en tête). Apple Music pour écouter en entier avec son abonnement, si Maxime le veut.
+12. **Exemples d'écoute à valider** : 488 genres attendent une décision dans Genres → Listening examples (v0.17.0), au rythme de Maxime. 90 genres n'ont aucune proposition.
+13. **Améliorations d'UX du lecteur** : Maxime en a en tête, « plus tard ». Les lui demander. Pistes de mon côté :
+   - un bouton RADIO sur les tuiles de l'accueil et sur la fiche ;
+   - surligner sur la carte le genre en cours ;
+   - une étiquette « AD » pendant les pubs YouTube, que l'API ne signale pas de façon fiable.
+14. **Photos des 451 artistes venus de MusicBrainz** : aucune. `artists-photos.py` ne lit que `artists.csv`, et il faudrait l'étendre à `artists-mb.csv` (GitHub Actions, Commons).
+15. **Banc** : la vérification « pas d'éclair » (version sans script) échoue parfois par lenteur. À surveiller.
 
 ## Pour publier une nouvelle version (rappel)
 1. Banc vert.
@@ -977,3 +998,5 @@ Capture `14e-titre-entier.png`. La vérification « pas d'éclair » a encore é
 **Chez Maxime, après publication** : mettre à jour l'extension, sans réimport. À vérifier sur le vrai site : que YouTube joue bien dans la carte, qu'une pub éventuelle s'y affiche, et que la barre suit.
 
 **Vidéo sur téléphone** (question de Maxime avant la PR) : le carré de 200 × 200 flottait au-dessus de la barre et cachait la moitié de l'écran (OPEN DOSSIER, HEAR). Choix de Maxime : **intégrer la vidéo dans la barre**. Sous 900 px, pendant un titre entier, la barre passe en grille : la vidéo à gauche (200 × 200), le titre, l'artiste et les boutons à droite. La page gagne 208 px de marge en bas, ce qui la raccourcit sans rien cacher. Classes `ga-bar-video` sur la barre et `ga-barred-video` sur la page, posées par `video()`. Sur ordinateur, le carré reste au-dessus de la barre. Au passage, le bouton HEAR coupe le nom du genre plutôt que de le faire chevaucher « FULL TRACK ». Banc : 85 vérifications, dont « un titre entier met la vidéo dans la barre, la page reste lisible jusqu'en bas ». Capture `14f-video-mobile.png`.
+
+**Publiée et vérifiée le 02/11/2026** : la v0.20.0 est installée chez Maxime. Les titres entiers marchent sur ordinateur et sur téléphone ; selon lui, « c'est parfait ». Prochaine étape : les comptes utilisateurs.
