@@ -1002,6 +1002,8 @@ try {
 			tries.push( ( await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: 'gina-smoke', password: 'wrong guess ' + i } ) } ) ).status );
 		}
 		check( 'comptes : 8 mauvais mots de passe verrouillent le compte un quart d heure', tries.slice( 0, 8 ).every( x => x === 403 ) && tries[ 8 ] === 429, tries.join( ' ' ) );
+		const staff = await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: 'admin', password: 'password' } ) } ).then( r => r.json() );
+		check( 'comptes : l administrateur ne se connecte pas par /my-atlas/, il garde la page de connexion de WordPress', staff.code === 'genre_atlas_staff', staff.code || '' );
 		await gp.close();
 
 		// Facebook: a newcomer; then Meta's data deletion callback removes it.

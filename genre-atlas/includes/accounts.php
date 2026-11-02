@@ -431,6 +431,10 @@ function genre_atlas_rest_login( $request ) {
 		return $wrong;
 	}
 	delete_transient( 'genre_atlas_fails_' . $u->ID );
+	if ( user_can( $u, 'edit_posts' ) ) {
+		// The administrator keeps WordPress's own login page, and its protections.
+		return genre_atlas_err( 'staff', 'The administrator signs in from the admin.', 403 );
+	}
 	if ( '0' === (string) get_user_meta( $u->ID, 'ga_verified', true ) ) {
 		return genre_atlas_err( 'unconfirmed', 'Confirm your e-mail address first: open the link we sent you.', 403 );
 	}

@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.20.0
+Stable tag: 0.21.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -34,6 +34,16 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   the middle, its subgenres fanned out below in two rows of four at most: the same eight seats and editorial groups
   as the desktop ring. A tap glides a subgenre into the centre, a tap on the lineage goes back up, and holding a
   genre plays its 30 seconds. MAP / LIST switches to the vertical tree.
+* Accounts (/my-atlas/): members are WordPress subscribers, kept out of the admin. They sign up with a pseudo, an
+  e-mail address confirmed by a link and a password, or continue with Google or Facebook once their keys are set in
+  Genres > Settings (redirects only, no script from either; Meta's data deletion callback is supported). An account
+  keeps favourite genres (☆) and songs (♥ in the player), the genres heard (20 seconds of a song), an optional
+  listening history (table {prefix}ga_history, erased when turned off) and an optional public profile at
+  /atlas/<pseudo>/, never indexed. MY ATLAS downloads everything, changes the address or the password, deletes the
+  account. Eight wrong passwords lock an account for 15 minutes; unconfirmed accounts go after 7 days, unused ones
+  after 3 years, warned by e-mail a month before. MY MAP dims the genres not heard yet. The administrator keeps
+  wp-login.php. Everything is stated on /legal/ (Accounts, Terms of use); docs/registre-rgpd.md is the record of
+  processing, docs/connexion-google-facebook.md how to create the keys.
 * Sound: full songs by default, in YouTube's own player (youtube.com, so its Premium subscribers hear no ads),
   which the player bar drives and shows in a 200 x 200 card while it plays, as YouTube requires (above the bar on
   a wide screen, inside it on a phone, where the bar grows and the page makes room rather than hide under the card): HEAR on the panel
