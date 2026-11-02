@@ -25,6 +25,8 @@ require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/examples.php';
 require_once GENRE_ATLAS_DIR . 'includes/sound.php';
 require_once GENRE_ATLAS_DIR . 'includes/me.php';
+require_once GENRE_ATLAS_DIR . 'includes/accounts.php';
+require_once GENRE_ATLAS_DIR . 'includes/oauth.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/legal.php';
@@ -336,6 +338,17 @@ function genre_atlas_enqueue() {
 			'me'           => genre_atlas_is_me() ? 1 : 0,
 			'meUrl'        => home_url( '/my-atlas/' ),
 			'heardAfter'   => genre_atlas_heard_after(),
+			// Accounts: the nonce lets the page speak for a signed-in member.
+			'api'          => esc_url_raw( rest_url( 'genre-atlas/v1/' ) ),
+			'ajax'         => admin_url( 'admin-ajax.php' ),
+			'nonce'        => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : '',
+			'signedIn'     => is_user_logged_in() ? 1 : 0,
+			'sso'          => genre_atlas_oauth_ready(),
+			'ssoUrl'       => home_url( '/my-atlas/oauth/' ),
+			'linkNonce'    => is_user_logged_in() ? wp_create_nonce( 'genre_atlas_link' ) : '',
+			'profile'      => genre_atlas_profile_pseudo(),
+			'termsUrl'     => home_url( '/legal/#terms-of-use' ),
+			'deleted'      => isset( $_GET['deletion'] ) && genre_atlas_deletion_known( sanitize_text_field( wp_unslash( $_GET['deletion'] ) ) ) ? sanitize_text_field( wp_unslash( $_GET['deletion'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification
 			'legalUrl'     => home_url( '/legal/' ),
 			'contactUrl'   => home_url( '/contact/' ),
 			'contactApi'   => esc_url_raw( rest_url( 'genre-atlas/v1/contact' ) ),
@@ -365,6 +378,9 @@ function genre_atlas_fallback_html() {
 	}
 	if ( genre_atlas_is_me() ) {
 		return genre_atlas_me_html();
+	}
+	if ( genre_atlas_profile_pseudo() ) {
+		return genre_atlas_profile_html( genre_atlas_profile_pseudo() );
 	}
 	if ( is_singular( 'genre' ) ) {
 		return genre_atlas_dossier_html( get_queried_object() );

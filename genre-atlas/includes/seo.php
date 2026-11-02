@@ -376,6 +376,9 @@ function genre_atlas_page_kind() {
 	if ( genre_atlas_is_me() ) {
 		return 'me';
 	}
+	if ( genre_atlas_profile_pseudo() ) {
+		return 'profile';
+	}
 	if ( is_singular( 'genre' ) ) {
 		return 'genre';
 	}
@@ -404,6 +407,8 @@ function genre_atlas_title_parts( $parts ) {
 		$parts['title'] = 'Legal notice and privacy';
 	} elseif ( 'me' === $kind ) {
 		$parts['title'] = 'My atlas';
+	} elseif ( 'profile' === $kind ) {
+		$parts['title'] = genre_atlas_profile_pseudo() . '’s atlas';
 	}
 	return $parts;
 }
@@ -450,10 +455,13 @@ function genre_atlas_page_summary() {
 		return 'Write to ' . get_bloginfo( 'name' ) . ': feedback, a correction, a missing genre.';
 	}
 	if ( 'legal' === $kind ) {
-		return 'Who publishes ' . get_bloginfo( 'name' ) . ', where it is hosted, what it keeps (no cookie of its own) and where its data and pictures come from.';
+		return 'Who publishes ' . get_bloginfo( 'name' ) . ', where it is hosted, what it keeps (no tracker; accounts optional) and where its data and pictures come from.';
 	}
 	if ( 'me' === $kind ) {
-		return 'Your own atlas: the genres you have heard and your favourites, kept in your browser.';
+		return 'Your own atlas: the genres you have heard and your favourite genres and songs.';
+	}
+	if ( 'profile' === $kind ) {
+		return 'The genres ' . genre_atlas_profile_pseudo() . ' has heard and their favourites, on ' . get_bloginfo( 'name' ) . '.';
 	}
 	if ( 'home' === $kind ) {
 		return genre_atlas_home_summary();
@@ -479,6 +487,9 @@ function genre_atlas_canonical() {
 	if ( 'me' === $kind ) {
 		return home_url( '/my-atlas/' );
 	}
+	if ( 'profile' === $kind ) {
+		return genre_atlas_profile_url( genre_atlas_profile_pseudo() );
+	}
 	if ( 'home' === $kind ) {
 		return get_option( 'genre_atlas_home', '1' ) ? home_url( '/' ) : get_post_type_archive_link( 'genre' );
 	}
@@ -496,7 +507,7 @@ function genre_atlas_core_canonical( $url, $post ) {
 // own: followed, not indexed.
 add_filter( 'wp_robots', 'genre_atlas_robots' );
 function genre_atlas_robots( $robots ) {
-	if ( in_array( genre_atlas_page_kind(), array( 'random', 'me' ), true ) ) {
+	if ( in_array( genre_atlas_page_kind(), array( 'random', 'me', 'profile' ), true ) ) {
 		$robots['noindex'] = true;
 		$robots['follow']  = true;
 	}

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const GENRE_ATLAS_LEGAL_UPDATED = '2026-11-02'; // Change it with the text.
+const GENRE_ATLAS_LEGAL_UPDATED = '2026-11-03'; // Change it with the text.
 
 add_action( 'init', 'genre_atlas_legal_route', 11 );
 function genre_atlas_legal_route() {
@@ -59,19 +59,36 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
-			'<b>Your atlas and your choices</b>: your favourite genres and songs, the genres you have heard (with the day you first heard each), and your settings (SOUND ON, FULL or 30 S, MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device and the site never sees them. MY ATLAS lets you download them or erase them; clearing your browser’s data erases them too.',
-			'There is no account, no newsletter and no advertising.',
+			'<b>Your settings</b> (SOUND ON, FULL or 30 S, MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
+			'<b>Accounts</b> are optional: everything they keep is described in the next section.',
+			'There is no newsletter and no advertising.',
+		),
+		'Accounts'                  => array(
+			'An account keeps your atlas, so you find it on any device. To create one, you choose a pseudo and give an e-mail address, then either a password or your Google or Facebook account. What it keeps: your <b>pseudo</b>; your <b>e-mail address</b>, used only to confirm it, to send you a new password when you ask, and to warn you before an unused account is deleted; your <b>password</b>, stored only in a scrambled form that cannot be read back; the <b>date</b> you accepted these terms; your <b>favourite genres and songs</b>; the <b>genres you have heard</b>, each with the day you first heard it (a genre counts once 20 seconds of one of its songs have played); whether your <b>profile is public</b>; and, only if you turn it on, your <b>listening history</b>: each song you heard for 20 seconds or more, with its genre and the time. Turning the history off erases it.',
+			'<b>Why</b>: to give you the service you asked for by creating an account (article 6.1.b of the GDPR). Nothing is used for anything else: no advertising, no profiling, no sale, no sharing. The data stays on the host’s servers in France, and only the publisher can reach it.',
+			'<b>How long</b>: as long as the account exists. An account left unconfirmed is deleted after 7 days. An account unused for 3 years is deleted, after an e-mail warning a month before. Deleting your account erases all of it at once.',
+			'<b>Google and Facebook</b>: if you choose to continue with one of them, you are sent to its site, which tells us your account identifier, your name and your e-mail address; we keep the identifier (to recognise you next time) and the address, not the name. Nothing reaches Google or Facebook before you press that button, and the site loads none of their scripts. Removing the site from your Facebook account deletes what came from it.',
+			'<b>Public profile</b>: off by default. Turned on, the page <code>/atlas/your-pseudo/</code> shows your pseudo, the date you joined, the genres you have heard and your favourites, to anyone who has the link; never your e-mail address nor your history. Search engines are asked not to list it. Turned off, it disappears at once.',
+			'<b>Security</b>: the site is served over HTTPS; repeated wrong passwords lock an account for a quarter of an hour; confirmation links work once and expire. Should the data ever leak, members would be told, and the CNIL within 72 hours, as the law requires.',
 		),
 		'Cookies'                   => array(
-			$matomo
-				? 'This site sets no cookie on your device, which is why it asks for no consent. The one exception is a cookie you ask for: if you choose not to be counted, a cookie named mtm_consent_removed remembers that choice. (WordPress uses cookies for the publisher’s own login, never for visitors.)'
-				: 'This site sets no cookie on your device and uses no tracker, which is why it asks for no consent. (WordPress uses cookies for the publisher’s own login, never for visitors.)',
+			'This site sets no cookie on your device while you browse it, and uses no tracker, which is why it asks for no consent. It sets cookies only when you ask for them:',
+			'<b>Signing in</b> sets the sign-in cookies of WordPress (named wordpress_logged_in_… and wordpress_sec_…), which keep you signed in for 14 days, or until you sign out. They are needed for the account to work, so they need no consent.' . ( $matomo ? ' <b>Choosing not to be counted</b> sets a cookie named mtm_consent_removed, which remembers that choice.' : '' ),
 			'<b>Full songs</b> play in YouTube’s own player (youtube.com), loaded only when you ask for a song: HEAR, RADIO, PLAY, or holding a genre on a phone. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under Google’s privacy policy; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires. Switch the player bar to 30 S to hear previews instead, with no YouTube at all.',
 			'<b>Previews</b> of 30 seconds play from Deezer’s servers when you point at a genre with SOUND ON, or when the player is set to 30 S: Deezer then sees your IP address when a preview loads, under its own privacy policy, and sets no cookie through this site. The links to Spotify, Deezer, Wikipedia and the other platforms take you to those sites, under their own rules.',
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
 		'Your rights'               => array(
-			'Under the GDPR and the French data protection act, you can see, correct or have deleted what the site keeps about you, and object to its use' . ( $matomo ? ' (for the visit counter, the button above is enough)' : '' ) . '. Write through the ' . $contact . '. If you think your rights have not been respected, you can complain to the CNIL (<a href="https://www.cnil.fr/">cnil.fr</a>).',
+			'Under the GDPR and the French data protection act, you can see, correct or have deleted what the site keeps about you, take it with you, and object to its use' . ( $matomo ? ' (for the visit counter, the button above is enough)' : '' ) . '. With an account, MY ATLAS does it at once: download everything it keeps, change your e-mail address or password, turn the history or the public profile off, delete the account. For anything else, write through the ' . $contact . '; you get an answer within a month. If you think your rights have not been respected, you can complain to the CNIL (<a href="https://www.cnil.fr/">cnil.fr</a>).',
+		),
+		'Terms of use'              => array(
+			'These terms apply to anyone who creates an account. Creating one means accepting them.',
+			'<b>Age</b>: you must be 15 or older to create an account.',
+			'<b>One account, one person</b>. Your pseudo is public on your profile when you make it public: it must not pass you off as someone else, nor insult, harass or advertise. Keep your password to yourself.',
+			'<b>Use the site fairly</b>: no automated sign-ups, no attempts to reach other members’ data, no use of the site against the law. An account that breaks these terms may be suspended or deleted, after a warning by e-mail unless the breach is serious.',
+			'<b>The service</b> is free, given as it is, by one person, without any guarantee that it will always be available. It may change, and it may stop: members would be warned by e-mail a month before, with time to download their atlas.',
+			'<b>Your atlas is yours</b>: you can download it or delete it whenever you like.',
+			'These terms are governed by French law. They may change: members are told by e-mail of any change that matters, before it applies.',
 		),
 		'Sources and credits'       => array(
 			'<b>Genres</b>, their lineage, origin and epoch come from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), checked and arranged by hand; genre identifiers also link to <a href="https://musicbrainz.org/">MusicBrainz</a>. Some key artists were found through MusicBrainz’s genre tags (<a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>).',
@@ -89,7 +106,7 @@ function genre_atlas_legal_html() {
 	foreach ( genre_atlas_legal_sections() as $title => $paras ) {
 		$out .= '<section id="' . esc_attr( sanitize_title( $title ) ) . '"><h2>' . esc_html( $title ) . '</h2>';
 		foreach ( $paras as $p ) {
-			$out .= '<p>' . wp_kses( $p, array( 'a' => array( 'href' => true ), 'b' => array(), 'span' => array( 'id' => true ) ) ) . '</p>';
+			$out .= '<p>' . wp_kses( $p, array( 'a' => array( 'href' => true ), 'b' => array(), 'code' => array(), 'span' => array( 'id' => true ) ) ) . '</p>';
 		}
 		$out .= '</section>';
 	}

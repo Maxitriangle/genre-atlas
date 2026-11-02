@@ -158,6 +158,11 @@ function genre_atlas_settings_page() {
 		update_option( 'genre_atlas_groups', empty( $_POST['genre_atlas_groups'] ) ? '0' : '1' );
 		$to = isset( $_POST['genre_atlas_contact_to'] ) ? sanitize_email( wp_unslash( $_POST['genre_atlas_contact_to'] ) ) : '';
 		update_option( 'genre_atlas_contact_to', is_email( $to ) ? $to : '' );
+		foreach ( array( 'google_id', 'google_secret', 'facebook_id', 'facebook_secret', 'facebook_version' ) as $k ) {
+			if ( isset( $_POST[ 'genre_atlas_' . $k ] ) ) {
+				update_option( 'genre_atlas_' . $k, trim( sanitize_text_field( wp_unslash( $_POST[ 'genre_atlas_' . $k ] ) ) ), false );
+			}
+		}
 		delete_transient( GENRE_ATLAS_CACHE ); // the tree carries the group labels.
 		echo '<div class="notice notice-success"><p>Settings saved.</p></div>';
 	}
@@ -171,6 +176,22 @@ function genre_atlas_settings_page() {
 	echo '<p class="description">A branch with more than 8 subgenres is shown as groups rather than genre by genre. Ticked, the groups are the ones named in Genres &rarr; Groups. Unticked, the atlas ignores them and cuts those branches into alphabetical ranges instead. Nothing is lost either way: the names stay stored.</p>';
 	echo '<h2>Contact form</h2><p><label for="genre_atlas_contact_to">Send messages to</label><br><input class="regular-text" type="email" id="genre_atlas_contact_to" name="genre_atlas_contact_to" value="' . esc_attr( get_option( 'genre_atlas_contact_to', '' ) ) . '" placeholder="' . esc_attr( get_option( 'admin_email' ) ) . '"></p>';
 	echo '<p class="description">Messages sent from <a href="' . esc_url( home_url( '/contact/' ) ) . '">' . esc_html( home_url( '/contact/' ) ) . '</a> go to this address, and visitors never see it. Left empty, they go to the site administrator&rsquo;s address shown in grey. When the address is on this site&rsquo;s own domain, it is also the sender, which keeps the messages out of spam. Every message is kept in <a href="' . esc_url( admin_url( 'edit.php?post_type=ga_message' ) ) . '">Messages</a> as well.</p>';
+	echo '<h2>Accounts: sign in with Google and Facebook</h2><p class="description">Members create an account on <a href="' . esc_url( home_url( '/my-atlas/' ) ) . '">' . esc_html( home_url( '/my-atlas/' ) ) . '</a> with an e-mail address and a password. With the keys below, they can also continue with Google or Facebook; a provider without its two keys shows no button. The redirect addresses to give each provider:</p><ul>';
+	foreach ( array( 'google', 'facebook' ) as $p ) {
+		echo '<li>' . esc_html( ucfirst( $p ) ) . ': <code>' . esc_html( genre_atlas_oauth_callback_url( $p ) ) . '</code></li>';
+	}
+	echo '<li>Facebook, data deletion callback: <code>' . esc_html( rest_url( 'genre-atlas/v1/oauth/facebook/delete' ) ) . '</code></li></ul><table class="form-table" role="presentation"><tbody>';
+	$fields = array(
+		'google_id'        => array( 'Google: client ID', 'text' ),
+		'google_secret'    => array( 'Google: client secret', 'password' ),
+		'facebook_id'      => array( 'Facebook: app ID', 'text' ),
+		'facebook_secret'  => array( 'Facebook: app secret', 'password' ),
+		'facebook_version' => array( 'Facebook: Graph API version (blank: v23.0)', 'text' ),
+	);
+	foreach ( $fields as $k => $f ) {
+		echo '<tr><th scope="row"><label for="genre_atlas_' . esc_attr( $k ) . '">' . esc_html( $f[0] ) . '</label></th><td><input class="regular-text" type="' . esc_attr( $f[1] ) . '" id="genre_atlas_' . esc_attr( $k ) . '" name="genre_atlas_' . esc_attr( $k ) . '" value="' . esc_attr( get_option( 'genre_atlas_' . $k, '' ) ) . '" autocomplete="off"></td></tr>';
+	}
+	echo '</tbody></table>';
 	submit_button( 'Save' );
 	echo '</form></div>';
 }

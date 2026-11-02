@@ -594,8 +594,8 @@ try {
 		await lg.waitForSelector( '.ga-legal-text section', { timeout: 10000 } );
 		const heads = await lg.locator( '.ga-legal-text h2' ).allInnerTexts();
 		const text = await lg.locator( '.ga-legal-text' ).innerText();
-		check( 'legal : le pied de l index ouvre la page, avec editeur, hebergeur, donnees, cookies, droits et credits',
-			heads.length === 6 && /o2switch/i.test( text ) && /CNIL/.test( text ) && /CC BY-SA/.test( text ) && ( await lg.title() ).startsWith( 'Legal notice' ), heads.join( ' · ' ) );
+		check( 'legal : le pied de l index ouvre la page, avec editeur, hebergeur, donnees, comptes, cookies, droits, conditions et credits',
+			heads.length === 8 && heads.some( h => /^accounts$/i.test( h ) ) && heads.some( h => /^terms of use$/i.test( h ) ) && /o2switch/i.test( text ) && /CNIL/.test( text ) && /CC BY-SA/.test( text ) && ( await lg.title() ).startsWith( 'Legal notice' ), heads.join( ' · ' ) );
 		await lg.screenshot( { path: `${ SHOTS }/12-legal.png`, fullPage: true } );
 		if ( lead ) {
 			await lg.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
@@ -833,62 +833,227 @@ try {
 			`${ fit.inBar ? 'video dans la barre' : 'video hors de la barre' }, ${ fit.footClear ? 'pied visible' : 'pied cache' }, ${ fit.wide } px` );
 		await tel.close();
 
-		// 8d. My atlas, kept in the browser: ☆ a genre, ♥ a song, a genre
-		// heard (after 1 s on the bench, 20 s on the site), MY MAP, the page.
-		const ma = await newPage( 1440, 900 );
-		const away = [];
-		ma.on( 'request', r => { const h = new URL( r.url() ).hostname; if ( ! [ '127.0.0.1', 'localhost' ].includes( h ) && ! /youtube\.com$/.test( h ) ) away.push( h ); } );
-		const atlas = () => ma.evaluate( () => JSON.parse( localStorage.getItem( 'ga-atlas' ) || '{}' ) );
-		await centre( ma, sv );
-		await ma.locator( `.ga-panel [data-fav="${ sv.id }"]` ).click();
-		const starred = await ma.locator( `.ga-panel [data-fav="${ sv.id }"].on` ).count() === 1 && ( await atlas() ).genres?.includes( sv.id );
-		await ma.locator( `.ga-panel [data-hear="${ sv.id }"]` ).click();
-		await ma.waitForFunction( id => ( JSON.parse( localStorage.getItem( 'ga-atlas' ) || '{}' ).heard || {} )[ id ], sv.id, { timeout: 8000 } ).catch( () => {} );
-		await ma.locator( '.ga-bar [data-bar="like"]' ).click( { timeout: 5000 } ).catch( () => {} );
-		const mine = await atlas();
-		check( 'mon atlas : ☆ garde un genre, 20 s d ecoute le marquent ecoute, ♥ garde le titre, dans le navigateur', starred && !! ( mine.heard || {} )[ sv.id ] && ( mine.tracks || [] ).length === 1 && mine.tracks[ 0 ].genre === sv.id,
-			`${ starred ? 'etoile' : 'pas d etoile' }, ${ ( mine.heard || {} )[ sv.id ] ? 'ecoute' : 'pas ecoute' }, ${ ( mine.tracks || [] ).length } titre(s)` );
-		await ma.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
-		const parent = byId.get( sv.p );
-		await centre( ma, parent );
-		await ma.locator( '.ga-subbar [data-mine]' ).click();
-		const lit = await ma.locator( `.ga-map .ga-node[data-go="${ sv.id }"], .ga-map .ga-node[data-centre="${ sv.id }"]` ).first().evaluate( e => ! e.classList.contains( 'ga-dim' ) ).catch( () => false );
-		const dimmed = await ma.locator( '.ga-map .ga-node.ga-dim' ).count();
-		await ma.screenshot( { path: `${ SHOTS }/15-ma-carte.png` } );
-		check( 'mon atlas : MY MAP eteint les genres pas encore ecoutes, et laisse allume celui qui l est', lit && dimmed > 0, `${ dimmed } noeud(s) eteint(s)` );
-		await ma.locator( '.ga-nav [data-me]' ).click();
-		await ma.waitForSelector( '.ga-me', { timeout: 8000 } ).catch( () => {} );
-		const page = await ma.locator( '.ga-me' ).innerText().catch( () => '' );
-		const here = new URL( ma.url() ).pathname;
-		await ma.screenshot( { path: `${ SHOTS }/15b-mon-atlas.png`, fullPage: true } );
-		await ma.locator( '.ga-me [data-mplay="-1"]' ).click( { timeout: 5000 } ).catch( () => {} );
-		await ma.waitForFunction( () => ( window.__yt || [] ).length > 1, null, { timeout: 8000 } ).catch( () => {} );
-		const replay = await ma.evaluate( () => ( window.__yt || [] ).pop() );
-		check( 'mon atlas : la page /my-atlas/ montre le genre ecoute, le favori et le titre, et rejoue mes titres',
-			here === '/my-atlas/' && /0001/.test( page ) && page.toLowerCase().includes( sv.name.toLowerCase() ) && page.includes( mine.tracks?.[ 0 ]?.title || '§' ) && replay && replay[ 1 ] === mine.tracks[ 0 ].youtube,
-			`${ here }, relecture ${ JSON.stringify( replay ) }` );
-		const [ dl ] = await Promise.all( [ ma.waitForEvent( 'download', { timeout: 8000 } ).catch( () => null ), ma.locator( '.ga-me [data-export]' ).click() ] );
-		const file = dl ? JSON.parse( ( await import( 'fs' ) ).readFileSync( await dl.path(), 'utf8' ) ) : {};
-		await ma.locator( '.ga-me [data-clear]' ).click();
-		const confirmed = /SURE/.test( await ma.locator( '.ga-me [data-clear]' ).innerText() );
-		await ma.locator( '.ga-me [data-clear]' ).click();
-		const empty = await atlas();
-		const cookies = ( await ma.context().cookies() ).length;
-		check( 'mon atlas : telecharger donne mes donnees, effacer demande confirmation puis vide tout, sans cookie ni appel exterieur',
-			( file.genres || [] ).includes( sv.id ) && confirmed && ! Object.keys( empty.heard || {} ).length && ! ( empty.genres || [] ).length && cookies === 0 && away.length === 0,
-			`${ dl ? 'fichier' : 'pas de fichier' }, ${ confirmed ? 'confirmation' : 'sans confirmation' }, ${ cookies } cookie(s), exterieur ${ away.join( ' ' ) || 'aucun' }` );
-		await ma.close();
-		const robots = await ( await fetch( `${ BASE }/my-atlas/` ) ).text();
-		const pm = await newPage( 390, 844 );
-		await pm.goto( `${ BASE }/my-atlas/`, { waitUntil: 'networkidle' } );
-		await pm.waitForSelector( '.ga-me', { timeout: 8000 } ).catch( () => {} );
-		const pw = await pm.evaluate( () => document.documentElement.scrollWidth );
-		const navMe = await pm.locator( '.ga-nav [data-me]' ).isVisible();
-		await pm.screenshot( { path: `${ SHOTS }/15c-mon-atlas-mobile.png`, fullPage: true } );
-		await pm.close();
-		check( 'mon atlas : la page n est pas indexee, tient en 390 px et reste au menu sur mobile', /<meta name='robots' content='[^']*noindex/.test( robots ) && pw <= 390 && navMe, `${ pw } px` );
 	} else {
 		check( 'son : un genre de l arbre a des extraits a jouer', false );
+	}
+
+	// 8e. Accounts: the whole way through, as a member would go. E-mails are
+	// read back from the bench (smoke/v1/mails); Google and Facebook are played
+	// by the browser (their consent pages) and by fake-platforms.php (their APIs).
+	{
+		const mails = () => fetch( `${ BASE }/wp-json/smoke/v1/mails` ).then( r => r.json() );
+		const linkIn = async ( to, subject ) => {
+			for ( let w = 0; w < 20; w++ ) {
+				const m = ( await mails() ).filter( x => x.to === to && x.subject.includes( subject ) ).pop();
+				if ( m ) return ( m.message.match( /https?:\/\/\S+\/my-atlas\/\?\S+/ ) || [ '' ] )[ 0 ];
+				await new Promise( r => setTimeout( r, 250 ) );
+			}
+			return '';
+		};
+		const b64 = o => Buffer.from( JSON.stringify( o ) ).toString( 'base64url' );
+		// The browser does not route a request reached through a redirect, so
+		// the consent page is played at the door instead: the site's own
+		// /my-atlas/oauth/<provider>/ is fetched, and where it would send the
+		// visitor is answered as the provider would, straight back.
+		const consent = async ( pg, who ) => {
+			await pg.route( /\/my-atlas\/oauth\/(google|facebook)\/(\?.*)?$/, async r => {
+				const out = await r.fetch( { maxRedirects: 0 } );
+				const u = new URL( out.headers().location );
+				const code = /google/.test( u.host ) ? b64( { ...who, nonce: u.searchParams.get( 'nonce' ) } ) : b64( who );
+				return r.fulfill( { status: 302, headers: { location: `${ u.searchParams.get( 'redirect_uri' ) }?state=${ u.searchParams.get( 'state' ) }&code=${ code }` } } );
+			} );
+		};
+		const fill = async ( pg, values ) => { for ( const [ k, v ] of Object.entries( values ) ) { await pg.locator( `.ga-aform [name="${ k }"]` ).fill( v ); } };
+		const submit = async pg => { await pg.locator( '.ga-aform button[type="submit"]' ).first().click(); await pg.waitForTimeout( 600 ); };
+		const me = `${ BASE }/my-atlas/`;
+		const email = 'member@example.test', pseudo = 'smoke-member', pass = 'Quiet rooms 4 loud bands';
+
+		// Signed out: the doors, and ☆ leads to them.
+		const ac = await newPage( 1440, 900 );
+		await ac.route( /dzcdn\.net/, r => r.fulfill( { status: 200, contentType: 'audio/wav', body: Buffer.alloc( 100 ) } ) );
+		const sv2 = tree.nodes.find( n => n.s && byId.get( n.p ) );
+		await centre( ac, sv2 );
+		await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).click();
+		await ac.waitForSelector( '.ga-doors', { timeout: 8000 } ).catch( () => {} );
+		const asked = /favourite genres/i.test( await ac.locator( '.ga-anote' ).innerText().catch( () => '' ) ) && new URL( ac.url() ).pathname === '/my-atlas/';
+		await ac.screenshot( { path: `${ SHOTS }/16a-connexion.png`, fullPage: true } );
+		// The call to action can be read: a button keeps its fill and its text.
+		const cta = await ac.locator( '.ga-doors [data-form="login"] button[type="submit"]' ).evaluate( b => { const c = getComputedStyle( b ); return c.backgroundColor !== 'rgba(0, 0, 0, 0)' && c.color !== c.backgroundColor; } ).catch( () => false );
+		check( 'comptes : le bouton de connexion est lisible (fond et texte)', cta );
+		check( 'comptes : sans compte, ☆ mene a la connexion et rien n est garde', asked && await ac.locator( '.ga-doors [data-form="login"]' ).count() === 1 );
+
+		// Create an account: the link in the e-mail confirms it and signs in.
+		await ac.locator( '[data-auth="up"]' ).click();
+		await fill( ac, { pseudo, email, password: pass } );
+		await ac.locator( '#ga-aterms' ).check();
+		await ac.waitForTimeout( 3200 );                       // a form sent in under 3 s is a robot's
+		await submit( ac );
+		const sent = /Check your inbox/i.test( await ac.locator( '.ga-doors h1' ).innerText().catch( () => '' ) );
+		if ( ! sent ) console.log( 'inscription :', await ac.locator( '.ga-doors' ).innerText().catch( () => '?' ) );
+		const verify = await linkIn( email, 'Confirm your account' );
+		const early = await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: pseudo, password: pass } ) } ).then( r => r.json() );
+		await ac.goto( verify, { waitUntil: 'networkidle' } );
+		await ac.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const welcome = await ac.locator( '.ga-me .ga-hero' ).innerText().catch( () => '' );
+		await ac.screenshot( { path: `${ SHOTS }/16-compte.png`, fullPage: true } );
+		check( 'comptes : inscription, lien de confirmation par e-mail, puis connecte (pas avant)', sent && !! verify && /confirm/i.test( early.message || '' ) && welcome.includes( pseudo.toUpperCase() ),
+			`${ sent ? 'envoye' : 'pas envoye' }, lien ${ verify ? 'recu' : 'absent' }, avant confirmation « ${ early.message || '' } »` );
+
+		// ☆, a genre heard (1 s on the bench), ♥: kept in the account.
+		await centre( ac, sv2 );
+		await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).click();
+		await ac.locator( `.ga-panel [data-hear="${ sv2.id }"]` ).click();
+		await ac.waitForSelector( '.ga-bar:not([hidden]) [data-bar="like"]', { timeout: 8000 } ).catch( () => {} );
+		await ac.waitForTimeout( 2200 );
+		await ac.locator( '.ga-bar [data-bar="like"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await ac.waitForTimeout( 600 );
+		await ac.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		const other = await browser.newContext( { viewport: { width: 1440, height: 900 } } );
+		const ac2 = await other.newPage();
+		await ac2.route( '**/*', r => [ '127.0.0.1', 'localhost' ].includes( new URL( r.request().url() ).hostname ) ? r.continue() : r.abort() );
+		await ac2.goto( me, { waitUntil: 'networkidle' } );
+		await ac2.waitForSelector( '.ga-doors', { timeout: 8000 } ).catch( () => {} );
+		await fill( ac2, { login: email, password: pass } );
+		await submit( ac2 );
+		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const stats = await ac2.locator( '.ga-me .ga-stats' ).innerText().catch( () => '' );
+		check( 'comptes : ☆, genre ecoute et ♥ sont gardes dans le compte, retrouves dans un autre navigateur', /0001\s*\/\s*\d+/.test( stats ) && /FAVOURITE GENRES\s*01/.test( stats ) && /FAVOURITE SONGS\s*01/.test( stats ),
+			stats.replace( /\s+/g, ' ' ) );
+
+		// History, on then off; public profile, on then off; the download.
+		await ac2.locator( '[data-set="history"]' ).click();
+		await ac2.waitForSelector( '[data-set="history"].on', { timeout: 5000 } ).catch( () => {} );
+		await centre( ac2, sv2 );
+		await ac2.route( /dzcdn\.net/, r => r.fulfill( { status: 200, contentType: 'audio/wav', body: Buffer.alloc( 100 ) } ) );
+		await ac2.route( /youtube\.com\/iframe_api/, r => r.fulfill( { status: 200, contentType: 'text/javascript', body: FAKE_YT } ) );
+		await ac2.locator( `.ga-panel [data-hear="${ sv2.id }"]` ).click();
+		await ac2.waitForTimeout( 2600 );
+		await ac2.goto( me, { waitUntil: 'networkidle' } );
+		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const lines = await ac2.locator( '.ga-history li' ).count();
+		await ac2.locator( '[data-set="public"]' ).click();
+		await ac2.waitForSelector( '[data-set="public"].on', { timeout: 5000 } ).catch( () => {} );
+		const profile = `${ BASE }/atlas/${ pseudo }/`;
+		const seen = await fetch( profile );
+		const page = await newPage( 1440, 900 );
+		await page.goto( profile, { waitUntil: 'networkidle' } );
+		await page.waitForSelector( '.ga-me-fams', { timeout: 8000 } ).catch( () => {} );
+		const shown = await page.locator( '.ga-me' ).innerText().catch( () => '' );
+		await page.screenshot( { path: `${ SHOTS }/16b-profil-public.png`, fullPage: true } );
+		await page.close();
+		const [ dl ] = await Promise.all( [ ac2.waitForEvent( 'download', { timeout: 8000 } ).catch( () => null ), ac2.locator( '[data-export]' ).click() ] );
+		const file = dl ? JSON.parse( ( await import( 'fs' ) ).readFileSync( await dl.path(), 'utf8' ) ) : {};
+		await ac2.locator( '[data-set="public"]' ).click();
+		await ac2.waitForSelector( '[data-set="public"]:not(.on)', { timeout: 5000 } ).catch( () => {} );
+		await ac2.locator( '[data-set="history"]' ).click();
+		await ac2.waitForSelector( '[data-set="history"]:not(.on)', { timeout: 5000 } ).catch( () => {} );
+		const hidden = ( await fetch( profile ) ).status;
+		const after = await ac2.evaluate( url => fetch( url + 'account/export', { headers: { 'X-WP-Nonce': window.GENRE_ATLAS.nonce }, credentials: 'same-origin' } ).then( r => r.json() ), `${ BASE }/wp-json/genre-atlas/v1/` );
+		check( 'comptes : historique au choix (efface en l eteignant), profil public en un clic, non indexe, et telechargement de toutes les donnees',
+			lines >= 1 && seen.status === 200 && /<meta name='robots' content='[^']*noindex/.test( await seen.text() ) && shown.toLowerCase().includes( `${ pseudo }’s atlas` ) && ! shown.includes( email )
+			&& file.email === email && ( file.history || [] ).length >= 1 && hidden === 404 && ( after.history || [ 1 ] ).length === 0,
+			`${ lines } ligne(s) d historique, profil ${ seen.status } puis ${ hidden }, export ${ file.email ? 'complet' : 'vide' }` );
+
+		// A new password by e-mail; a new address, confirmed before it counts.
+		await ac2.locator( '[data-signout]' ).click();
+		await ac2.waitForSelector( '.ga-doors', { timeout: 8000 } ).catch( () => {} );
+		await ac2.locator( '[data-auth="forgot"]' ).click();
+		await fill( ac2, { email } );
+		await submit( ac2 );
+		const reset = await linkIn( email, 'Choose a new password' );
+		await ac2.goto( reset, { waitUntil: 'networkidle' } );
+		await ac2.waitForSelector( '.ga-doors [data-form="reset"]', { timeout: 8000 } ).catch( () => {} );
+		const pass2 = 'Second quiet password 7';
+		await fill( ac2, { password: pass2 } );
+		await submit( ac2 );
+		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const reseted = await ac2.locator( '.ga-settings' ).count() === 1;
+		const email2 = 'member2@example.test';
+		await ac2.locator( '.ga-aform[data-form="email"] [name="email"]' ).fill( email2 );
+		await ac2.locator( '.ga-aform[data-form="email"] button' ).click();
+		await ac2.waitForTimeout( 600 );
+		const moved = await linkIn( email2, 'Confirm your new e-mail address' );
+		await ac2.goto( moved, { waitUntil: 'networkidle' } );
+		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const nowAt = await ac2.locator( '.ga-aform[data-form="email"] h3' ).innerText().catch( () => '' );
+		check( 'comptes : mot de passe oublie par lien e-mail, et nouvelle adresse confirmee avant de compter', reseted && !! moved && nowAt.includes( email2.toUpperCase() ), nowAt );
+
+		// Google: a newcomer chooses a pseudo; the next time, straight in.
+		const gp = await newPage( 1440, 900 );
+		await consent( gp, { sub: 'g-1', email: 'gina@example.test', name: 'Gina Smoke' } );
+		await gp.goto( me, { waitUntil: 'networkidle' } );
+		await gp.locator( `.ga-sso[href$="/google/"]` ).click();
+		await gp.waitForSelector( '.ga-doors [data-form="sso"]', { timeout: 10000 } ).catch( () => {} );
+		await gp.waitForTimeout( 500 );
+		const suggest = await gp.locator( '.ga-aform [name="pseudo"]' ).inputValue().catch( () => '' );
+		await gp.locator( '#ga-aterms' ).check();
+		await submit( gp );
+		await gp.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const linkedG = await gp.locator( '.ga-linked' ).allInnerTexts();
+		await gp.locator( '[data-signout]' ).click();
+		await gp.waitForSelector( '.ga-doors', { timeout: 8000 } ).catch( () => {} );
+		await gp.locator( `.ga-sso[href$="/google/"]` ).click();
+		await gp.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const again = await gp.locator( '.ga-settings' ).count() === 1;
+		check( 'comptes : Google, un nouveau venu choisit son pseudo, la fois suivante il entre directement', suggest === 'gina-smoke' && linkedG.join() === 'GOOGLE · LINKED' && again, `pseudo propose « ${ suggest } »` );
+		// Eight wrong passwords lock the account for a quarter of an hour.
+		const tries = [];
+		for ( let i = 0; i < 9; i++ ) {
+			tries.push( ( await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: 'gina-smoke', password: 'wrong guess ' + i } ) } ) ).status );
+		}
+		check( 'comptes : 8 mauvais mots de passe verrouillent le compte un quart d heure', tries.slice( 0, 8 ).every( x => x === 403 ) && tries[ 8 ] === 429, tries.join( ' ' ) );
+		await gp.close();
+
+		// Facebook: a newcomer; then Meta's data deletion callback removes it.
+		const fp = await newPage( 1440, 900 );
+		await consent( fp, { id: 'fb-7', name: 'Fred Smoke', email: 'fred@example.test' } );
+		await fp.goto( me, { waitUntil: 'networkidle' } );
+		await fp.locator( `.ga-sso[href$="/facebook/"]` ).click();
+		await fp.waitForSelector( '.ga-doors [data-form="sso"]', { timeout: 10000 } ).catch( () => {} );
+		await fp.locator( '.ga-aform [name="pseudo"]' ).fill( 'fred-smoke' );
+		await fp.locator( '#ga-aterms' ).check();
+		await submit( fp );
+		await fp.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		const inFb = await fp.locator( '.ga-settings' ).count() === 1;
+		await fp.close();
+		const { createHmac } = await import( 'crypto' );
+		const payload = Buffer.from( JSON.stringify( { algorithm: 'HMAC-SHA256', user_id: 'fb-7' } ) ).toString( 'base64url' );
+		const signed = createHmac( 'sha256', 'smoke-facebook-secret' ).update( payload ).digest( 'base64url' ) + '.' + payload;
+		const del = await fetch( `${ BASE }/wp-json/genre-atlas/v1/oauth/facebook/delete`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'signed_request=' + encodeURIComponent( signed ) } ).then( r => r.json() );
+		const forged = ( await fetch( `${ BASE }/wp-json/genre-atlas/v1/oauth/facebook/delete`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'signed_request=' + encodeURIComponent( 'x' + signed ) } ) ).status;
+		const goneFb = ( await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: 'fred-smoke', password: 'anything at all' } ) } ) ).status;
+		check( 'comptes : Facebook, puis la demande de suppression de Meta efface le compte (signature verifiee)', inFb && /deletion=/.test( del.url || '' ) && !! del.confirmation_code && forged === 403 && goneFb === 403, `suppression ${ del.confirmation_code ? 'confirmee' : 'refusee' }, signature fausse ${ forged }` );
+
+		// Members stay out of the admin; deleting the account erases it.
+		await ac2.goto( `${ BASE }/wp-admin/`, { waitUntil: 'networkidle' } );
+		const kept = new URL( ac2.url() ).pathname;
+		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await ac2.locator( '.ga-delete [name="confirm"]' ).fill( pseudo );
+		await ac2.locator( '.ga-delete [name="password"]' ).fill( pass2 );
+		await ac2.locator( '.ga-delete button' ).click();
+		await ac2.waitForSelector( '.ga-doors', { timeout: 10000 } ).catch( () => {} );
+		const bye = await ac2.locator( '.ga-anote' ).innerText().catch( () => '' );
+		const gone = ( await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: email2, password: pass2 } ) } ) ).status;
+		check( 'comptes : un membre n entre pas dans l administration, et supprimer son compte efface tout', kept === '/my-atlas/' && /deleted/.test( bye ) && gone === 403, `admin → ${ kept }, connexion apres suppression ${ gone }` );
+		await other.close();
+
+		// Housekeeping: unconfirmed after 7 days, unused after 3 years (warned first).
+		await ac.goto( me, { waitUntil: 'networkidle' } );
+		await ac.locator( '[data-signout]' ).click().catch( () => {} );
+		await ac.goto( me, { waitUntil: 'networkidle' } );
+		const token = await ac.evaluate( () => window.GENRE_ATLAS.contactToken );
+		await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { pseudo: 'smoke-lazy', email: 'lazy@example.test', password: 'Long enough password 9', terms: true, token } ) } );
+		const daily = body => fetch( `${ BASE }/wp-json/smoke/v1/accounts-daily`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( body ) } );
+		await daily( { days: 8 } );
+		const lazyGone = ( await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: 'smoke-lazy', password: 'Long enough password 9' } ) } ) ).status;
+		await daily( { days: 0, pseudo: 'gina-smoke', idle: 3 * 365 } );
+		const warned = await linkIn( 'gina@example.test', 'will be deleted in a month' ).then( () => mails() ).then( m => m.some( x => x.to === 'gina@example.test' && x.subject.includes( 'will be deleted in a month' ) ) );
+		await daily( { days: 31, pseudo: 'gina-smoke', idle: 3 * 365 + 31 } );
+		const ginaGone = await fetch( `${ BASE }/atlas/gina-smoke/` ).then( r => r.status );
+		const ginaLogin = ( await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: 'gina-smoke', password: 'x' } ) } ) ).status;
+		check( 'comptes : non confirme efface apres 7 jours, inutilise 3 ans efface un mois apres un avertissement', lazyGone === 403 && warned && ginaLogin === 403 && ginaGone === 404,
+			`non confirme ${ lazyGone }, avertissement ${ warned ? 'envoye' : 'absent' }, inutilise ${ ginaLogin }` );
+		await ac.close();
 	}
 
 	// 9. Import screen, behind the login.

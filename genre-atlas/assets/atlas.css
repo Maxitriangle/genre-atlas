@@ -531,3 +531,53 @@
   .ga-me-acts .ga-cta{min-width:0;width:100%}
   .ga-me .ga-stats{flex-wrap:wrap;gap:18px}
 }
+
+/* accounts: the doors of /my-atlas/ (sign in, create an account, a new
+   password), the member's settings, and the public profile */
+.ga-adoor{max-width:560px;gap:18px}
+.ga-aform{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ga-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ga-field label{font-weight:600}
+.ga-field input{width:100%;height:48px;padding:12px 14px;background:transparent;border:1px solid var(--line);color:var(--ink);font:inherit;font-size:14px;letter-spacing:.01em;text-transform:none;border-radius:0}
+.ga-field input:focus{border-color:var(--fam)}
+.ga-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.ga-check{display:flex;gap:12px;align-items:flex-start;text-transform:none;letter-spacing:.01em;font-size:13px;line-height:1.5}
+.ga-check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--fam);flex-shrink:0}
+.ga-check a{text-decoration:underline}
+.ga-anote{padding:12px 14px;border-left:2px solid var(--fam);background:var(--panel);text-transform:none;letter-spacing:.01em;font-size:13px;line-height:1.5}
+.ga-aerr{padding:12px 14px;border-left:2px solid #F28B82;background:var(--panel);color:#F6B3AD;text-transform:none;letter-spacing:.01em;font-size:13px;line-height:1.5}
+.ga-alinks{font-size:11px;color:var(--dim)}
+.ga-alinks a{text-decoration:underline}
+.ga-sso-row{display:flex;flex-direction:column;gap:10px}
+.ga-or{text-align:center}
+.ga-aform button[disabled]{opacity:.5;cursor:wait}
+.ga-settings{gap:22px}
+.ga-set{display:flex;flex-direction:column;gap:8px}
+.ga-set a{text-decoration:underline;color:var(--fam)}
+.ga-switch{display:flex;justify-content:space-between;align-items:center;max-width:420px;height:48px;padding:0 16px;border:1px solid var(--line)!important;font-weight:600}
+.ga-switch b{font-weight:700;color:var(--dim)}
+.ga-switch.on{border-color:var(--fam)!important}
+.ga-switch.on b{color:var(--fam)}
+.ga-history{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto;border-top:1px solid var(--line)}
+.ga-history li{display:grid;grid-template-columns:130px minmax(0,1fr);gap:2px 14px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ga-history li b{font-weight:500;text-transform:none;letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ga-history li span:last-child{grid-column:2}
+.ga-acols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px}
+.ga-acols h3,.ga-linkrow h3,.ga-delete h3{font-weight:500;margin:0!important}
+.ga-linkrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.ga-linkrow h3{flex-basis:100%}
+.ga-linked{color:var(--fam)}
+.ga-delete{max-width:420px;border-top:1px solid var(--line);padding-top:18px}
+#genre-atlas .ga-danger,#genre-atlas button.ga-cta.ghost.ga-danger{border-color:#F28B82;color:#F6B3AD!important}
+@media (max-width:899px){
+  .ga-history li{grid-template-columns:minmax(0,1fr)}
+  .ga-history li span:last-child{grid-column:auto}
+}
+
+/* A button styled as a call to action: the reset of #genre-atlas button would
+   otherwise take its fill and its border away. */
+#genre-atlas button.ga-cta{background:var(--fam);color:var(--bg);text-align:left;width:100%}
+#genre-atlas button.ga-cta.ghost{background:none;border:1px solid var(--fam);color:var(--fam)}
+#genre-atlas .ga-cta{gap:14px}
+.ga-linkrow .ga-cta{min-width:220px}
+.ga-me-acts .ga-cta{flex:1}

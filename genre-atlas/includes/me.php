@@ -1,10 +1,10 @@
 <?php
 /**
- * /my-atlas/: the visitor's own atlas. Favourite genres (☆), favourite songs
- * (♥, played back as a list in the player bar) and the genres heard, each
- * counted once 20 seconds of one of its songs have played. Until accounts
- * exist, all of it is kept in the visitor's browser (local storage): nothing
- * reaches the site. The script draws the page; the server only gives it an
+ * /my-atlas/: a member's own atlas, and the doors to it (sign in, create an
+ * account, a new password). Favourite genres (☆), favourite songs (♥, played
+ * back as a list in the player bar) and the genres heard, each counted once
+ * 20 seconds of one of its songs have played; all of it kept in the account
+ * (includes/accounts.php). The script draws the page; the server gives it an
  * address, a title, and a page for search engines not to index.
  */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,5 +35,5 @@ function genre_atlas_heard_after() {
 
 /** The page as served, before the script draws it (and for a visitor without script). */
 function genre_atlas_me_html() {
-	return '<h1>My atlas</h1><p>The genres you have heard, your favourite genres and your favourite songs. They are kept in your browser only, and this page needs JavaScript to show them.</p>';
+	return '<h1>My atlas</h1><p>The genres you have heard, your favourite genres and your favourite songs, kept in your account. Signing in needs JavaScript.</p>';
 }
