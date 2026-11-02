@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const GENRE_ATLAS_LEGAL_UPDATED = '2026-10-30'; // Change it with the text.
+const GENRE_ATLAS_LEGAL_UPDATED = '2026-11-02'; // Change it with the text.
 
 add_action( 'init', 'genre_atlas_legal_route', 11 );
 function genre_atlas_legal_route() {
@@ -59,7 +59,7 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
-			'<b>Your sound choices</b>: SOUND ON, FULL or 30 S, and having read the note on YouTube are remembered by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
+			'<b>Your atlas and your choices</b>: your favourite genres and songs, the genres you have heard (with the day you first heard each), and your settings (SOUND ON, FULL or 30 S, MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device and the site never sees them. MY ATLAS lets you download them or erase them; clearing your browser’s data erases them too.',
 			'There is no account, no newsletter and no advertising.',
 		),
 		'Cookies'                   => array(

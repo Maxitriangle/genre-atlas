@@ -96,6 +96,12 @@ _paq.push(['trackPageView']);
 }, 1 );
 PHP
 
+cat > "$SITE/wp-content/mu-plugins/quick-ear.php" <<'PHP'
+<?php
+// A genre counts as heard after 20 s on the site: one second on the bench.
+add_filter( 'genre_atlas_heard_after', function () { return 1; } );
+PHP
+
 cat > "$SITE/wp-content/mu-plugins/fake-platforms.php" <<'PHP'
 <?php
 add_filter( 'pre_http_request', function ( $pre, $args, $url ) {

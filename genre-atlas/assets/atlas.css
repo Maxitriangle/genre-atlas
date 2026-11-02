@@ -160,7 +160,8 @@
   .ga-header{height:56px;padding:0 12px 0 16px;gap:12px}
   .ga-logo{font-size:17px}
   .ga-nav{gap:14px}
-  .ga-nav a:not(.ga-nav-rnd):not(.ga-nav-ct){display:none}
+  .ga-nav a:not(.ga-nav-rnd):not(.ga-nav-ct):not(.ga-nav-me){display:none}
+  .ga-long{display:none}
   .ga-search{width:auto;flex-grow:1;max-width:240px}
   .ga-index{padding:24px 16px}
   .ga-legend{grid-template-columns:1fr;padding:24px 16px;gap:24px}
@@ -494,3 +495,39 @@
 .ga-press .ga-glyph{animation:ga-press .45s linear forwards}
 @keyframes ga-press{to{transform:scale(1.12);filter:drop-shadow(0 0 8px var(--fam))}}
 @media (prefers-reduced-motion:reduce){.ga-mnd{transition:none}.ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:none}.ga-press .ga-glyph{animation:none}}
+
+/* my atlas: favourite genres (☆), favourite songs (♥), the genres heard
+   (MY MAP dims the others) and the page that gathers them */
+.ga-star{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line)!important;font-size:16px;color:var(--dim)!important;vertical-align:middle;flex-shrink:0}
+.ga-star.on{border-color:var(--fam)!important;color:var(--fam)!important}
+.ga-panel-head .ga-star{margin-top:10px}
+.ga-dhero .ga-star{margin-top:14px}
+.ga-mctr .ga-star{margin-top:2px}
+.ga-mine{height:44px;padding:0 14px;border:1px solid var(--line)!important;font-size:11px;font-weight:600;color:var(--dim)!important;flex-shrink:0;margin-left:auto}
+.ga-mine.on{border-color:var(--fam)!important;color:var(--fam)!important}
+.ga-mbar .ga-mine{height:36px;padding:0 10px;font-size:10px}
+.ga-dim{opacity:.28}
+.ga-dim:hover,.ga-dim:focus-visible{opacity:.8}
+.ga-like.on{color:var(--fam);border-color:var(--fam)!important}
+.ga-me-sec{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:16px}
+.ga-me-sec h2{font-weight:500;margin:0!important}
+.ga-me-empty{display:flex;flex-direction:column;gap:18px;max-width:640px}
+.ga-me-fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.ga-me-fam{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line)}
+.ga-me-fam>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.ga-me-fam b{font-size:11px;font-weight:600;color:var(--fam)}
+.ga-me-bar{display:block;height:3px;background:var(--line)}
+.ga-me-bar i{display:block;height:3px;background:var(--fam)}
+.ga-me-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 18px}
+.ga-me-row{display:flex;align-items:center;gap:10px;min-height:44px;border-bottom:1px solid var(--line)}
+.ga-me-row a{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.ga-me-row b{font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ga-me-row .ga-star{width:32px;height:32px}
+.ga-unlike{width:36px;height:36px;border:1px solid var(--line)!important;color:var(--fam)}
+.ga-me-acts{display:flex;flex-wrap:wrap;gap:10px}
+.ga-me-acts .ga-cta{min-width:240px}
+.ga-me .ga-stats dd .ga-micro{font-size:12px}
+@media (max-width:899px){
+  .ga-me-acts .ga-cta{min-width:0;width:100%}
+  .ga-me .ga-stats{flex-wrap:wrap;gap:18px}
+}

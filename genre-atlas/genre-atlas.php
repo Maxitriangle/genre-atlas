@@ -24,6 +24,7 @@ require_once GENRE_ATLAS_DIR . 'includes/admin.php';
 require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/examples.php';
 require_once GENRE_ATLAS_DIR . 'includes/sound.php';
+require_once GENRE_ATLAS_DIR . 'includes/me.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/legal.php';
@@ -332,6 +333,9 @@ function genre_atlas_enqueue() {
 			'random'       => is_post_type_archive( 'genre' ) && get_query_var( 'ga_random' ) ? 1 : 0,
 			'contact'      => genre_atlas_is_contact() ? 1 : 0,
 			'legal'        => genre_atlas_is_legal() ? 1 : 0,
+			'me'           => genre_atlas_is_me() ? 1 : 0,
+			'meUrl'        => home_url( '/my-atlas/' ),
+			'heardAfter'   => genre_atlas_heard_after(),
 			'legalUrl'     => home_url( '/legal/' ),
 			'contactUrl'   => home_url( '/contact/' ),
 			'contactApi'   => esc_url_raw( rest_url( 'genre-atlas/v1/contact' ) ),
@@ -358,6 +362,9 @@ function genre_atlas_fallback_html() {
 	}
 	if ( genre_atlas_is_legal() ) {
 		return genre_atlas_legal_html();
+	}
+	if ( genre_atlas_is_me() ) {
+		return genre_atlas_me_html();
 	}
 	if ( is_singular( 'genre' ) ) {
 		return genre_atlas_dossier_html( get_queried_object() );

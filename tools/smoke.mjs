@@ -832,6 +832,61 @@ try {
 		check( 'mobile : un titre entier met la video dans la barre, la page reste lisible jusqu en bas', fit.inBar && fit.footClear && fit.wide <= 390,
 			`${ fit.inBar ? 'video dans la barre' : 'video hors de la barre' }, ${ fit.footClear ? 'pied visible' : 'pied cache' }, ${ fit.wide } px` );
 		await tel.close();
+
+		// 8d. My atlas, kept in the browser: ☆ a genre, ♥ a song, a genre
+		// heard (after 1 s on the bench, 20 s on the site), MY MAP, the page.
+		const ma = await newPage( 1440, 900 );
+		const away = [];
+		ma.on( 'request', r => { const h = new URL( r.url() ).hostname; if ( ! [ '127.0.0.1', 'localhost' ].includes( h ) && ! /youtube\.com$/.test( h ) ) away.push( h ); } );
+		const atlas = () => ma.evaluate( () => JSON.parse( localStorage.getItem( 'ga-atlas' ) || '{}' ) );
+		await centre( ma, sv );
+		await ma.locator( `.ga-panel [data-fav="${ sv.id }"]` ).click();
+		const starred = await ma.locator( `.ga-panel [data-fav="${ sv.id }"].on` ).count() === 1 && ( await atlas() ).genres?.includes( sv.id );
+		await ma.locator( `.ga-panel [data-hear="${ sv.id }"]` ).click();
+		await ma.waitForFunction( id => ( JSON.parse( localStorage.getItem( 'ga-atlas' ) || '{}' ).heard || {} )[ id ], sv.id, { timeout: 8000 } ).catch( () => {} );
+		await ma.locator( '.ga-bar [data-bar="like"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		const mine = await atlas();
+		check( 'mon atlas : ☆ garde un genre, 20 s d ecoute le marquent ecoute, ♥ garde le titre, dans le navigateur', starred && !! ( mine.heard || {} )[ sv.id ] && ( mine.tracks || [] ).length === 1 && mine.tracks[ 0 ].genre === sv.id,
+			`${ starred ? 'etoile' : 'pas d etoile' }, ${ ( mine.heard || {} )[ sv.id ] ? 'ecoute' : 'pas ecoute' }, ${ ( mine.tracks || [] ).length } titre(s)` );
+		await ma.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		const parent = byId.get( sv.p );
+		await centre( ma, parent );
+		await ma.locator( '.ga-subbar [data-mine]' ).click();
+		const lit = await ma.locator( `.ga-map .ga-node[data-go="${ sv.id }"], .ga-map .ga-node[data-centre="${ sv.id }"]` ).first().evaluate( e => ! e.classList.contains( 'ga-dim' ) ).catch( () => false );
+		const dimmed = await ma.locator( '.ga-map .ga-node.ga-dim' ).count();
+		await ma.screenshot( { path: `${ SHOTS }/15-ma-carte.png` } );
+		check( 'mon atlas : MY MAP eteint les genres pas encore ecoutes, et laisse allume celui qui l est', lit && dimmed > 0, `${ dimmed } noeud(s) eteint(s)` );
+		await ma.locator( '.ga-nav [data-me]' ).click();
+		await ma.waitForSelector( '.ga-me', { timeout: 8000 } ).catch( () => {} );
+		const page = await ma.locator( '.ga-me' ).innerText().catch( () => '' );
+		const here = new URL( ma.url() ).pathname;
+		await ma.screenshot( { path: `${ SHOTS }/15b-mon-atlas.png`, fullPage: true } );
+		await ma.locator( '.ga-me [data-mplay="-1"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await ma.waitForFunction( () => ( window.__yt || [] ).length > 1, null, { timeout: 8000 } ).catch( () => {} );
+		const replay = await ma.evaluate( () => ( window.__yt || [] ).pop() );
+		check( 'mon atlas : la page /my-atlas/ montre le genre ecoute, le favori et le titre, et rejoue mes titres',
+			here === '/my-atlas/' && /0001/.test( page ) && page.toLowerCase().includes( sv.name.toLowerCase() ) && page.includes( mine.tracks?.[ 0 ]?.title || '§' ) && replay && replay[ 1 ] === mine.tracks[ 0 ].youtube,
+			`${ here }, relecture ${ JSON.stringify( replay ) }` );
+		const [ dl ] = await Promise.all( [ ma.waitForEvent( 'download', { timeout: 8000 } ).catch( () => null ), ma.locator( '.ga-me [data-export]' ).click() ] );
+		const file = dl ? JSON.parse( ( await import( 'fs' ) ).readFileSync( await dl.path(), 'utf8' ) ) : {};
+		await ma.locator( '.ga-me [data-clear]' ).click();
+		const confirmed = /SURE/.test( await ma.locator( '.ga-me [data-clear]' ).innerText() );
+		await ma.locator( '.ga-me [data-clear]' ).click();
+		const empty = await atlas();
+		const cookies = ( await ma.context().cookies() ).length;
+		check( 'mon atlas : telecharger donne mes donnees, effacer demande confirmation puis vide tout, sans cookie ni appel exterieur',
+			( file.genres || [] ).includes( sv.id ) && confirmed && ! Object.keys( empty.heard || {} ).length && ! ( empty.genres || [] ).length && cookies === 0 && away.length === 0,
+			`${ dl ? 'fichier' : 'pas de fichier' }, ${ confirmed ? 'confirmation' : 'sans confirmation' }, ${ cookies } cookie(s), exterieur ${ away.join( ' ' ) || 'aucun' }` );
+		await ma.close();
+		const robots = await ( await fetch( `${ BASE }/my-atlas/` ) ).text();
+		const pm = await newPage( 390, 844 );
+		await pm.goto( `${ BASE }/my-atlas/`, { waitUntil: 'networkidle' } );
+		await pm.waitForSelector( '.ga-me', { timeout: 8000 } ).catch( () => {} );
+		const pw = await pm.evaluate( () => document.documentElement.scrollWidth );
+		const navMe = await pm.locator( '.ga-nav [data-me]' ).isVisible();
+		await pm.screenshot( { path: `${ SHOTS }/15c-mon-atlas-mobile.png`, fullPage: true } );
+		await pm.close();
+		check( 'mon atlas : la page n est pas indexee, tient en 390 px et reste au menu sur mobile', /<meta name='robots' content='[^']*noindex/.test( robots ) && pw <= 390 && navMe, `${ pw } px` );
 	} else {
 		check( 'son : un genre de l arbre a des extraits a jouer', false );
 	}
