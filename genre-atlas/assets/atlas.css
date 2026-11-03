@@ -160,7 +160,8 @@
   .ga-header{height:56px;padding:0 12px 0 16px;gap:12px}
   .ga-logo{font-size:17px}
   .ga-nav{gap:14px}
-  .ga-nav a:not(.ga-nav-rnd):not(.ga-nav-ct){display:none}
+  .ga-nav a:not(.ga-nav-rnd):not(.ga-nav-ct):not(.ga-nav-me){display:none}
+  .ga-long{display:none}
   .ga-search{width:auto;flex-grow:1;max-width:240px}
   .ga-index{padding:24px 16px}
   .ga-legend{grid-template-columns:1fr;padding:24px 16px;gap:24px}
@@ -494,3 +495,89 @@
 .ga-press .ga-glyph{animation:ga-press .45s linear forwards}
 @keyframes ga-press{to{transform:scale(1.12);filter:drop-shadow(0 0 8px var(--fam))}}
 @media (prefers-reduced-motion:reduce){.ga-mnd{transition:none}.ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:none}.ga-press .ga-glyph{animation:none}}
+
+/* my atlas: favourite genres (☆), favourite songs (♥), the genres heard
+   (MY MAP dims the others) and the page that gathers them */
+.ga-star{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line)!important;font-size:16px;color:var(--dim)!important;vertical-align:middle;flex-shrink:0}
+.ga-star.on{border-color:var(--fam)!important;color:var(--fam)!important}
+.ga-panel-head .ga-star{margin-top:10px}
+.ga-dhero .ga-star{margin-top:14px}
+.ga-mctr .ga-star{margin-top:2px}
+.ga-mine{height:44px;padding:0 14px;border:1px solid var(--line)!important;font-size:11px;font-weight:600;color:var(--dim)!important;flex-shrink:0;margin-left:auto}
+.ga-mine.on{border-color:var(--fam)!important;color:var(--fam)!important}
+.ga-mbar .ga-mine{height:36px;padding:0 10px;font-size:10px}
+.ga-dim{opacity:.28}
+.ga-dim:hover,.ga-dim:focus-visible{opacity:.8}
+.ga-like.on{color:var(--fam);border-color:var(--fam)!important}
+.ga-me-sec{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:16px}
+.ga-me-sec h2{font-weight:500;margin:0!important}
+.ga-me-empty{display:flex;flex-direction:column;gap:18px;max-width:640px}
+.ga-me-fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.ga-me-fam{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line)}
+.ga-me-fam>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.ga-me-fam b{font-size:11px;font-weight:600;color:var(--fam)}
+.ga-me-bar{display:block;height:3px;background:var(--line)}
+.ga-me-bar i{display:block;height:3px;background:var(--fam)}
+.ga-me-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 18px}
+.ga-me-row{display:flex;align-items:center;gap:10px;min-height:44px;border-bottom:1px solid var(--line)}
+.ga-me-row a{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.ga-me-row b{font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ga-me-row .ga-star{width:32px;height:32px}
+.ga-unlike{width:36px;height:36px;border:1px solid var(--line)!important;color:var(--fam)}
+.ga-me-acts{display:flex;flex-wrap:wrap;gap:10px}
+.ga-me-acts .ga-cta{min-width:240px}
+.ga-me .ga-stats dd .ga-micro{font-size:12px}
+@media (max-width:899px){
+  .ga-me-acts .ga-cta{min-width:0;width:100%}
+  .ga-me .ga-stats{flex-wrap:wrap;gap:18px}
+}
+
+/* accounts: the doors of /my-atlas/ (sign in, create an account, a new
+   password), the member's settings, and the public profile */
+.ga-adoor{max-width:560px;gap:18px}
+.ga-aform{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ga-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ga-field label{font-weight:600}
+.ga-field input{width:100%;height:48px;padding:12px 14px;background:transparent;border:1px solid var(--line);color:var(--ink);font:inherit;font-size:14px;letter-spacing:.01em;text-transform:none;border-radius:0}
+.ga-field input:focus{border-color:var(--fam)}
+.ga-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.ga-check{display:flex;gap:12px;align-items:flex-start;text-transform:none;letter-spacing:.01em;font-size:13px;line-height:1.5}
+.ga-check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--fam);flex-shrink:0}
+.ga-check a{text-decoration:underline}
+.ga-anote{padding:12px 14px;border-left:2px solid var(--fam);background:var(--panel);text-transform:none;letter-spacing:.01em;font-size:13px;line-height:1.5}
+.ga-aerr{padding:12px 14px;border-left:2px solid #F28B82;background:var(--panel);color:#F6B3AD;text-transform:none;letter-spacing:.01em;font-size:13px;line-height:1.5}
+.ga-alinks{font-size:11px;color:var(--dim)}
+.ga-alinks a{text-decoration:underline}
+.ga-sso-row{display:flex;flex-direction:column;gap:10px}
+.ga-or{text-align:center}
+.ga-aform button[disabled]{opacity:.5;cursor:wait}
+.ga-settings{gap:22px}
+.ga-set{display:flex;flex-direction:column;gap:8px}
+.ga-set a{text-decoration:underline;color:var(--fam)}
+.ga-switch{display:flex;justify-content:space-between;align-items:center;max-width:420px;height:48px;padding:0 16px;border:1px solid var(--line)!important;font-weight:600}
+.ga-switch b{font-weight:700;color:var(--dim)}
+.ga-switch.on{border-color:var(--fam)!important}
+.ga-switch.on b{color:var(--fam)}
+.ga-history{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto;border-top:1px solid var(--line)}
+.ga-history li{display:grid;grid-template-columns:130px minmax(0,1fr);gap:2px 14px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ga-history li b{font-weight:500;text-transform:none;letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ga-history li span:last-child{grid-column:2}
+.ga-acols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px}
+.ga-acols h3,.ga-linkrow h3,.ga-delete h3{font-weight:500;margin:0!important}
+.ga-linkrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.ga-linkrow h3{flex-basis:100%}
+.ga-linked{color:var(--fam)}
+.ga-delete{max-width:420px;border-top:1px solid var(--line);padding-top:18px}
+#genre-atlas .ga-danger,#genre-atlas button.ga-cta.ghost.ga-danger{border-color:#F28B82;color:#F6B3AD!important}
+@media (max-width:899px){
+  .ga-history li{grid-template-columns:minmax(0,1fr)}
+  .ga-history li span:last-child{grid-column:auto}
+}
+
+/* A button styled as a call to action: the reset of #genre-atlas button would
+   otherwise take its fill and its border away. */
+#genre-atlas button.ga-cta{background:var(--fam);color:var(--bg);text-align:left;width:100%}
+#genre-atlas button.ga-cta.ghost{background:none;border:1px solid var(--fam);color:var(--fam)}
+#genre-atlas .ga-cta{gap:14px}
+.ga-linkrow .ga-cta{min-width:220px}
+.ga-me-acts .ga-cta{flex:1}

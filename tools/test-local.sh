@@ -96,12 +96,35 @@ _paq.push(['trackPageView']);
 }, 1 );
 PHP
 
+cat > "$SITE/wp-content/mu-plugins/quick-ear.php" <<'PHP'
+<?php
+// A genre counts as heard after 20 s on the site: one second on the bench.
+add_filter( 'genre_atlas_heard_after', function () { return 1; } );
+PHP
+
 cat > "$SITE/wp-content/mu-plugins/fake-platforms.php" <<'PHP'
 <?php
 add_filter( 'pre_http_request', function ( $pre, $args, $url ) {
 	$host = (string) wp_parse_url( $url, PHP_URL_HOST );
-	if ( ! preg_match( '/(spotify|deezer|youtube|youtu\.be|apple|bandcamp|soundcloud|tidal|qobuz)/', $host ) ) {
+	if ( ! preg_match( '/(spotify|deezer|youtube|youtu\.be|apple|bandcamp|soundcloud|tidal|qobuz|googleapis|facebook)/', $host ) ) {
 		return $pre;
+	}
+	// Google and Facebook sign-in: the code the fake consent page (smoke.mjs)
+	// sends back is the identity itself, as JSON in base64url.
+	$b64 = function ( $s ) { return base64_decode( strtr( $s, '-_', '+/' ) . str_repeat( '=', ( 4 - strlen( $s ) % 4 ) % 4 ) ); };
+	$enc = function ( $s ) { return rtrim( strtr( base64_encode( $s ), '+/', '-_' ), '=' ); };
+	$ok  = function ( $body ) { return array( 'headers' => array(), 'cookies' => array(), 'filename' => null, 'response' => array( 'code' => 200, 'message' => 'OK' ), 'body' => wp_json_encode( $body ) ); };
+	if ( 'oauth2.googleapis.com' === $host ) {
+		$who = json_decode( $b64( (string) $args['body']['code'] ), true );
+		$jwt = $enc( '{"alg":"none"}' ) . '.' . $enc( wp_json_encode( array( 'iss' => 'https://accounts.google.com', 'aud' => $args['body']['client_id'], 'sub' => $who['sub'], 'email' => $who['email'], 'email_verified' => true, 'name' => $who['name'], 'nonce' => $who['nonce'], 'exp' => time() + 300 ) ) ) . '.x';
+		return $ok( array( 'id_token' => $jwt, 'access_token' => 'smoke' ) );
+	}
+	if ( 'graph.facebook.com' === $host ) {
+		parse_str( (string) wp_parse_url( $url, PHP_URL_QUERY ), $q );
+		if ( false !== strpos( $url, '/oauth/access_token' ) ) {
+			return $ok( array( 'access_token' => rawurldecode( $q['code'] ) ) );
+		}
+		return $ok( json_decode( $b64( rawurldecode( $q['access_token'] ) ), true ) );
 	}
 	// Deezer's API, for the sound previews: every track has one.
 	// Like the real one, it answers WordPress's own user agent with a web page.
@@ -117,6 +140,29 @@ add_filter( 'pre_http_request', function ( $pre, $args, $url ) {
 		'response' => array( 'code' => $gone ? 404 : 200, 'message' => $gone ? 'Not Found' : 'OK' ) );
 }, 10, 3 );
 add_action( 'rest_api_init', function () {
+	// The e-mails the site sent, for smoke.mjs to follow their links.
+	register_rest_route( 'smoke/v1', '/mails', array(
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => function () {
+			$f = WP_CONTENT_DIR . '/mail.log';
+			return file_exists( $f ) ? array_map( 'json_decode', array_filter( file( $f ) ) ) : array();
+		},
+	) );
+	// The daily housekeeping of accounts, days ahead; "idle" makes a member
+	// look unused since that many days.
+	register_rest_route( 'smoke/v1', '/accounts-daily', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( $request ) {
+			if ( $request['idle'] ) {
+				$u = get_user_by( 'login', $request['pseudo'] );
+				update_user_meta( $u->ID, 'ga_seen', gmdate( 'Y-m-d', time() - (int) $request['idle'] * DAY_IN_SECONDS ) );
+			}
+			genre_atlas_accounts_daily( time() + (int) $request['days'] * DAY_IN_SECONDS );
+			return array( 'ok' => true );
+		},
+	) );
 	register_rest_route( 'smoke/v1', '/check-picks', array(
 		'methods'             => 'POST',
 		'permission_callback' => '__return_true',
@@ -207,6 +253,11 @@ echo 'extension ' . GENRE_ATLAS_VERSION . \" activee\n\";
 global \$wp_rewrite;
 \$wp_rewrite->set_permalink_structure( '/%postname%/' );
 update_option( 'genre_atlas_contact_to', 'contact@example.test' );
+// Keys for Google and Facebook: the bench plays both (fake-platforms.php, smoke.mjs).
+update_option( 'genre_atlas_google_id', 'smoke-google-id' );
+update_option( 'genre_atlas_google_secret', 'smoke-google-secret' );
+update_option( 'genre_atlas_facebook_id', 'smoke-facebook-id' );
+update_option( 'genre_atlas_facebook_secret', 'smoke-facebook-secret' );
 \$stats = Genre_Atlas_Importer::import( '$REPO/data/genre-import.csv' );
 if ( is_wp_error( \$stats ) ) { fwrite( STDERR, \$stats->get_error_message() . \"\n\" ); exit( 1 ); }
 foreach ( \$stats as \$k => \$v ) { echo str_pad( \$k, 20 ) . \$v . \"\n\"; }

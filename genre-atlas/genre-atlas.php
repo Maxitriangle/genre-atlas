@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.20.0
+ * Version: 0.21.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.20.0' );
+define( 'GENRE_ATLAS_VERSION', '0.21.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v3' );
@@ -24,6 +24,9 @@ require_once GENRE_ATLAS_DIR . 'includes/admin.php';
 require_once GENRE_ATLAS_DIR . 'includes/artists.php';
 require_once GENRE_ATLAS_DIR . 'includes/examples.php';
 require_once GENRE_ATLAS_DIR . 'includes/sound.php';
+require_once GENRE_ATLAS_DIR . 'includes/me.php';
+require_once GENRE_ATLAS_DIR . 'includes/accounts.php';
+require_once GENRE_ATLAS_DIR . 'includes/oauth.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/legal.php';
@@ -332,6 +335,20 @@ function genre_atlas_enqueue() {
 			'random'       => is_post_type_archive( 'genre' ) && get_query_var( 'ga_random' ) ? 1 : 0,
 			'contact'      => genre_atlas_is_contact() ? 1 : 0,
 			'legal'        => genre_atlas_is_legal() ? 1 : 0,
+			'me'           => genre_atlas_is_me() ? 1 : 0,
+			'meUrl'        => home_url( '/my-atlas/' ),
+			'heardAfter'   => genre_atlas_heard_after(),
+			// Accounts: the nonce lets the page speak for a signed-in member.
+			'api'          => esc_url_raw( rest_url( 'genre-atlas/v1/' ) ),
+			'ajax'         => admin_url( 'admin-ajax.php' ),
+			'nonce'        => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : '',
+			'signedIn'     => is_user_logged_in() ? 1 : 0,
+			'sso'          => genre_atlas_oauth_ready(),
+			'ssoUrl'       => home_url( '/my-atlas/oauth/' ),
+			'linkNonce'    => is_user_logged_in() ? wp_create_nonce( 'genre_atlas_link' ) : '',
+			'profile'      => genre_atlas_profile_pseudo(),
+			'termsUrl'     => home_url( '/legal/#terms-of-use' ),
+			'deleted'      => isset( $_GET['deletion'] ) && genre_atlas_deletion_known( sanitize_text_field( wp_unslash( $_GET['deletion'] ) ) ) ? sanitize_text_field( wp_unslash( $_GET['deletion'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification
 			'legalUrl'     => home_url( '/legal/' ),
 			'contactUrl'   => home_url( '/contact/' ),
 			'contactApi'   => esc_url_raw( rest_url( 'genre-atlas/v1/contact' ) ),
@@ -358,6 +375,12 @@ function genre_atlas_fallback_html() {
 	}
 	if ( genre_atlas_is_legal() ) {
 		return genre_atlas_legal_html();
+	}
+	if ( genre_atlas_is_me() ) {
+		return genre_atlas_me_html();
+	}
+	if ( genre_atlas_profile_pseudo() ) {
+		return genre_atlas_profile_html( genre_atlas_profile_pseudo() );
 	}
 	if ( is_singular( 'genre' ) ) {
 		return genre_atlas_dossier_html( get_queried_object() );
