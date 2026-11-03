@@ -44,6 +44,8 @@ function genre_atlas_legal_sections() {
 	$contact = '<a href="' . esc_url( home_url( '/contact/' ) ) . '">contact page</a>';
 	$site    = esc_html( get_bloginfo( 'name' ) );
 	$matomo  = genre_atlas_matomo_active();
+	// Sign-in with Google or Facebook is only described once its keys are set.
+	$sso     = function_exists( 'genre_atlas_oauth_ready' ) && in_array( true, genre_atlas_oauth_ready(), true );
 	return array(
 		'Publisher'                 => array(
 			$site . ' is a personal, non-commercial website, published by a private individual who is also its director of publication. As French law allows (article 6-III-2 of law no. 2004-575 of 21 June 2004, “LCEN”), the publisher’s identity is not shown here: it has been given to the host, who keeps it.',
@@ -64,10 +66,10 @@ function genre_atlas_legal_sections() {
 			'There is no newsletter and no advertising.',
 		),
 		'Accounts'                  => array(
-			'An account keeps your atlas, so you find it on any device. To create one, you choose a pseudo and give an e-mail address, then either a password or your Google or Facebook account. What it keeps: your <b>pseudo</b>; your <b>e-mail address</b>, used only to confirm it, to send you a new password when you ask, and to warn you before an unused account is deleted; your <b>password</b>, stored only in a scrambled form that cannot be read back; the <b>date</b> you accepted these terms; your <b>favourite genres and songs</b>; the <b>genres you have heard</b>, each with the day you first heard it (a genre counts once 20 seconds of one of its songs have played); whether your <b>profile is public</b>; and, only if you turn it on, your <b>listening history</b>: each song you heard for 20 seconds or more, with its genre and the time. Turning the history off erases it.',
+			'An account keeps your atlas, so you find it on any device. To create one, you choose a pseudo and give an e-mail address, then a password' . ( $sso ? ' or your Google or Facebook account' : '' ) . '. What it keeps: your <b>pseudo</b>; your <b>e-mail address</b>, used only to confirm it, to send you a new password when you ask, and to warn you before an unused account is deleted; your <b>password</b>, stored only in a scrambled form that cannot be read back; the <b>date</b> you accepted these terms; your <b>favourite genres and songs</b>; the <b>genres you have heard</b>, each with the day you first heard it (a genre counts once 20 seconds of one of its songs have played); whether your <b>profile is public</b>; and, only if you turn it on, your <b>listening history</b>: each song you heard for 20 seconds or more, with its genre and the time. Turning the history off erases it.',
 			'<b>Why</b>: to give you the service you asked for by creating an account (article 6.1.b of the GDPR). Nothing is used for anything else: no advertising, no profiling, no sale, no sharing. The data stays on the host’s servers in France, and only the publisher can reach it.',
+			$sso ? '<b>Google and Facebook</b>: if you choose to continue with one of them, you are sent to its site, which tells us your account identifier, your name and your e-mail address; we keep the identifier (to recognise you next time) and the address, not the name. Nothing reaches Google or Facebook before you press that button, and the site loads none of their scripts. Removing the site from your Facebook account deletes what came from it.' : '',
 			'<b>How long</b>: as long as the account exists. An account left unconfirmed is deleted after 7 days. An account unused for 3 years is deleted, after an e-mail warning a month before. Deleting your account erases all of it at once.',
-			'<b>Google and Facebook</b>: if you choose to continue with one of them, you are sent to its site, which tells us your account identifier, your name and your e-mail address; we keep the identifier (to recognise you next time) and the address, not the name. Nothing reaches Google or Facebook before you press that button, and the site loads none of their scripts. Removing the site from your Facebook account deletes what came from it.',
 			'<b>Public profile</b>: off by default. Turned on, the page <code>/atlas/your-pseudo/</code> shows your pseudo, the date you joined, the genres you have heard and your favourites, to anyone who has the link; never your e-mail address nor your history. Search engines are asked not to list it. Turned off, it disappears at once.',
 			'<b>Security</b>: the site is served over HTTPS; repeated wrong passwords lock an account for a quarter of an hour; confirmation links work once and expire. Should the data ever leak, members would be told, and the CNIL within 72 hours, as the law requires.',
 		),
@@ -105,7 +107,7 @@ function genre_atlas_legal_html() {
 	$out = '<h1>Legal notice and privacy</h1><div class="ga-legal-text">';
 	foreach ( genre_atlas_legal_sections() as $title => $paras ) {
 		$out .= '<section id="' . esc_attr( sanitize_title( $title ) ) . '"><h2>' . esc_html( $title ) . '</h2>';
-		foreach ( $paras as $p ) {
+		foreach ( array_filter( $paras ) as $p ) {
 			$out .= '<p>' . wp_kses( $p, array( 'a' => array( 'href' => true ), 'b' => array(), 'code' => array(), 'span' => array( 'id' => true ) ) ) . '</p>';
 		}
 		$out .= '</section>';

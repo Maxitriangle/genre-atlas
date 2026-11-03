@@ -32,7 +32,7 @@ Mis à jour le 03/11/2026 (v0.21.0, comptes).
   - suppression par le membre : immédiate et totale.
   - Tâche quotidienne `genre_atlas_accounts_daily`.
 - **Destinataires** : l'éditeur seul. Rien n'est vendu ni partagé, il n'y a ni publicité ni profilage.
-- **Google et Facebook** (connexion « Continue with… ») :
+- **Google et Facebook** (connexion « Continue with… ») — **prête mais pas activée** : Maxime a choisi le 03/11/2026 de rester sur l'inscription par e-mail. Sans clés dans Genres → Settings, aucun bouton ne s'affiche, et la page légale ne mentionne pas ces services. Si un jour les clés sont réglées :
   - ce sont des responsables de traitement indépendants pour leur propre service ;
   - ils ne sont contactés que si le visiteur choisit ce bouton (redirection, aucun script chargé) ;
   - nous recevons l'identifiant, le nom et l'e-mail, et nous gardons l'identifiant et l'e-mail, pas le nom ;
