@@ -14,7 +14,8 @@ does not know, or has not tagged, is left out: nothing confirms it.
 Then each genre under 100 is topped up with the artists MusicBrainz tags with
 it (artists-mb.py's candidates: the tag with a quarter of the votes, or three
 tagged release groups), best tagged first, when MusicBrainz links them to
-Wikidata (the plugin keys artists by their Wikidata ID).
+Wikidata (the plugin keys artists by their Wikidata ID). Each new artist costs
+a request, so at most LOOKUPS are looked up per genre and per run.
 
     python3 data/artists-cross.py [family QID ...]     # default: Q9778
 
@@ -37,6 +38,7 @@ spec.loader.exec_module(am)
 lt = am.lt
 
 KEEP = 100
+LOOKUPS = 25      # new MusicBrainz artists looked up per genre: one request each, once a second
 
 
 def rows(name):
@@ -128,12 +130,16 @@ def main():
             continue
         cands, _ = am.candidates(by_q[g])
         have = {q for q, _ in kept[g]}
+        tries = 0
         for a in cands:
             if len(kept[g]) >= KEEP:
                 break
             q = by_mbid.get(a['id'])
             full = None
             if not q:
+                tries += 1
+                if tries > LOOKUPS:
+                    break
                 q, _, full = am.links(a['id'])
                 if not q:
                     continue
