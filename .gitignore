@@ -5,3 +5,4 @@ data/.mb-cache.json
 data/.examples-cache.json
 prototypes/genre-city/genre-city-prototype.html
 data/.*-cache.json.tmp
+data/.wide-cache.json
