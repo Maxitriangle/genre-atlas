@@ -20,7 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const GENRE_ATLAS_MAX_ARTISTS = 8; // The same limit as the map's ring.
+const GENRE_ATLAS_MAX_ARTISTS = 100; // A genre lists up to 100 artists…
+const GENRE_ATLAS_ESSENTIALS  = 8;   // …of which the first 8, the best known, are its essentials.
 
 function genre_atlas_artist_fields() {
 	return array(
@@ -73,10 +74,14 @@ function genre_atlas_artist_sort_key( $name ) {
 	return strtolower( remove_accents( preg_replace( '/^the\s+/i', '', $name ) ) );
 }
 
-/** The artists of a genre as the dossier shows them, A to Z. */
+/**
+ * The artists of a genre, in their stored order: the best known first. The
+ * first 8 are the essentials, with their photo ("key"); the dossier shows
+ * each part A to Z.
+ */
 function genre_atlas_dossier_artists( $genre_id ) {
 	$out = array();
-	foreach ( genre_atlas_genre_artist_ids( $genre_id ) as $id ) {
+	foreach ( array_slice( genre_atlas_genre_artist_ids( $genre_id ), 0, GENRE_ATLAS_MAX_ARTISTS ) as $id ) {
 		$p = get_post( $id );
 		if ( ! $p || 'ga_artist' !== $p->post_type || 'publish' !== $p->post_status ) {
 			continue;
@@ -103,15 +108,12 @@ function genre_atlas_dossier_artists( $genre_id ) {
 		if ( $song ) {
 			$a['song'] = $song;
 		}
+		if ( count( $out ) < GENRE_ATLAS_ESSENTIALS ) {
+			$a['key'] = 1;
+		}
 		$out[] = $a;
 	}
-	usort(
-		$out,
-		function ( $x, $y ) {
-			return strcmp( genre_atlas_artist_sort_key( $x['name'] ), genre_atlas_artist_sort_key( $y['name'] ) );
-		}
-	);
-	return array_slice( $out, 0, GENRE_ATLAS_MAX_ARTISTS );
+	return $out;
 }
 
 /** The artist's song for the Listen section, or null without a title. */
@@ -159,7 +161,7 @@ function genre_atlas_add_artists_box() {
 function genre_atlas_render_artists_box( $post ) {
 	wp_nonce_field( 'genre_atlas_artists', 'genre_atlas_artists_nonce' );
 	$ids = genre_atlas_genre_artist_ids( $post->ID );
-	echo '<p class="description">Shown on the genre\'s dossier, A to Z, ' . (int) GENRE_ATLAS_MAX_ARTISTS . ' at most. Once this list is saved, re-importing the artist file leaves it as it is.</p>';
+	echo '<p class="description">' . (int) GENRE_ATLAS_MAX_ARTISTS . ' at most, best known first: the dossier shows the first ' . (int) GENRE_ATLAS_ESSENTIALS . ' as its essentials, with their photo, and the others as a list. Once this list is saved, re-importing the artist file leaves it as it is.</p>';
 	if ( $ids ) {
 		echo '<ul>';
 		foreach ( $ids as $id ) {

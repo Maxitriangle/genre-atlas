@@ -581,3 +581,12 @@
 #genre-atlas .ga-cta{gap:14px}
 .ga-linkrow .ga-cta{min-width:220px}
 .ga-me-acts .ga-cta{flex:1}
+
+/* MORE ARTISTS: the artists after the 8 essentials, as a list, A to Z */
+.ga-track.ga-mart{grid-template-columns:44px minmax(0,1fr) auto}
+.ga-more-list .ga-tname .ga-micro{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#genre-atlas .ga-padd{min-height:56px;font-size:12px}
+@media (max-width:899px){
+  .ga-track.ga-mart{grid-template-columns:44px minmax(0,1fr)}
+  .ga-track.ga-mart .ga-tout{grid-column:2}
+}

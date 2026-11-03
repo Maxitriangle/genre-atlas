@@ -1053,7 +1053,39 @@
   // song to), then one song per key artist.
   function listenTracks(n, d) {
     var ex = d.example, out = ex && ex.youtube ? [{ name: ex.channel || '', example: 1, song: { title: ex.title || n.name, youtube: ex.youtube } }] : [];
-    return out.concat((d.artists || []).filter(function (a) { return a.song; }));
+    return out.concat(essentials(d).filter(function (a) { return a.song; }));
+  }
+  // A genre's artists come best known first; the dossier shows its first 8,
+  // the essentials, as cards, and the others as a list, each part A to Z. An
+  // approved suggestion joins the list, under the name of who suggested it.
+  function artistKey(name) { return String(name || '').toLowerCase().replace(/^the\s+/, ''); }
+  function byArtist(a, b) { return artistKey(a.name).localeCompare(artistKey(b.name)); }
+  function essentials(d) { return (d.artists || []).filter(function (a) { return a.key; }).sort(byArtist); }
+  function others(d) {
+    var seen = {}, out = (d.artists || []).filter(function (a) { seen[artistKey(a.name)] = 1; return !a.key; });
+    (d.picks || []).forEach(function (p) {
+      if (seen[artistKey(p.name)]) return;
+      seen[artistKey(p.name)] = 1;
+      out.push({ name: p.name, suggested: p.by || 'A LISTENER', url: p.url, platform: p.platform, song: /youtu/.test(p.platform || '') && /(?:v=|youtu\.be\/)([\w-]{11})/.test(p.url) ? { title: p.name, youtube: p.url.match(/(?:v=|youtu\.be\/)([\w-]{11})/)[1] } : null });
+    });
+    return out.sort(byArtist);
+  }
+  function bandcamp(name) { return 'https://bandcamp.com/search?q=' + encodeURIComponent(name) + '&item_type=b'; }
+  function moreRow(a, i) {
+    var meta = a.suggested ? ['SUGGESTED BY ' + a.suggested.toUpperCase()] : [a.country ? a.country.toUpperCase() : '', a.start ? 'SINCE ' + a.start : ''].filter(Boolean);
+    var links = a.suggested ? [[(a.platform || 'LINK').toUpperCase(), a.url]] : [['DEEZER', a.song && a.song.deezer], ['BANDCAMP', bandcamp(a.name)]];
+    return '<li class="ga-track ga-mart">' + (a.song && a.song.youtube ? '<button type="button" class="ga-play" data-more="' + i + '" aria-label="Play ' + esc(a.song.title) + ' by ' + esc(a.name) + '"><span aria-hidden="true">▶</span></button>' : '<span class="ga-play none" aria-hidden="true"></span>') +
+      '<span class="ga-tname"><b>' + esc(a.name) + '</b><span class="ga-micro">' + esc(meta.join(' · ') || '—') + (a.song ? ' · ' + esc(a.song.title.toUpperCase()) : '') + '</span></span>' +
+      '<span class="ga-tout">' + links.filter(function (l) { return l[1]; }).map(function (l) { return '<a href="' + esc(l[1]) + '" target="_blank" rel="noopener' + (a.suggested ? ' nofollow ugc' : '') + '">' + esc(l[0]) + '<span aria-hidden="true">↗</span></a>'; }).join('') + '</span></li>';
+  }
+  function playMore(i) {
+    var n = N[S.about], d = n && DOS[n.id];
+    if (!d) return;
+    var all = others(d), want = all[i] && all[i].song && all[i].song.youtube, at = 0;
+    var list = all.filter(function (a) { return a.song && a.song.youtube; }).map(function (a) { return { youtube: a.song.youtube, title: a.song.title, artist: a.name, genre: n.id }; });
+    list.forEach(function (x, j) { if (x.youtube === want) at = j; });
+    PL.radio = null; PL.ask++;
+    if (list.length) playFull(list, at);
   }
   function listenRow(a, i) {
     var s = a.song, play = s.youtube ? '<button type="button" class="ga-play" data-play="' + i + '" aria-label="Play ' + esc(s.title) + '"><span aria-hidden="true">▶</span></button>' : '<span class="ga-play none" aria-hidden="true"></span>';
@@ -1111,10 +1143,11 @@
     html += section('lineage', 'LINEAGE', ['STRICT TREE · ONE PARENT', subs.length ? 'SUBGENRES A TO Z' : 'NO SUBGENRE'],
       '<ol class="ga-lineage">' + rows + '</ol>' + (list ? '<ul class="ga-subs">' + list + '</ul>' : ''));
 
-    if (d.artists && d.artists.length) {
-      var shot = d.artists.some(function (a) { return a.mask; });
-      html += section('artists', 'KEY ARTISTS', [pad(d.artists.length) + ' / 08 ENTRIES', 'SORTED A TO Z'].concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []),
-        '<ul class="ga-artists">' + d.artists.map(artistCard).join('') + '</ul>');
+    var key = essentials(d), more = others(d);
+    if (key.length) {
+      var shot = key.some(function (a) { return a.mask; });
+      html += section('artists', 'KEY ARTISTS', [pad(key.length) + ' ESSENTIAL' + (key.length > 1 ? 'S' : ''), 'SORTED A TO Z'].concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []),
+        '<ul class="ga-artists">' + key.map(artistCard).join('') + '</ul>');
     }
     var songs = listenTracks(n, d), only = songs.length === 1 && songs[0].example;
     if (songs.length) {
@@ -1126,7 +1159,11 @@
         '<ol class="ga-tracks">' + songs.map(listenRow).join('') + '</ol>');
     }
 
-    if (d.picks) html += picksSection(n, d); // once the dossier is loaded: the form needs nothing more
+    if (more.length) {
+      html += section('more', 'MORE ARTISTS', [pad(more.length, 3) + ' ARTIST' + (more.length > 1 ? 'S' : ''), 'SORTED A TO Z', 'WIKIDATA · MUSICBRAINZ · LISTENERS'],
+        '<ol class="ga-tracks ga-more-list">' + more.map(moreRow).join('') + '</ol>');
+    }
+    if (d.picks) html += suggestSection(n); // once the dossier is loaded: the form needs nothing more
     var links = [];
     if (wiki) links.push(['WIKIPEDIA', d.wikipedia, wiki]);
     if (d.wikidata) links.push(['WIKIDATA', d.wikidata, 'https://www.wikidata.org/wiki/' + d.wikidata]);
@@ -1142,12 +1179,11 @@
     return html + foot() + '</main>';
   }
 
-  /* ---------- community picks ----------
-   * Artists and playlists suggested by listeners, shown once checked by hand.
-   * Links only, on a closed list of platforms, A to Z like everything else.
-   * The form opens inside the section; its draft lives in P, reset when the
-   * dossier changes genre. */
-  var PICKS_SHOWN = 8;
+  /* ---------- suggestions ----------
+   * Bands and artists suggested by listeners: once checked by hand, they join
+   * MORE ARTISTS. Links only, on a closed list of platforms. The form opens
+   * inside the SUGGEST section; its draft lives in P, reset when the dossier
+   * changes genre. */
   var P = { genre: 0, open: false, kind: 'artist', url: '', name: '', note: '', by: '', errors: {}, error: '', sending: false, sent: false, all: false };
   var PLATFORMS = [['Spotify', ['open.spotify.com', 'spotify.link']], ['Deezer', ['deezer.com', 'deezer.page.link', 'link.deezer.com']], ['YouTube', ['youtube.com', 'youtu.be']],
     ['Apple Music', ['music.apple.com']], ['Bandcamp', ['bandcamp.com']], ['SoundCloud', ['soundcloud.com']], ['Tidal', ['tidal.com']], ['Qobuz', ['qobuz.com']]];
@@ -1159,12 +1195,6 @@
     return hit ? hit[0] : '';
   }
   function pickFor(n) { if (P.genre !== n.id) P = { genre: n.id, open: false, kind: 'artist', url: '', name: '', note: '', by: '', errors: {}, error: '', sending: false, sent: false, all: false }; }
-  function pickRow(p) {
-    return '<li class="ga-pick"><span class="ga-ptag">' + (p.kind === 'playlist' ? 'PLAYLIST' : 'ARTIST') + '</span>' +
-      '<span class="ga-pname"><b>' + esc(p.name) + '</b><span class="ga-micro">' + esc((p.platform || '').toUpperCase()) + (p.by ? ' · PICKED BY ' + esc(p.by.toUpperCase()) : '') + '</span>' +
-      (p.note ? '<q class="ga-pnote">' + esc(p.note) + '</q>' : '') + '</span>' +
-      '<a class="ga-pout" href="' + esc(p.url) + '" target="_blank" rel="noopener nofollow ugc">OPEN ON ' + esc((p.platform || 'THE WEB').toUpperCase()) + '<span aria-hidden="true">↗</span><span class="ga-sr">: ' + esc(p.name) + '</span></a></li>';
-  }
   function pickField(id, label, note, input) {
     var err = P.errors[id];
     return '<div class="ga-cfield' + (err ? ' bad' : '') + '"><label for="ga-p' + id + '"><b>' + label + '</b>' + (note ? '<i class="ga-micro" id="ga-pnote-' + id + '">' + note + '</i>' : '') + '</label>' + input +
@@ -1174,36 +1204,27 @@
   function linkHint() { var p = platformOf(P.url); return p ? 'DETECTED: ' + p.toUpperCase() : 'SPOTIFY, DEEZER, YOUTUBE, APPLE MUSIC, BANDCAMP, SOUNDCLOUD, TIDAL, QOBUZ'; }
   function pickForm(n) {
     if (P.sent) {
-      return '<div class="ga-pdone" role="status"><p class="ga-micro">[RECEIVED] THANK YOU</p><p class="ga-prose">Your pick for ' + esc(n.name) + ' is waiting to be checked. It will appear here once approved.</p>' +
+      return '<div class="ga-pdone" role="status"><p class="ga-micro">[RECEIVED] THANK YOU</p><p class="ga-prose">Your suggestion for ' + esc(n.name) + ' is waiting to be checked. It will join its artists once approved.</p>' +
         '<button type="button" class="ga-cta ghost" data-pnew="1"><span>SUGGEST ANOTHER</span><span aria-hidden="true">+</span></button></div>';
     }
     if (!P.open) {
-      return '<button type="button" class="ga-cta ghost ga-padd" data-popen="1" aria-expanded="false"><span>+ SUGGEST AN ARTIST OR A PLAYLIST</span><span aria-hidden="true">→</span></button>';
+      return '<button type="button" class="ga-cta ga-padd" data-popen="1" aria-expanded="false"><span>+ SUGGEST A BAND OR AN ARTIST FOR THIS GENRE</span><span aria-hidden="true">→</span></button>';
     }
-    var pl = P.kind === 'playlist';
-    var kinds = [['artist', 'ARTIST'], ['playlist', 'PLAYLIST']].map(function (k) {
-      return '<label class="ga-ctopic"><input type="radio" name="pkind" value="' + k[0] + '"' + (P.kind === k[0] ? ' checked' : '') + '><span>' + k[1] + '</span></label>';
-    }).join('');
-    return '<form class="ga-pform" novalidate><p class="ga-micro">SUGGEST FOR ' + esc(n.name.toUpperCase()) + ' — CHECKED BY HAND BEFORE IT APPEARS</p>' +
+    return '<form class="ga-pform" novalidate><p class="ga-micro">A BAND OR AN ARTIST FOR ' + esc(n.name.toUpperCase()) + ' — CHECKED BY HAND BEFORE IT APPEARS</p>' +
       (P.error ? '<p class="ga-cerr ga-cerr-all" role="alert">' + esc(P.error) + '</p>' : '') +
-      '<fieldset class="ga-ctopics"><legend class="ga-sr">Kind</legend>' + kinds + '</fieldset>' +
-      pickField('url', 'Link', linkHint(), '<input' + pAttrs('url') + ' type="url" name="url" inputmode="url" autocomplete="off" placeholder="https://" value="' + esc(P.url) + '">') +
-      '<div class="ga-cpair">' + pickField('name', pl ? 'Playlist title' : 'Artist name', '', '<input' + pAttrs('name') + ' name="name" maxlength="120" value="' + esc(P.name) + '">') +
-      pickField('by', 'Your name', 'OPTIONAL · SHOWN AS PICKED BY', '<input' + pAttrs('by') + ' name="by" maxlength="40" autocomplete="nickname" value="' + esc(P.by) + '">') + '</div>' +
-      pickField('note', 'Why this pick?', 'OPTIONAL · <span id="ga-pcount">' + pad(P.note.length, 3) + '</span> / 140', '<input' + pAttrs('note') + ' name="note" maxlength="140" value="' + esc(P.note) + '">') +
+      pickField('url', 'Link to the artist or one of their songs', linkHint(), '<input' + pAttrs('url') + ' type="url" name="url" inputmode="url" autocomplete="off" placeholder="https://" value="' + esc(P.url) + '">') +
+      '<div class="ga-cpair">' + pickField('name', 'Band or artist name', '', '<input' + pAttrs('name') + ' name="name" maxlength="120" value="' + esc(P.name) + '">') +
+      pickField('by', 'Your name', 'OPTIONAL · SHOWN AS SUGGESTED BY', '<input' + pAttrs('by') + ' name="by" maxlength="40" autocomplete="nickname" value="' + esc(P.by) + '">') + '</div>' +
+      pickField('note', 'Why this artist?', 'OPTIONAL · <span id="ga-pcount">' + pad(P.note.length, 3) + '</span> / 140', '<input' + pAttrs('note') + ' name="note" maxlength="140" value="' + esc(P.note) + '">') +
       '<div class="ga-hp" aria-hidden="true"><label for="ga-pwebsite">Leave this field empty</label><input id="ga-pwebsite" name="website" tabindex="-1" autocomplete="off"></div>' +
       '<div class="ga-pactions"><button type="submit" class="ga-cta ga-csend"' + (P.sending ? ' disabled' : '') + '><span>' + (P.sending ? 'SENDING…' : 'SEND FOR REVIEW') + '</span><span aria-hidden="true">→</span></button>' +
       '<button type="button" class="ga-pcancel" data-pclose="1">CANCEL</button></div>' +
       '<p class="ga-micro ga-cpriv">NO E-MAIL ASKED · YOUR NAME IS SHOWN ONLY IF YOU GIVE ONE · <a href="' + esc(legalUrl()) + '#what-this-site-keeps">PRIVACY</a></p></form>';
   }
-  function picksSection(n, d) {
+  // Suggestions are no longer listed apart: an approved one joins MORE ARTISTS.
+  function suggestSection(n) {
     pickFor(n);
-    var picks = d.picks || [], shown = P.all ? picks : picks.slice(0, PICKS_SHOWN);
-    var body = picks.length
-      ? '<ol class="ga-picks">' + shown.map(pickRow).join('') + '</ol>' + (picks.length > shown.length ? '<button type="button" class="ga-more" data-pall="1"><span>SHOW ALL ' + pad(picks.length) + '</span><span aria-hidden="true">↓</span></button>' : '')
-      : '<p class="ga-prose ga-pempty">No community picks yet. Know an artist or a playlist that belongs here?</p>';
-    var meta = picks.length ? [pad(picks.length) + ' PICK' + (picks.length > 1 ? 'S' : ''), 'SORTED A TO Z', 'SUGGESTED BY LISTENERS', 'CHECKED BY HAND'] : ['SUGGESTED BY LISTENERS', 'CHECKED BY HAND'];
-    return section('picks', 'COMMUNITY PICKS', meta, body + '<div class="ga-pbox" id="ga-pbox">' + pickForm(n) + '</div>');
+    return section('picks', 'SUGGEST', ['CHECKED BY HAND', 'NO E-MAIL ASKED'], '<div class="ga-pbox" id="ga-pbox">' + pickForm(n) + '</div>');
   }
   // Only the form is redrawn: the rest of the dossier, and the YouTube player
   // if it is playing, stay as they are.
@@ -1578,10 +1599,9 @@
       window._paq.push([function () { if (stop) this.optUserOut(); else this.forgetUserOptOut(); optOutBox(); }]);
       return;
     }
-    var pk = e.target.closest('[data-popen],[data-pclose],[data-pnew],[data-pall]');
+    var pk = e.target.closest('[data-popen],[data-pclose],[data-pnew]');
     if (pk && root.contains(pk)) {
       e.preventDefault();
-      if (pk.hasAttribute('data-pall')) { P.all = true; render(); return; }
       P.open = !pk.hasAttribute('data-pclose'); P.sent = false; P.errors = {}; P.error = '';
       renderPickForm(P.open ? 'ga-purl' : null);
       if (!P.open) { var add = root.querySelector('[data-popen]'); if (add) add.focus(); }
@@ -1630,6 +1650,8 @@
       else hear(Number(h.getAttribute('data-hear')), false, true);
       return;
     }
+    var mo = e.target.closest('[data-more]');
+    if (mo && root.contains(mo)) { e.preventDefault(); playMore(Number(mo.getAttribute('data-more'))); return; }
     var p = e.target.closest('[data-play]');
     if (p && root.contains(p)) { e.preventDefault(); listenPlay(Number(p.getAttribute('data-play'))); return; }
     var r = e.target.closest('[data-random],[data-another],[data-spin],[data-within]');
@@ -1689,7 +1711,6 @@
   });
   root.addEventListener('change', function (e) {
     if (e.target.name === 'topic' && S.contact) { C.topic = e.target.value; updateTicket(); return; }
-    if (e.target.name === 'pkind') { P.kind = e.target.value; renderPickForm(); var r = root.querySelector('input[name="pkind"]:checked'); if (r) r.focus(); return; }
     var k = e.target.getAttribute && e.target.getAttribute('data-ropt'); if (k) setRandom(k, e.target.checked);
   });
   // The contact page, the account pages and the dossier lay themselves out in

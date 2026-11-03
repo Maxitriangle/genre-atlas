@@ -302,9 +302,9 @@ function genre_atlas_dossier_html( $post ) {
 
 	$picks = genre_atlas_dossier_picks( $id );
 	if ( $picks ) {
-		$out .= '<h2>Community picks</h2><ul>';
+		$out .= '<h2>Artists suggested by listeners</h2><ul>';
 		foreach ( $picks as $p ) {
-			$out .= '<li><a href="' . esc_url( $p['url'] ) . '" rel="nofollow ugc noopener">' . esc_html( $p['name'] ) . '</a> (' . esc_html( $p['kind'] ) . ' on ' . esc_html( $p['platform'] ) . ')' . ( $p['note'] ? ': “' . esc_html( $p['note'] ) . '”' : '' ) . '</li>';
+			$out .= '<li><a href="' . esc_url( $p['url'] ) . '" rel="nofollow ugc noopener">' . esc_html( $p['name'] ) . '</a> (on ' . esc_html( $p['platform'] ) . ')' . ( $p['note'] ? ': “' . esc_html( $p['note'] ) . '”' : '' ) . '</li>';
 		}
 		$out .= '</ul>';
 	}

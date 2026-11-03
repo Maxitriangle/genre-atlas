@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const GENRE_ATLAS_LEGAL_UPDATED = '2026-11-03'; // Change it with the text.
+const GENRE_ATLAS_LEGAL_UPDATED = '2026-11-04'; // Change it with the text.
 
 add_action( 'init', 'genre_atlas_legal_route', 11 );
 function genre_atlas_legal_route() {
@@ -56,7 +56,7 @@ function genre_atlas_legal_sections() {
 		),
 		'What this site keeps'      => array(
 			'<b>The contact form</b> sends the topic, the genre, your name if you give one, your e-mail address and your message. They go to the publisher’s inbox and a copy is kept on the site, to answer you and to fix what you point out. Your address is used for nothing else and given to no one. Messages are deleted once they no longer serve, or as soon as you ask.',
-			'<b>Community picks</b> keep the link, the name, the note and the nickname you type, and no e-mail address. A pick is shown on the genre’s page, with your nickname, only once it has been approved by hand. By sending one, you agree that it may be shown, corrected or declined.',
+			'<b>Suggesting an artist</b> keeps the link, the name, the note and the nickname you type, and no e-mail address. An approved suggestion joins the genre’s artists, with your nickname, only once it has been checked by hand. By sending one, you agree that it may be shown, corrected or declined.',
 			'<b>Against spam</b>, both forms count the messages sent from one connection in an hour. Your IP address is never stored as such: only a scrambled fingerprint of it is kept, for one hour.',
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'

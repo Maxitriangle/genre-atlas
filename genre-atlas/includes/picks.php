@@ -1,9 +1,11 @@
 <?php
 /**
- * Community picks: anyone can suggest an artist or a playlist for a genre,
- * from its dossier. Nothing is shown before Maxime approves it by hand in
- * Suggestions. A pick is a link, on a closed list of listening platforms:
- * no picture, no embedded player.
+ * Suggestions: anyone can suggest a band or an artist for a genre, from its
+ * dossier ("SUGGEST A BAND OR AN ARTIST FOR THIS GENRE"). Nothing is shown
+ * before Maxime approves it by hand in Suggestions; an approved artist then
+ * joins the genre's MORE ARTISTS list, under the name of who suggested it. A
+ * suggestion is a link, on a closed list of listening platforms. Playlists,
+ * suggested until v0.22.0, stay in the admin and are no longer shown.
  *
  * Statuses: pending (waiting), publish (on the dossier), trash (rejected,
  * emptied by WordPress after 30 days).
@@ -124,6 +126,11 @@ function genre_atlas_dossier_picks( $genre_id ) {
 	);
 	$out = array();
 	foreach ( $posts as $p ) {
+		// An approved artist joins the genre's artists; a playlist approved
+		// before suggestions were artists only stays in the admin.
+		if ( 'playlist' === get_post_meta( $p->ID, 'ga_pick_kind', true ) ) {
+			continue;
+		}
 		$out[] = array(
 			'kind'     => get_post_meta( $p->ID, 'ga_pick_kind', true ),
 			'name'     => html_entity_decode( get_the_title( $p ), ENT_QUOTES, 'UTF-8' ),
@@ -166,7 +173,7 @@ function genre_atlas_pick_submit( $in ) {
 	if ( ! $genre || 'genre' !== $genre->post_type || 'publish' !== $genre->post_status ) {
 		return new WP_Error( 'genre_atlas_pick_genre', 'This genre no longer exists.', array( 'status' => 400 ) );
 	}
-	$kind = 'playlist' === $get( 'kind' ) ? 'playlist' : 'artist';
+	$kind = 'artist'; // Suggestions are artists and bands now; playlists are no longer asked for.
 	$link = genre_atlas_pick_link( $get( 'url' ) );
 	$name = mb_substr( trim( sanitize_text_field( $get( 'name' ) ) ), 0, 120 );
 	$note = mb_substr( trim( sanitize_text_field( $get( 'note' ) ) ), 0, 140 );
