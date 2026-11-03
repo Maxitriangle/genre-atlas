@@ -1083,3 +1083,12 @@ Captures `16a-connexion.png`, `16-compte.png` et `16b-profil-public.png`.
 2. Vérifier que l'adresse de Genres → Settings → Contact form est bien `contact@every-genre.com`, puis SPF et DKIM dans cPanel (E-mail Deliverability).
 3. Créer un compte de test avec une autre adresse que celle de l'administrateur, et vérifier que l'e-mail de confirmation arrive.
 4. Créer les clés Google et Facebook (`docs/connexion-google-facebook.md`), guidé pas à pas.
+
+**Publiée le 03/11/2026** : la v0.21.0 est installée chez Maxime, avec l'adresse de contact `contact@every-genre.com`.
+- **Un compte de test avec une autre adresse fonctionne** : l'e-mail de confirmation arrive, et le lien connecte.
+- **Incident vers agencecinq.com** : aucun e-mail reçu à `maxime@agencecinq.com`, même en spam. Le compte avait pourtant été créé et le message « Almost there… » s'était affiché.
+- **Le diagnostic** : dans cPanel → Suivi de la livraison, le statut est « defer », avec « retry time not reached for any host for 'agencecinq.com' ». Le serveur `lit.o2switch.net` (compte `poqi9653`) n'envoie pas cet e-mail directement à Google (MX `smtp.google.com`) : il le route vers `smtp.jabatus.fr` (109.234.163.11), le relais d'o2switch. Ce relais était déjà en échec avant le premier essai, et le message ID est `1xOG6V-00000002OEY-0qnK`. Le site n'est pas en cause : l'expéditeur `contact@every-genre.com`, le DKIM signé, SPF, DKIM et DMARC du domaine sont tous en place (vérifié le 03/11). Agencecinq.com est peut-être, ou a été, hébergé lui aussi chez o2switch.
+- **La suite** : Maxime a ouvert un ticket chez o2switch le 03/11/2026, sans réponse pour l'instant. Pour joindre o2switch : l'espace client, « Support & Assistance », ou le 04 44 44 60 40.
+- **Pour un prochain problème d'e-mail** : regarder d'abord cPanel → Suivi de la livraison (une ligne par envoi, et le détail en cliquant sur « i »), puis les enregistrements DNS (`curl "https://dns.google/resolve?name=every-genre.com&type=TXT"`).
+
+**Prochaine étape** : créer les clés Google et Facebook avec Maxime (`docs/connexion-google-facebook.md`).
