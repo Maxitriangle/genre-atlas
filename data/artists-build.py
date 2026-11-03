@@ -5,8 +5,9 @@
 
 Reads artists.csv, genre-artists.csv, artist-photos.csv and, when they exist,
 artist-songs.csv and artists-mb.csv (the artists that give a sound to the
-genres that had none, from artists-mb.py) and artists-wide.csv with
-genre-artists-wide.csv and wide-songs.csv (up to 100 artists per genre, from
+genres that had none, from artists-mb.py) and artists-checked.csv with
+genre-artists-checked.csv (else artists-wide.csv with genre-artists-wide.csv)
+and wide-songs.csv (up to 100 artists per genre, from
 artists-wide.py and wide-songs.py), and writes artist-import.csv: one row per
 artist linked to at least one genre, with its genres ("Q123:4", Wikidata ID
 and rank in that genre, "|"-separated: the 8 first are the dossier's
@@ -57,10 +58,12 @@ def main():
             if not songs.get(q, {}).get('deezer_track'):
                 songs[q] = r
     # The wide artists come after those, in Wikidata's order (best documented).
-    if has('artists-wide.csv') and has('genre-artists-wide.csv'):
-        wide = {r['wikidata_id']: r for r in rows('artists-wide.csv')}
+    # Checked against MusicBrainz (artists-cross.py) when that pass was run.
+    pair = ('artists-checked.csv', 'genre-artists-checked.csv') if has('genre-artists-checked.csv') else ('artists-wide.csv', 'genre-artists-wide.csv')
+    if has(pair[0]) and has(pair[1]):
+        wide = {r['wikidata_id']: r for r in rows(pair[0])}
         wsongs = {r['wikidata_id']: r for r in rows('wide-songs.csv')} if has('wide-songs.csv') else {}
-        for r in sorted(rows('genre-artists-wide.csv'), key=lambda r: int(r['rank'])):
+        for r in sorted(rows(pair[1]), key=lambda r: int(r['rank'])):
             q = r['artist_id']
             if q not in wide or not link(q, r['genre_id']):
                 continue

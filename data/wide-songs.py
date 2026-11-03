@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One song for each artist of artists-wide.csv, as listen-tracks.py does it.
+"""One song for each artist of artists-checked.csv (else artists-wide.csv), as listen-tracks.py does it.
 
 The Deezer artist is the one Wikidata links to (column deezer); without that
 link the artist is searched by name, and among namesakes the song is kept
@@ -27,7 +27,8 @@ OUT = os.path.join(HERE, 'wide-songs.csv')
 
 def main():
     workers = int(sys.argv[1]) if len(sys.argv) > 1 else 3
-    artists = list(csv.DictReader(open(os.path.join(HERE, 'artists-wide.csv'), encoding='utf-8')))
+    name = 'artists-checked.csv' if os.path.exists(os.path.join(HERE, 'artists-checked.csv')) else 'artists-wide.csv'
+    artists = list(csv.DictReader(open(os.path.join(HERE, name), encoding='utf-8')))
     ids = {r['wikidata_id']: r for r in artists}
     rows, done = [None] * len(artists), [0]
 
