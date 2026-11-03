@@ -300,6 +300,18 @@ echo \$id;
 " )"
 echo "genre $EXAMPLE_GENRE : deux videos proposees"
 
+# A genre with no artist, for the batched import screen (smoke.mjs uploads ten
+# ranked artists to it): "post id:wikidata id".
+BATCH_GENRE="$( php -r "
+\$_SERVER['HTTP_HOST'] = '127.0.0.1:$PORT';
+\$_SERVER['REQUEST_URI'] = '/';
+require '$SITE/wp-load.php';
+\$ids = get_posts( array( 'post_type' => 'genre', 'numberposts' => 1, 'orderby' => 'title', 'order' => 'DESC', 'fields' => 'ids', 'exclude' => array( $EXAMPLE_GENRE ),
+	'meta_query' => array( array( 'key' => 'ga_artists', 'compare' => 'NOT EXISTS' ) ) ) );
+echo (int) \$ids[0] . ':' . get_post_meta( \$ids[0], 'ga_wikidata_id', true );
+" )"
+echo "genre $BATCH_GENRE : pour l import en lots"
+
 say "Serveur sur http://127.0.0.1:$PORT"
 php -S "127.0.0.1:$PORT" -t "$SITE" "$SITE/router.php" > "$CACHE/server.log" 2>&1 &
 SERVER_PID=$!
@@ -323,7 +335,7 @@ CHROME="$( find /opt/pw-browsers -maxdepth 3 -path '*chrome-linux*/chrome' 2>/de
 mkdir -p "$SHOTS"; rm -f "$SHOTS"/*.png
 
 set +e
-GA_EXAMPLE_GENRE="$EXAMPLE_GENRE" node "$REPO/tools/smoke.mjs" "http://127.0.0.1:$PORT" "$SHOTS" "$CACHE/node_modules" "$CHROME"
+GA_EXAMPLE_GENRE="$EXAMPLE_GENRE" GA_BATCH_GENRE="$BATCH_GENRE" node "$REPO/tools/smoke.mjs" "http://127.0.0.1:$PORT" "$SHOTS" "$CACHE/node_modules" "$CHROME"
 STATUS=$?
 set -e
 
@@ -342,6 +354,29 @@ genre_atlas_set_example( \$id, '', '', '' );
 \$back = genre_atlas_example_candidates( \$id );
 \$ok   = \$kept && 1 === \$left && 'smokeExmpl2' === \$back[0]['youtube'];
 echo ( \$ok ? 'OK   ' : 'ECHEC' ) . \" exemples : un reimport garde l exemple accepte et ne repropose pas la video refusee\n\";
+exit( \$ok ? 0 : 1 );
+" || STATUS=1
+
+say "Import des artistes par lots"
+# The import screen goes 1,000 rows at a time; here, 12 rows by 5: the ranks
+# must survive the batches, and the first 8 be the essentials.
+php -r "
+\$_SERVER['HTTP_HOST'] = '127.0.0.1:$PORT';
+\$_SERVER['REQUEST_URI'] = '/';
+require '$SITE/wp-load.php';
+\$g = (int) strtok( '$BATCH_GENRE', ':' ); \$q = strtok( ':' );
+\$f = tempnam( sys_get_temp_dir(), 'ga' );
+\$rows = array( 'wikidata_id,name,genres' );
+for ( \$i = 1; \$i <= 12; \$i++ ) { \$rows[] = 'Q9910' . str_pad( \$i, 3, '0', STR_PAD_LEFT ) . ',Batch Artist ' . chr( 64 + \$i ) . ',' . \$q . ':' . ( 13 - \$i ); }
+file_put_contents( \$f, implode( \"\\n\", \$rows ) . \"\\n\" );
+\$steps = array();
+for ( \$from = 0, \$guard = 0; \$guard < 5; \$guard++ ) { \$s = Genre_Atlas_Importer::import_artists( \$f, \$from, 5 ); \$steps[] = \$s['next']; if ( ! \$s['next'] ) { break; } \$from = \$s['next']; }
+\$a = genre_atlas_dossier_artists( \$g );
+\$names = array_column( \$a, 'name' );
+\$keys = count( array_filter( array_column( \$a, 'key' ) ) );
+\$ok = array( 5, 10, 0 ) === \$steps && 12 === \$s['created'] && 'Batch Artist L' === \$names[0] && 'Batch Artist A' === \$names[11] && 8 === \$keys && ! get_option( 'genre_atlas_import_state' );
+echo ( \$ok ? 'OK   ' : 'ECHEC' ) . ' import par lots : ' . implode( ',', \$steps ) . ' ; ' . implode( ' · ', \$names ) . \"\\n\";
+unlink( \$f );
 exit( \$ok ? 0 : 1 );
 " || STATUS=1
 

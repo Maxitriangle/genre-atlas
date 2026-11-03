@@ -2,7 +2,7 @@
 
 Document interne, tenu par le responsable de traitement (article 30 du RGPD). Il n'est pas publié. La page légale (`/legal/`, `includes/legal.php`) en est la version destinée aux visiteurs. **Toute nouvelle collecte de données, tout cookie ou service extérieur ajouté au site doit y figurer, ainsi que sur la page légale.**
 
-Mis à jour le 03/11/2026 (v0.21.0, comptes).
+Mis à jour le 04/11/2026 (v0.22.0, propositions d'artistes).
 
 ## Responsable de traitement
 - Le responsable est l'éditeur du site : un particulier, site personnel et non commercial. Son identité est confiée à l'hébergeur (LCEN, art. 6-III-2).
@@ -46,8 +46,8 @@ Mis à jour le 03/11/2026 (v0.21.0, comptes).
 - **Durée** : supprimé quand il ne sert plus, ou sur demande. C'est à faire à la main dans Messages.
 - **Destinataires** : l'éditeur (copie dans WordPress et envoi à l'adresse réglée).
 
-### 3. Propositions de la communauté (v0.13.0)
-- **Finalité** : afficher des artistes et des playlists proposés, après validation.
+### 3. Propositions d'artistes (v0.13.0, artistes seulement depuis v0.22.0)
+- **Finalité** : ajouter aux artistes d'un genre (liste MORE ARTISTS) ceux que proposent les visiteurs, après validation. Les anciennes propositions de playlists restent dans Suggestions mais ne s'affichent plus.
 - **Base légale** : intérêt légitime, et accord de l'auteur à l'envoi.
 - **Données** : lien, nom, note, pseudo facultatif. Pas d'e-mail.
 - **Durée** : tant que la proposition est en ligne. Une proposition refusée part à la corbeille.

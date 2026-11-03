@@ -490,8 +490,10 @@ try {
 		const loaded = Date.now();
 		await pk.waitForSelector( '.ga-dossier [data-popen]', { timeout: 10000 } );
 		const order = await pk.locator( '.ga-dsec h2' ).allInnerTexts();
-		const empty = await pk.locator( '.ga-pempty' ).count();
-		check( 'propositions : la section COMMUNITY PICKS suit LISTEN et invite a proposer', order.indexOf( 'COMMUNITY PICKS' ) === order.indexOf( 'LISTEN' ) + 1 && empty === 1, order.join( ' · ' ) );
+		const cta = ( await pk.locator( '[data-popen]' ).innerText() ).trim().toUpperCase();
+		const ctaBox = await pk.locator( '[data-popen]' ).boundingBox();
+		check( 'propositions : plus de COMMUNITY PICKS, un bouton bien visible SUGGEST A BAND OR AN ARTIST apres les artistes', ! order.includes( 'COMMUNITY PICKS' ) && order[ order.length - 1 ] === 'SUGGEST'
+			&& order.indexOf( 'SUGGEST' ) > order.indexOf( 'KEY ARTISTS' ) && cta.includes( 'SUGGEST A BAND OR AN ARTIST FOR THIS GENRE' ) && ctaBox && ctaBox.height >= 48, `${ order.join( ' · ' ) } / ${ cta }` );
 		await pk.locator( '[data-popen]' ).click();
 		await pk.fill( '#ga-purl', 'https://example.com/some-artist' );
 		await pk.fill( '#ga-pname', pickName );
@@ -503,11 +505,11 @@ try {
 		const cleared = await pk.locator( '#ga-perr-url' ).count() === 0;
 		await pk.fill( '#ga-pby', 'Smoke' );
 		await pk.fill( '#ga-pnote', 'The band that started it all, for me.' );
-		await pk.screenshot( { path: `${ SHOTS }/10-propositions-formulaire.png`, fullPage: false, clip: await pk.locator( '.ga-dsec', { hasText: 'COMMUNITY PICKS' } ).boundingBox() } );
+		await pk.screenshot( { path: `${ SHOTS }/10-propositions-formulaire.png`, fullPage: false, clip: await pk.locator( '.ga-dsec:has(#ga-pbox)' ).boundingBox() } );
 		await pk.waitForTimeout( Math.max( 0, 3300 - ( Date.now() - loaded ) ) );
 		await pk.locator( '.ga-pform .ga-csend' ).click();
 		await pk.waitForSelector( '.ga-pdone', { timeout: 10000 } );
-		check( 'propositions : la plateforme est reconnue et la proposition part en attente', detected === 'DETECTED: SPOTIFY' && cleared && api.length === 1 && await pk.locator( '.ga-pick' ).count() === 0, detected );
+		check( 'propositions : la plateforme est reconnue et la proposition part en attente', detected === 'DETECTED: SPOTIFY' && cleared && api.length === 1 && await pk.locator( '.ga-mart', { hasText: pickName } ).count() === 0, detected );
 		const token = await pk.evaluate( () => window.GENRE_ATLAS.contactToken );
 		pickToken = token;
 		const twice = await fetch( `${ BASE }/wp-json/genre-atlas/v1/pick`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1078,6 +1080,27 @@ try {
 	}
 	const fileInput = await admin.locator( 'input[type="file"]' ).count();
 	await admin.screenshot( { path: `${ SHOTS }/08-import.png`, fullPage: true } );
+	// An artist file goes through the screen in batches (one call per 1,000
+	// rows here): ten ranked artists on a genre that had none.
+	const [ batchId, batchQid ] = ( process.env.GA_BATCH_GENRE || '' ).split( ':' );
+	if ( fileInput && batchQid ) {
+		const fs = await import( 'fs' );
+		const csv = `${ SHOTS }/batch-artists.csv`;
+		fs.writeFileSync( csv, 'wikidata_id,name,genres\n' + Array.from( { length: 10 }, ( _, i ) => `Q99200${ i + 10 },Screen Artist ${ String.fromCharCode( 65 + i ) },${ batchQid }:${ 10 - i }` ).join( '\n' ) + '\n' );
+		const steps = [];
+		admin.on( 'request', r => r.url().includes( 'admin-ajax.php' ) && ( r.postData() || '' ).includes( 'genre_atlas_import_step' ) && steps.push( r.url() ) );
+		await admin.setInputFiles( 'input[type="file"]', csv );
+		await admin.locator( 'form[enctype] input[type="submit"]' ).click();
+		await admin.waitForSelector( '#ga-import-box.notice-success, #ga-import-box.notice-error', { timeout: 30000 } ).catch( () => {} );
+		const done = await admin.locator( '#ga-import-box' ).innerText().catch( () => '' );
+		fs.unlinkSync( csv );
+		const dossier = await fetch( `${ BASE }/wp-json/genre-atlas/v1/genre/${ batchId }` ).then( r => r.json() );
+		const got = ( dossier.artists || [] ).map( a => a.name );
+		const keys = ( dossier.artists || [] ).filter( a => a.key ).length;
+		check( 'import : un fichier d artistes passe par lots, avec une barre de progression, et garde le rang', /Artist import finished — 10 created/.test( done ) && steps.length >= 1
+			&& got.length === 10 && got[ 0 ] === 'Screen Artist J' && keys === 8, `${ done.split( '\n' )[ 0 ] } / ${ got.join( ' · ' ) }` );
+		await admin.screenshot( { path: `${ SHOTS }/08b-import-lots.png`, fullPage: true } );
+	}
 	await admin.goto( `${ BASE }/wp-admin/edit.php?post_type=ga_message`, { waitUntil: 'networkidle' } );
 	const kept = await admin.locator( '#the-list tr' ).count();
 	// One sent from the page and four through the API; the trapped one is not kept.
@@ -1095,12 +1118,14 @@ try {
 		await admin.goto( `${ BASE }/wp-admin/edit.php?post_type=ga_pick`, { waitUntil: 'networkidle' } );
 		const online = /Online/.test( await admin.locator( '#the-list tr', { hasText: pickName } ).innerText() );
 		await admin.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
-		await admin.waitForSelector( '.ga-pick', { timeout: 10000 } );
-		const shown = await admin.locator( '.ga-pick' ).innerText();
-		const href = await admin.locator( '.ga-pick .ga-pout' ).getAttribute( 'href' );
-		check( 'propositions : approuvee en un clic, elle s affiche sur la fiche, lien nettoye', online && shown.includes( pickName.toUpperCase() ) && shown.includes( 'PICKED BY SMOKE' ) && href === pickUrl,
-			`${ href }` );
-		await admin.locator( '.ga-dsec', { hasText: 'COMMUNITY PICKS' } ).screenshot( { path: `${ SHOTS }/10c-propositions-fiche.png` } );
+		await admin.waitForSelector( '.ga-more-list .ga-mart', { timeout: 10000 } );
+		const mine = admin.locator( '.ga-more-list .ga-mart', { hasText: pickName } );
+		const shown = await mine.count() ? await mine.innerText() : '';
+		const href = await mine.count() ? await mine.locator( '.ga-tout a' ).first().getAttribute( 'href' ) : '';
+		const rel = await mine.count() ? await mine.locator( '.ga-tout a' ).first().getAttribute( 'rel' ) : '';
+		check( 'propositions : approuvee en un clic, l artiste rejoint MORE ARTISTS, lien nettoye', online && /SUGGESTED BY SMOKE/i.test( shown ) && href === pickUrl && /ugc/.test( rel || '' ),
+			`${ href } ${ shown.replace( /\s+/g, ' ' ) }` );
+		await admin.locator( '.ga-dsec:has(.ga-more-list)' ).screenshot( { path: `${ SHOTS }/10c-propositions-fiche.png` } );
 
 		// 9b. Approved links checked: the platforms are played by the bench, and
 		// a link with "smoke-gone" in it is not found.
@@ -1135,8 +1160,8 @@ try {
 		check( 'liens : au second « introuvable », le lien est signale, nomme et compte au menu', /Broken link/.test( twice ) && broken === '1' && notice.includes( goneName ) && ! notice.includes( pickName )
 			&& listed.length === 1 && listed[ 0 ].includes( goneName ) && /Link OK/.test( await rowText( pickName ) ), `pastille « ${ broken } », ${ listed.length } ligne(s) dans Broken links` );
 		await admin.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
-		await admin.waitForSelector( '.ga-pick', { timeout: 10000 } );
-		const still = await admin.locator( '.ga-pick', { hasText: goneName.toUpperCase() } ).count();
+		await admin.waitForSelector( '.ga-more-list .ga-mart', { timeout: 10000 } );
+		const still = await admin.locator( '.ga-mart', { hasText: goneName } ).count();
 		check( 'liens : un lien signale reste sur la fiche, la decision revient a Maxime', still === 1 );
 	}
 	// 9c. Listening examples: test-local.sh proposed two made-up videos for a

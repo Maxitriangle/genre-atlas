@@ -1238,7 +1238,7 @@
     var hp = document.getElementById('ga-pwebsite'), n = N[S.about];
     P.errors = {}; P.error = '';
     if (!platformOf(P.url)) P.errors.url = 'PASTE A LINK FROM ONE OF THE PLATFORMS LISTED ABOVE.';
-    if (!P.name.trim()) P.errors.name = P.kind === 'playlist' ? 'GIVE THE PLAYLIST ITS TITLE.' : 'GIVE THE ARTIST\'S NAME.';
+    if (!P.name.trim()) P.errors.name = 'GIVE THE ARTIST\'S NAME.';
     var bad = ['url', 'name'].filter(function (k) { return P.errors[k]; })[0];
     if (bad) { renderPickForm('ga-p' + bad); return; }
     P.sending = true; renderPickForm();

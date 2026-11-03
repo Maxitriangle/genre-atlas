@@ -5,8 +5,12 @@
 
 Reads artists.csv, genre-artists.csv, artist-photos.csv and, when they exist,
 artist-songs.csv and artists-mb.csv (the artists that give a sound to the
-genres that had none, from artists-mb.py), and writes artist-import.csv: one row per artist linked to
-at least one genre, with its genres (Wikidata IDs, "|"-separated), the credit
+genres that had none, from artists-mb.py) and artists-wide.csv with
+genre-artists-wide.csv and wide-songs.csv (up to 100 artists per genre, from
+artists-wide.py and wide-songs.py), and writes artist-import.csv: one row per
+artist linked to at least one genre, with its genres ("Q123:4", Wikidata ID
+and rank in that genre, "|"-separated: the 8 first are the dossier's
+essentials, the hand-picked ones first, then the widest documented), the credit
 of its photo and its song for the Listen section. The photo fields are empty
 when the photo was left out or has no mask in the plugin.
 Import it in WordPress after genre-import.csv (Genres > Import CSV).
@@ -15,6 +19,7 @@ import csv
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+MAX_ARTISTS = 100
 MASKS = os.path.join(HERE, '..', 'genre-atlas', 'assets', 'masks')
 
 
@@ -22,25 +27,52 @@ def rows(name):
     return list(csv.DictReader(open(os.path.join(HERE, name), encoding='utf-8')))
 
 
+def has(name):
+    return os.path.exists(os.path.join(HERE, name))
+
+
 def main():
-    genres = {}
-    for r in rows('genre-artists.csv'):
-        genres.setdefault(r['artist_id'], []).append(r['genre_id'])
+    order = {}                                         # genre -> its artists, best first
+
+    def link(q, g):
+        lst = order.setdefault(g, [])
+        if q not in lst and len(lst) < MAX_ARTISTS:
+            lst.append(q)
+            return True
+        return False
+    for r in rows('genre-artists.csv'):                # picked by hand: first
+        link(r['artist_id'], r['genre_id'])
     photos = {r['wikidata_id']: r for r in rows('artist-photos.csv')
               if r['status'] == 'ok' and os.path.exists(os.path.join(MASKS, r['wikidata_id'] + '.png'))}
-    songs = {r['wikidata_id']: r for r in rows('artist-songs.csv')} if os.path.exists(os.path.join(HERE, 'artist-songs.csv')) else {}
+    songs = {r['wikidata_id']: r for r in rows('artist-songs.csv')} if has('artist-songs.csv') else {}
     artists = rows('artists.csv')
-    if os.path.exists(os.path.join(HERE, 'artists-mb.csv')):
-        known = {a['wikidata_id'] for a in artists}
+    known = {a['wikidata_id'] for a in artists}
+    if has('artists-mb.csv'):
         for r in rows('artists-mb.csv'):
             q = r['wikidata_id']
-            if r['genre_id'] not in genres.setdefault(q, []):
-                genres[q].append(r['genre_id'])
+            link(q, r['genre_id'])
             if q not in known:
                 known.add(q)
                 artists.append(r)
             if not songs.get(q, {}).get('deezer_track'):
                 songs[q] = r
+    # The wide artists come after those, in Wikidata's order (best documented).
+    if has('artists-wide.csv') and has('genre-artists-wide.csv'):
+        wide = {r['wikidata_id']: r for r in rows('artists-wide.csv')}
+        wsongs = {r['wikidata_id']: r for r in rows('wide-songs.csv')} if has('wide-songs.csv') else {}
+        for r in sorted(rows('genre-artists-wide.csv'), key=lambda r: int(r['rank'])):
+            q = r['artist_id']
+            if q not in wide or not link(q, r['genre_id']):
+                continue
+            if q not in known:
+                known.add(q)
+                artists.append(wide[q])
+            if not songs.get(q, {}).get('deezer_track') and wsongs.get(q, {}).get('deezer_track'):
+                songs[q] = wsongs[q]
+    genres = {}
+    for g, lst in order.items():
+        for i, q in enumerate(lst, 1):
+            genres.setdefault(q, []).append('%s:%d' % (g, i))
     out = []
     for a in artists:
         q = a['wikidata_id']
@@ -58,9 +90,9 @@ def main():
         w = csv.DictWriter(fh, fieldnames=list(out[0]))
         w.writeheader()
         w.writerows(out)
-    print('%d artists, %d with a photo, %d with a song, %d genre links' % (
+    print('%d artists, %d with a photo, %d with a song, %d genre links, %d genres with 100' % (
         len(out), sum(1 for r in out if r['photo_file']), sum(1 for r in out if r['song_title']),
-        sum(len(v) for v in genres.values())))
+        sum(len(v) for v in genres.values()), sum(1 for v in order.values() if len(v) >= MAX_ARTISTS)))
 
 
 if __name__ == '__main__':
