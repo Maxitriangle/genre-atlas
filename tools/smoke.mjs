@@ -492,8 +492,7 @@ try {
 		const order = await pk.locator( '.ga-dsec h2' ).allInnerTexts();
 		const cta = ( await pk.locator( '[data-popen]' ).innerText() ).trim().toUpperCase();
 		const ctaBox = await pk.locator( '[data-popen]' ).boundingBox();
-		check( 'propositions : plus de COMMUNITY PICKS, un bouton bien visible SUGGEST A BAND OR AN ARTIST apres les artistes', ! order.includes( 'COMMUNITY PICKS' ) && order[ order.length - 1 ] === 'SUGGEST'
-			&& order.indexOf( 'SUGGEST' ) > order.indexOf( 'KEY ARTISTS' ) && cta.includes( 'SUGGEST A BAND OR AN ARTIST FOR THIS GENRE' ) && ctaBox && ctaBox.height >= 48, `${ order.join( ' · ' ) } / ${ cta }` );
+		check( 'propositions : plus de COMMUNITY PICKS, un bouton bien visible SUGGEST A BAND OR AN ARTIST apres les artistes', ! order.includes( 'COMMUNITY PICKS' ) && order.indexOf( 'SUGGEST' ) === 1 + Math.max( ...[ 'KEY ARTISTS', 'LISTEN', 'MORE ARTISTS' ].map( h => order.indexOf( h ) ) ) && cta.includes( 'SUGGEST A BAND OR AN ARTIST FOR THIS GENRE' ) && ctaBox && ctaBox.height >= 48, `${ order.join( ' · ' ) } / ${ cta }` );
 		await pk.locator( '[data-popen]' ).click();
 		await pk.fill( '#ga-purl', 'https://example.com/some-artist' );
 		await pk.fill( '#ga-pname', pickName );
