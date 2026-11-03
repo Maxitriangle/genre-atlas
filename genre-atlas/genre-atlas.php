@@ -270,7 +270,7 @@ function genre_atlas_tree() {
 		// Whether the dossier lists artists: the random draw skips sparse dossiers.
 		if ( get_post_meta( $p->ID, 'ga_artists', true ) ) {
 			$node['a'] = 1;
-			// How many songs have a Deezer preview: the map plays them on hover.
+			// How many songs have a YouTube video: HEAR, RADIO and the map play them.
 			$songs = count( array_intersect_key( $sounding, array_flip( genre_atlas_genre_artist_ids( $p->ID ) ) ) );
 			if ( $songs ) {
 				$node['s'] = $songs;

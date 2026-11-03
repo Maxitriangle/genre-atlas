@@ -61,7 +61,7 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
-			'<b>Your settings</b> (SOUND ON, FULL or 30 S, MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
+			'<b>Your settings</b> (SOUND ON, MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
 			'<b>Accounts</b> are optional: everything they keep is described in the next section.',
 			'There is no newsletter and no advertising.',
 		),
@@ -76,8 +76,8 @@ function genre_atlas_legal_sections() {
 		'Cookies'                   => array(
 			'This site sets no cookie on your device while you browse it, and uses no tracker, which is why it asks for no consent. It sets cookies only when you ask for them:',
 			'<b>Signing in</b> sets the sign-in cookies of WordPress (named wordpress_logged_in_… and wordpress_sec_…), which keep you signed in for 14 days, or until you sign out. They are needed for the account to work, so they need no consent.' . ( $matomo ? ' <b>Choosing not to be counted</b> sets a cookie named mtm_consent_removed, which remembers that choice.' : '' ),
-			'<b>Full songs</b> play in YouTube’s own player (youtube.com), loaded only when you ask for a song: HEAR, RADIO, PLAY, or holding a genre on a phone. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under Google’s privacy policy; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires. Switch the player bar to 30 S to hear previews instead, with no YouTube at all.',
-			'<b>Previews</b> of 30 seconds play from Deezer’s servers when you point at a genre with SOUND ON, or when the player is set to 30 S: Deezer then sees your IP address when a preview loads, under its own privacy policy, and sets no cookie through this site. The links to Spotify, Deezer, Wikipedia and the other platforms take you to those sites, under their own rules.',
+			'<b>Songs</b> play whole in YouTube’s own player (youtube.com), loaded only when you ask for a song: HEAR, RADIO, PLAY, holding a genre on a phone, or pointing at a genre once you have switched SOUND ON. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under Google’s privacy policy; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires.',
+			'The links to Spotify, Deezer, Bandcamp, Wikipedia and the other platforms take you to those sites, under their own rules; nothing is asked of them before you follow a link.',
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
 		'Your rights'               => array(
@@ -95,7 +95,7 @@ function genre_atlas_legal_sections() {
 		'Sources and credits'       => array(
 			'<b>Genres</b>, their lineage, origin and epoch come from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), checked and arranged by hand; genre identifiers also link to <a href="https://musicbrainz.org/">MusicBrainz</a>. Some key artists were found through MusicBrainz’s genre tags (<a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>).',
 			'<b>Texts</b> marked “Text from Wikipedia” are the introductions of the English <a href="https://en.wikipedia.org/">Wikipedia</a> articles, under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> licence, linked to their article on every page.',
-			'<b>Artist photos</b> come from <a href="https://commons.wikimedia.org/">Wikimedia Commons</a>, reworked as halftone pictures; each one names its author and licence beside it. <b>Songs</b> are the artists’ most played tracks on Deezer, or a track from an album MusicBrainz files under the genre; previews are Deezer’s. <b>Listening examples</b> are YouTube videos chosen by hand for genres no key artist gives a song to.',
+			'<b>Artist photos</b> come from <a href="https://commons.wikimedia.org/">Wikimedia Commons</a>, reworked as halftone pictures; each one names its author and licence beside it. <b>Songs</b> are the artists’ most played tracks on Deezer, or a track from an album MusicBrainz files under the genre, played from YouTube. <b>Listening examples</b> are YouTube videos chosen by hand for genres no key artist gives a song to.',
 			'<b>The font</b> is Azeret Mono, under the SIL Open Font License.',
 			'The rest, the tree as it is arranged, its editorial groups, the glyphs drawn from the data and the code, is the publisher’s own work. Found a mistake, or a credit that is missing? The ' . $contact . ' is the place.',
 		),
