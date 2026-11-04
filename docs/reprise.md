@@ -1,12 +1,10 @@
-# Reprise — état au 03/11/2026
+# Reprise — état au 04/11/2026
 
-**La v0.20.0 est publiée et installée chez Maxime** (PR [#34](https://github.com/Maxitriangle/genre-atlas/pull/34)) : titres entiers sur YouTube par défaut, pilotés par la barre de lecture. Maxime a vérifié en ligne : « les titres entiers marchent bien, c'est parfait ». Rien n'est en attente de son côté. `main` contient tout le travail.
+**v0.22.0 prête, PR ouverte le 04/11/2026** (dernière section, « 100 artistes par genre ») : jusqu'à 100 artistes par genre (8 essentiels + MORE ARTISTS), bouton SUGGEST A BAND OR AN ARTIST à la place de COMMUNITY PICKS, import des artistes par lots, et **plus aucun extrait Deezer de 30 s** : tout se joue en entier sur YouTube. Données élargies pour la famille **Electronic seule**, en essai ; les 12 autres familles attendent l'avis de Maxime sur le résultat en ligne.
 
-Versions du 28/10 au 02/11/2026, toutes publiées et installées :
-- **0.17.0** : les genres muets. Artistes trouvés par MusicBrainz, et exemples d'écoute YouTube validés à la main dans Genres → Listening examples ;
-- **0.18.0 et 0.18.1** : le son. SOUND ON et l'extrait au survol, une barre de lecture qui continue d'une page à l'autre, la radio de branche ; la 0.18.1 corrige l'agent refusé par Deezer ;
-- **0.19.0** : la carte pivotée sur téléphone. Lignée en haut, genre au centre, sous-genres en éventail ; appui long pour écouter ; la liste à un toucher ;
-- **0.20.0** : titres entiers sur YouTube par défaut, avec la vidéo visible (au-dessus de la barre sur ordinateur, dans la barre sur téléphone), le lecteur youtube.com (pas de pub pour les abonnés Premium) et le bouton FULL / 30 S.
+La v0.21.0 (comptes, inscription par e-mail) est publiée. Google et Facebook sont prêts mais **mis de côté** (« on verra plus tard ») : pas de clés, donc aucun bouton.
+
+**Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City ; la connexion Google et Facebook ; les améliorations d'UX (« j'ai beaucoup d'idées », il les listera).
 
 **Direction depuis le 28/10/2026** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir « Recul sur le projet » plus bas : la critique, les propositions A à G et les priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir). **Le point A et l'expérience mobile sont faits.**
 
@@ -32,10 +30,9 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
   - l'écoute (LISTEN) : une chanson par artiste clé quand elle existe (1 520 genres ont au moins un titre), plus un **exemple d'écoute** YouTube pour les genres sans artiste qui chante, une fois validé par Maxime ;
   - les sources.
 - **Le son** (v0.18 à v0.20). Une **barre de lecture** hors de la page continue de jouer pendant la navigation :
-  - **titre entier sur YouTube par défaut** pour HEAR, RADIO, l'appui long sur téléphone et les chansons de la fiche. La vidéo reste visible (200 × 200 au-dessus de la barre, ou dans la barre sur téléphone), et la barre la pilote ;
-  - **extrait Deezer de 30 s** au survol avec SOUND ON, ou partout quand la barre est réglée sur 30 S ;
+  - **titre entier sur YouTube, toujours** (v0.22.0) pour HEAR, RADIO, l'appui long sur téléphone, les chansons de la fiche et le survol avec SOUND ON. La vidéo reste visible (200 × 200 au-dessus de la barre, ou dans la barre sur téléphone), et la barre la pilote. Les extraits Deezer de 30 s et le bouton FULL / 30 S n'existent plus ;
   - **RADIO** : un titre par genre d'une branche, mélangés ;
-  - la page légale déclare les cookies et pubs de YouTube et les extraits Deezer.
+  - la page légale déclare les cookies et pubs de YouTube.
 - **Carte pivotée sur téléphone** (v0.19.0) : lignée en haut, genre au centre, sous-genres en éventail (8 au plus) ; MAP / LIST.
 - **Page RANDOM** (`/genre/random/`, v0.11.0) : un genre tiré au hasard, avec un filtre par branche.
 - **Propositions de la communauté** (v0.13.0) : section COMMUNITY PICKS sur chaque fiche, sous LISTEN. N'importe qui propose un artiste ou une playlist ; rien n'apparaît avant validation dans le menu Suggestions. Depuis la v0.14.0, les liens validés sont vérifiés chaque semaine et un lien mort est signalé dans Suggestions, sans être retiré de la fiche.
@@ -1092,3 +1089,27 @@ Captures `16a-connexion.png`, `16-compte.png` et `16b-profil-public.png`.
 - **Pour un prochain problème d'e-mail** : regarder d'abord cPanel → Suivi de la livraison (une ligne par envoi, et le détail en cliquant sur « i »), puis les enregistrements DNS (`curl "https://dns.google/resolve?name=every-genre.com&type=TXT"`).
 
 **Google et Facebook : mis de côté le 03/11/2026.** Maxime préfère rester pour l'instant sur l'inscription par e-mail : « on verra plus tard ». Tout est prêt dans l'extension, et le guide `docs/connexion-google-facebook.md` attend. Sans clés, aucun bouton ne s'affiche. La page légale ne parle de Google et Facebook que lorsque des clés sont réglées : le paragraphe et la mention dans la description des comptes dépendent de `genre_atlas_oauth_ready()`, en attente de la prochaine version. Le projet Google « every-genre » n'a pas été créé. **Ne pas relancer sans demande de Maxime.**
+
+
+## 100 artistes par genre, SUGGEST, YouTube seul (v0.22.0, 03-04/11/2026)
+Demande de Maxime : « BEAUCOUP plus d'artistes », 100 par genre, la section COMMUNITY PICKS remplacée par un lien bien visible, Bandcamp en lien, puis « enlever les 30 s de preview » pour ne garder que YouTube. « Art music » reste comme il est (pas de tuile Classical, décidé). Essai sur **Electronic** d'abord, pour mesurer.
+
+**La fiche** : KEY ARTISTS (les 8 premiers du classement, avec photo, de A à Z), LISTEN, **MORE ARTISTS** (le reste, jusqu'à 100, de A à Z, avec ▶ quand la chanson a une vidéo, liens DEEZER et BANDCAMP — recherche Bandcamp, pas d'API), puis **SUGGEST** : le bouton « + SUGGEST A BAND OR AN ARTIST FOR THIS GENRE ». Les propositions ne portent plus que sur des artistes ; validées, elles rejoignent MORE ARTISTS (« SUGGESTED BY … », lien en `nofollow ugc`). Les anciennes playlists validées ne s'affichent plus.
+
+**Les données** (voir `data/README.md`) :
+1. `artists-wide.py`, sur GitHub (« Wide artists », Wikidata bloque les sessions) : pour chaque genre des familles de `artists-wide.txt`, les artistes que Wikidata classe dans le genre, les mieux documentés d'abord. 19 min pour Electronic (392 genres) ;
+2. `artists-cross.py`, dans la session : un artiste ne reste dans un genre que si **MusicBrainz est d'accord** (le genre ou un sous-genre parmi ses tags, avec au moins un quart des votes de son tag principal). Sans ça, Cher sortait en house et Flo Rida en techno. Puis les genres sous 100 sont complétés par les artistes que MusicBrainz y classe, **25 nouveaux au plus par genre et par passage** (une requête par seconde : sans plafond, 6 h). Electronic : 1 757 liens Wikidata confirmés sur 4 684, 3 082 ajoutés par MusicBrainz, 3 040 artistes ; environ 4 h ;
+3. `wide-songs.py` : la chanson (Deezer, puis la même sur YouTube). 1 994 artistes sur 3 040 ont une vidéo ; 1 h ;
+4. `artists-build.py` écrit les genres sous la forme `Q123:4` (rang) : choisis à la main, puis MusicBrainz (`artists-mb.csv`), puis les élargis. 8 172 artistes, 11 851 liens.
+
+Electronic avant / après (artistes par genre) : aucun 80 → 51 ; 1 à 7 : 270 → 162 ; 8 à 29 : 42 → 124 ; 30 à 99 : 0 → 53 ; 100 : 0 → 2.
+
+**Import** : l'écran découpe le fichier des artistes en lots de 1 000 lignes avec une barre de progression (garder la page ouverte). Le banc et l'appel direct importent toujours d'un coup.
+
+**Son** : plus d'extraits Deezer. Le survol avec SOUND ON joue le titre entier sur YouTube ; un titre lancé en pointant cède au genre pointé ensuite, pas un titre lancé à la main ni la radio. Un genre ne s'entend que si une de ses chansons a une vidéo. Le site n'appelle plus Deezer.
+
+**Suite** :
+- Maxime regarde le résultat en ligne sur Electronic, puis on lance les 12 autres familles (`artists-wide.txt`, puis `artists-cross.py` avec les QID des familles, puis `wide-songs.py`, puis `artists-build.py`) : compter 4 à 5 h de session par grosse famille ;
+- relancer `artists-cross.py` ajoute 25 artistes MusicBrainz de plus par genre ;
+- 1 046 artistes élargis n'ont pas de vidéo : repli possible par la chaîne YouTube officielle quand Wikidata la connaît (proposé à Maxime, pas décidé) ;
+- photos : seulement pour les essentiels ; les artistes élargis devenus essentiels (genres sans 8 choix à la main) n'en ont pas.
