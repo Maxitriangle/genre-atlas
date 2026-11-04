@@ -1,0 +1,3 @@
+# Families whose genres get up to 100 artists from Wikidata (artists-wide.py).
+# Trial, 03/11/2026: electronic music.
+Q9778 electronic music

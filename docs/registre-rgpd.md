@@ -2,7 +2,7 @@
 
 Document interne, tenu par le responsable de traitement (article 30 du RGPD). Il n'est pas publié. La page légale (`/legal/`, `includes/legal.php`) en est la version destinée aux visiteurs. **Toute nouvelle collecte de données, tout cookie ou service extérieur ajouté au site doit y figurer, ainsi que sur la page légale.**
 
-Mis à jour le 03/11/2026 (v0.21.0, comptes).
+Mis à jour le 04/11/2026 (v0.22.0, propositions d'artistes).
 
 ## Responsable de traitement
 - Le responsable est l'éditeur du site : un particulier, site personnel et non commercial. Son identité est confiée à l'hébergeur (LCEN, art. 6-III-2).
@@ -32,7 +32,7 @@ Mis à jour le 03/11/2026 (v0.21.0, comptes).
   - suppression par le membre : immédiate et totale.
   - Tâche quotidienne `genre_atlas_accounts_daily`.
 - **Destinataires** : l'éditeur seul. Rien n'est vendu ni partagé, il n'y a ni publicité ni profilage.
-- **Google et Facebook** (connexion « Continue with… ») :
+- **Google et Facebook** (connexion « Continue with… ») — **prête mais pas activée** : Maxime a choisi le 03/11/2026 de rester sur l'inscription par e-mail. Sans clés dans Genres → Settings, aucun bouton ne s'affiche, et la page légale ne mentionne pas ces services. Si un jour les clés sont réglées :
   - ce sont des responsables de traitement indépendants pour leur propre service ;
   - ils ne sont contactés que si le visiteur choisit ce bouton (redirection, aucun script chargé) ;
   - nous recevons l'identifiant, le nom et l'e-mail, et nous gardons l'identifiant et l'e-mail, pas le nom ;
@@ -46,8 +46,8 @@ Mis à jour le 03/11/2026 (v0.21.0, comptes).
 - **Durée** : supprimé quand il ne sert plus, ou sur demande. C'est à faire à la main dans Messages.
 - **Destinataires** : l'éditeur (copie dans WordPress et envoi à l'adresse réglée).
 
-### 3. Propositions de la communauté (v0.13.0)
-- **Finalité** : afficher des artistes et des playlists proposés, après validation.
+### 3. Propositions d'artistes (v0.13.0, artistes seulement depuis v0.22.0)
+- **Finalité** : ajouter aux artistes d'un genre (liste MORE ARTISTS) ceux que proposent les visiteurs, après validation. Les anciennes propositions de playlists restent dans Suggestions mais ne s'affichent plus.
 - **Base légale** : intérêt légitime, et accord de l'auteur à l'envoi.
 - **Données** : lien, nom, note, pseudo facultatif. Pas d'e-mail.
 - **Durée** : tant que la proposition est en ligne. Une proposition refusée part à la corbeille.
@@ -78,10 +78,9 @@ Mis à jour le 03/11/2026 (v0.21.0, comptes).
   - posés à la connexion, pour 14 jours ou jusqu'à la déconnexion ;
   - strictement nécessaires au compte, donc exemptés de consentement.
 - **`mtm_consent_removed`** : posé seulement si le visiteur refuse d'être compté par Matomo.
-- **Stockage local du navigateur** (pas un cookie) : réglages SOUND ON, FULL / 30 S, MY MAP, et la note YouTube lue. Rien ne quitte l'appareil.
+- **Stockage local du navigateur** (pas un cookie) : réglages SOUND ON, MY MAP, et la note YouTube lue. Rien ne quitte l'appareil.
 - **Services tiers, seulement au clic** :
-  - YouTube (titres entiers, lecteur youtube.com, cookies et publicités de YouTube) ;
-  - Deezer (extraits de 30 s) ;
+  - YouTube (titres entiers, lecteur youtube.com, cookies et publicités de YouTube) : au clic, ou en pointant un genre une fois SOUND ON choisi. Depuis v0.22.0, plus d'extraits Deezer : Deezer n'est plus qu'un lien sortant ;
   - Google et Facebook (connexion).
 
 ## Sécurité

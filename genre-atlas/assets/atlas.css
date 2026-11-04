@@ -435,8 +435,6 @@
 .ga-bar-b:hover{border-color:var(--fam)!important;color:var(--fam)}
 .ga-bar-time{white-space:nowrap;flex-shrink:0}
 .ga-bar-out{display:flex;gap:6px;align-items:center;height:44px;padding:0 12px;border:1px solid var(--line);font-size:10px;white-space:nowrap;flex-shrink:0}
-.ga-bar-mode{height:44px;padding:0 10px;border:1px solid var(--line)!important;font-size:10px;font-weight:600;flex-shrink:0}
-.ga-bar-mode[aria-pressed="true"]{border-color:var(--fam)!important;color:var(--fam)}
 .ga-bar-note{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0;padding:10px 24px 10px 40px;background:var(--bg);border-top:1px solid var(--line);font-size:10px;line-height:1.5;color:var(--dim)}
 .ga-bar-note a{text-decoration:underline}
 .ga-bar-note button{height:32px;padding:0 10px;border:1px solid var(--line)!important;font-size:10px;font-weight:600;color:var(--ink)}
@@ -462,7 +460,6 @@
   .ga-bar.ga-bar-video .ga-bar-t{flex:0 0 100%}
   .ga-bar.ga-bar-video .ga-bar-t b{white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
   .ga-bar.ga-bar-video .ga-bar-b{width:36px;height:36px}
-  .ga-bar.ga-bar-video .ga-bar-mode{height:36px;padding:0 6px}
   .ga-barred-video #genre-atlas{padding-bottom:208px}
 }
 
@@ -581,3 +578,12 @@
 #genre-atlas .ga-cta{gap:14px}
 .ga-linkrow .ga-cta{min-width:220px}
 .ga-me-acts .ga-cta{flex:1}
+
+/* MORE ARTISTS: the artists after the 8 essentials, as a list, A to Z */
+.ga-track.ga-mart{grid-template-columns:44px minmax(0,1fr) auto}
+.ga-more-list .ga-tname .ga-micro{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#genre-atlas .ga-padd{min-height:56px;font-size:12px}
+@media (max-width:899px){
+  .ga-track.ga-mart{grid-template-columns:44px minmax(0,1fr)}
+  .ga-track.ga-mart .ga-tout{grid-column:2}
+}

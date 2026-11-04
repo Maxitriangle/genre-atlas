@@ -36,6 +36,22 @@ class Genre_Atlas_Importer {
 	 * @param string $file Path to the CSV.
 	 * @return array|WP_Error Stats.
 	 */
+	/** Whether a CSV is the artist file (a genres column, no parent column). */
+	public static function is_artist_file( $file ) {
+		$handle = is_readable( $file ) ? fopen( $file, 'r' ) : false;
+		if ( ! $handle ) {
+			return false;
+		}
+		$header = fgetcsv( $handle, 0, ',', '"', '\\' );
+		fclose( $handle );
+		if ( ! $header ) {
+			return false;
+		}
+		$header[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $header[0] );
+		$header    = array_map( 'trim', $header );
+		return in_array( 'genres', $header, true ) && ! in_array( 'parent_wikidata_id', $header, true );
+	}
+
 	public static function import( $file ) {
 		global $wpdb;
 		if ( ! is_readable( $file ) ) {
@@ -199,7 +215,9 @@ class Genre_Atlas_Importer {
 	}
 	/**
 	 * Artist file (data/artist-import.csv): wikidata_id, name, kind, start,
-	 * country, genres ("|"-separated Wikidata IDs of genres), photo_file,
+	 * country, genres ("|"-separated Wikidata IDs of genres, each one with
+	 * the artist's rank in it after a colon when the file gives it: "Q123:7";
+	 * a genre lists its artists by rank, up to 100), photo_file,
 	 * photo_author, photo_license, photo_license_url, song_title,
 	 * song_deezer, song_youtube. Import it after the genres. Artists are
 	 * matched on wikidata_id; an artist saved by hand keeps its fields (it
@@ -209,7 +227,7 @@ class Genre_Atlas_Importer {
 	 * @param string $file Path to the CSV.
 	 * @return array|WP_Error Stats.
 	 */
-	public static function import_artists( $file ) {
+	public static function import_artists( $file, $from = 0, $limit = 0 ) {
 		global $wpdb;
 		$handle    = fopen( $file, 'r' );
 		$header    = array_map( 'trim', fgetcsv( $handle, 0, ',', '"', '\\' ) );
@@ -230,6 +248,13 @@ class Genre_Atlas_Importer {
 			}
 		}
 		fclose( $handle );
+		// In batches when asked (the import screen, for files of thousands of
+		// artists that one request could not hold): the lists of each genre
+		// are gathered across batches, then written by the last one.
+		$total = count( $rows );
+		$batch = $limit > 0;
+		$rows  = $batch ? array_slice( $rows, $from, $limit ) : $rows;
+		$last  = ! $batch || $from + $limit >= $total;
 
 		if ( function_exists( 'set_time_limit' ) ) {
 			@set_time_limit( 0 ); // phpcs:ignore
@@ -248,8 +273,15 @@ class Genre_Atlas_Importer {
 			}
 		}
 
-		$stats = array( 'artists' => count( $rows ), 'created' => 0, 'updated' => 0, 'kept' => 0, 'genres' => 0, 'genres_kept' => 0, 'genres_missing' => 0 );
+		$stats = array( 'artists' => $total, 'created' => 0, 'updated' => 0, 'kept' => 0, 'genres' => 0, 'genres_kept' => 0, 'genres_missing' => 0 );
 		$lists = array();
+		if ( $batch && $from > 0 ) {
+			$saved = get_option( 'genre_atlas_import_state' );
+			if ( is_array( $saved ) ) {
+				$stats = $saved['stats'];
+				$lists = $saved['lists'];
+			}
+		}
 		foreach ( $rows as $row ) {
 			$qid  = $row['wikidata_id'];
 			$meta = array( 'ga_wikidata_id' => $qid );
@@ -302,16 +334,36 @@ class Genre_Atlas_Importer {
 				$artists[ $qid ] = (int) $id;
 				$stats['created']++;
 			}
+			// "Q123" or "Q123:7": a genre, and the artist's rank in it (1 = best known).
 			foreach ( explode( '|', $row['genres'] ) as $g ) {
-				$g = trim( $g );
+				$g    = trim( $g );
+				$rank = 9999;
+				if ( preg_match( '/^(Q\d+):(\d+)$/', $g, $m ) ) {
+					$g    = $m[1];
+					$rank = (int) $m[2];
+				}
 				if ( '' !== $g ) {
-					$lists[ $g ][] = $artists[ $qid ];
+					$lists[ $g ][] = array( $rank, count( $lists[ $g ] ?? array() ), $artists[ $qid ] );
 				}
 			}
 		}
 
+		if ( ! $last ) {
+			update_option( 'genre_atlas_import_state', array( 'stats' => $stats, 'lists' => $lists ), false );
+			wp_suspend_cache_invalidation( false );
+			return $stats + array( 'next' => $from + $limit, 'total' => $total );
+		}
+		delete_option( 'genre_atlas_import_state' );
+
 		// The artists of each genre, unless the list was edited by hand.
-		foreach ( $lists as $g => $ids ) {
+		foreach ( $lists as $g => $ranked ) {
+			usort(
+				$ranked,
+				function ( $a, $b ) {
+					return $a[0] - $b[0] ?: $a[1] - $b[1]; // by rank, then in the file's order
+				}
+			);
+			$ids = array_column( $ranked, 2 );
 			if ( ! isset( $genres[ $g ] ) ) {
 				$stats['genres_missing']++;
 				continue;
@@ -327,6 +379,6 @@ class Genre_Atlas_Importer {
 		wp_suspend_cache_invalidation( false );
 		wp_cache_flush();
 		genre_atlas_flush_cache(); // the tree says which genres have artists.
-		return $stats;
+		return $stats + array( 'next' => 0, 'total' => $total );
 	}
 }

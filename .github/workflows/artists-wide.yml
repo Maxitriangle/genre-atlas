@@ -1,0 +1,52 @@
+name: Wide artists
+# Up to 100 artists per genre from Wikidata (data/artists-wide.py), for the
+# families named in data/artists-wide.txt, then commits what it finds. It runs
+# here rather than in a Claude session because Wikimedia blocks the address
+# those sessions leave from. The cache is carried from run to run, so a run
+# cut short by the time limit or by Wikimedia is simply started again.
+on:
+  push:
+    # Not on main: a merge would start a second run from an empty cache.
+    branches-ignore: [main]
+    paths:
+      - data/artists-wide.py
+      - data/artists-wide.txt
+      - .github/workflows/artists-wide.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: wide-artists-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  wide:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore the Wikidata cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/.wide-cache.json
+          key: wide-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wide-cache-
+      - name: Fetch
+        id: fetch
+        timeout-minutes: 330
+        run: python3 data/artists-wide.py $(grep -o 'Q[0-9]*' data/artists-wide.txt)
+      - name: Keep the cache, finished or not
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/.wide-cache.json
+          key: wide-cache-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Commit the results
+        if: steps.fetch.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add data/artists-wide.csv data/genre-artists-wide.csv
+          git diff --cached --quiet && exit 0
+          git commit -m "Wide artists from Wikidata: $(grep -o 'Q[0-9]*' data/artists-wide.txt | tr '\n' ' ')"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

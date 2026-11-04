@@ -125,12 +125,21 @@ function genre_atlas_import_page() {
 	if ( isset( $_POST['genre_atlas_import_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['genre_atlas_import_nonce'] ), 'genre_atlas_import' ) && current_user_can( 'manage_options' ) ) {
 		if ( empty( $_FILES['genre_csv']['tmp_name'] ) || ! is_uploaded_file( $_FILES['genre_csv']['tmp_name'] ) ) { // phpcs:ignore
 			echo '<div class="notice notice-error"><p>No file received.</p></div>';
+		} elseif ( Genre_Atlas_Importer::is_artist_file( $_FILES['genre_csv']['tmp_name'] ) ) { // phpcs:ignore
+			// Thousands of artists do not fit in one request: the file is kept
+			// for a moment and the page imports it in batches, one call each.
+			$token = genre_atlas_import_keep( $_FILES['genre_csv']['tmp_name'] ); // phpcs:ignore
+			if ( ! $token ) {
+				echo '<div class="notice notice-error"><p>The file could not be kept for the import (uploads folder not writable).</p></div>';
+			} else {
+				genre_atlas_import_progress( $token );
+			}
 		} else {
 			$stats = Genre_Atlas_Importer::import( $_FILES['genre_csv']['tmp_name'] ); // phpcs:ignore
 			if ( is_wp_error( $stats ) ) {
 				echo '<div class="notice notice-error"><p>' . esc_html( $stats->get_error_message() ) . '</p></div>';
 			} elseif ( isset( $stats['artists'] ) ) {
-				echo '<div class="notice notice-success"><p>Artist import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['kept'] . ' kept (edited by hand), ' . (int) $stats['genres'] . ' genres given their key artists, ' . (int) $stats['genres_kept'] . ' genre lists kept (edited by hand), ' . (int) $stats['genres_missing'] . ' genres not found.</p></div>';
+				echo '<div class="notice notice-success"><p>' . esc_html( genre_atlas_artist_stats_message( $stats ) ) . '</p></div>';
 			} else {
 				echo '<div class="notice notice-success"><p>Import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['skipped_reviewed'] . ' protected (reviewed), ' . (int) $stats['parents_set'] . ' parents set, ' . (int) $stats['parents_missing'] . ' parents not found, ' . (int) $stats['texts'] . ' descriptions added from Wikipedia' . ( empty( $stats['examples'] ) ? '' : ', ' . (int) $stats['examples'] . ' genres with listening examples to review (Genres → Listening examples)' ) . '.</p></div>';
 			}
@@ -143,6 +152,96 @@ function genre_atlas_import_page() {
 	echo '<input type="file" name="genre_csv" accept=".csv" required> ';
 	submit_button( 'Import', 'primary', 'submit', false );
 	echo '</form></div>';
+}
+
+/* ---- Artist import in batches ------------------------------------------- */
+
+const GENRE_ATLAS_IMPORT_BATCH = 1000;
+
+function genre_atlas_import_dir() {
+	$up = wp_upload_dir();
+	return trailingslashit( $up['basedir'] ) . 'genre-atlas/import/';
+}
+
+/** Keeps an uploaded artist file under uploads, behind a random name. */
+function genre_atlas_import_keep( $tmp ) {
+	$dir = genre_atlas_import_dir();
+	if ( ! wp_mkdir_p( $dir ) ) {
+		return '';
+	}
+	if ( ! file_exists( $dir . 'index.php' ) ) {
+		file_put_contents( $dir . 'index.php', "<?php\n" ); // phpcs:ignore
+		file_put_contents( $dir . '.htaccess', "Require all denied\n" ); // phpcs:ignore
+	}
+	// Files left by an import that was never finished.
+	foreach ( (array) glob( $dir . '*.csv' ) as $old ) {
+		if ( filemtime( $old ) < time() - DAY_IN_SECONDS ) {
+			wp_delete_file( $old );
+		}
+	}
+	$token = bin2hex( random_bytes( 16 ) );
+	return move_uploaded_file( $tmp, $dir . $token . '.csv' ) ? $token : '';
+}
+
+function genre_atlas_import_progress( $token ) {
+	$nonce = wp_create_nonce( 'genre_atlas_import_step' );
+	echo '<div class="notice notice-info" id="ga-import-box"><p id="ga-import-text">Importing artists…</p><p><progress id="ga-import-bar" max="1" value="0" style="width:100%;max-width:480px"></progress></p><p class="description">Keep this page open until the import is finished.</p></div>';
+	?>
+<script>
+( function () {
+	var box = document.getElementById( 'ga-import-box' ), text = document.getElementById( 'ga-import-text' ), bar = document.getElementById( 'ga-import-bar' );
+	function step( from ) {
+		var body = new URLSearchParams( { action: 'genre_atlas_import_step', nonce: <?php echo wp_json_encode( $nonce ); ?>, token: <?php echo wp_json_encode( $token ); ?>, from: String( from ) } );
+		fetch( ajaxurl, { method: 'POST', credentials: 'same-origin', body: body } ).then( function ( r ) { return r.json(); } ).then( function ( r ) {
+			if ( ! r || ! r.success ) {
+				throw new Error( r && r.data ? r.data : 'The import stopped.' );
+			}
+			var d = r.data;
+			bar.max = d.total || 1;
+			bar.value = d.next || d.total;
+			if ( d.next ) {
+				text.textContent = 'Importing artists… ' + d.next + ' / ' + d.total;
+				step( d.next );
+			} else {
+				box.className = 'notice notice-success';
+				text.textContent = d.message;
+			}
+		} ).catch( function ( e ) {
+			box.className = 'notice notice-error';
+			text.textContent = e.message + ' Upload the file again to start over.';
+		} );
+	}
+	step( 0 );
+}() );
+</script>
+	<?php
+}
+
+add_action( 'wp_ajax_genre_atlas_import_step', 'genre_atlas_import_step' );
+function genre_atlas_import_step() {
+	if ( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'genre_atlas_import_step', 'nonce', false ) ) {
+		wp_send_json_error( 'Not allowed.', 403 );
+	}
+	$token = isset( $_POST['token'] ) ? sanitize_key( wp_unslash( $_POST['token'] ) ) : '';
+	$from  = isset( $_POST['from'] ) ? max( 0, (int) $_POST['from'] ) : 0;
+	$file  = genre_atlas_import_dir() . $token . '.csv';
+	if ( ! preg_match( '/^[a-f0-9]{32}$/', $token ) || ! is_readable( $file ) ) {
+		wp_send_json_error( 'The uploaded file is gone.' );
+	}
+	$stats = Genre_Atlas_Importer::import_artists( $file, $from, GENRE_ATLAS_IMPORT_BATCH );
+	if ( is_wp_error( $stats ) ) {
+		wp_delete_file( $file );
+		wp_send_json_error( $stats->get_error_message() );
+	}
+	if ( $stats['next'] ) {
+		wp_send_json_success( array( 'next' => $stats['next'], 'total' => $stats['total'] ) );
+	}
+	wp_delete_file( $file );
+	wp_send_json_success( array( 'next' => 0, 'total' => $stats['total'], 'message' => genre_atlas_artist_stats_message( $stats ) ) );
+}
+
+function genre_atlas_artist_stats_message( $stats ) {
+	return 'Artist import finished — ' . (int) $stats['created'] . ' created, ' . (int) $stats['updated'] . ' updated, ' . (int) $stats['kept'] . ' kept (edited by hand), ' . (int) $stats['genres'] . ' genres given their artists, ' . (int) $stats['genres_kept'] . ' genre lists kept (edited by hand), ' . (int) $stats['genres_missing'] . ' genres not found.';
 }
 
 /* ---- Settings: Genres → Settings ---------------------------------------- */

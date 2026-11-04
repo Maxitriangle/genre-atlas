@@ -1,7 +1,7 @@
 === Genre Atlas ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 0.21.0
+Stable tag: 0.22.0
 
 Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV import, JSON tree endpoint, map / list / mobile front end.
 
@@ -44,18 +44,18 @@ Music genre atlas: "Genre" content type (strict tree, one parent per genre), CSV
   after 3 years, warned by e-mail a month before. MY MAP dims the genres not heard yet. The administrator keeps
   wp-login.php. Everything is stated on /legal/ (Accounts, Terms of use); docs/registre-rgpd.md is the record of
   processing, docs/connexion-google-facebook.md how to create the keys.
-* Sound: full songs by default, in YouTube's own player (youtube.com, so its Premium subscribers hear no ads),
+* Sound: every song plays whole, in YouTube's own player (youtube.com, so its Premium subscribers hear no ads),
   which the player bar drives and shows in a 200 x 200 card while it plays, as YouTube requires (above the bar on
   a wide screen, inside it on a phone, where the bar grows and the page makes room rather than hide under the card): HEAR on the panel
-  and on mobile, RADIO, holding a genre on a phone, and the dossier's songs. The first time, the bar says that
-  YouTube may set its cookies and show its ads. FULL / 30 S in the bar switches to Deezer's 30-second previews,
-  which also play when the pointer rests on a genre once SOUND ON (header, screens with a mouse) is chosen, and for
-  songs with no video. GET /wp-json/genre-atlas/v1/sound/<id>?i=<n>[&full=1] hands out the genre's songs in turn
-  (Deezer signs a preview's address for 15 minutes, kept 10). The bar sits outside the page, so the sound goes on
-  from the map to a dossier and back; ✕ stops it. RADIO chains one song per genre of a branch, shuffled, the next
-  genre when a song ends (⏭ skips); like the random draw it stops at the tiles. Nothing is asked of Deezer or
-  YouTube before one of those choices; the choices are kept in the browser's local storage, not in a cookie (all
-  stated on /legal/).
+  and on mobile, RADIO, holding a genre on a phone, the dossier's songs, and the pointer resting on a genre once
+  SOUND ON (header, screens with a mouse) is chosen; a song started by pointing gives way to the next genre pointed
+  at, one asked for by hand or the radio does not. No more 30-second previews: a song with no video is not played,
+  and Deezer is only a link. The first time, the bar says that YouTube may set its cookies and show its ads.
+  GET /wp-json/genre-atlas/v1/sound/<id>?i=<n> hands out the genre's songs that have a video, in turn. The bar sits
+  outside the page, so the sound goes on from the map to a dossier and back; ✕ stops it. RADIO chains one song per
+  genre of a branch, shuffled, the next genre when a song ends (⏭ skips); like the random draw it stops at the
+  tiles. Nothing is asked of YouTube before one of those choices; the choices are kept in the browser's local
+  storage, not in a cookie (all stated on /legal/).
 * Listening examples: a genre whose key artists have no song (often a tradition or a form: oberek, gamelan degung)
   can have a YouTube video instead. The import file proposes up to three per genre, found under the genre's name;
   they wait in Genres > Listening examples, counted on the menu, where each one is played in place, then accepted
