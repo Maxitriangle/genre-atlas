@@ -1,3 +1,18 @@
-# Families whose genres get up to 100 artists from Wikidata (artists-wide.py).
-# Trial, 03/11/2026: electronic music.
+# Families (and tiles) whose genres get up to 100 artists from Wikidata
+# (artists-wide.py). Trial on 03/11/2026 with electronic music; every family
+# from 10/11/2026. Electronic is kept: the output files hold what is listed here.
 Q9778 electronic music
+Q11399 rock music
+Q12326776 metal music
+Q25554481 punk music
+Q43343 folk music
+Q18345375 Latin music
+Q1583807 art music
+Q11401 hip-hop
+Q37073 pop music
+Q8341 jazz
+Q1640319 experimental music
+Q45981 rhythm and blues
+Q83440 country music
+Q9759 blues
+Q9794 reggae

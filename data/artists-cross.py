@@ -22,7 +22,8 @@ a request, so at most LOOKUPS are looked up per genre and per run.
 Reads artists-wide.csv and genre-artists-wide.csv; writes
 artists-checked.csv (the columns of artists-wide.csv) and
 genre-artists-checked.csv (genre_id, artist_id, rank, source: "both" or
-"musicbrainz"), read by artists-build.py in their place. MusicBrainz is asked
+"musicbrainz"), read by artists-build.py in their place. The genres of other
+families already in those files are kept, so families can be run one by one. MusicBrainz is asked
 once a second; answers are cached in .mb-cache.json, as for artists-mb.py.
 """
 import csv
@@ -160,6 +161,15 @@ def main():
             save()
     save()
 
+    # The families of earlier runs stay as they were: one family at a time.
+    done = os.path.join(HERE, 'genre-artists-checked.csv')
+    if os.path.exists(done):
+        for r in rows('genre-artists-checked.csv'):
+            if r['genre_id'] not in kept:
+                kept.setdefault(r['genre_id'], []).append((r['artist_id'], r['source']))
+        for r in rows('artists-checked.csv'):
+            if r['wikidata_id'] not in wide:
+                extra.setdefault(r['wikidata_id'], r)
     used = {q for v in kept.values() for q, _ in v}
     fields = ['wikidata_id', 'name', 'kind', 'start', 'country', 'image', 'sitelinks', 'deezer', 'youtube_channel', 'musicbrainz']
     with open(os.path.join(HERE, 'artists-checked.csv'), 'w', encoding='utf-8', newline='') as fh:
@@ -172,7 +182,7 @@ def main():
     with open(os.path.join(HERE, 'genre-artists-checked.csv'), 'w', encoding='utf-8', newline='') as fh:
         w = csv.DictWriter(fh, fieldnames=['genre_id', 'artist_id', 'rank', 'source'])
         w.writeheader()
-        for g in order:
+        for g in kept:
             for i, (q, src) in enumerate(kept[g], 1):
                 w.writerow({'genre_id': g, 'artist_id': q, 'rank': i, 'source': src})
     n = [len(kept[g]) for g in order]
