@@ -56,8 +56,8 @@ def family(families, genres):
         out.append(q)
         mine = {q}
         for k in kids.get(q, []):
-            if k['featured'] and not top:
-                continue                               # a tile closes the lineage
+            if k['featured']:
+                continue                               # a tile closes the lineage: walked as its own family
             mine |= walk(k['wikidata_id'], False)
         below[q] = mine
         return mine
@@ -97,7 +97,8 @@ def main():
         names[g] = {lt.norm(n) for n in (mbn, by_q[g]['name']) if n}
     wide = {r['wikidata_id']: r for r in rows('artists-wide.csv')}
     links = sorted(rows('genre-artists-wide.csv'), key=lambda r: int(r['rank']))
-    links = [r for r in links if r['genre_id'] in below]
+    seen = set()
+    links = [r for r in links if r['genre_id'] in below and not ((r['genre_id'], r['artist_id']) in seen or seen.add((r['genre_id'], r['artist_id'])))]
 
     # 1. Wikidata's artists, checked against their MusicBrainz tags.
     tags, mbids = {}, {}
@@ -164,8 +165,9 @@ def main():
     # The families of earlier runs stay as they were: one family at a time.
     done = os.path.join(HERE, 'genre-artists-checked.csv')
     if os.path.exists(done):
+        mine = set(order)
         for r in rows('genre-artists-checked.csv'):
-            if r['genre_id'] not in kept:
+            if r['genre_id'] not in mine:
                 kept.setdefault(r['genre_id'], []).append((r['artist_id'], r['source']))
         for r in rows('artists-checked.csv'):
             if r['wikidata_id'] not in wide:

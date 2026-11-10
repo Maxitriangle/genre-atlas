@@ -108,7 +108,7 @@ def family_genres(families):
     def walk(q, top):
         out.append(q)
         for k in kids.get(q, []):
-            if k['featured'] and not top:
+            if k['featured']:
                 continue                       # a tile closes the lineage: Metal is not walked from Rock
             walk(k['wikidata_id'], False)
     for f in families:
