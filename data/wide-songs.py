@@ -16,6 +16,7 @@ import csv
 import importlib.util
 import os
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +31,7 @@ def main():
     name = 'artists-checked.csv' if os.path.exists(os.path.join(HERE, 'artists-checked.csv')) else 'artists-wide.csv'
     artists = list(csv.DictReader(open(os.path.join(HERE, name), encoding='utf-8')))
     ids = {r['wikidata_id']: r for r in artists}
-    rows, done = [None] * len(artists), [0]
+    rows, done, saved = [None] * len(artists), [0], [time.time()]
 
     def job(i):
         rows[i] = lt.one(artists[i], ids)
@@ -38,8 +39,10 @@ def main():
             done[0] += 1
             n = done[0]
         if n % 50 == 0:
-            lt.save()
             sys.stderr.write('%d/%d\n' % (n, len(artists)))
+        if time.time() - saved[0] > 600:           # the cache is large: written every ten minutes, not every 50 artists
+            saved[0] = time.time()
+            lt.save()
 
     with ThreadPoolExecutor(workers) as pool:
         list(pool.map(job, range(len(artists))))
