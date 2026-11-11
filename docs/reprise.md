@@ -1,4 +1,6 @@
-# Reprise — état au 04/11/2026
+# Reprise — état au 11/11/2026
+
+**v0.23.0 prête, PR ouverte le 11/11/2026** (dernière section) : les artistes élargis (jusqu'à 100 par genre, vérifiés par MusicBrainz) couvrent maintenant **Electronic, Rock, Metal, Punk, Hip hop et Pop**. Aucun changement de code du site : seulement les données. Après la mise à jour, réimporter `data/artist-import.csv`.
 
 **v0.22.0 prête, PR ouverte le 04/11/2026** (dernière section, « 100 artistes par genre ») : jusqu'à 100 artistes par genre (8 essentiels + MORE ARTISTS), bouton SUGGEST A BAND OR AN ARTIST à la place de COMMUNITY PICKS, import des artistes par lots, et **plus aucun extrait Deezer de 30 s** : tout se joue en entier sur YouTube. Données élargies pour la famille **Electronic seule**, en essai ; les 12 autres familles attendent l'avis de Maxime sur le résultat en ligne.
 
@@ -1113,3 +1115,25 @@ Electronic avant / après (artistes par genre) : aucun 80 → 51 ; 1 à 7 : 270 
 - relancer `artists-cross.py` ajoute 25 artistes MusicBrainz de plus par genre ;
 - 1 046 artistes élargis n'ont pas de vidéo : repli possible par la chaîne YouTube officielle quand Wikidata la connaît (proposé à Maxime, pas décidé) ;
 - photos : seulement pour les essentiels ; les artistes élargis devenus essentiels (genres sans 8 choix à la main) n'en ont pas.
+
+
+## Rock, Metal, Punk, Hip hop et Pop (v0.23.0, 04-11/11/2026)
+Demande de Maxime : « Lancer les autres familles », puis « publie dès que Rock, Hip hop et Pop sont prêts ». Même chaîne que pour Electronic.
+
+- **Tuiles** : Metal et Punk sont des tuiles, donc des familles à part. `artists-wide.py` et `artists-cross.py` ne descendent plus dans un enfant à tuile quand ils parcourent une famille (sinon Metal était compté deux fois, sous Rock et seul). Les liens en double sont retirés.
+- **Fusion** : `artists-cross.py` garde tels quels les genres des familles déjà passées (`mine = set(order)`) ; on peut donc passer les familles une par une.
+- **`wide-songs.py`** écrit son cache (260 Mo) toutes les dix minutes au lieu de tous les 50 artistes : 15 fois plus rapide (1 h 30 pour 13 919 artistes).
+
+Artistes par genre, dans `genre-artists-checked.csv` (avant les choix à la main et `artists-mb.csv`) :
+
+| Famille | Genres | 0 | 1-7 | 8-29 | 30-99 | 100 | Liens |
+|---|---|---|---|---|---|---|---|
+| Rock | 153 | 8 | 26 | 52 | 65 | 2 | 5 150 |
+| Metal | 62 | 0 | 9 | 18 | 31 | 4 | 2 598 |
+| Punk | 81 | 2 | 20 | 29 | 27 | 3 | 2 277 |
+| Hip hop | 102 | 12 | 32 | 38 | 15 | 5 | 2 034 |
+| Pop | 231 | 52 | 72 | 51 | 51 | 5 | 4 322 |
+
+`artist-import.csv` : 16 886 artistes, 11 977 avec une chanson, 26 176 liens, 24 genres à 100. Défaut connu : « rock music » contient des artistes pop-rock (Shakira), seulement dans MORE ARTISTS.
+
+**Suite** : les 9 autres familles (Folk Q43343, Latin Q18345375, Art music Q1583807, Jazz Q8341, Experimental Q1640319, R&B Q45981, Country Q83440, Blues Q9759, Reggae Q9794) : `artists-cross.py` avec leurs QID (les extraits Wikidata sont déjà dans `artists-wide.csv`), puis `wide-songs.py`, puis `artists-build.py`.
