@@ -258,7 +258,7 @@ try {
 
 		// Listen: one song per key artist, in the artists' order. Nothing is
 		// asked of YouTube before PLAY ALL; then the player chains the list.
-		const tracks = await page.locator( '.ga-dossier .ga-track .ga-tname .ga-micro' ).allInnerTexts();
+		const tracks = await page.locator( '.ga-dossier .ga-track:not(.ga-mart) .ga-tname .ga-micro' ).allInnerTexts();   // MORE ARTISTS rows are tracks too
 		const upper = names.map( n => n.toUpperCase() );
 		let at = 0;
 		const inOrder = tracks.every( t => ( at = upper.indexOf( t, at ) + 1 ) > 0 );
@@ -793,6 +793,7 @@ try {
 		const hasToggle = await tel.locator( '.ga-sound' ).count();
 		await tel.locator( '.ga-mobile [data-hear]' ).first().click();
 		await tel.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
+		await tel.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
 		const tw = await tel.evaluate( () => Math.max( document.documentElement.scrollWidth, document.querySelector( '.ga-bar' ).scrollWidth ) );
 		await tel.screenshot( { path: `${ SHOTS }/14b-son-mobile.png` } );
 		const theardAll = () => videosOf( tel );
@@ -810,6 +811,7 @@ try {
 			await tel.mouse.up();
 		}
 		await tel.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
+		await tel.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
 		const stay = ( await tel.locator( '.ga-mctr h1' ).innerText().catch( () => '' ) ).toLowerCase();
 		const heldOn = await tel.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => '' );
 		check( 'mobile : un appui long sur un genre de la carte le fait entendre, sans changer de centre', !! hb && Number( heldOn ) === sk.id && stay === sc.name.toLowerCase() && await theardAll() - beforeHold === 1,
