@@ -1,4 +1,6 @@
-# Reprise — état au 11/11/2026
+# Reprise — état au 13/11/2026
+
+**v0.24.0 prête, PR ouverte le 13/11/2026** (dernière section) : les artistes élargis couvrent maintenant **les 15 familles et tuiles** (Folk, Latin, Art music, Jazz, Experimental, R&B, Country, Blues et Reggae ajoutées). Aucun changement de code du site : seulement les données. Après la mise à jour, réimporter `data/artist-import.csv`.
 
 **v0.23.0 prête, PR ouverte le 11/11/2026** (dernière section) : les artistes élargis (jusqu'à 100 par genre, vérifiés par MusicBrainz) couvrent maintenant **Electronic, Rock, Metal, Punk, Hip hop et Pop**. Aucun changement de code du site : seulement les données. Après la mise à jour, réimporter `data/artist-import.csv`.
 
@@ -1137,3 +1139,25 @@ Artistes par genre, dans `genre-artists-checked.csv` (avant les choix à la main
 `artist-import.csv` : 16 886 artistes, 11 977 avec une chanson, 26 176 liens, 24 genres à 100. Défaut connu : « rock music » contient des artistes pop-rock (Shakira), seulement dans MORE ARTISTS.
 
 **Suite** : les 9 autres familles (Folk Q43343, Latin Q18345375, Art music Q1583807, Jazz Q8341, Experimental Q1640319, R&B Q45981, Country Q83440, Blues Q9759, Reggae Q9794) : `artists-cross.py` avec leurs QID (les extraits Wikidata sont déjà dans `artists-wide.csv`), puis `wide-songs.py`, puis `artists-build.py`.
+
+
+## Les 9 dernières familles (v0.24.0, 11-13/11/2026)
+Demande de Maxime : « Lance toutes les familles d'un coup ». Même chaîne, un seul passage de `artists-cross.py` pour les 9 familles (1 077 genres, environ 2 jours avec les redémarrages du conteneur, repris chaque fois depuis le cache), puis `wide-songs.py` et `artists-build.py`. Les lignes des familles déjà passées sont inchangées.
+
+| Famille | Genres | 0 | 1-7 | 8-29 | 30-99 | 100 | Liens |
+|---|---|---|---|---|---|---|---|
+| Folk | 323 | 191 | 70 | 44 | 18 | 0 | 1 774 |
+| Latin | 257 | 92 | 105 | 41 | 19 | 0 | 2 115 |
+| Art music | 262 | 125 | 66 | 43 | 27 | 1 | 2 180 |
+| Jazz | 58 | 7 | 13 | 15 | 21 | 2 | 1 649 |
+| Experimental | 40 | 5 | 9 | 16 | 10 | 0 | 936 |
+| R&B | 55 | 2 | 11 | 22 | 18 | 2 | 1 586 |
+| Country | 30 | 0 | 7 | 14 | 9 | 0 | 783 |
+| Blues | 26 | 0 | 5 | 7 | 14 | 0 | 795 |
+| Reggae | 26 | 5 | 10 | 3 | 8 | 0 | 580 |
+
+Folk, Latin et Art music ont beaucoup de genres à 0 : musiques régionales ou traditionnelles sans artiste lié dans Wikidata ni MusicBrainz. Les choix à la main restent leurs essentiels.
+
+`artist-import.csv` : 22 520 artistes, 4 036 avec photo, 15 271 avec une chanson, 36 756 liens, 29 genres à 100.
+
+**Suite** : relancer `artists-cross.py` ajoute 25 artistes MusicBrainz de plus par genre ; les genres à 0 de Folk, Latin et Art music attendent d'autres sources (ou les propositions SUGGEST).
