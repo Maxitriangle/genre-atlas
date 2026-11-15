@@ -1,4 +1,6 @@
-# Reprise — état au 13/11/2026
+# Reprise — état au 14/11/2026
+
+**v0.25.0 prête, PR ouverte le 14/11/2026** (dernière section) : les trous comblés — deuxième passage MusicBrainz sur toutes les familles et repli Wikidata pour les genres de moins de 8 artistes. Seulement les données et `artists-cross.py`. Après la mise à jour, réimporter `data/artist-import.csv`.
 
 **v0.24.0 prête, PR ouverte le 13/11/2026** (dernière section) : les artistes élargis couvrent maintenant **les 15 familles et tuiles** (Folk, Latin, Art music, Jazz, Experimental, R&B, Country, Blues et Reggae ajoutées). Aucun changement de code du site : seulement les données. Après la mise à jour, réimporter `data/artist-import.csv`.
 
@@ -1161,3 +1163,21 @@ Folk, Latin et Art music ont beaucoup de genres à 0 : musiques régionales ou t
 `artist-import.csv` : 22 520 artistes, 4 036 avec photo, 15 271 avec une chanson, 36 756 liens, 29 genres à 100.
 
 **Suite** : relancer `artists-cross.py` ajoute 25 artistes MusicBrainz de plus par genre ; les genres à 0 de Folk, Latin et Art music attendent d'autres sources (ou les propositions SUGGEST).
+
+
+## Combler les trous (v0.25.0, 14/11/2026)
+Demande de Maxime : « Ok, comble les trous ». Diagnostic avant : 424 genres sans aucun artiste sur le site, 664 avec 1 à 7.
+
+- **Deuxième passage** de `artists-cross.py` sur les 15 racines (13 familles, Metal, Punk) : 25 artistes MusicBrainz de plus par genre encore sous 100.
+- **Étape 3, nouvelle** : un genre resté sous 8 reprend les artistes que Wikidata y range et que MusicBrainz ne connaît pas ou n'a jamais étiquetés (source `wikidata`, 1 049 liens). Rien ne les confirme, rien ne les contredit ; les stars rangées par erreur (Cher en house) restent dehors puisque MusicBrainz les étiquette. Échantillon relu : gaita zuliana → Betulio Medina, funaná → Mayra Andrade, kan ha diskan → Nanda Troadeg, kuduro → DJ Nigga Fox.
+
+Genres par nombre d'artistes sur le site (`artist-import.csv`, choix à la main compris) :
+
+| | 0 | 1-7 | 8-29 | 30-99 | 100 |
+|---|---|---|---|---|---|
+| v0.24.0 | 424 | 664 | 564 | 417 | 29 |
+| v0.25.0 | 352 | 635 | 657 | 418 | 36 |
+
+`artist-import.csv` : 24 160 artistes, 15 993 avec une chanson, 39 249 liens.
+
+**Ce qui reste** : environ 260 genres (surtout Folk, Latin, Art music) n'ont d'artiste ni dans Wikidata ni dans MusicBrainz ; il faudra les choix à la main ou les propositions SUGGEST. Un nouveau passage de `artists-cross.py` ajoute encore 25 artistes MusicBrainz par genre, avec un gain qui baisse.

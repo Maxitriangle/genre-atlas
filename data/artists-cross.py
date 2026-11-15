@@ -17,12 +17,15 @@ tagged release groups), best tagged first, when MusicBrainz links them to
 Wikidata (the plugin keys artists by their Wikidata ID). Each new artist costs
 a request, so at most LOOKUPS are looked up per genre and per run.
 
+Last, a genre still under 8 takes the Wikidata artists MusicBrainz does not
+know or has never tagged, so small regional genres are not left empty.
+
     python3 data/artists-cross.py [family QID ...]     # default: Q9778
 
 Reads artists-wide.csv and genre-artists-wide.csv; writes
 artists-checked.csv (the columns of artists-wide.csv) and
-genre-artists-checked.csv (genre_id, artist_id, rank, source: "both" or
-"musicbrainz"), read by artists-build.py in their place. The genres of other
+genre-artists-checked.csv (genre_id, artist_id, rank, source: "both",
+"musicbrainz" or "wikidata"), read by artists-build.py in their place. The genres of other
 families already in those files are kept, so families can be run one by one. MusicBrainz is asked
 once a second; answers are cached in .mb-cache.json, as for artists-mb.py.
 """
@@ -39,6 +42,7 @@ spec.loader.exec_module(am)
 lt = am.lt
 
 KEEP = 100
+ESSENTIALS = 8   # below this, Wikidata artists MusicBrainz cannot judge fill in (step 3)
 LOOKUPS = 25      # new MusicBrainz artists looked up per genre: one request each, once a second
 
 
@@ -162,6 +166,18 @@ def main():
             save()
     save()
 
+    # 3. A genre still short of its 8 essentials takes the Wikidata artists
+    # MusicBrainz cannot judge (unknown there, or never tagged): nothing
+    # confirms them, but nothing contradicts them either. Small regional
+    # genres are where MusicBrainz has no tags; stars with a stray genre
+    # statement are tagged there, so they stay out.
+    fallback = 0
+    for r in links:
+        g, q = r['genre_id'], r['artist_id']
+        if len(kept[g]) < ESSENTIALS and not tags[q] and q not in {x for x, _ in kept[g]}:
+            kept[g].append((q, 'wikidata'))
+            fallback += 1
+
     # The families of earlier runs stay as they were: one family at a time.
     done = os.path.join(HERE, 'genre-artists-checked.csv')
     if os.path.exists(done):
@@ -188,8 +204,8 @@ def main():
             for i, (q, src) in enumerate(kept[g], 1):
                 w.writerow({'genre_id': g, 'artist_id': q, 'rank': i, 'source': src})
     n = [len(kept[g]) for g in order]
-    print('%d genres: %d Wikidata links, %d confirmed by MusicBrainz, %d added from MusicBrainz; %d artists'
-          % (len(order), len(links), confirmed, sum(n) - confirmed, len(used)))
+    print('%d genres: %d Wikidata links, %d confirmed by MusicBrainz, %d added from MusicBrainz, %d from Wikidata alone; %d artists'
+          % (len(order), len(links), confirmed, sum(n) - confirmed - fallback, fallback, len(used)))
     for lo, hi in ((0, 0), (1, 7), (8, 29), (30, 99), (100, 100)):
         print('  %3d-%3d artists: %d genres' % (lo, hi, sum(1 for x in n if lo <= x <= hi)))
 
