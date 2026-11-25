@@ -1,10 +1,19 @@
-# Reprise — état au 25/11/2026 (v0.26.0)
+# Reprise — état au 25/11/2026 (v0.29.0)
 
-**Publié et en ligne : v0.25.0** (14/11/2026), mise à jour installée et `artist-import.csv` réimporté par Maxime, vérifié sur le site. Les artistes élargis (jusqu'à 100 par genre, Wikidata confirmé par MusicBrainz, repli Wikidata sous 8) couvrent **les 15 familles et tuiles** : 24 160 artistes, 15 993 avec une chanson, 352 genres encore sans artiste (surtout Folk, Latin, Art music : rien dans Wikidata ni MusicBrainz). Étapes : v0.22.0 (Electronic, 100 par genre, SUGGEST, tout sur YouTube), v0.23.0 (Rock, Metal, Punk, Hip hop, Pop), v0.24.0 (les 9 autres familles), v0.25.0 (les trous comblés) ; détails dans les dernières sections.
+**Où on s'est arrêté (25/11/2026, fin de journée, à la demande de Maxime : « on arrête pour aujourd'hui »)** :
+- **v0.28.0** (point 4 : menu et page `/about/`) est fusionnée (PR #43). À vérifier : Release lancée et extension mise à jour ?
+- Maxime a finalement repris le même jour : **v0.29.0, point 5, My atlas**, prête dans la PR #44 (qui porte aussi cette note de reprise). Les **cinq points des améliorations UX sont alors faits**.
+- Puis **mesurer** : objectif proposé de 1 à 2 % des visiteurs qui créent un compte (6 à 12 par mois sur environ 600 visiteurs uniques), et quelques suggestions par mois. Demander à Maxime les chiffres un mois après v0.27.0 (invitation au compte, SUGGEST en tête de fiche).
 
-**En cours : les améliorations d'UX** (dernière section, « Améliorations UX »), point par point. v0.26.0 (l'écoute) et v0.27.0 (page d'un genre, SAVE, SUGGEST) publiées. **v0.28.0 prête, PR ouverte** : point 4, le menu et la page ABOUT. Reste : point 5 (My atlas).
+**Publié** :
+- v0.25.0 (14/11/2026) : les artistes élargis couvrent les 15 familles et tuiles (24 160 artistes, 352 genres encore sans artiste). Étapes : v0.22.0 à v0.25.0.
+- v0.26.0 : un seul bouton ▶ LISTEN, GENRE PAGE au lieu de « dossier », plus de lecture au survol ni à l'appui long.
+- v0.27.0 : page d'un genre avec LISTEN · SAVE · SUGGEST en tête, une seule section ARTISTS, invitation à créer un compte.
+- v0.28.0 : menu et page ABOUT.
+- v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), PR #44.
+- Détails dans la dernière section, « Améliorations UX ».
 
-**Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`).
+**Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`) ; rendre la page ABOUT éditable dans WordPress (« on verra plus tard », idée notée dans la section v0.28.0) ; remplacer le logo « GENRE » par « EVERY GENRE » (proposé, pas tranché).
 
 **Direction depuis le 28/10/2026** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir « Recul sur le projet » plus bas : la critique, les propositions A à G et les priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir). **Le point A, l'expérience mobile et les comptes (v0.21.0) sont faits.** Écoute en entier par la plateforme de chacun : Deezer fermé, Spotify limité à 5 comptes, YouTube Music rien ; Apple Music possible pour ses abonnés (99 $ par an), Tidal à vérifier (section « Titres entiers sur YouTube »).
 
@@ -1215,3 +1224,18 @@ Choix de Maxime : les 8 essentiels seuls puis SHOW ALL ; LISTEN de la fiche comm
 - Premier jet du texte rédigé par Claude (Maxime n'en avait pas) ; à faire relire.
 - **Mis de côté** (« on verra plus tard ») : rendre le texte éditable dans WordPress. Idée proposée : une page WordPress d'adresse `about`, publiée, remplace le texte du code (titres de niveau 2 = parties), les glyphes et le bouton restant dessous ; les chiffres y seraient figés.
 - Banc : 107 vérifications (menu, page ABOUT avec et sans script, `#legend`, mobile).
+
+### v0.29.0 : My atlas (point 5)
+Choix de Maxime : familles dépliables sur place ; un bouton DISCOVER ; réglages repliés en bas ; même détail sur le profil public.
+- **Familles** : chaque carte (bouton `data-mfam`) ouvre sous la grille un panneau qui contient :
+  - le nom, le nombre de genres écoutés et à découvrir ;
+  - **▶ DISCOVER WHAT I HAVEN'T HEARD** (`discover()` : les genres de la famille qui ont une chanson et ne sont pas encore entendus, mélangés, comme LISTEN ; la barre affiche « REGGAE 01/22 ») ;
+  - les genres écoutés de A à Z avec la date de première écoute ;
+  - un lien vers la famille sur la carte.
+  - Une famille ouverte à la fois ; les panneaux sont tous écrits et cachés, donc ouvrir ne redessine rien.
+- **Réglages** : ACCOUNT SETTINGS (`data-setopen`, état gardé dans `A.setOpen` pendant la visite) déplie le profil public, l'historique, l'e-mail, le mot de passe, Google et Facebook, le téléchargement et la suppression. SIGN OUT reste à côté.
+- **Profil public** : mêmes familles dépliables, sans DISCOVER ni date.
+- Piège rencontré : une règle `display:flex` passait au-dessus de l'attribut `hidden` (toutes les familles et les réglages ouverts). Corrigé par `[hidden]{display:none}` explicite, et le banc vérifie qu'une seule famille est ouverte.
+- Banc : 109 vérifications (`openSettings()` ouvre les réglages avant les tests de compte).
+
+**Suite proposée** : mesurer comptes et suggestions un mois après v0.27.0 ; reprendre les idées mises de côté si Maxime le demande.

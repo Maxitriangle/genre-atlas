@@ -503,6 +503,12 @@
     for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), x = list[i]; list[i] = list[j]; list[j] = x; }
     return list;
   }
+  function discover(id) {
+    var t = N[id], list = t ? onAirList(t).filter(function (k) { return !ME.heard[k.id]; }) : [];
+    if (!list.length) return;
+    PL.radio = { from: id, queue: shuffle(list.map(function (k) { return k.id; })), at: 0, missed: 0 };
+    hear(PL.radio.queue[0], true);
+  }
   function tune(id) {
     var n = N[id], list = n && !n.grp ? onAirList(n) : [];
     if (!list.length) return;
@@ -844,11 +850,26 @@
   function atlasSections(atlas, mine) {
     var heard = Object.keys(atlas.heard).filter(function (id) { return N[id]; });
     var favs = atlas.genres.filter(function (id) { return N[id]; }).map(function (id) { return N[id]; }).sort(byName);
-    var html = '<section class="ga-me-sec"><h2 class="ga-micro">FAMILIES · GENRES HEARD</h2><div class="ga-me-fams">' + TILES.map(function (t) {
+    // Each family opens, in place, on the genres heard in it (A to Z, with the
+    // day first heard on one's own atlas), and, on one's own, a button to hear
+    // the genres of the family not heard yet. All panels are drawn, hidden:
+    // opening one redraws nothing, so a field being typed in stays as it is.
+    var html = '<section class="ga-me-sec"><h2 class="ga-micro">FAMILIES · GENRES HEARD · OPEN ONE TO SEE WHICH</h2><div class="ga-me-fams">' + TILES.map(function (t) {
       var h = heardIn(t, atlas.heard);
-      return '<a class="ga-me-fam" href="' + esc(url(t)) + '" data-go="' + t.id + '" style="--fam:' + color(t) + '">' + glyph(t, 32) + '<span><b>' + esc(t.name) + '</b><i class="ga-micro">' + pad(h[0], 3) + ' / ' + pad(h[1], 3) + '</i>' +
-        '<span class="ga-me-bar"><i style="width:' + f2(100 * h[0] / h[1]) + '%"></i></span></span></a>';
-    }).join('') + '</div></section>';
+      return '<button type="button" class="ga-me-fam" data-mfam="' + t.id + '" aria-expanded="false" aria-controls="ga-mfam-' + t.id + '" style="--fam:' + color(t) + '">' + glyph(t, 32) + '<span><b>' + esc(t.name) + '</b><i class="ga-micro">' + pad(h[0], 3) + ' / ' + pad(h[1], 3) + '</i>' +
+        '<span class="ga-me-bar"><i style="width:' + f2(100 * h[0] / h[1]) + '%"></i></span></span><span class="ga-me-chev" aria-hidden="true">↓</span></button>';
+    }).join('') + '</div>' + TILES.map(function (t) {
+      var all = [t].concat(descendants(t)), got = all.filter(function (k) { return atlas.heard[k.id]; }).sort(byName);
+      var left = mine ? all.filter(function (k) { return k.s && !atlas.heard[k.id]; }).length : 0;
+      return '<div class="ga-me-famopen" id="ga-mfam-' + t.id + '" style="--fam:' + color(t) + '" hidden>' +
+        '<div class="ga-me-famhead"><b>' + esc(t.name) + '</b><span class="ga-micro">' + pad(got.length, 3) + ' HEARD · ' + pad(all.length - got.length, 3) + ' TO DISCOVER</span></div>' +
+        (left ? '<button type="button" class="ga-cta ga-listen ga-discover" data-discover="' + t.id + '"><span><i aria-hidden="true">▶</i> DISCOVER WHAT I HAVEN\'T HEARD</span><span class="ga-micro">' + pad(left, 3) + ' GENRE' + (left > 1 ? 'S' : '') + ' · SHUFFLED</span></button>' : '') +
+        (got.length ? '<div class="ga-me-list">' + got.map(function (n) {
+          var day = atlas.heard[n.id];
+          return '<span class="ga-me-row" style="--fam:' + color(n) + '"><a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + glyph(n, 28) + '<b>' + esc(n.name) + '</b></a>' + (typeof day === 'string' ? '<i class="ga-micro">' + esc(day) + '</i>' : '') + '</span>';
+        }).join('') + '</div>' : '<p class="ga-micro">NO GENRE OF ' + esc(t.name.toUpperCase()) + ' HEARD YET.</p>') +
+        '<a class="ga-me-famgo ga-micro" href="' + esc(url(t)) + '" data-go="' + t.id + '">' + esc(t.name.toUpperCase()) + ' ON THE MAP →</a></div>';
+    }).join('') + '</section>';
     html += '<section class="ga-me-sec"><h2 class="ga-micro">FAVOURITE SONGS · ' + pad(atlas.tracks.length) + '</h2>' + (atlas.tracks.length ?
       (atlas.tracks.some(function (t) { return t.youtube; }) ? '<button type="button" class="ga-cta" data-mplay="-1"><span>PLAY ' + (mine ? 'MY' : 'THESE') + ' SONGS</span><span aria-hidden="true">▶</span></button>' : '') +
       '<ol class="ga-tracks">' + atlas.tracks.map(function (t, i) {
@@ -886,7 +907,9 @@
     var linked = ['google', 'facebook'].filter(function (p) { return a.providers[p] || (CFG.sso && CFG.sso[p]); }).map(function (p) {
       return a.providers[p] ? '<span class="ga-micro ga-linked">' + p.toUpperCase() + ' · LINKED</span>' : (CFG.linkNonce ? '<a class="ga-cta ghost" href="' + esc(CFG.ssoUrl + p + '/?link=' + CFG.linkNonce) + '"><span>LINK ' + p.toUpperCase() + '</span><span aria-hidden="true">→</span></a>' : '');
     }).join('');
-    html += '<section class="ga-me-sec ga-settings"><h2 class="ga-micro">ACCOUNT</h2>' +
+    html += '<section class="ga-me-sec ga-settings"><div class="ga-me-acts"><button type="button" class="ga-cta ghost" data-setopen="1" aria-expanded="' + !!A.setOpen + '" aria-controls="ga-setbody"><span>ACCOUNT SETTINGS</span><span class="ga-micro">PROFILE · HISTORY · E-MAIL · PASSWORD · DATA</span><span aria-hidden="true">' + (A.setOpen ? '↑' : '↓') + '</span></button>' +
+      '<button type="button" class="ga-cta ghost" data-signout="1"><span>SIGN OUT</span><span aria-hidden="true">→</span></button></div>' +
+      '<div class="ga-setbody" id="ga-setbody"' + (A.setOpen ? '' : ' hidden') + '>' +
       toggleRow('public', 'PUBLIC PROFILE', a.public, a.public ? 'ANYONE WITH THE LINK SEES YOUR ATLAS, NEVER YOUR E-MAIL NOR YOUR HISTORY: <a href="' + esc(a.profile) + '" data-profile="' + esc(a.pseudo) + '">' + esc(a.profile.replace(/^https?:\/\//, '')) + '</a>' : 'ONLY YOU SEE YOUR ATLAS.') +
       toggleRow('history', 'LISTENING HISTORY', a.history, a.history ? 'EVERY SONG YOU HEAR FOR ' + HEARD_AFTER + ' SECONDS IS KEPT, WITH ITS TIME. TURNING IT OFF ERASES IT.' : 'OFF: ONLY THE GENRES YOU HAVE HEARD ARE KEPT, WITH THE DAY YOU FIRST HEARD EACH.') +
       (a.history && a.played.length ? '<ol class="ga-history">' + a.played.map(function (p) { var g = N[p.genre]; return '<li><span class="ga-micro">' + esc(p.at.slice(0, 16)) + '</span><b>' + esc(p.title || '—') + '</b><span class="ga-micro">' + esc((p.artist || '').toUpperCase()) + (g ? ' · ' + esc(g.name.toUpperCase()) : '') + '</span></li>'; }).join('') + '</ol>' : '') +
@@ -895,9 +918,9 @@
       '<form class="ga-aform" data-form="password" novalidate><h3 class="ga-micro">PASSWORD</h3>' + (a.password ? input('current', 'CURRENT PASSWORD', 'password', 'autocomplete="current-password" required') : '<p class="ga-micro">YOU SIGN IN WITH GOOGLE OR FACEBOOK. YOU CAN ADD A PASSWORD.</p>') +
       input('password', 'NEW PASSWORD', 'password', 'autocomplete="new-password" minlength="10" required', '10 CHARACTERS OR MORE.') + '<button type="submit" class="ga-cta ghost"><span>' + (a.password ? 'CHANGE' : 'ADD') + ' MY PASSWORD</span><span aria-hidden="true">→</span></button></form></div>' +
       (linked ? '<div class="ga-linkrow"><h3 class="ga-micro">SIGN IN WITH</h3>' + linked + '</div>' : '') +
-      '<div class="ga-me-acts"><button type="button" class="ga-cta ghost" data-export="1"><span>DOWNLOAD MY DATA</span><span aria-hidden="true">↓</span></button><button type="button" class="ga-cta ghost" data-signout="1"><span>SIGN OUT</span><span aria-hidden="true">→</span></button></div>' +
+      '<div class="ga-me-acts"><button type="button" class="ga-cta ghost" data-export="1"><span>DOWNLOAD MY DATA</span><span aria-hidden="true">↓</span></button></div>' +
       '<form class="ga-aform ga-delete" data-form="delete" novalidate><h3 class="ga-micro">DELETE MY ACCOUNT · ALL OF IT, AT ONCE, FOR GOOD</h3>' + input('confirm', 'TYPE YOUR PSEUDO', 'text', 'autocomplete="off" required') +
-      (a.password ? input('password', 'YOUR PASSWORD', 'password', 'autocomplete="current-password" required') : '') + '<button type="submit" class="ga-cta ghost ga-danger"><span>DELETE MY ACCOUNT</span><span aria-hidden="true">✕</span></button></form></section>';
+      (a.password ? input('password', 'YOUR PASSWORD', 'password', 'autocomplete="current-password" required') : '') + '<button type="submit" class="ga-cta ghost ga-danger"><span>DELETE MY ACCOUNT</span><span aria-hidden="true">✕</span></button></form></div></section>';
     return html + foot() + '</main>';
   }
   function viewMe() { return S.prof ? viewProfile() : signedIn() ? viewAccount() : viewDoors(); }
@@ -1647,6 +1670,23 @@
       if (c.hasAttribute('data-contact')) openContact(Number(c.getAttribute('data-contact')));
       else if (c.hasAttribute('data-cgenre')) setGenre(Number(c.getAttribute('data-cgenre')));
       else { C.sent = false; render(); var m = document.getElementById('ga-cmsg'); if (m) m.focus(); }
+      return;
+    }
+    var mf = e.target.closest('[data-mfam],[data-discover],[data-setopen]');
+    if (mf && root.contains(mf)) {
+      e.preventDefault();
+      if (mf.hasAttribute('data-discover')) { discover(Number(mf.getAttribute('data-discover'))); return; }
+      if (mf.hasAttribute('data-setopen')) {
+        var sb = document.getElementById('ga-setbody'); if (!sb) return;
+        A.setOpen = sb.hidden; sb.hidden = !A.setOpen;
+        mf.setAttribute('aria-expanded', String(A.setOpen)); mf.lastChild.textContent = A.setOpen ? '↑' : '↓';
+        if (A.setOpen) sb.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        return;
+      }
+      var id = mf.getAttribute('data-mfam'), box = document.getElementById('ga-mfam-' + id), was = box && !box.hidden;
+      root.querySelectorAll('.ga-me-famopen').forEach(function (b) { b.hidden = true; });
+      root.querySelectorAll('[data-mfam]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); b.classList.remove('on'); });
+      if (box && !was) { box.hidden = false; mf.setAttribute('aria-expanded', 'true'); mf.classList.add('on'); box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
       return;
     }
     var me = e.target.closest('[data-me],[data-fav],[data-mine],[data-mplay],[data-unlike],[data-export],[data-signout],[data-set],[data-auth],[data-profile]');

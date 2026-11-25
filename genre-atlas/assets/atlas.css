@@ -654,3 +654,24 @@ html.ga-inviting{overflow:hidden}
 .ga-info .ga-info-glyphs section>div{gap:16px}
 .ga-info-go{margin-top:36px}
 #genre-atlas .ga-info-go .ga-cta{display:inline-flex;min-width:280px;gap:32px}
+/* My atlas: a family opens on the genres heard in it. */
+#genre-atlas button.ga-me-fam{width:100%;background:none;color:var(--ink);font:inherit;letter-spacing:inherit;text-align:left;cursor:pointer}
+#genre-atlas .ga-me-fam:hover,#genre-atlas .ga-me-fam.on{border-color:var(--fam)}
+.ga-me-chev{color:var(--fam);font-size:12px;transition:transform .15s}
+.ga-me-fam.on .ga-me-chev{transform:rotate(180deg)}
+.ga-me-famopen{margin-top:14px;padding:18px;border:1px solid var(--fam);display:flex;flex-direction:column;gap:14px}
+.ga-me-famhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.ga-me-famhead b{font-size:15px;font-weight:700;color:var(--fam);letter-spacing:.06em}
+#genre-atlas .ga-discover{margin:0;width:100%;max-width:520px}
+#genre-atlas .ga-me-famgo{color:var(--fam);align-self:flex-start}
+/* The account settings, folded at the foot; SIGN OUT beside them. */
+.ga-settings .ga-setbody{margin-top:24px;display:flex;flex-direction:column;gap:20px}
+#genre-atlas [data-setopen]{gap:16px}
+#genre-atlas [data-setopen] .ga-micro{margin-left:auto;color:inherit;opacity:.7}
+@media (max-width:899px){ #genre-atlas [data-setopen] .ga-micro{display:none} }
+/* A display rule above would win over [hidden]: these stay folded until opened. */
+.ga-me-famopen[hidden],.ga-settings .ga-setbody[hidden],.ga-more-list[hidden]{display:none}
+#genre-atlas .ga-discover{max-width:680px}
+#genre-atlas button.ga-me-fam{border:1px solid var(--line)}
+#genre-atlas button.ga-me-fam:hover,#genre-atlas button.ga-me-fam.on{border-color:var(--fam)}
+.ga-me-chev{display:inline-block;flex:0 0 auto}

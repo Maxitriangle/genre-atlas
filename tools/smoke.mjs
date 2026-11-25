@@ -103,6 +103,12 @@ async function newPage( width, height ) {
 }
 
 // "#centre" is what tells the atlas to centre on a genre rather than open it.
+// The account settings are folded at the foot of My atlas: open them.
+async function openSettings( page ) {
+	const b = page.locator( '[data-setopen][aria-expanded="false"]' );
+	if ( await b.count() ) await b.click();
+}
+
 async function centre( page, node ) {
 	await page.goto( `${ permalink( node ) }#centre`, { waitUntil: 'networkidle' } );
 	await page.waitForSelector( '.ga-ready', { timeout: 10000 } );
@@ -927,6 +933,7 @@ try {
 		const early = await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: pseudo, password: pass } ) } ).then( r => r.json() );
 		await ac.goto( verify, { waitUntil: 'networkidle' } );
 		await ac.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( ac );
 		const welcome = await ac.locator( '.ga-me .ga-hero' ).innerText().catch( () => '' );
 		await ac.screenshot( { path: `${ SHOTS }/16-compte.png`, fullPage: true } );
 		check( 'comptes : inscription, lien de confirmation par e-mail, puis connecte (pas avant)', sent && !! verify && /confirm/i.test( early.message || '' ) && welcome.includes( pseudo.toUpperCase() ),
@@ -952,6 +959,7 @@ try {
 		await fill( ac2, { login: email, password: pass } );
 		await submit( ac2 );
 		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( ac2 );
 		const stats = await ac2.locator( '.ga-me .ga-stats' ).innerText().catch( () => '' );
 		check( 'comptes : ☆, genre ecoute et ♥ sont gardes dans le compte, retrouves dans un autre navigateur', /0001\s*\/\s*\d+/.test( stats ) && /FAVOURITE GENRES\s*01/.test( stats ) && /FAVOURITE SONGS\s*01/.test( stats ),
 			stats.replace( /\s+/g, ' ' ) );
@@ -965,8 +973,26 @@ try {
 		await ac2.locator( `.ga-panel [data-hear="${ sv2.id }"]` ).click();
 		await ac2.waitForTimeout( 2600 );
 		await ac2.goto( me, { waitUntil: 'networkidle' } );
-		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await ac2.waitForSelector( '.ga-settings [data-setopen]', { timeout: 10000 } ).catch( () => {} );
+		const foldedFirst = await ac2.locator( '#ga-setbody' ).isHidden() && await ac2.locator( '.ga-settings [data-signout]' ).isVisible();
+		await openSettings( ac2 );
 		const lines = await ac2.locator( '.ga-history li' ).count();
+		const tileOf = id => { let n = byId.get( id ); while ( n.p && ! n.f && byId.get( n.p ) ) n = byId.get( n.p ); return n; };
+		const fam = tileOf( sv2.id );
+		const folded = foldedFirst;
+		await ac2.locator( `.ga-me-fam[data-mfam="${ fam.id }"]` ).click();
+		const famText = await ac2.locator( `#ga-mfam-${ fam.id }` ).innerText().catch( () => '' );
+		const opened = await ac2.locator( '.ga-me-famopen:visible' ).count();
+		await ac2.screenshot( { path: `${ SHOTS }/16d-famille.png`, fullPage: true } );
+		await ac2.locator( `[data-discover="${ fam.id }"]` ).click().catch( () => {} );
+		await ac2.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-radio', { timeout: 8000 } ).catch( () => {} );
+		const disc = await ac2.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
+		const discId = Number( await ac2.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => 0 ) );
+		await ac2.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		check( 'my atlas : une famille se deplie sur ses genres ecoutes, DISCOVER joue ceux pas encore entendus ; reglages replies en bas, SIGN OUT visible',
+			famText.toLowerCase().includes( sv2.name.toLowerCase() ) && /HEARD/.test( famText ) && /DISCOVER WHAT I HAVEN'T HEARD/.test( famText )
+			&& disc.startsWith( fam.name.toUpperCase() ) && discId && discId !== sv2.id && tileOf( discId ).id === fam.id && folded && opened === 1,
+			`${ famText.replace( /\s+/g, ' ' ).slice( 0, 110 ) } ; ${ disc } ; genre ${ discId } (famille ${ tileOf( discId ).id }/${ fam.id }) ; replies ${ folded }, ${ opened } famille(s) ouverte(s)` );
 		await ac2.locator( '[data-set="public"]' ).click();
 		await ac2.waitForSelector( '[data-set="public"].on', { timeout: 5000 } ).catch( () => {} );
 		const profile = `${ BASE }/atlas/${ pseudo }/`;
@@ -975,6 +1001,9 @@ try {
 		await page.goto( profile, { waitUntil: 'networkidle' } );
 		await page.waitForSelector( '.ga-me-fams', { timeout: 8000 } ).catch( () => {} );
 		const shown = await page.locator( '.ga-me' ).innerText().catch( () => '' );
+		await page.locator( `.ga-me-fam[data-mfam="${ fam.id }"]` ).click().catch( () => {} );
+		const pubFam = await page.locator( `#ga-mfam-${ fam.id }` ).innerText().catch( () => '' );
+		check( 'my atlas : le profil public deplie aussi les familles, sans bouton DISCOVER', pubFam.toLowerCase().includes( sv2.name.toLowerCase() ) && ! /DISCOVER WHAT/.test( pubFam ), pubFam.replace( /\s+/g, ' ' ).slice( 0, 90 ) );
 		await page.screenshot( { path: `${ SHOTS }/16b-profil-public.png`, fullPage: true } );
 		await page.close();
 		const [ dl ] = await Promise.all( [ ac2.waitForEvent( 'download', { timeout: 8000 } ).catch( () => null ), ac2.locator( '[data-export]' ).click() ] );
@@ -1003,6 +1032,7 @@ try {
 		await fill( ac2, { password: pass2 } );
 		await submit( ac2 );
 		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( ac2 );
 		const reseted = await ac2.locator( '.ga-settings' ).count() === 1;
 		const email2 = 'member2@example.test';
 		await ac2.locator( '.ga-aform[data-form="email"] [name="email"]' ).fill( email2 );
@@ -1011,6 +1041,7 @@ try {
 		const moved = await linkIn( email2, 'Confirm your new e-mail address' );
 		await ac2.goto( moved, { waitUntil: 'networkidle' } );
 		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( ac2 );
 		const nowAt = await ac2.locator( '.ga-aform[data-form="email"] h3' ).innerText().catch( () => '' );
 		check( 'comptes : mot de passe oublie par lien e-mail, et nouvelle adresse confirmee avant de compter', reseted && !! moved && nowAt.includes( email2.toUpperCase() ), nowAt );
 
@@ -1025,11 +1056,13 @@ try {
 		await gp.locator( '#ga-aterms' ).check();
 		await submit( gp );
 		await gp.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( gp );
 		const linkedG = await gp.locator( '.ga-linked' ).allInnerTexts();
 		await gp.locator( '[data-signout]' ).click();
 		await gp.waitForSelector( '.ga-doors', { timeout: 8000 } ).catch( () => {} );
 		await gp.locator( `.ga-sso[href$="/google/"]` ).click();
 		await gp.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( gp );
 		const again = await gp.locator( '.ga-settings' ).count() === 1;
 		check( 'comptes : Google, un nouveau venu choisit son pseudo, la fois suivante il entre directement', suggest === 'gina-smoke' && linkedG.join() === 'GOOGLE · LINKED' && again, `pseudo propose « ${ suggest } »` );
 		// Eight wrong passwords lock the account for a quarter of an hour.
@@ -1052,6 +1085,7 @@ try {
 		await fp.locator( '#ga-aterms' ).check();
 		await submit( fp );
 		await fp.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( fp );
 		const inFb = await fp.locator( '.ga-settings' ).count() === 1;
 		await fp.close();
 		const { createHmac } = await import( 'crypto' );
@@ -1066,6 +1100,7 @@ try {
 		await ac2.goto( `${ BASE }/wp-admin/`, { waitUntil: 'networkidle' } );
 		const kept = new URL( ac2.url() ).pathname;
 		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await openSettings( ac2 );
 		await ac2.locator( '.ga-delete [name="confirm"]' ).fill( pseudo );
 		await ac2.locator( '.ga-delete [name="password"]' ).fill( pass2 );
 		await ac2.locator( '.ga-delete button' ).click();
