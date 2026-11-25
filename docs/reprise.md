@@ -1,26 +1,12 @@
-# Reprise — état au 14/11/2026
+# Reprise — état au 25/11/2026
 
-**v0.25.0 prête, PR ouverte le 14/11/2026** (dernière section) : les trous comblés — deuxième passage MusicBrainz sur toutes les familles et repli Wikidata pour les genres de moins de 8 artistes. Seulement les données et `artists-cross.py`. Après la mise à jour, réimporter `data/artist-import.csv`.
+**Publié et en ligne : v0.25.0** (14/11/2026), mise à jour installée et `artist-import.csv` réimporté par Maxime, vérifié sur le site. Les artistes élargis (jusqu'à 100 par genre, Wikidata confirmé par MusicBrainz, repli Wikidata sous 8) couvrent **les 15 familles et tuiles** : 24 160 artistes, 15 993 avec une chanson, 352 genres encore sans artiste (surtout Folk, Latin, Art music : rien dans Wikidata ni MusicBrainz). Étapes : v0.22.0 (Electronic, 100 par genre, SUGGEST, tout sur YouTube), v0.23.0 (Rock, Metal, Punk, Hip hop, Pop), v0.24.0 (les 9 autres familles), v0.25.0 (les trous comblés) ; détails dans les dernières sections.
 
-**v0.24.0 prête, PR ouverte le 13/11/2026** (dernière section) : les artistes élargis couvrent maintenant **les 15 familles et tuiles** (Folk, Latin, Art music, Jazz, Experimental, R&B, Country, Blues et Reggae ajoutées). Aucun changement de code du site : seulement les données. Après la mise à jour, réimporter `data/artist-import.csv`.
+**Prochaine étape proposée** : les améliorations d'UX que Maxime veut lister (« j'ai beaucoup d'idées ») ; lui demander sa liste avant de proposer quoi que ce soit.
 
-**v0.23.0 prête, PR ouverte le 11/11/2026** (dernière section) : les artistes élargis (jusqu'à 100 par genre, vérifiés par MusicBrainz) couvrent maintenant **Electronic, Rock, Metal, Punk, Hip hop et Pop**. Aucun changement de code du site : seulement les données. Après la mise à jour, réimporter `data/artist-import.csv`.
+**Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`).
 
-**v0.22.0 prête, PR ouverte le 04/11/2026** (dernière section, « 100 artistes par genre ») : jusqu'à 100 artistes par genre (8 essentiels + MORE ARTISTS), bouton SUGGEST A BAND OR AN ARTIST à la place de COMMUNITY PICKS, import des artistes par lots, et **plus aucun extrait Deezer de 30 s** : tout se joue en entier sur YouTube. Données élargies pour la famille **Electronic seule**, en essai ; les 12 autres familles attendent l'avis de Maxime sur le résultat en ligne.
-
-La v0.21.0 (comptes, inscription par e-mail) est publiée. Google et Facebook sont prêts mais **mis de côté** (« on verra plus tard ») : pas de clés, donc aucun bouton.
-
-**Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City ; la connexion Google et Facebook ; les améliorations d'UX (« j'ai beaucoup d'idées », il les listera).
-
-**Direction depuis le 28/10/2026** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir « Recul sur le projet » plus bas : la critique, les propositions A à G et les priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir). **Le point A et l'expérience mobile sont faits.**
-
-**En cours : les comptes utilisateurs, v0.21.0 prête** (dernière section). Ensuite, Maxime crée ses clés Google et Facebook (`docs/connexion-google-facebook.md`). **Contexte d'origine :** Il veut idéalement que chacun écoute en entier en se connectant à sa propre plateforme. Constat du 29/10 (section « Titres entiers sur YouTube », en bas) :
-- Deezer est fermé, Spotify limité à 5 comptes, YouTube Music n'offre rien ;
-- **Apple Music** est possible, pour ses seuls abonnés (99 $ par an de compte développeur), et Tidal est à vérifier.
-
-Partir de ce que Maxime veut qu'un compte apporte (favoris, « ma carte » du point D, playlists, débats du point E), et lui poser la question avant de proposer.
-
-**Mis de côté le 27/10/2026** : Genre City, le mini-jeu (point 10 de « Ce qui attend »). **Ne pas le relancer sans demande de Maxime.**
+**Direction depuis le 28/10/2026** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir « Recul sur le projet » plus bas : la critique, les propositions A à G et les priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir). **Le point A, l'expérience mobile et les comptes (v0.21.0) sont faits.** Écoute en entier par la plateforme de chacun : Deezer fermé, Spotify limité à 5 comptes, YouTube Music rien ; Apple Music possible pour ses abonnés (99 $ par an), Tidal à vérifier (section « Titres entiers sur YouTube »).
 
 **Pour reprendre** : lire « Où on en est » et « Ce qui attend », puis les dernières sections, à partir de « Recul sur le projet ».
 
@@ -32,7 +18,7 @@ Ce fichier est chronologique : les sections les plus récentes sont **en bas**, 
 - **Fiche genre** à sa propre adresse `/about/`. Elle comporte :
   - le texte (introduction Wikipedia pour 1 308 genres, créditée CC BY-SA 4.0 ; un texte écrit à la main n'est jamais remplacé) ;
   - la lignée ;
-  - les artistes clés (type `ga_artist`, 5 980 artistes, dont 451 venus de MusicBrainz en v0.17.0 et sans photo ; 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`) ;
+  - les artistes (type `ga_artist`, 24 160 artistes depuis v0.25.0, jusqu'à 100 par genre : 8 essentiels puis MORE ARTISTS ; 4 036 photos tramées livrées dans `genre-atlas/assets/masks/`, pour les essentiels choisis à la main) ;
   - l'écoute (LISTEN) : une chanson par artiste clé quand elle existe (1 520 genres ont au moins un titre), plus un **exemple d'écoute** YouTube pour les genres sans artiste qui chante, une fois validé par Maxime ;
   - les sources.
 - **Le son** (v0.18 à v0.20). Une **barre de lecture** hors de la page continue de jouer pendant la navigation :
