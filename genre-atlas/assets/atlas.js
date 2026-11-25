@@ -7,6 +7,10 @@
   // The legal page's text is written by the server, once: lifted here before
   // the first render draws the atlas over it.
   var LEGAL = Number(CFG.legal) === 1 && root.querySelector('.ga-legal-text') ? root.querySelector('.ga-legal-text').innerHTML : '';
+  // Donations, through Ko-fi: everything about them stays hidden while no
+  // Ko-fi address is set (CFG.support is null).
+  var SUP = CFG.support || null;
+  var SUPTEXT = Number(CFG.supportPage) === 1 && root.querySelector('.ga-support-text') ? root.querySelector('.ga-support-text').innerHTML : '';
   var INFO = Number(CFG.info) === 1 && root.querySelector('.ga-info-text') ? root.querySelector('.ga-info-text').innerHTML : '';
 
   var RING_MAX = 8, ARC_MAX = 8, DIAL_STEP = 6, GROUP_LIMIT = 8, GROUP_SEP = '>';
@@ -18,7 +22,7 @@
   var ROOTS = [];        // roots of the tree: genres with no parent
   var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
-  var S = { view: 'map', mview: 'map', me: false, prof: '', mine: false, centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false, legal: false, info: false };
+  var S = { view: 'map', mview: 'map', me: false, prof: '', mine: false, centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false, legal: false, info: false, support: false };
   var R = { within: 0, sub: false, all: false }; // the random draw's filter
   var DRAWN = {};        // ids drawn this visit: not drawn again until the pool runs out
   var DOS = {};          // id -> what a dossier adds to the tree, fetched on demand
@@ -184,7 +188,7 @@
     S.legend = false;
     S.random = false;
     S.contact = false;
-    S.legal = false; S.info = false;
+    S.legal = false; S.info = false; S.support = false;
     S.me = false;
     S.about = about && n && !n.grp ? n.id : 0;
     if (!n) { S.centre = 0; S.open = 0; }
@@ -231,6 +235,7 @@
     if (st.contact) { readContact(); showContact(false); return; }
     if (st.legal) { showLegal(); return; }
     if (st.info) { showInfo(); return; }
+    if (st.support) { showSupport(); return; }
     if (st.me) { showMe(false); return; }
     if (st.profile) { showProfile(st.profile, false); return; }
     select(N[st.id] || null, st.c, false, st.about);
@@ -243,6 +248,7 @@
       '<nav class="ga-nav" aria-label="Primary"><a class="ga-nav-info' + (S.info ? ' on' : '') + '" href="' + esc(infoUrl()) + '">ABOUT</a>' +
       '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a>' +
       '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a>' +
+      (SUP ? '<a class="ga-nav-sup' + (S.support ? ' on' : '') + '" href="' + esc(SUP.page) + '"><span aria-hidden="true">♥</span><span class="ga-nav-supw">SUPPORT</span></a>' : '') +
       '<a class="ga-nav-me' + (S.me ? ' on' : '') + '" href="' + esc(CFG.meUrl || '/my-atlas/') + '" data-me="1"' + (signedIn() ? ' title="My atlas"><span aria-hidden="true">◉</span><span class="ga-nav-who">' + esc(String(ACC.pseudo || 'MY ATLAS').toUpperCase()) + '</span>' : '>SIGN IN') + '</a></nav>' +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
@@ -542,7 +548,8 @@
     var link = '<a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + esc(n.name) + '</a>';
     var next = r ? (r.queue.length > 1 ? 'Next genre' : 'Next song') : full && PL.list.length > 1 ? 'Next song' : (t.count || 0) > 1 ? 'Another song of ' + n.name : '';
     var out = t.youtube ? 'https://www.youtube.com/watch?v=' + t.youtube : '';
-    var html = (full && !stored('ga-yt-ok', false) ? '<p class="ga-bar-note">FULL TRACKS PLAY IN YOUTUBE’S PLAYER: YOUTUBE MAY SET ITS COOKIES AND SHOW ITS ADS (NONE FOR ITS PREMIUM SUBSCRIBERS). ' +
+    var html = (NUDGE.on && stored('ga-yt-ok', false) ? '<p class="ga-bar-note ga-bar-support">ENJOYING THE ATLAS? IT IS MADE BY ONE PERSON: HELP ITS CURATION. <a href="' + esc(SUP.page) + '">♥ SUPPORT</a><button type="button" data-bar="nosup" aria-label="Close">✕</button></p>' : '') +
+      (full && !stored('ga-yt-ok', false) ? '<p class="ga-bar-note">FULL TRACKS PLAY IN YOUTUBE’S PLAYER: YOUTUBE MAY SET ITS COOKIES AND SHOW ITS ADS (NONE FOR ITS PREMIUM SUBSCRIBERS). ' +
         '<a href="' + esc(legalUrl()) + '#cookies">MORE</a><button type="button" data-bar="ok">OK</button></p>' : '') +
       '<div class="ga-bar-in" style="--fam:' + color(n) + '">' + glyph(n, 32) + '<div class="ga-bar-t">' +
       '<b>' + esc(t.title) + '</b><span class="ga-micro">' + (on && r.queue.length > 1 ? '<span class="ga-bar-radio">' + esc(on.name.toUpperCase()) + ' ' + pad(r.at + 1) + '/' + pad(r.queue.length) + '</span> · ' : '') +
@@ -564,6 +571,7 @@
     var act = b.getAttribute('data-bar');
     if (act === 'close') stopSound();
     else if (act === 'ok') { store('ga-yt-ok', true); drawBar(); }
+    else if (act === 'nosup') { NUDGE.on = false; drawBar(); }
     else if (act === 'like') { toggleLike({ title: PL.track.title, artist: PL.track.artist, genre: PL.genre, youtube: PL.track.youtube, deezer: PL.track.deezer }); drawBar(); }
     else if (act === 'next') {
       if (PL.radio) skip(true);
@@ -708,10 +716,23 @@
       ear.secs += Math.min(1, (now - (ear.at || now)) / 1000);
       if (ear.secs >= HEARD_AFTER && !ear.told) {
         ear.told = true;
+        supportNudge();
         if (signedIn()) heard(PL.genre, PL.track);
       }
     }
     ear.at = now;
+  }
+  // After three songs heard in a visit, once a week at most: a line in the
+  // player on supporting the curation. The day it was shown stays in the
+  // browser (declared on the legal page), never sent anywhere.
+  var NUDGE = { n: 0, on: false };
+  function supportNudge() {
+    if (!SUP || NUDGE.on || ++NUDGE.n < 3) return;
+    var last = 0;
+    try { last = Number(localStorage.getItem('ga-support-seen')) || 0; } catch (e) { /* none */ }
+    if (Date.now() - last < 7 * 864e5) return;
+    try { localStorage.setItem('ga-support-seen', String(Date.now())); } catch (e) { /* this visit only */ }
+    NUDGE.on = true; drawBar();
   }
   function heard(id, t) {
     var first = !ME.heard[id];
@@ -739,7 +760,7 @@
     return signedIn() ? '<button type="button" class="ga-mine' + (S.mine ? ' on' : '') + '" data-mine="1" aria-pressed="' + S.mine + '" title="Dim the genres you have not heard yet">◐ MY MAP</button>' : '';
   }
   function showMe(push) {
-    S.prof = ''; S.me = true; S.contact = false; S.random = false; S.legal = false; S.info = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.prof = ''; S.me = true; S.contact = false; S.random = false; S.legal = false; S.info = false; S.support = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     document.title = (signedIn() ? 'My atlas' : 'Sign in') + ' — ' + (CFG.title || 'Genre');
     if (push !== false && history.pushState) { try { history.pushState({ me: true }, '', CFG.meUrl || '/my-atlas/'); } catch (e) { /* noop */ } }
     render(); window.scrollTo(0, 0);
@@ -920,7 +941,7 @@
   }
   function viewMe() { return S.prof ? viewProfile() : signedIn() ? viewAccount() : viewDoors(); }
   function showProfile(pseudo, push) {
-    S.prof = pseudo; S.me = true; S.contact = false; S.random = false; S.legal = false; S.info = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.prof = pseudo; S.me = true; S.contact = false; S.random = false; S.legal = false; S.info = false; S.support = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     A.profile = { pseudo: pseudo, data: null, err: '' };
     document.title = pseudo + '’s atlas — ' + (CFG.title || 'Genre');
     if (push !== false && history.pushState) { try { history.pushState({ profile: pseudo }, '', CFG.base.replace(/genre\/?$/, '') + 'atlas/' + pseudo + '/'); } catch (e) { /* noop */ } }
@@ -1160,7 +1181,7 @@
         (key.length ? '<ul class="ga-artists">' + key.map(function (a) { return artistCard(a, tracks.indexOf(a)); }).join('') + '</ul>' : '') +
         (more.length ? (key.length ? '<button type="button" class="ga-cta ghost ga-showall" data-showall="SHOW ALL ' + pad(total) + ' ARTISTS" aria-expanded="false" aria-controls="ga-more-list"><span>SHOW ALL ' + pad(total) + ' ARTISTS</span><span class="ga-micro">+' + pad(more.length) + ' · A TO Z</span><span aria-hidden="true">↓</span></button>' : '') +
           '<ol class="ga-tracks ga-more-list" id="ga-more-list"' + (key.length ? ' hidden' : '') + '>' + more.map(moreRow).join('') + '</ol>' : '') +
-        (!total && !ex ? '<p class="ga-prose">No artist yet for ' + esc(n.name) + '. Know one? Be the first to suggest it.</p>' : '');
+        (!total && !ex ? '<p class="ga-prose">No artist yet for ' + esc(n.name) + '. Know one? Be the first to suggest it' + (SUP ? ', or <a class="ga-empty-sup" href="' + esc(SUP.page) + '">support the curation ♥</a> that fills genres like this one' : '') + '.</p>' : '');
       if (d.picks) { pickFor(n); body += '<div class="ga-psec"><p class="ga-micro">MISSING AN ARTIST? · CHECKED BY HAND · NO E-MAIL ASKED</p><div class="ga-pbox" id="ga-pbox">' + pickForm(n) + '</div></div>'; }
       html += section('artists', 'ARTISTS', (total ? [pad(total, total > 99 ? 3 : 2) + ' ARTIST' + (total > 1 ? 'S' : ''), key.length ? pad(key.length) + ' ESSENTIAL' + (key.length > 1 ? 'S' : '') : '', 'A TO Z'] : ['NONE YET']).filter(Boolean).concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []), body);
     }
@@ -1319,7 +1340,7 @@
     R = { within: byPath(p.within), sub: p.sub === '1', all: p.all === '1' };
   }
   function showRandom(push) {
-    S.random = true; S.contact = false; S.legal = false; S.info = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
+    S.random = true; S.contact = false; S.legal = false; S.info = false; S.support = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
     if (push !== false && window.history && history.pushState) { try { history.pushState({ random: true }, '', randomUrl()); } catch (e) { /* noop */ } }
     document.title = 'Random genre — ' + (CFG.title || 'Genre');
     render();
@@ -1399,7 +1420,7 @@
     if (p.error) C.error = p.error;
   }
   function showContact(push) {
-    S.contact = true; S.random = false; S.legal = false; S.info = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.contact = true; S.random = false; S.legal = false; S.info = false; S.support = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     if (push !== false && window.history && history.pushState) { try { history.pushState({ contact: true }, '', contactUrl(C.genre)); } catch (e) { /* noop */ } }
     document.title = 'Contact — ' + (CFG.title || 'Genre');
     render();
@@ -1512,12 +1533,38 @@
       rule('D', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; }));
   }
 
+  /* ---------- support ----------
+   * Why, what the money pays for (the goals, with a gauge when the amount
+   * raised is set), and the way to Ko-fi: a plain link, opened in a new tab. */
+  function showSupport() {
+    S.support = true; S.info = false; S.legal = false; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    document.title = 'Support the atlas — ' + (CFG.title || 'Genre');
+    render();
+  }
+  function kofi(label) {
+    return '<a class="ga-cta ga-kofi" href="' + esc(SUP.url) + '" target="_blank" rel="noopener"><span><i aria-hidden="true">♥</i> ' + label + '</span><span class="ga-micro">ON KO-FI · ONCE OR MONTHLY</span><span aria-hidden="true">↗</span></a>';
+  }
+  function viewSupport() {
+    if (!SUP) return viewIndex();
+    var r = SUP.raised, goals = SUP.goals || [];
+    var rows = goals.map(function (g) {
+      var done = r !== null && r >= g[0], w = r === null ? 0 : Math.min(100, 100 * r / g[0]);
+      return '<li class="ga-goal' + (done ? ' done' : '') + '"><div class="ga-goal-top"><b>€' + g[0] + '<span class="ga-micro"> / MONTH</span></b><span class="ga-micro">' + (done ? 'REACHED ✓' : r === null ? '' : '€' + r + ' OF €' + g[0]) + '</span></div>' +
+        '<p>' + esc(g[1]) + '</p>' + (r === null ? '' : '<span class="ga-me-bar"><i style="width:' + f2(w) + '%"></i></span>') + '</li>';
+    }).join('');
+    return '<main class="ga-contact ga-legal ga-support"><div class="ga-hero"><div><p class="ga-micro">[SUPPORT] KEEP THE ATLAS GROWING</p><h1>Help map<br>every genre.</h1></div>' +
+      (r === null ? '' : '<dl class="ga-stats"><div><dt>RAISED EACH MONTH</dt><dd>€' + r + '</dd></div><div><dt>NEXT GOAL</dt><dd>' + (function () { var n = goals.filter(function (g) { return g[0] > r; })[0]; return n ? '€' + n[0] : '✓'; })() + '</dd></div></dl>') + '</div>' +
+      '<div class="ga-support-go">' + kofi('SUPPORT THE ATLAS') + '</div>' +
+      (rows ? '<section class="ga-goals"><h2 class="ga-micro">WHAT IT PAYS FOR, EACH MONTH</h2><ol>' + rows + '</ol></section>' : '') +
+      '<div class="ga-legal-text ga-prose ga-support-text">' + SUPTEXT + '</div>' + foot() + '</main>';
+  }
+
   /* ---------- about ----------
    * Text from the server (includes/about.php), in the atlas's own layout,
    * with the glyph legend drawn under its last section. */
   function infoUrl() { return CFG.infoUrl || '/about/'; }
   function showInfo() {
-    S.info = true; S.legal = false; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.info = true; S.support = false; S.legal = false; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     document.title = 'About — ' + (CFG.title || 'Genre');
     render();
   }
@@ -1536,10 +1583,10 @@
   function legalUrl() { return CFG.legalUrl || '/legal/'; }
   // The foot of every page: the legal notice is never more than a scroll away.
   function foot() {
-    return '<footer class="ga-foot ga-micro"><span class="ga-foot-links"><a href="' + esc(legalUrl()) + '">LEGAL NOTICE · PRIVACY · CREDITS</a><a href="' + esc(infoUrl()) + '">ABOUT</a><a href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a></span><span>NO TRACKER · NO AD OF ITS OWN</span></footer>';
+    return '<footer class="ga-foot ga-micro"><span class="ga-foot-links"><a href="' + esc(legalUrl()) + '">LEGAL NOTICE · PRIVACY · CREDITS</a><a href="' + esc(infoUrl()) + '">ABOUT</a><a href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a>' + (SUP ? '<a class="ga-foot-sup" href="' + esc(SUP.page) + '">♥ SUPPORT</a>' : '') + '</span><span>NO TRACKER · NO AD OF ITS OWN</span></footer>';
   }
   function showLegal() {
-    S.legal = true; S.info = false; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.legal = true; S.info = false; S.support = false; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     document.title = 'Legal notice and privacy — ' + (CFG.title || 'Genre');
     render();
   }
@@ -1590,6 +1637,7 @@
     else if (S.contact) html += viewContact();
     else if (S.legal) html += viewLegal();
     else if (S.info) html += viewInfo();
+    else if (S.support) html += viewSupport();
     else if (S.me) html += viewMe();
     else if (S.about && N[S.about]) html += viewDossier(N[S.about]);
     else if (!centre) html += viewIndex();
@@ -1791,6 +1839,11 @@
   }).then(function (tree) {
     if (location.hash === '#legend') { location.replace(infoUrl() + '#how-to-read-a-glyph'); return; }   // the former LEGEND page
     build(tree);
+    if (Number(CFG.supportPage) === 1) {
+      showSupport();
+      if (history.replaceState) { try { history.replaceState({ support: true }, ''); } catch (e) { /* noop */ } }
+      return;
+    }
     if (Number(CFG.info) === 1) {
       showInfo();
       if (history.replaceState) { try { history.replaceState({ info: true }, ''); } catch (e) { /* noop */ } }

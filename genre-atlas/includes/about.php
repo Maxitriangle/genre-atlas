@@ -69,12 +69,15 @@ function genre_atlas_info_sections() {
 		'How to read a glyph' => array(
 			'No glyph is drawn by hand: each is generated from the genre’s own data, so a subgenre always looks like its family. The frame and the colour give the family, the rings the depth in the tree, the dots around the centre the direct subgenres, and the outer arc the era.',
 		),
+		'Support the atlas'   => genre_atlas_support_url() ? array(
+			'The atlas stays free and without ads. If it is worth something to you, you can support its curation: <a href="' . esc_url( home_url( '/support/' ) ) . '">what the money pays for, and how</a>.',
+		) : array(),
 	);
 }
 
 function genre_atlas_info_html() {
 	$out = '<h1>About</h1><div class="ga-info-text">';
-	foreach ( genre_atlas_info_sections() as $title => $paras ) {
+	foreach ( array_filter( genre_atlas_info_sections() ) as $title => $paras ) {
 		$out .= '<section id="' . esc_attr( sanitize_title( $title ) ) . '"><h2>' . esc_html( $title ) . '</h2>';
 		foreach ( array_filter( $paras ) as $p ) {
 			$out .= '<p>' . wp_kses( $p, array( 'a' => array( 'href' => true ), 'b' => array() ) ) . '</p>';

@@ -11,7 +11,7 @@
 - v0.27.0 : page d'un genre avec LISTEN · SAVE · SUGGEST en tête, une seule section ARTISTS, invitation à créer un compte.
 - v0.28.0 : menu et page ABOUT.
 - v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), installée.
-- **v0.30.0 prête** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz). Voir « Dons et licences ».
+- **v0.30.0 prête** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz) ; **dons par Ko-fi** (dormants tant que Maxime n'a pas saisi son adresse Ko-fi dans Genres → Settings). Voir « Dons et licences » et « Dons : la mise en place ».
 - Détails dans la dernière section, « Améliorations UX ».
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`) ; rendre la page ABOUT éditable dans WordPress (« on verra plus tard », idée notée dans la section v0.28.0) ; remplacer le logo « GENRE » par « EVERY GENRE » (proposé, pas tranché).
@@ -1272,3 +1272,22 @@ Demande de Maxime : « la notion de tempo ne sert à rien sur le site, j'aimerai
 - les champs BPM de l'édition et la colonne BPM de l'administration ;
 - la lecture de `bpm_min` et `bpm_max` par l'importeur.
 Les colonnes restent dans `genre-import.csv` et les anciennes valeurs dans la base : elles sont ignorées.
+
+## Dons : la mise en place (v0.30.0)
+Maxime : « on ne fera plus d'import de masse » (donc plus de lecture des pages de recherche YouTube ni d'appels à Deezer) et « il faudrait que le site devienne très très gros » avant un souci juridique ; il veut mettre les dons en avant pour financer de l'aide à la curation.
+- **Accord, avec deux règles** (YouTube, Deezer, MusicBrainz) : pas de publicité ni de sponsoring, rien de réservé aux donateurs ; le site reste gratuit et identique pour tous. Si le site devient gros : remplacer les liens Deezer par des liens de recherche et revoir MusicBrainz (offre payante).
+- Choix de Maxime : **Ko-fi** ; mis en avant **partout** (menu, ABOUT, pied de page, barre de lecture, genres vides) ; **objectifs communs** sans contreparties.
+- `includes/support.php` : page `/support/` (route `ga_support`, `S.support` côté script) avec :
+  - « Help map every genre. » ;
+  - le bouton ♥ SUPPORT THE ATLAS, un lien Ko-fi dans un nouvel onglet ;
+  - les objectifs avec jauge ;
+  - les textes « Why » et « No strings ».
+  - Réglages dans Genres → Settings, section « Donations (Ko-fi) » : adresse Ko-fi (https), montant mensuel reçu (saisi à la main, Ko-fi n'en donne pas de flux ; vide = pas de jauge), objectifs (une ligne par objectif, « montant | texte », en anglais). Par défaut : 30 € hébergement, 150 € un curateur quelques heures par mois, 1 000 € plus de temps pour le projet.
+  - **Tant que l'adresse Ko-fi est vide, rien ne s'affiche.**
+- **Points d'entrée** :
+  - ♥ SUPPORT dans le menu (le cœur seul sur téléphone) et au pied de chaque page ;
+  - une 5e partie « Support the atlas » sur ABOUT ;
+  - dans la barre de lecture, après 3 chansons entendues dans la visite, une fois par semaine au plus (`ga-support-seen` dans le navigateur, déclaré), une ligne « ENJOYING THE ATLAS? IT IS MADE BY ONE PERSON: HELP ITS CURATION ♥ SUPPORT » ;
+  - sur les genres sans artiste, « …or support the curation ♥ ».
+- Page légale (Ko-fi parmi les liens extérieurs, réglage local) et registre RGPD mis à jour.
+- **À faire par Maxime** : créer sa page Ko-fi, puis saisir son adresse dans Genres → Settings → Donations. Mettre à jour le montant mensuel de temps en temps.

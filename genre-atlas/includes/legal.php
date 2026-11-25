@@ -61,7 +61,7 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
-			'<b>Your settings</b> (MY MAP, having read the note on YouTube, and a genre you asked to save before signing in, until it is saved in your atlas) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
+			'<b>Your settings</b> (MY MAP, having read the note on YouTube, the day the player last mentioned support, and a genre you asked to save before signing in, until it is saved in your atlas) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
 			'<b>Accounts</b> are optional: everything they keep is described in the next section.',
 			'There is no newsletter and no advertising.',
 		),
@@ -77,7 +77,7 @@ function genre_atlas_legal_sections() {
 			'This site sets no cookie on your device while you browse it, and uses no tracker, which is why it asks for no consent. It sets cookies only when you ask for them:',
 			'<b>Signing in</b> sets the sign-in cookies of WordPress (named wordpress_logged_in_… and wordpress_sec_…), which keep you signed in for 14 days, or until you sign out. They are needed for the account to work, so they need no consent.' . ( $matomo ? ' <b>Choosing not to be counted</b> sets a cookie named mtm_consent_removed, which remembers that choice.' : '' ),
 			'<b>Songs</b> play whole in YouTube’s own player (youtube.com), loaded only when you ask for a song: LISTEN, or PLAY on a song. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under <a href="https://policies.google.com/privacy">Google’s privacy policy</a>; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires. This site uses YouTube API Services (the embedded player): by playing a song you agree to be bound by the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>.',
-			'The links to Spotify, Deezer, Bandcamp, Wikipedia and the other platforms take you to those sites, under their own rules; nothing is asked of them before you follow a link.',
+			'The links to Spotify, Deezer, Bandcamp, Wikipedia and the other platforms take you to those sites, under their own rules; nothing is asked of them before you follow a link.' . ( genre_atlas_support_url() ? ' The same goes for Ko-fi, where donations are made: this site never sees a payment.' : '' ),
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
 		'Your rights'               => array(

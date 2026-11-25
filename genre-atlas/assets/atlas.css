@@ -675,3 +675,23 @@ html.ga-inviting{overflow:hidden}
 #genre-atlas button.ga-me-fam{border:1px solid var(--line)}
 #genre-atlas button.ga-me-fam:hover,#genre-atlas button.ga-me-fam.on{border-color:var(--fam)}
 .ga-me-chev{display:inline-block;flex:0 0 auto}
+/* ♥ SUPPORT: in the menu (the heart alone on a phone), the foot, the page. */
+#genre-atlas .ga-nav-sup{gap:6px;color:var(--fam)}
+.ga-nav-sup>span[aria-hidden]{font-size:13px}
+#genre-atlas .ga-foot-sup{color:var(--fam)}
+@media (max-width:899px){
+  .ga-nav-supw{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+.ga-support-go{margin:8px 0 36px}
+#genre-atlas .ga-kofi{display:inline-flex;min-height:60px;min-width:min(100%,460px);gap:24px;font-size:15px}
+#genre-atlas .ga-kofi .ga-micro{margin-left:auto;color:inherit;opacity:.7}
+#genre-atlas .ga-kofi i{font-style:normal}
+.ga-goals{margin-bottom:40px}
+.ga-goals h2{margin:0 0 14px!important}
+.ga-goals ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.ga-goal{border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:10px}
+.ga-goal.done{border-color:var(--fam)}
+.ga-goal-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ga-goal-top b{font-size:22px;font-weight:700;color:var(--fam)}
+.ga-goal p{margin:0;font-size:13px;line-height:1.55;text-transform:none;letter-spacing:.01em}
+.ga-bar-support a{color:var(--fam)!important;margin-left:6px}

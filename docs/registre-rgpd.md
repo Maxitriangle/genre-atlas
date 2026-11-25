@@ -78,7 +78,7 @@ Mis à jour le 04/11/2026 (v0.22.0, propositions d'artistes).
   - posés à la connexion, pour 14 jours ou jusqu'à la déconnexion ;
   - strictement nécessaires au compte, donc exemptés de consentement.
 - **`mtm_consent_removed`** : posé seulement si le visiteur refuse d'être compté par Matomo.
-- **Stockage local du navigateur** (pas un cookie) : réglages MY MAP, la note YouTube lue, et le genre qu'un visiteur a demandé à garder avant d'avoir un compte (enregistré dans son atlas dès la connexion, puis effacé ; v0.27.0). SOUND ON retiré en v0.26.0. Rien ne quitte l'appareil.
+- **Stockage local du navigateur** (pas un cookie) : réglages MY MAP, la note YouTube lue, le jour où la barre de lecture a parlé du soutien (v0.30.0, pour ne le montrer qu'une fois par semaine), et le genre qu'un visiteur a demandé à garder avant d'avoir un compte (enregistré dans son atlas dès la connexion, puis effacé ; v0.27.0). SOUND ON retiré en v0.26.0. Rien ne quitte l'appareil.
 - **Services tiers, seulement au clic** :
   - YouTube (titres entiers, lecteur youtube.com, cookies et publicités de YouTube) : au clic seulement (LISTEN ou PLAY ; la lecture au survol et à l'appui long est retirée en v0.26.0). Depuis v0.22.0, plus d'extraits Deezer : Deezer n'est plus qu'un lien sortant ;
   - Google et Facebook (connexion).
@@ -110,3 +110,5 @@ Elle n'est pas requise :
 - un public sans vulnérabilité particulière (15 ans et plus).
 
 L'historique d'écoute est facultatif, désactivé par défaut et effaçable.
+
+- **Dons (v0.30.0)** : un simple lien vers Ko-fi, ouvert dans un nouvel onglet. Aucun script ni module de Ko-fi sur le site, aucune donnée de paiement ni de donateur reçue par le site ; Ko-fi traite les dons sous ses propres conditions. Rien n'est affiché tant que l'adresse Ko-fi n'est pas réglée.

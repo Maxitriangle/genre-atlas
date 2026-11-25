@@ -375,6 +375,9 @@ function genre_atlas_page_kind() {
 	if ( genre_atlas_is_info() ) {
 		return 'info';
 	}
+	if ( genre_atlas_is_support() ) {
+		return 'support';
+	}
 	if ( genre_atlas_is_me() ) {
 		return 'me';
 	}
@@ -407,6 +410,8 @@ function genre_atlas_title_parts( $parts ) {
 		$parts['title'] = 'Contact';
 	} elseif ( 'legal' === $kind ) {
 		$parts['title'] = 'Legal notice and privacy';
+	} elseif ( 'support' === $kind ) {
+		$parts['title'] = 'Support the atlas';
 	} elseif ( 'info' === $kind ) {
 		$parts['title'] = 'About: how the atlas works';
 	} elseif ( 'me' === $kind ) {
@@ -458,6 +463,9 @@ function genre_atlas_page_summary() {
 	if ( 'contact' === $kind ) {
 		return 'Write to ' . get_bloginfo( 'name' ) . ': feedback, a correction, a missing genre.';
 	}
+	if ( 'support' === $kind ) {
+		return 'Help map every music genre: support the curation of ' . get_bloginfo( 'name' ) . ', free and without ads for everyone.';
+	}
 	if ( 'info' === $kind ) {
 		return 'What ' . get_bloginfo( 'name' ) . ' is and how to use it: listen to a genre, follow its lineage on the map, save your own atlas, suggest an artist. And how to read a glyph.';
 	}
@@ -490,6 +498,9 @@ function genre_atlas_canonical() {
 	}
 	if ( 'info' === $kind ) {
 		return home_url( '/about/' );
+	}
+	if ( 'support' === $kind ) {
+		return home_url( '/support/' );
 	}
 	if ( 'random' === $kind ) {
 		return home_url( '/genre/random/' );

@@ -256,6 +256,7 @@ function genre_atlas_settings_page() {
 				update_option( 'genre_atlas_' . $k, trim( sanitize_text_field( wp_unslash( $_POST[ 'genre_atlas_' . $k ] ) ) ), false );
 			}
 		}
+		genre_atlas_support_settings_save();
 		delete_transient( GENRE_ATLAS_CACHE ); // the tree carries the group labels.
 		echo '<div class="notice notice-success"><p>Settings saved.</p></div>';
 	}
@@ -285,6 +286,7 @@ function genre_atlas_settings_page() {
 		echo '<tr><th scope="row"><label for="genre_atlas_' . esc_attr( $k ) . '">' . esc_html( $f[0] ) . '</label></th><td><input class="regular-text" type="' . esc_attr( $f[1] ) . '" id="genre_atlas_' . esc_attr( $k ) . '" name="genre_atlas_' . esc_attr( $k ) . '" value="' . esc_attr( get_option( 'genre_atlas_' . $k, '' ) ) . '" autocomplete="off"></td></tr>';
 	}
 	echo '</tbody></table>';
+	genre_atlas_support_settings_fields();
 	submit_button( 'Save' );
 	echo '</form></div>';
 }
