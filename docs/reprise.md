@@ -1,10 +1,21 @@
-# Reprise — état au 25/11/2026 (v0.26.0)
+# Reprise — état au 25/11/2026 (v0.28.0)
 
-**Publié et en ligne : v0.25.0** (14/11/2026), mise à jour installée et `artist-import.csv` réimporté par Maxime, vérifié sur le site. Les artistes élargis (jusqu'à 100 par genre, Wikidata confirmé par MusicBrainz, repli Wikidata sous 8) couvrent **les 15 familles et tuiles** : 24 160 artistes, 15 993 avec une chanson, 352 genres encore sans artiste (surtout Folk, Latin, Art music : rien dans Wikidata ni MusicBrainz). Étapes : v0.22.0 (Electronic, 100 par genre, SUGGEST, tout sur YouTube), v0.23.0 (Rock, Metal, Punk, Hip hop, Pop), v0.24.0 (les 9 autres familles), v0.25.0 (les trous comblés) ; détails dans les dernières sections.
+**Où on s'est arrêté (25/11/2026, fin de journée, à la demande de Maxime : « on arrête pour aujourd'hui »)** :
+- **v0.28.0** (point 4 des améliorations UX : menu ABOUT · RANDOM · CONTACT · SIGN IN et page `/about/`) est **fusionnée sur `main`** (PR #43). **À vérifier en reprenant** : Maxime a-t-il lancé Actions → Release → Run workflow, puis mis à jour l'extension dans Extensions ? Si oui, contrôler `every-genre.com/about/` et le menu en ligne. Rien à réimporter.
+- **Prochaine étape : point 5, My atlas** (le dernier des cinq). Proposé :
+  - chaque famille de « FAMILIES · GENRES HEARD » se déplie sur la liste des genres écoutés (Maxime : « je n'ai pas le détail des genres que j'ai écoutés par famille ») ;
+  - les réglages du compte (profil public, historique, e-mail, mot de passe, suppression) descendent en bas de la page, qu'ils occupent aujourd'hui presque entière.
+  - Lui poser les questions avec une recommandation avant de coder, comme pour les points 1 à 4.
+- Puis **mesurer** : objectif proposé de 1 à 2 % des visiteurs qui créent un compte (6 à 12 par mois sur environ 600 visiteurs uniques), et quelques suggestions par mois. Demander à Maxime les chiffres un mois après v0.27.0 (invitation au compte, SUGGEST en tête de fiche).
 
-**En cours : les améliorations d'UX** (dernière section, « Améliorations UX »), point par point. v0.26.0 (l'écoute) et v0.27.0 (page d'un genre, SAVE, SUGGEST) publiées. **v0.28.0 prête, PR ouverte** : point 4, le menu et la page ABOUT. Reste : point 5 (My atlas).
+**Publié** :
+- v0.25.0 (14/11/2026) : les artistes élargis couvrent les 15 familles et tuiles (24 160 artistes, 352 genres encore sans artiste). Étapes : v0.22.0 à v0.25.0.
+- v0.26.0 : un seul bouton ▶ LISTEN, GENRE PAGE au lieu de « dossier », plus de lecture au survol ni à l'appui long.
+- v0.27.0 : page d'un genre avec LISTEN · SAVE · SUGGEST en tête, une seule section ARTISTS, invitation à créer un compte.
+- v0.28.0 : menu et page ABOUT, à installer.
+- Détails dans la dernière section, « Améliorations UX ».
 
-**Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`).
+**Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`) ; rendre la page ABOUT éditable dans WordPress (« on verra plus tard », idée notée dans la section v0.28.0) ; remplacer le logo « GENRE » par « EVERY GENRE » (proposé, pas tranché).
 
 **Direction depuis le 28/10/2026** : faire entendre la musique et bâtir une communauté, avant de faire venir du monde. Voir « Recul sur le projet » plus bas : la critique, les propositions A à G et les priorités de Maxime (**A** écoute, **D** ma carte, **E** débats, **F** raisons de revenir). **Le point A, l'expérience mobile et les comptes (v0.21.0) sont faits.** Écoute en entier par la plateforme de chacun : Deezer fermé, Spotify limité à 5 comptes, YouTube Music rien ; Apple Music possible pour ses abonnés (99 $ par an), Tidal à vérifier (section « Titres entiers sur YouTube »).
 
