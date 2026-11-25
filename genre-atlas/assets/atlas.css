@@ -493,7 +493,7 @@
 
 /* my atlas: favourite genres (☆), favourite songs (♥), the genres heard
    (MY MAP dims the others) and the page that gathers them */
-.ga-star{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line)!important;font-size:16px;color:var(--dim)!important;vertical-align:middle;flex-shrink:0}
+.ga-star{min-width:36px;height:36px;padding:0 12px;gap:8px;font-size:11px;font-weight:600;letter-spacing:.12em;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line)!important;font-size:16px;color:var(--dim)!important;vertical-align:middle;flex-shrink:0}
 .ga-star.on{border-color:var(--fam)!important;color:var(--fam)!important}
 .ga-panel-head .ga-star{margin-top:10px}
 .ga-dhero .ga-star{margin-top:14px}
@@ -595,3 +595,50 @@ html:has(#genre-atlas .ga-panel) .ga-bar-yt{right:416px}
 #genre-atlas .ga-listen{font-weight:700}
 #genre-atlas .ga-cta[data-about]>span:first-child{white-space:nowrap}
 #genre-atlas .ga-cta[data-about] .ga-micro{min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+/* ☆ SAVE: the star with its word; alone in the rows of my atlas. */
+.ga-star span{font-size:15px;letter-spacing:0}
+#genre-atlas .ga-star.ga-star-i{padding:0;width:32px;min-width:32px}
+/* A genre page: LISTEN, SAVE and SUGGEST under the name, before the text. */
+.ga-dacts{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin-top:22px}
+#genre-atlas .ga-dacts .ga-listen{width:auto;flex:1 1 300px;max-width:440px;margin:0}
+#genre-atlas .ga-dacts .ga-star{height:60px;margin:0;padding:0 20px;font-size:12px}
+#genre-atlas .ga-dacts .ga-psugg{width:auto;min-height:60px;padding:0 20px;flex:0 0 auto}
+.ga-dhero .ga-star{margin-top:0}
+/* ARTISTS: each card plays its song. */
+.ga-asong{display:flex;align-items:center;gap:8px;margin-top:4px;padding:8px 10px;border:1px solid var(--fam)!important;color:var(--fam)!important;font-size:11px;letter-spacing:.06em;text-align:left;min-width:0;width:100%;background:none;cursor:pointer}
+.ga-asong span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase}
+.ga-asong:hover{background:var(--fam)!important;color:var(--bg)!important}
+.ga-asong.none{border-color:var(--line)!important;color:var(--dim)!important;cursor:default}
+.ga-asong.none:hover{background:none!important;color:var(--dim)!important}
+.ga-aout{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:10px;letter-spacing:.08em}
+.ga-aout a{color:var(--dim)!important}
+.ga-aout a:hover{color:var(--fam)!important}
+.ga-example{margin-bottom:20px}
+#genre-atlas .ga-showall{width:100%;margin-top:20px;gap:16px}
+#genre-atlas .ga-showall .ga-micro{margin-left:auto;color:inherit;opacity:.7}
+.ga-more-list{margin-top:20px}
+.ga-psec{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+.ga-psec .ga-pbox{margin-top:12px}
+/* The invitation to make an atlas, over the page. */
+.ga-invite{--bg:#121016;--ink:#E4DFF5;--dim:#9A94B5;--line:rgba(228,223,245,.16);--panel:#18151E;font-family:'Azeret Mono',ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(8,6,12,.72)}
+.ga-invite[hidden]{display:none}
+.ga-invite-box{position:relative;width:100%;max-width:480px;max-height:calc(100vh - 32px);overflow:auto;padding:32px;background:var(--panel);border:1px solid var(--fam);display:flex;flex-direction:column;gap:12px;font-family:inherit;color:var(--ink)}
+.ga-invite-box h2{margin:4px 0 6px;font-size:26px;line-height:1.1;font-weight:700;letter-spacing:.03em;text-transform:uppercase;overflow-wrap:anywhere}
+.ga-invite-list{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:10px;font-size:13px;line-height:1.5;text-transform:none;letter-spacing:.01em}
+.ga-invite-list li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px}
+.ga-invite-list li>span:first-child{color:var(--fam)}
+.ga-invite *{box-sizing:border-box}
+.ga-invite button{font:inherit;letter-spacing:inherit;cursor:pointer;border:0;text-align:left}
+.ga-invite .ga-cta{width:100%;gap:14px}
+.ga-invite .ga-cta.ghost{border:1px solid var(--fam)}
+.ga-invite button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ga-invite-x{position:absolute;top:8px;right:8px;width:40px;height:40px;background:none;border:0;color:var(--dim);font-size:16px;cursor:pointer}
+.ga-invite-later{background:none;border:0;color:var(--dim);font:inherit;font-size:11px;letter-spacing:.12em;padding:10px;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+html.ga-inviting{overflow:hidden}
+@media (max-width:899px){
+  #genre-atlas .ga-dacts .ga-listen{flex:1 1 100%;max-width:none}
+  #genre-atlas .ga-dacts .ga-star,#genre-atlas .ga-dacts .ga-psugg{flex:1 1 0;min-height:52px;height:auto;justify-content:center}
+  .ga-invite-box{padding:28px 20px 20px}
+}
+#genre-atlas .ga-dacts + .ga-lede{margin-top:24px}

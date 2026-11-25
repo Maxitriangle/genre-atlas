@@ -616,12 +616,69 @@
       });
   }
   function signedIn() { return !!ACC; }
-  function useAccount(acc) { ACC = acc; ME = acc ? acc.atlas : { heard: {}, genres: [], tracks: [] }; }
+  function useAccount(acc) { ACC = acc; ME = acc ? acc.atlas : { heard: {}, genres: [], tracks: [] }; if (acc && typeof savePending === 'function') savePending(); }
   // Asked of a visitor who is not signed in: the doors, with a word on why.
   function needSignIn(why) { A.view = 'in'; A.msg = why; A.err = ''; showMe(); }
+  /* The invitation: what ☆ SAVE or ♥ asks of a visitor who has no atlas yet.
+   * A small window over the page, rather than a jump to the sign-in page:
+   * it says what an atlas gives, and the visitor stays where they were until
+   * they choose. A genre asked to be saved is kept by the browser and saved
+   * once the account is open (useAccount). */
+  var invite = document.createElement('div');
+  invite.className = 'ga-invite'; invite.hidden = true;
+  root.parentNode.insertBefore(invite, root.nextSibling);
+  var INV = { fav: 0, back: null };
+  function showInvite(n, song) {
+    INV.fav = n && !song ? n.id : 0; INV.back = document.activeElement;
+    var what = song ? 'this song' : n ? n.name : 'it';
+    invite.style.setProperty('--fam', n ? color(n) : 'var(--fam)');
+    invite.innerHTML = '<div class="ga-invite-box" role="dialog" aria-modal="true" aria-labelledby="ga-inv-t">' +
+      '<button type="button" class="ga-invite-x" data-inv="close" aria-label="Close">✕</button>' +
+      '<p class="ga-micro">[MY ATLAS] A FREE ACCOUNT · NO AD · NO NEWSLETTER</p>' +
+      '<h2 id="ga-inv-t">Keep ' + esc(what) + ' in your atlas.</h2>' +
+      '<ul class="ga-invite-list"><li><span aria-hidden="true">☆</span><span>Save the genres you love, and ♥ their songs to play them back</span></li>' +
+      '<li><span aria-hidden="true">◐</span><span>See every genre you have heard light up on the map, family by family</span></li>' +
+      '<li><span aria-hidden="true">↗</span><span>Share your atlas on a public page, only if you want to</span></li></ul>' +
+      '<button type="button" class="ga-cta" data-inv="up"><span>CREATE MY ATLAS</span><span aria-hidden="true">→</span></button>' +
+      '<button type="button" class="ga-cta ghost" data-inv="in"><span>I HAVE ONE · SIGN IN</span><span aria-hidden="true">→</span></button>' +
+      '<button type="button" class="ga-invite-later" data-inv="close">NOT NOW</button></div>';
+    invite.hidden = false;
+    document.documentElement.classList.add('ga-inviting');
+    var first = invite.querySelector('[data-inv="up"]'); if (first) first.focus();
+  }
+  function closeInvite() {
+    if (invite.hidden) return;
+    invite.hidden = true; invite.innerHTML = '';
+    document.documentElement.classList.remove('ga-inviting');
+    if (INV.back && INV.back.focus && document.contains(INV.back)) INV.back.focus();
+  }
+  invite.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-inv]');
+    if (!b) { if (e.target === invite) closeInvite(); return; }
+    var to = b.getAttribute('data-inv'), n = N[INV.fav];
+    if (to === 'close') { closeInvite(); return; }
+    if (n) try { localStorage.setItem('ga-pending-fav', String(n.id)); } catch (x) { /* kept for this visit only */ }
+    PENDING = n ? n.id : 0;
+    closeInvite();
+    A.view = to; A.err = ''; A.msg = n ? (to === 'up' ? 'Create your atlas: ' + n.name + ' will be saved in it.' : 'Sign in: ' + n.name + ' will be saved in your atlas.') : '';
+    showMe();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !invite.hidden) { e.stopPropagation(); closeInvite(); } }, true);
+  // A genre a visitor asked to save before having an atlas: saved as soon as
+  // they are signed in, in this browser.
+  var PENDING = 0;
+  try { PENDING = Number(localStorage.getItem('ga-pending-fav')) || 0; } catch (x) { /* none */ }
+  function savePending() {
+    if (!PENDING || !signedIn()) return;
+    var id = PENDING; PENDING = 0;
+    try { localStorage.removeItem('ga-pending-fav'); } catch (x) { /* noop */ }
+    if (isFav(id)) return;                            // the tree may not be read yet: the id is enough
+    ME.genres.push(id);
+    api('account/fav', 'POST', { genre: id, on: true }).then(function (d) { ME = d.atlas; ACC.atlas = d.atlas; if (S.me) render(); }).catch(function () { /* the next read puts it right */ });
+  }
   function isFav(id) { return ME.genres.indexOf(Number(id)) >= 0; }
   function toggleFav(id) {
-    if (!signedIn()) { needSignIn('Sign in to keep your favourite genres.'); return false; }
+    if (!signedIn()) { showInvite(N[id]); return false; }
     id = Number(id);
     var on = !isFav(id);
     if (on) ME.genres.push(id); else ME.genres.splice(ME.genres.indexOf(id), 1);
@@ -631,7 +688,7 @@
   function songKey(t) { return t.youtube || t.deezer || t.title; }
   function isLiked(t) { var k = songKey(t); return ME.tracks.some(function (x) { return songKey(x) === k; }); }
   function toggleLike(t) {
-    if (!signedIn()) { needSignIn('Sign in to keep your favourite songs.'); return; }
+    if (!signedIn()) { showInvite(N[t.genre], true); return; }
     var on = !isLiked(t), song = { title: t.title, artist: t.artist || '', genre: Number(t.genre), youtube: t.youtube || '', deezer: t.deezer || '' };
     if (on) ME.tracks.push(song); else ME.tracks = ME.tracks.filter(function (x) { return songKey(x) !== songKey(song); });
     api('account/like', 'POST', { track: song, on: on }).then(function (d) { ME = d.atlas; ACC.atlas = d.atlas; if (S.me) render(); drawBar(); })
@@ -667,10 +724,13 @@
     var all = [n].concat(descendants(n)), h = heard || ME.heard;
     return [all.filter(function (k) { return h[k.id]; }).length, all.length];
   }
-  function starButton(n) {
+  // ☆ SAVE, with its word: a bare star was missed. In a list of my atlas,
+  // where the word would repeat on every row, the star alone (small).
+  function starLabel(on, small) { return '<span aria-hidden="true">' + (on ? '★' : '☆') + '</span>' + (small ? '' : on ? 'SAVED' : 'SAVE'); }
+  function starButton(n, small) {
     if (!n || n.grp) return '';
     var on = isFav(n.id);
-    return '<button type="button" class="ga-star' + (on ? ' on' : '') + '" data-fav="' + n.id + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Remove ' + esc(n.name) + ' from' : 'Add ' + esc(n.name) + ' to') + ' your favourites">' + (on ? '★' : '☆') + '</button>';
+    return '<button type="button" class="ga-star' + (small ? ' ga-star-i' : '') + (on ? ' on' : '') + '" data-fav="' + n.id + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Remove ' + esc(n.name) + ' from' : 'Save ' + esc(n.name) + ' in') + ' your atlas">' + starLabel(on, small) + '</button>';
   }
   function mineToggle() {
     return signedIn() ? '<button type="button" class="ga-mine' + (S.mine ? ' on' : '') + '" data-mine="1" aria-pressed="' + S.mine + '" title="Dim the genres you have not heard yet">◐ MY MAP</button>' : '';
@@ -796,7 +856,7 @@
           (mine ? '<span class="ga-tout"><button type="button" class="ga-unlike" data-unlike="' + i + '" aria-label="Remove ' + esc(t.title) + ' from your songs">♥</button></span>' : '<span></span>') + '</li>';
       }).join('') + '</ol>' : '<p class="ga-micro">' + (mine ? '♥ A SONG IN THE PLAYER TO KEEP IT HERE.' : 'NO SONG YET.') + '</p>') + '</section>';
     html += '<section class="ga-me-sec"><h2 class="ga-micro">FAVOURITE GENRES · ' + pad(favs.length) + '</h2>' + (favs.length ? '<div class="ga-me-list">' + favs.map(function (n) {
-      return '<span class="ga-me-row" style="--fam:' + color(n) + '"><a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + glyph(n, 28) + '<b>' + esc(n.name) + '</b></a>' + (mine ? starButton(n) : '') + '</span>';
+      return '<span class="ga-me-row" style="--fam:' + color(n) + '"><a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + glyph(n, 28) + '<b>' + esc(n.name) + '</b></a>' + (mine ? starButton(n, true) : '') + '</span>';
     }).join('') + '</div>' : '<p class="ga-micro">' + (mine ? '☆ A GENRE ON THE MAP OR ITS PAGE TO KEEP IT HERE.' : 'NO GENRE YET.') + '</p>') + '</section>';
     if (mine) {
       heard.sort(function (a, b) { return atlas.heard[b] < atlas.heard[a] ? -1 : atlas.heard[b] > atlas.heard[a] ? 1 : 0; });
@@ -974,13 +1034,17 @@
   }
   // A 1-bit screen stored as a mask, coloured with the family token; shown
   // only with its credit, which the server leaves out along with the photo.
-  function artistCard(a) {
+  function artistCard(a, i) {
     var m = a.mask ? "url('" + a.mask + "')" : '';
     var ph = m ? '<i style="-webkit-mask-image:' + esc(m) + ';mask-image:' + esc(m) + '"></i>' : '<span class="ga-micro">NO PHOTO</span>';
     var credit = m ? '<span class="ga-acredit">PHOTO: <a href="' + esc(a.source) + '" target="_blank" rel="noopener">' + esc(a.author) + '</a> · ' +
       (a.licenseUrl ? '<a href="' + esc(a.licenseUrl) + '" target="_blank" rel="noopener">' + esc(a.license) + '</a>' : esc(a.license)) + '</span>' : '';
+    var s = a.song, out = s ? [['SPOTIFY', s.spotify], ['DEEZER', s.deezer], ['YOUTUBE', s.youtube ? 'https://www.youtube.com/watch?v=' + s.youtube : '']].filter(function (l) { return l[1]; }) : [];
+    var song = s ? (s.youtube && i >= 0 ? '<button type="button" class="ga-asong" data-play="' + i + '" aria-label="Play ' + esc(s.title) + ' by ' + esc(a.name) + '"><span aria-hidden="true">▶</span><span>' + esc(s.title) + '</span></button>'
+      : '<span class="ga-asong none"><span aria-hidden="true">♪</span><span>' + esc(s.title) + '</span></span>') +
+      (out.length ? '<span class="ga-aout">' + out.map(function (l) { return '<a href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + l[0] + '<span aria-hidden="true">↗</span></a>'; }).join('') + '</span>' : '') : '';
     return '<li class="ga-art"><div class="ga-aph' + (m ? '' : ' none') + '">' + ph + '</div><div class="ga-acap"><h3>' + esc(a.name) + '</h3>' +
-      '<span class="ga-micro">' + esc([a.start ? 'SINCE ' + a.start : '', a.country ? a.country.toUpperCase() : ''].filter(Boolean).join(' · ') || '—') + '</span>' + credit + '</div></li>';
+      '<span class="ga-micro">' + esc([a.start ? 'SINCE ' + a.start : '', a.country ? a.country.toUpperCase() : ''].filter(Boolean).join(' · ') || '—') + '</span>' + song + credit + '</div></li>';
   }
   // One song per key artist, in the same A-to-Z order. YouTube plays the whole
   // list in one embedded player, loaded only when asked for (nothing reaches
@@ -1062,9 +1126,24 @@
       '<nav class="ga-crumbs" aria-label="Lineage">' + crumbs + '</nav><span class="ga-micro ga-dids">' + esc(ids) + '</span></div>' +
       '<section class="ga-dhero"><div class="ga-plate">' + glyph(n, 112) + '</div><div>' +
       '<p class="ga-eyebrow"><span class="ga-chip">' + esc(fam.name) + '</span><span class="ga-micro">' + level + '</span></p>' +
-      '<h1>' + esc(n.name) + '</h1>' + starButton(n) + (desc[0] ? '<p class="ga-lede">' + esc(desc[0]) + '</p>' + (desc.length === 1 ? credit : '') : '') +
+      '<h1>' + esc(n.name) + '</h1>' +
+      '<div class="ga-dacts">' + hearButton(n) + starButton(n) + (d.picks ? '<button type="button" class="ga-cta ghost ga-psugg" data-psugg="1"><span>+ SUGGEST AN ARTIST</span></button>' : '') + '</div>' +
+      (desc[0] ? '<p class="ga-lede">' + esc(desc[0]) + '</p>' + (desc.length === 1 ? credit : '') : '') +
       '<dl class="ga-facts">' + facts + '</dl></div></section>';
 
+    // One ARTISTS section: the 8 essentials as cards, each playing its song,
+    // then the others behind SHOW ALL, then the box to suggest one more.
+    var key = essentials(d), more = others(d), tracks = listenTracks(n, d), ex = tracks[0] && tracks[0].example ? tracks[0] : null;
+    if (key.length || more.length || d.picks || ex) {
+      var shot = key.some(function (a) { return a.mask; }), total = key.length + more.length;
+      var body = (ex ? '<ol class="ga-tracks ga-example">' + listenRow(ex, 0) + '</ol>' : '') +
+        (key.length ? '<ul class="ga-artists">' + key.map(function (a) { return artistCard(a, tracks.indexOf(a)); }).join('') + '</ul>' : '') +
+        (more.length ? (key.length ? '<button type="button" class="ga-cta ghost ga-showall" data-showall="SHOW ALL ' + pad(total) + ' ARTISTS" aria-expanded="false" aria-controls="ga-more-list"><span>SHOW ALL ' + pad(total) + ' ARTISTS</span><span class="ga-micro">+' + pad(more.length) + ' · A TO Z</span><span aria-hidden="true">↓</span></button>' : '') +
+          '<ol class="ga-tracks ga-more-list" id="ga-more-list"' + (key.length ? ' hidden' : '') + '>' + more.map(moreRow).join('') + '</ol>' : '') +
+        (!total && !ex ? '<p class="ga-prose">No artist yet for ' + esc(n.name) + '. Know one? Be the first to suggest it.</p>' : '');
+      if (d.picks) { pickFor(n); body += '<div class="ga-psec"><p class="ga-micro">MISSING AN ARTIST? · CHECKED BY HAND · NO E-MAIL ASKED</p><div class="ga-pbox" id="ga-pbox">' + pickForm(n) + '</div></div>'; }
+      html += section('artists', 'ARTISTS', (total ? [pad(total, total > 99 ? 3 : 2) + ' ARTIST' + (total > 1 ? 'S' : ''), key.length ? pad(key.length) + ' ESSENTIAL' + (key.length > 1 ? 'S' : '') : '', 'A TO Z'] : ['NONE YET']).filter(Boolean).concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []), body);
+    }
     if (desc.length > 1) {
       html += section('overview', 'OVERVIEW', [],
         '<div class="ga-prose">' + desc.slice(1).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>' + credit);
@@ -1080,27 +1159,6 @@
     html += section('lineage', 'LINEAGE', ['STRICT TREE · ONE PARENT', subs.length ? 'SUBGENRES A TO Z' : 'NO SUBGENRE'],
       '<ol class="ga-lineage">' + rows + '</ol>' + (list ? '<ul class="ga-subs">' + list + '</ul>' : ''));
 
-    var key = essentials(d), more = others(d);
-    if (key.length) {
-      var shot = key.some(function (a) { return a.mask; });
-      html += section('artists', 'KEY ARTISTS', [pad(key.length) + ' ESSENTIAL' + (key.length > 1 ? 'S' : ''), 'SORTED A TO Z'].concat(shot ? ['PHOTOS · WIKIMEDIA COMMONS'] : []),
-        '<ul class="ga-artists">' + key.map(artistCard).join('') + '</ul>');
-    }
-    var songs = listenTracks(n, d), only = songs.length === 1 && songs[0].example;
-    if (songs.length) {
-      var yt = songs.some(function (a) { return a.song.youtube; });
-      html += section('listen', 'LISTEN', only ? ['01 TRACK', 'LISTENING EXAMPLE', 'CHOSEN BY HAND'] :
-        [pad(songs.length) + ' / ' + (songs[0].example ? '09' : '08') + ' TRACKS', 'ONE PER KEY ARTIST', 'MOST PLAYED ON DEEZER'],
-        (yt ? '<div class="ga-listen-head"><button type="button" class="ga-cta" data-play="' + songs.map(function (a) { return !!a.song.youtube; }).indexOf(true) + '"><span>' + (only ? 'PLAY ON YOUTUBE' : 'PLAY ALL ON YOUTUBE') + '</span><span aria-hidden="true">▶</span></button>' +
-          '<span class="ga-micro">THE PLAYER LOADS FROM YOUTUBE WHEN YOU PRESS PLAY, AND KEEPS PLAYING AS YOU BROWSE</span></div>' : '') +
-        '<ol class="ga-tracks">' + songs.map(listenRow).join('') + '</ol>');
-    }
-
-    if (more.length) {
-      html += section('more', 'MORE ARTISTS', [pad(more.length, 3) + ' ARTIST' + (more.length > 1 ? 'S' : ''), 'SORTED A TO Z', 'WIKIDATA · MUSICBRAINZ · LISTENERS'],
-        '<ol class="ga-tracks ga-more-list">' + more.map(moreRow).join('') + '</ol>');
-    }
-    if (d.picks) html += suggestSection(n); // once the dossier is loaded: the form needs nothing more
     var links = [];
     if (wiki) links.push(['WIKIPEDIA', d.wikipedia, wiki]);
     if (d.wikidata) links.push(['WIKIDATA', d.wikidata, 'https://www.wikidata.org/wiki/' + d.wikidata]);
@@ -1159,10 +1217,7 @@
       '<p class="ga-micro ga-cpriv">NO E-MAIL ASKED · YOUR NAME IS SHOWN ONLY IF YOU GIVE ONE · <a href="' + esc(legalUrl()) + '#what-this-site-keeps">PRIVACY</a></p></form>';
   }
   // Suggestions are no longer listed apart: an approved one joins MORE ARTISTS.
-  function suggestSection(n) {
-    pickFor(n);
-    return section('picks', 'SUGGEST', ['CHECKED BY HAND', 'NO E-MAIL ASKED'], '<div class="ga-pbox" id="ga-pbox">' + pickForm(n) + '</div>');
-  }
+
   // Only the form is redrawn: the rest of the dossier, and the YouTube player
   // if it is playing, stay as they are.
   function renderPickForm(focusId) {
@@ -1535,6 +1590,29 @@
       window._paq.push([function () { if (stop) this.optUserOut(); else this.forgetUserOptOut(); optOutBox(); }]);
       return;
     }
+    // + SUGGEST AN ARTIST at the top of a genre page: opens the form at the
+    // end of its artists and takes the visitor there.
+    var ps = e.target.closest('[data-psugg]');
+    if (ps && root.contains(ps)) {
+      e.preventDefault();
+      P.open = true; P.sent = false; P.errors = {}; P.error = '';
+      renderPickForm();
+      var box = document.getElementById('ga-pbox');
+      if (box) { box.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(function () { var u = document.getElementById('ga-purl'); if (u) u.focus({ preventScroll: true }); }, 350); }
+      return;
+    }
+    // SHOW ALL: the artists after the 8 essentials, without redrawing the page.
+    var sa = e.target.closest('[data-showall]');
+    if (sa && root.contains(sa)) {
+      e.preventDefault();
+      var ml = document.getElementById('ga-more-list'); if (!ml) return;
+      ml.hidden = !ml.hidden;
+      sa.setAttribute('aria-expanded', String(!ml.hidden));
+      sa.firstChild.textContent = ml.hidden ? sa.getAttribute('data-showall') : 'SHOW LESS';
+      if (sa.lastChild) sa.lastChild.textContent = ml.hidden ? '↓' : '↑';
+      if (ml.hidden) sa.scrollIntoView({ block: 'nearest' });
+      return;
+    }
     var pk = e.target.closest('[data-popen],[data-pclose],[data-pnew]');
     if (pk && root.contains(pk)) {
       e.preventDefault();
@@ -1567,7 +1645,7 @@
         if (!toggleFav(id)) return;
         if (S.about) {                                 // the dossier keeps its place: only the stars change
           var on = isFav(id);
-          root.querySelectorAll('[data-fav="' + id + '"]').forEach(function (b) { b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); b.textContent = on ? '★' : '☆'; });
+          root.querySelectorAll('[data-fav="' + id + '"]').forEach(function (b) { b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); b.innerHTML = starLabel(on, b.classList.contains('ga-star-i')); });
         } else render();
       }
       else if (me.hasAttribute('data-mine')) { S.mine = !S.mine; store('ga-mine', S.mine); render(); }

@@ -258,31 +258,40 @@ try {
 		} );
 		check( 'fiche : chaque photo d artiste a son credit et son masque', photos > 0 && photos === credits && mask === 200, `${ photos } photo(s), ${ credits } credit(s), masque HTTP ${ mask }` );
 
-		// Listen: one song per key artist, in the artists' order. Nothing is
-		// asked of YouTube before PLAY ALL; then the player chains the list.
-		const tracks = await page.locator( '.ga-dossier .ga-track:not(.ga-mart) .ga-tname .ga-micro' ).allInnerTexts();   // MORE ARTISTS rows are tracks too
-		const upper = names.map( n => n.toUpperCase() );
-		let at = 0;
-		const inOrder = tracks.every( t => ( at = upper.indexOf( t, at ) + 1 ) > 0 );
-		const spotify = await page.locator( '.ga-dossier .ga-track a[href^="https://open.spotify.com/search/"]' ).count();
-		check( 'ecoute : un titre par artiste cle, dans le meme ordre, chacun avec Spotify', tracks.length > 0 && tracks.length <= names.length && inOrder && spotify === tracks.length,
-			`${ tracks.length } titre(s), ${ spotify } lien(s) Spotify` );
+		// One ARTISTS section: each essential's card carries its song, with
+		// Spotify; no LISTEN or MORE ARTISTS section apart any more.
+		const heads = await page.locator( '.ga-dsec h2' ).allInnerTexts();
+		const tracks = await page.locator( '.ga-dossier .ga-art .ga-asong' ).count();
+		const spotify = await page.locator( '.ga-dossier .ga-art .ga-aout a[href^="https://open.spotify.com/search/"]' ).count();
+		check( 'fiche : une seule section ARTISTS, juste apres l en-tete, chaque carte avec sa chanson et Spotify', heads[ 0 ] === 'ARTISTS' && ! heads.some( h => /^(KEY ARTISTS|LISTEN|MORE ARTISTS|SUGGEST)$/.test( h ) ) && tracks > 0 && tracks <= names.length && spotify === tracks,
+			`${ heads.join( ' · ' ) } ; ${ tracks } chanson(s), ${ spotify } lien(s) Spotify` );
+		// The actions lead the page: LISTEN, SAVE, SUGGEST, above the text.
+		const acts = await page.locator( '.ga-dhero .ga-dacts' ).innerText().catch( () => '' );
+		const actsTop = await page.locator( '.ga-dhero .ga-dacts' ).boundingBox();
+		const ledeTop = await page.locator( '.ga-dossier .ga-lede' ).boundingBox();
+		check( 'fiche : LISTEN, SAVE et SUGGEST en tete, avant le texte, visibles sans defiler', /LISTEN/.test( acts ) && /SAVE/.test( acts ) && /SUGGEST AN ARTIST/.test( acts ) && actsTop && ledeTop && actsTop.y < ledeTop.y && actsTop.y + actsTop.height < 900,
+			acts.replace( /\s+/g, ' ' ) );
+		// The others wait behind SHOW ALL.
+		const hiddenList = await page.locator( '#ga-more-list' ).isHidden();
+		await page.locator( '[data-showall]' ).click();
+		const shownList = await page.locator( '#ga-more-list' ).isVisible() && await page.locator( '#ga-more-list .ga-mart' ).count() > 0;
+		check( 'fiche : les artistes apres les 8 essentiels attendent derriere SHOW ALL', hiddenList && shownList );
 		const before = await page.locator( '.ga-bar .ga-bar-yt iframe' ).count();
-		await page.locator( '.ga-dsec:has(.ga-tracks)' ).screenshot( { path: `${ SHOTS }/05d-ecoute.png` } ).catch( () => {} );
-		// PLAY ALL loads the whole list in YouTube's player; ▶ on a song starts
-		// the same list from that song.
-		const videos = await page.locator( '.ga-dossier .ga-track a[href^="https://www.youtube.com/watch?v="]' ).evaluateAll( l => l.map( a => a.href.split( 'v=' )[ 1 ] ) );
+		await page.locator( '.ga-dsec:has(.ga-artists)' ).screenshot( { path: `${ SHOTS }/05d-ecoute.png` } ).catch( () => {} );
+		// ▶ on the first card loads the essentials' songs in YouTube's player;
+		// ▶ on another card starts the same list from that song.
+		const videos = await page.locator( '.ga-dossier .ga-art .ga-aout a[href^="https://www.youtube.com/watch?v="]' ).evaluateAll( l => l.map( a => a.href.split( 'v=' )[ 1 ] ) );
 		const asked = async sel => {
 			await page.locator( sel ).click();
 			await page.waitForFunction( () => ( window.__yt || [] ).some( x => x[ 0 ] === 'list' ), null, { timeout: 8000 } ).catch( () => {} );
 			const log = await page.evaluate( () => ( window.__yt || [] ).filter( x => x[ 0 ] === 'list' ) );
 			return log.length ? log[ log.length - 1 ] : [ '', [], -1 ];
 		};
-		const all = await asked( '.ga-dossier .ga-listen-head [data-play]' );
+		const all = await asked( '.ga-dossier .ga-art [data-play] >> nth=0' );
 		const shown = await page.locator( '.ga-bar .ga-bar-yt' ).boundingBox();
 		check( 'ecoute : YouTube ne se charge qu au clic, puis joue toute la liste, lecteur visible en 200 x 200', before === 0 && all[ 1 ].length > 1 && all[ 1 ].join() === videos.join() && all[ 2 ] === 0 && !! shown && Math.round( shown.width ) >= 200 && Math.round( shown.height ) >= 200,
 			`${ before } lecteur avant, ${ all[ 1 ].length } video(s), depart ${ all[ 2 ] }, lecteur ${ shown ? Math.round( shown.width ) + ' x ' + Math.round( shown.height ) : 'cache' }` );
-		const second = videos.length > 1 ? await asked( '.ga-dossier .ga-track:has(a[href*="' + videos[ 1 ] + '"]) .ga-play' ) : [ '', [], -1 ];
+		const second = videos.length > 1 ? await asked( '.ga-dossier .ga-art:has(a[href*="' + videos[ 1 ] + '"]) .ga-asong' ) : [ '', [], -1 ];
 		check( 'ecoute : le bouton d un titre lance ce titre, puis la suite', second[ 2 ] === 1 && second[ 1 ].join() === videos.join(), `depart ${ second[ 2 ] }` );
 		// The player lives in the bar, outside the page: back on the map, the
 		// same list keeps playing; ✕ stops it and takes the bar away.
@@ -405,9 +414,9 @@ try {
 	}
 	if ( lead ) {
 		await phone.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
-		await phone.waitForSelector( '.ga-dossier .ga-track', { timeout: 10000 } );
+		await phone.waitForSelector( '.ga-dossier .ga-art', { timeout: 10000 } );
 		const width = await phone.evaluate( () => document.documentElement.scrollWidth );
-		check( 'mobile : la section Listen tient dans la largeur de l ecran', width <= 390, `${ width } px` );
+		check( 'mobile : la section ARTISTS et ses chansons tiennent dans la largeur de l ecran', width <= 390, `${ width } px` );
 		await phone.screenshot( { path: `${ SHOTS }/07c-ecoute-mobile.png`, fullPage: true } );
 	}
 	await phone.goto( `${ BASE }/genre/random/`, { waitUntil: 'networkidle' } );
@@ -491,11 +500,15 @@ try {
 		await pk.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
 		const loaded = Date.now();
 		await pk.waitForSelector( '.ga-dossier [data-popen]', { timeout: 10000 } );
-		const order = await pk.locator( '.ga-dsec h2' ).allInnerTexts();
+		const inArtists = await pk.locator( '.ga-dsec:has(#ga-d-artists) .ga-psec [data-popen]' ).count();
 		const cta = ( await pk.locator( '[data-popen]' ).innerText() ).trim().toUpperCase();
 		const ctaBox = await pk.locator( '[data-popen]' ).boundingBox();
-		check( 'propositions : plus de COMMUNITY PICKS, un bouton bien visible SUGGEST A BAND OR AN ARTIST apres les artistes', ! order.includes( 'COMMUNITY PICKS' ) && order.indexOf( 'SUGGEST' ) === 1 + Math.max( ...[ 'KEY ARTISTS', 'LISTEN', 'MORE ARTISTS' ].map( h => order.indexOf( h ) ) ) && cta.includes( 'SUGGEST A BAND OR AN ARTIST FOR THIS GENRE' ) && ctaBox && ctaBox.height >= 48, `${ order.join( ' · ' ) } / ${ cta }` );
-		await pk.locator( '[data-popen]' ).click();
+		const top = ( await pk.locator( '.ga-dhero [data-psugg]' ).innerText().catch( () => '' ) ).trim().toUpperCase();
+		check( 'propositions : + SUGGEST AN ARTIST en tete de fiche, et le bouton SUGGEST A BAND OR AN ARTIST au bout des artistes', inArtists === 1 && top.includes( 'SUGGEST AN ARTIST' ) && cta.includes( 'SUGGEST A BAND OR AN ARTIST FOR THIS GENRE' ) && ctaBox && ctaBox.height >= 48, `${ top } / ${ cta }` );
+		await pk.locator( '.ga-dhero [data-psugg]' ).click();
+		await pk.waitForSelector( '#ga-purl', { timeout: 5000 } ).catch( () => {} );
+		const opened = await pk.locator( '.ga-dsec:has(#ga-d-artists) #ga-purl' ).isVisible().catch( () => false );
+		check( 'propositions : le bouton du haut ouvre le formulaire au bout des artistes', opened );
 		await pk.fill( '#ga-purl', 'https://example.com/some-artist' );
 		await pk.fill( '#ga-pname', pickName );
 		await pk.locator( '.ga-pform .ga-csend' ).click();
@@ -851,14 +864,25 @@ try {
 		await ac.route( /dzcdn\.net/, r => r.fulfill( { status: 200, contentType: 'audio/wav', body: Buffer.alloc( 100 ) } ) );
 		const sv2 = tree.nodes.find( n => n.s && byId.get( n.p ) );
 		await centre( ac, sv2 );
+		const saveWord = ( await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).innerText() ).trim();
 		await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).click();
+		await ac.waitForSelector( '.ga-invite:not([hidden]) .ga-invite-box', { timeout: 5000 } ).catch( () => {} );
+		const inv = await ac.locator( '.ga-invite-box' ).innerText().catch( () => '' );
+		const stayed = new URL( ac.url() ).pathname !== '/my-atlas/';
+		await ac.screenshot( { path: `${ SHOTS }/16c-invitation.png` } );
+		check( 'comptes : ☆ SAVE sans compte ouvre une invitation sur place (ce qu apporte un atlas, CREATE MY ATLAS, SIGN IN)', /SAVE/.test( saveWord ) && stayed && /KEEP/i.test( inv ) && /CREATE MY ATLAS/.test( inv ) && /SIGN IN/.test( inv ),
+			`« ${ saveWord } », ${ inv.replace( /\s+/g, ' ' ).slice( 0, 120 ) }` );
+		await ac.keyboard.press( 'Escape' );
+		const closedInv = await ac.locator( '.ga-invite' ).isHidden();
+		await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).click();
+		await ac.locator( '.ga-invite [data-inv="in"]' ).click( { timeout: 5000 } ).catch( () => {} );
 		await ac.waitForSelector( '.ga-doors', { timeout: 8000 } ).catch( () => {} );
-		const asked = /favourite genres/i.test( await ac.locator( '.ga-anote' ).innerText().catch( () => '' ) ) && new URL( ac.url() ).pathname === '/my-atlas/';
+		const asked = closedInv && /will be saved in your atlas/i.test( await ac.locator( '.ga-anote' ).innerText().catch( () => '' ) ) && new URL( ac.url() ).pathname === '/my-atlas/';
 		await ac.screenshot( { path: `${ SHOTS }/16a-connexion.png`, fullPage: true } );
 		// The call to action can be read: a button keeps its fill and its text.
 		const cta = await ac.locator( '.ga-doors [data-form="login"] button[type="submit"]' ).evaluate( b => { const c = getComputedStyle( b ); return c.backgroundColor !== 'rgba(0, 0, 0, 0)' && c.color !== c.backgroundColor; } ).catch( () => false );
 		check( 'comptes : le bouton de connexion est lisible (fond et texte)', cta );
-		check( 'comptes : sans compte, ☆ mene a la connexion et rien n est garde', asked && await ac.locator( '.ga-doors [data-form="login"]' ).count() === 1 );
+		check( 'comptes : Echap ferme l invitation ; SIGN IN mene a la connexion, qui nomme le genre a garder', asked && await ac.locator( '.ga-doors [data-form="login"]' ).count() === 1 );
 
 		// Create an account: the link in the e-mail confirms it and signs in.
 		await ac.locator( '[data-auth="up"]' ).click();
@@ -877,9 +901,12 @@ try {
 		check( 'comptes : inscription, lien de confirmation par e-mail, puis connecte (pas avant)', sent && !! verify && /confirm/i.test( early.message || '' ) && welcome.includes( pseudo.toUpperCase() ),
 			`${ sent ? 'envoye' : 'pas envoye' }, lien ${ verify ? 'recu' : 'absent' }, avant confirmation « ${ early.message || '' } »` );
 
-		// ☆, a genre heard (1 s on the bench), ♥: kept in the account.
+		// The genre asked to be saved before the account existed is in it now.
 		await centre( ac, sv2 );
-		await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).click();
+		const pending = await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).getAttribute( 'aria-pressed' );
+		check( 'comptes : le genre garde avant l inscription est dans l atlas des la connexion', pending === 'true', `aria-pressed ${ pending }` );
+		// ☆, a genre heard (1 s on the bench), ♥: kept in the account.
+		if ( pending !== 'true' ) await ac.locator( `.ga-panel [data-fav="${ sv2.id }"]` ).click();
 		await ac.locator( `.ga-panel [data-hear="${ sv2.id }"]` ).click();
 		await ac.waitForSelector( '.ga-bar:not([hidden]) [data-bar="like"]', { timeout: 8000 } ).catch( () => {} );
 		await ac.waitForTimeout( 2200 );
@@ -1094,6 +1121,7 @@ try {
 		await admin.goto( `${ BASE }/wp-admin/edit.php?post_type=ga_pick`, { waitUntil: 'networkidle' } );
 		const online = /Online/.test( await admin.locator( '#the-list tr', { hasText: pickName } ).innerText() );
 		await admin.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		await admin.locator( '[data-showall]' ).click( { timeout: 10000 } ).catch( () => {} );
 		await admin.waitForSelector( '.ga-more-list .ga-mart', { timeout: 10000 } );
 		const mine = admin.locator( '.ga-more-list .ga-mart', { hasText: pickName } );
 		const shown = await mine.count() ? await mine.innerText() : '';
@@ -1136,6 +1164,7 @@ try {
 		check( 'liens : au second « introuvable », le lien est signale, nomme et compte au menu', /Broken link/.test( twice ) && broken === '1' && notice.includes( goneName ) && ! notice.includes( pickName )
 			&& listed.length === 1 && listed[ 0 ].includes( goneName ) && /Link OK/.test( await rowText( pickName ) ), `pastille « ${ broken } », ${ listed.length } ligne(s) dans Broken links` );
 		await admin.goto( `${ permalink( lead ) }about/`, { waitUntil: 'networkidle' } );
+		await admin.locator( '[data-showall]' ).click( { timeout: 10000 } ).catch( () => {} );
 		await admin.waitForSelector( '.ga-more-list .ga-mart', { timeout: 10000 } );
 		const still = await admin.locator( '.ga-mart', { hasText: goneName } ).count();
 		check( 'liens : un lien signale reste sur la fiche, la decision revient a Maxime', still === 1 );
@@ -1150,7 +1179,7 @@ try {
 			await admin.goto( exAbout, { waitUntil: 'networkidle' } );
 			await admin.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
 			await admin.waitForTimeout( 300 );
-			return admin.locator( '#ga-d-listen' ).count();
+			return admin.locator( '.ga-example' ).count();
 		};
 		const hidden = await listenNow() === 0 && ! /Example:/.test( await ( await fetch( exAbout ) ).text() );
 		const screen = `${ BASE }/wp-admin/edit.php?post_type=genre&page=genre-atlas-examples&genre=${ exNode.id }`;
@@ -1170,16 +1199,16 @@ try {
 		await admin.waitForLoadState( 'networkidle' );
 		const accepted = await admin.locator( '.notice-success', { hasText: 'Accepted' } ).count();
 		await listenNow();
-		const row = await admin.locator( '.ga-dossier .ga-track' ).allInnerTexts();
-		await admin.locator( '.ga-dossier .ga-listen-head [data-play]' ).click();
+		const row = await admin.locator( '.ga-dossier .ga-example .ga-track' ).allInnerTexts();
+		await admin.locator( '.ga-dossier .ga-example [data-play]' ).click();
 		await admin.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
 		const src = JSON.stringify( await admin.evaluate( () => window.__yt || [] ) );
 		const plain = await ( await fetch( exAbout ) ).text();
-		check( 'exemples : accepte, il s affiche dans LISTEN, se joue au clic et figure dans la page sans script',
+		check( 'exemples : accepte, il s affiche en tete de ARTISTS, se joue au clic et figure dans la page sans script',
 			accepted === 1 && row.length === 1 && /smoke example two/i.test( row[ 0 ] ) && /LISTENING EXAMPLE · SMOKE ENSEMBLE/.test( row[ 0 ] )
 			&& src.includes( '["video","smokeExmpl2"]' ) && /Example: Smoke Ensemble, “Smoke example two”/.test( plain ),
 			`${ accepted } avis, ${ row.join( ' | ' ).replace( /\s+/g, ' ' ) }, lecteur ${ src.slice( 0, 90 ) }, sans script ${ /Example:/.test( plain ) ? 'oui' : 'non' }` );
-		await admin.locator( '.ga-dsec:has(#ga-d-listen)' ).screenshot( { path: `${ SHOTS }/13b-exemple-fiche.png` } ).catch( () => {} );
+		await admin.locator( '.ga-dsec:has(#ga-d-artists)' ).screenshot( { path: `${ SHOTS }/13b-exemple-fiche.png` } ).catch( () => {} );
 	} else {
 		check( 'exemples : le banc a propose des videos a un genre (GA_EXAMPLE_GENRE)', false );
 	}
