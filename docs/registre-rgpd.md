@@ -78,9 +78,9 @@ Mis à jour le 04/11/2026 (v0.22.0, propositions d'artistes).
   - posés à la connexion, pour 14 jours ou jusqu'à la déconnexion ;
   - strictement nécessaires au compte, donc exemptés de consentement.
 - **`mtm_consent_removed`** : posé seulement si le visiteur refuse d'être compté par Matomo.
-- **Stockage local du navigateur** (pas un cookie) : réglages SOUND ON, MY MAP, et la note YouTube lue. Rien ne quitte l'appareil.
+- **Stockage local du navigateur** (pas un cookie) : réglages MY MAP et la note YouTube lue (SOUND ON retiré en v0.26.0). Rien ne quitte l'appareil.
 - **Services tiers, seulement au clic** :
-  - YouTube (titres entiers, lecteur youtube.com, cookies et publicités de YouTube) : au clic, ou en pointant un genre une fois SOUND ON choisi. Depuis v0.22.0, plus d'extraits Deezer : Deezer n'est plus qu'un lien sortant ;
+  - YouTube (titres entiers, lecteur youtube.com, cookies et publicités de YouTube) : au clic seulement (LISTEN ou PLAY ; la lecture au survol et à l'appui long est retirée en v0.26.0). Depuis v0.22.0, plus d'extraits Deezer : Deezer n'est plus qu'un lien sortant ;
   - Google et Facebook (connexion).
 
 ## Sécurité

@@ -409,8 +409,6 @@
 /* sound: the SOUND toggle, the HEAR buttons and the player bar. The bar sits
    outside #genre-atlas, which every render rewrites, so it carries its own
    tokens. */
-.ga-sound{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border:1px solid var(--line)!important;font-size:11px;font-weight:600;color:var(--dim)!important;flex-shrink:0}
-.ga-sound.on{border-color:var(--fam)!important;color:var(--fam)!important}
 #genre-atlas .ga-hear{width:100%;margin-top:8px;text-align:left;text-transform:uppercase;border:1px solid var(--fam)}
 #genre-atlas .ga-hear{gap:12px}
 .ga-hear span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -489,9 +487,7 @@
 .ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:ga-in .32s both}
 .ga-enter .ga-mnd{animation-delay:calc(var(--k) * 28ms + 60ms)}
 @keyframes ga-in{from{opacity:0}}
-.ga-press .ga-glyph{animation:ga-press .45s linear forwards}
-@keyframes ga-press{to{transform:scale(1.12);filter:drop-shadow(0 0 8px var(--fam))}}
-@media (prefers-reduced-motion:reduce){.ga-mnd{transition:none}.ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:none}.ga-press .ga-glyph{animation:none}}
+@media (prefers-reduced-motion:reduce){.ga-mnd{transition:none}.ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:none}}
 
 /* my atlas: favourite genres (☆), favourite songs (♥), the genres heard
    (MY MAP dims the others) and the page that gathers them */

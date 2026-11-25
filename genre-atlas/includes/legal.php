@@ -61,7 +61,7 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
-			'<b>Your settings</b> (SOUND ON, MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
+			'<b>Your settings</b> (MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
 			'<b>Accounts</b> are optional: everything they keep is described in the next section.',
 			'There is no newsletter and no advertising.',
 		),
@@ -76,7 +76,7 @@ function genre_atlas_legal_sections() {
 		'Cookies'                   => array(
 			'This site sets no cookie on your device while you browse it, and uses no tracker, which is why it asks for no consent. It sets cookies only when you ask for them:',
 			'<b>Signing in</b> sets the sign-in cookies of WordPress (named wordpress_logged_in_… and wordpress_sec_…), which keep you signed in for 14 days, or until you sign out. They are needed for the account to work, so they need no consent.' . ( $matomo ? ' <b>Choosing not to be counted</b> sets a cookie named mtm_consent_removed, which remembers that choice.' : '' ),
-			'<b>Songs</b> play whole in YouTube’s own player (youtube.com), loaded only when you ask for a song: LISTEN, PLAY, holding a genre on a phone, or pointing at a genre once you have switched SOUND ON. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under Google’s privacy policy; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires.',
+			'<b>Songs</b> play whole in YouTube’s own player (youtube.com), loaded only when you ask for a song: LISTEN, or PLAY on a song. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under Google’s privacy policy; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires.',
 			'The links to Spotify, Deezer, Bandcamp, Wikipedia and the other platforms take you to those sites, under their own rules; nothing is asked of them before you follow a link.',
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
