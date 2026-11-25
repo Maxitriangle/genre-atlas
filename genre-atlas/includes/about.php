@@ -56,7 +56,7 @@ function genre_atlas_info_sections() {
 			'<b>▶ LISTEN</b> plays a genre in full tracks, then moves on through its subgenres, one song each. Songs play in YouTube’s player, which loads only when you press play.',
 			'<b>The map</b>: click a genre to open it, click it again to put it in the centre. Beyond eight subgenres, they are gathered by scene, style or region, never by date. The lineage stays on the left. LIST shows the same tree as an outline; on a phone, the map turns upright.',
 			'<b>GENRE PAGE</b> gives a genre’s story, its lineage and up to 100 artists: the eight essentials first, each with a song, the others behind SHOW ALL.',
-			'<b>☆ SAVE</b> keeps a genre in your atlas, and <b>♥</b> in the player keeps a song. With a free account, every genre you listen to for ' . $secs . ' seconds lights up on your map (◐ MY MAP), family by family. Your atlas can stay private or have its own public page.',
+			'<b>☆ SAVE</b> keeps a genre in your atlas, and <b>♥</b> in the player keeps a song. With a free account, every genre you listen to for ' . $secs . ' second' . ( 1 === $secs ? '' : 's' ) . ' lights up on your map (◐ MY MAP), family by family. Your atlas can stay private or have its own public page.',
 			'<b>+ SUGGEST AN ARTIST</b>: a band or an artist is missing from a genre? Suggest them from its page with a link. Every suggestion is checked by hand before it appears, and no e-mail is asked.',
 			'<b>' . $random . '</b> draws a genre, anywhere or within a family, for when you do not know where to start.',
 			'<b>Something wrong?</b> Every genre page has SUGGEST A CORRECTION, and the ' . $contact . ' is read by a person.',
