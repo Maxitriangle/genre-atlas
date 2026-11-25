@@ -2,7 +2,7 @@
 
 **Publié et en ligne : v0.25.0** (14/11/2026), mise à jour installée et `artist-import.csv` réimporté par Maxime, vérifié sur le site. Les artistes élargis (jusqu'à 100 par genre, Wikidata confirmé par MusicBrainz, repli Wikidata sous 8) couvrent **les 15 familles et tuiles** : 24 160 artistes, 15 993 avec une chanson, 352 genres encore sans artiste (surtout Folk, Latin, Art music : rien dans Wikidata ni MusicBrainz). Étapes : v0.22.0 (Electronic, 100 par genre, SUGGEST, tout sur YouTube), v0.23.0 (Rock, Metal, Punk, Hip hop, Pop), v0.24.0 (les 9 autres familles), v0.25.0 (les trous comblés) ; détails dans les dernières sections.
 
-**En cours : les améliorations d'UX** (dernière section, « Améliorations UX »), point par point. **v0.26.0 prête, PR ouverte le 25/11/2026** : point 1, l'écoute (un seul bouton ▶ LISTEN, GENRE PAGE au lieu de « dossier », plus de lecture au survol ni à l'appui long).
+**En cours : les améliorations d'UX** (dernière section, « Améliorations UX »), point par point. v0.26.0 publiée (point 1, l'écoute). **v0.27.0 prête, PR ouverte** : points 2 et 3, la page d'un genre, SAVE et SUGGEST mis en avant. Reste : point 4 (menu et page ABOUT), point 5 (My atlas).
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`).
 
@@ -1184,3 +1184,20 @@ Retours de Maxime : le site marche et a des visites, mais les fonctionnalités s
 - **Plus de lecture au survol (SOUND ON/OFF) ni à l'appui long** sur téléphone (demande de Maxime : « pas de vraie plus-value ») ; le bouton SOUND quitte le menu. Page légale et registre RGPD mis à jour (un réglage local de moins).
 - La vidéo YouTube flottante (200 × 200) se met à gauche du panneau, dans le coin de la carte : à droite, elle couvrait GENRE PAGE.
 - Banc : 98 vérifications (les tests du survol remplacés par « pointer ne joue rien » et « LISTEN joue d'abord le genre »).
+
+### v0.27.0 : la page d'un genre, SAVE et SUGGEST (points 2 et 3)
+Maxime : 600 visiteurs uniques et 3 000 pages vues par mois environ (5 pages par visite) ; 1 compte et 1 suggestion, soit 0,17 %. Objectif proposé : 1 à 2 % de comptes (6 à 12 par mois), quelques suggestions par mois ; juger en taux.
+
+Choix de Maxime : les 8 essentiels seuls puis SHOW ALL ; LISTEN de la fiche comme sur la carte ; points 2 et 3 ensemble ; une petite fenêtre d'invitation sur SAVE.
+
+- **En-tête** : sous le nom, ▶ LISTEN · ☆ SAVE · + SUGGEST AN ARTIST, avant le premier paragraphe : on écoute sans défiler.
+- **Une seule section ARTISTS**, juste après l'en-tête :
+  - les 8 essentiels en cartes, chacune avec ▶ et le titre de sa chanson (la liste des essentiels se joue à partir de celle-ci) et Spotify, Deezer, YouTube ;
+  - l'exemple d'écoute, s'il y en a un, en tête ;
+  - les autres artistes derrière SHOW ALL, ouverts sans redessiner la page ;
+  - au bout, « MISSING AN ARTIST? » et le formulaire, que le bouton du haut ouvre et rejoint ;
+  - un genre sans artiste dit « Be the first to suggest it ».
+  - Les sections LISTEN, MORE ARTISTS et SUGGEST n'existent plus. Ordre ensuite : la suite du texte, la lignée, les sources, les corrections.
+- **☆ SAVE / ★ SAVED** porte son mot partout (carte, mobile, fiche) ; dans les listes de My atlas, l'étoile seule.
+- **Invitation** (`showInvite`) : pour un visiteur sans compte, ☆ SAVE ou ♥ ouvre une fenêtre sur la page. Elle contient « Keep X in your atlas », ce qu'apporte un atlas, CREATE MY ATLAS, I HAVE ONE · SIGN IN, NOT NOW ; Échap la ferme. Le genre demandé est gardé dans le navigateur (`ga-pending-fav`) et enregistré dans l'atlas dès la connexion (`savePending`, appelé par `useAccount`, avant même la lecture de l'arbre), puis effacé. Déclaré dans la page légale et le registre RGPD.
+- Banc : 103 vérifications (fiche : ARTISTS juste après l'en-tête, actions en tête, SHOW ALL ; propositions : bouton du haut ; comptes : invitation, Échap, genre gardé après l'inscription).

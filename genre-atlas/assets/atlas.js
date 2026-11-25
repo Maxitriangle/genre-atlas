@@ -636,9 +636,9 @@
       '<button type="button" class="ga-invite-x" data-inv="close" aria-label="Close">✕</button>' +
       '<p class="ga-micro">[MY ATLAS] A FREE ACCOUNT · NO AD · NO NEWSLETTER</p>' +
       '<h2 id="ga-inv-t">Keep ' + esc(what) + ' in your atlas.</h2>' +
-      '<ul class="ga-invite-list"><li><span aria-hidden="true">☆</span>Save the genres and <span aria-hidden="true">♥</span> the songs you love, and play them back</li>' +
-      '<li><span aria-hidden="true">◐</span>See every genre you have heard light up on the map, family by family</li>' +
-      '<li><span aria-hidden="true">↗</span>Share your atlas on a public page, only if you want to</li></ul>' +
+      '<ul class="ga-invite-list"><li><span aria-hidden="true">☆</span><span>Save the genres you love, and ♥ their songs to play them back</span></li>' +
+      '<li><span aria-hidden="true">◐</span><span>See every genre you have heard light up on the map, family by family</span></li>' +
+      '<li><span aria-hidden="true">↗</span><span>Share your atlas on a public page, only if you want to</span></li></ul>' +
       '<button type="button" class="ga-cta" data-inv="up"><span>CREATE MY ATLAS</span><span aria-hidden="true">→</span></button>' +
       '<button type="button" class="ga-cta ghost" data-inv="in"><span>I HAVE ONE · SIGN IN</span><span aria-hidden="true">→</span></button>' +
       '<button type="button" class="ga-invite-later" data-inv="close">NOT NOW</button></div>';
