@@ -1,8 +1,8 @@
-# Reprise — état au 25/11/2026
+# Reprise — état au 25/11/2026 (v0.26.0)
 
 **Publié et en ligne : v0.25.0** (14/11/2026), mise à jour installée et `artist-import.csv` réimporté par Maxime, vérifié sur le site. Les artistes élargis (jusqu'à 100 par genre, Wikidata confirmé par MusicBrainz, repli Wikidata sous 8) couvrent **les 15 familles et tuiles** : 24 160 artistes, 15 993 avec une chanson, 352 genres encore sans artiste (surtout Folk, Latin, Art music : rien dans Wikidata ni MusicBrainz). Étapes : v0.22.0 (Electronic, 100 par genre, SUGGEST, tout sur YouTube), v0.23.0 (Rock, Metal, Punk, Hip hop, Pop), v0.24.0 (les 9 autres familles), v0.25.0 (les trous comblés) ; détails dans les dernières sections.
 
-**Prochaine étape proposée** : les améliorations d'UX que Maxime veut lister (« j'ai beaucoup d'idées ») ; lui demander sa liste avant de proposer quoi que ce soit.
+**En cours : les améliorations d'UX** (dernière section, « Améliorations UX »), point par point. **v0.26.0 prête, PR ouverte le 25/11/2026** : point 1, l'écoute (un seul bouton ▶ LISTEN, GENRE PAGE au lieu de « dossier », plus de lecture au survol ni à l'appui long).
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`).
 
@@ -1167,3 +1167,20 @@ Genres par nombre d'artistes sur le site (`artist-import.csv`, choix à la main 
 `artist-import.csv` : 24 160 artistes, 15 993 avec une chanson, 39 249 liens.
 
 **Ce qui reste** : environ 260 genres (surtout Folk, Latin, Art music) n'ont d'artiste ni dans Wikidata ni dans MusicBrainz ; il faudra les choix à la main ou les propositions SUGGEST. Un nouveau passage de `artists-cross.py` ajoute encore 25 artistes MusicBrainz par genre, avec un gain qui baisse.
+
+
+## Améliorations UX (à partir de v0.26.0, 25/11/2026)
+Retours de Maxime : le site marche et a des visites, mais les fonctionnalités sont cachées ; un seul compte créé et une seule suggestion. Ses notes, triées en cinq points, dans l'ordre décidé avec lui :
+
+1. **Écouter et le mot « dossier »** — fait en v0.26.0.
+2. **La page d'un genre** : l'écoute en haut (moins de défilement), une seule section ARTISTS (les 8 essentiels en photo puis les autres en liste, chacun jouable) au lieu de KEY ARTISTS / LISTEN / MORE ARTISTS.
+3. **Favoris et suggestions mis en avant** : ☆ devient « ☆ SAVE », qui invite un visiteur sans compte à en créer un ; « + SUGGEST AN ARTIST » dans l'en-tête de ARTISTS et en fin de liste. Question posée à Maxime : combien de visites par mois (pour juger en taux, pas en nombre).
+4. **Menu et page About** : retirer INDEX (le logo ramène à l'accueil ; proposé de garder le logo, éventuellement « EVERY GENRE ») ; MY ATLAS devient SIGN IN pour un visiteur, le pseudo une fois connecté ; **une page ABOUT** (décidé) : le projet, « How it works », la lecture des glyphes (LEGEND y est fusionnée). Menu visé : ABOUT · RANDOM · CONTACT · SIGN IN.
+5. **My atlas** : chaque famille se déplie sur ses genres écoutés ; réglages du compte en bas.
+
+### v0.26.0 : l'écoute
+- **Un seul bouton ▶ LISTEN** (choix de Maxime : « genre puis sous-genres »), en tête et en couleur pleine dans le panneau, la liste et le mobile : `tune()` met le genre d'abord, puis ses sous-genres mélangés (arrêt aux tuiles, comme l'ancienne radio) ; un genre sans sous-genre enchaîne ses chansons. Le petit texte dit ce qu'on entend (« THIS GENRE + 12 SUBGENRES »). La barre affiche « GENRE 03/12 » au lieu de « RADIO … ». HEAR et RADIO n'existent plus.
+- **GENRE PAGE** (choix de Maxime) remplace OPEN DOSSIER, sous LISTEN, en bouton secondaire, avec « ARTISTS · STORY ».
+- **Plus de lecture au survol (SOUND ON/OFF) ni à l'appui long** sur téléphone (demande de Maxime : « pas de vraie plus-value ») ; le bouton SOUND quitte le menu. Page légale et registre RGPD mis à jour (un réglage local de moins).
+- La vidéo YouTube flottante (200 × 200) se met à gauche du panneau, dans le coin de la carte : à droite, elle couvrait GENRE PAGE.
+- Banc : 98 vérifications (les tests du survol remplacés par « pointer ne joue rien » et « LISTEN joue d'abord le genre »).

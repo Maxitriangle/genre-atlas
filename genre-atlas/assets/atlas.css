@@ -409,8 +409,6 @@
 /* sound: the SOUND toggle, the HEAR buttons and the player bar. The bar sits
    outside #genre-atlas, which every render rewrites, so it carries its own
    tokens. */
-.ga-sound{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border:1px solid var(--line)!important;font-size:11px;font-weight:600;color:var(--dim)!important;flex-shrink:0}
-.ga-sound.on{border-color:var(--fam)!important;color:var(--fam)!important}
 #genre-atlas .ga-hear{width:100%;margin-top:8px;text-align:left;text-transform:uppercase;border:1px solid var(--fam)}
 #genre-atlas .ga-hear{gap:12px}
 .ga-hear span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -441,7 +439,9 @@
 .ga-bar-line{position:absolute;left:0;right:0;top:-1px;height:2px;background:transparent}
 .ga-bar-line i{display:block;height:2px;background:var(--fam)}
 /* YouTube's player, held above the bar so it keeps playing between pages:
-   200 x 200, the smallest YouTube allows, and always visible while it plays. */
+   200 x 200, the smallest YouTube allows, and always visible while it plays.
+   Beside the panel when there is one, in the empty corner of the map, so it
+   covers neither the panel's buttons nor the lineage on the left. */
 .ga-bar-yt{position:absolute;right:16px;bottom:calc(100% + 8px);width:200px;height:200px;background:#000;border:1px solid var(--line)}
 .ga-bar-yt[hidden]{display:none}
 .ga-bar-yt iframe{display:block;width:100%;height:100%;border:0}
@@ -489,9 +489,7 @@
 .ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:ga-in .32s both}
 .ga-enter .ga-mnd{animation-delay:calc(var(--k) * 28ms + 60ms)}
 @keyframes ga-in{from{opacity:0}}
-.ga-press .ga-glyph{animation:ga-press .45s linear forwards}
-@keyframes ga-press{to{transform:scale(1.12);filter:drop-shadow(0 0 8px var(--fam))}}
-@media (prefers-reduced-motion:reduce){.ga-mnd{transition:none}.ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:none}.ga-press .ga-glyph{animation:none}}
+@media (prefers-reduced-motion:reduce){.ga-mnd{transition:none}.ga-enter .ga-mnd,.ga-enter .ga-mctr,.ga-enter .ga-manc{animation:none}}
 
 /* my atlas: favourite genres (☆), favourite songs (♥), the genres heard
    (MY MAP dims the others) and the page that gathers them */
@@ -587,3 +585,13 @@
   .ga-track.ga-mart{grid-template-columns:44px minmax(0,1fr)}
   .ga-track.ga-mart .ga-tout{grid-column:2}
 }
+/* One button to listen, leading; the genre page after it. */
+#genre-atlas .ga-listen{min-height:60px;margin-top:16px;font-size:15px}
+#genre-atlas .ga-listen i{font-style:normal;margin-right:4px}
+#genre-atlas .ga-cta[data-about]{gap:12px}
+#genre-atlas .ga-cta[data-about] .ga-micro{margin-left:auto;color:inherit;opacity:.7;white-space:nowrap}
+#genre-atlas .ga-listen + .ga-cta[data-about]{margin-top:8px}
+html:has(#genre-atlas .ga-panel) .ga-bar-yt{right:416px}
+#genre-atlas .ga-listen{font-weight:700}
+#genre-atlas .ga-cta[data-about]>span:first-child{white-space:nowrap}
+#genre-atlas .ga-cta[data-about] .ga-micro{min-width:0;overflow:hidden;text-overflow:ellipsis}

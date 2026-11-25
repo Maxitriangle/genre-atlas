@@ -205,7 +205,7 @@
       var u = n ? url(n) + (S.about ? 'about/' : centreOnIt && !isTile(n) ? '#centre' : '') : CFG.base;
       try { history.pushState({ id: n ? n.id : 0, c: !!centreOnIt, about: !!S.about }, '', u); } catch (e) { /* embedded on another URL */ }
     }
-    document.title = (n ? n.name + (S.about ? ' — Dossier' : '') + ' — ' : '') + (CFG.title || 'Genre');
+    document.title = (n ? n.name + (S.about ? ' — Genre page' : '') + ' — ' : '') + (CFG.title || 'Genre');
     if (S.about) dossierData(n);
     render();
     if (S.about) window.scrollTo(0, 0);
@@ -246,7 +246,7 @@
       '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.contact && !S.legal && !S.me && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
       '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a>' +
       '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a>' +
-      '<a class="ga-nav-me' + (S.me ? ' on' : '') + '" href="' + esc(CFG.meUrl || '/my-atlas/') + '" data-me="1"><span class="ga-long">MY&nbsp;</span>ATLAS</a></nav>' + soundToggle() +
+      '<a class="ga-nav-me' + (S.me ? ' on' : '') + '" href="' + esc(CFG.meUrl || '/my-atlas/') + '" data-me="1"><span class="ga-long">MY&nbsp;</span>ATLAS</a></nav>' +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
   function subbar(sel) {
@@ -279,7 +279,7 @@
     return '<aside class="ga-panel" aria-label="Selected genre" style="--fam:' + color(n) + '"><div class="ga-panel-top"><span>LEVEL ' + pad(depth(n)) + '</span><span class="fam">' + (n.grp ? '[GROUP]' : '[SELECTED]') + '</span></div>' +
       '<div class="ga-panel-head">' + glyph(n, 120) + '<div><h1>' + esc(n.name) + '</h1>' + starButton(n) + (lineage ? '<p class="fam">↳ ' + esc(lineage) + '</p>' : '<p class="fam">FAMILY</p>') + (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : '') + '</div></div>' +
       (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') + '<div>' + rows + '</div>' +
-      (n.grp ? '' : '<a class="ga-cta" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') + hearButton(n, true) +
+      hearButton(n) + pageButton(n) +
       (n.kids.length && !isCentre ? '<a class="ga-cta ghost" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>CENTRE ON ' + esc(n.name) + '</span><span>⊕</span></a>' : '') +
       (n.kids.length ? '<div class="ga-kids"><p class="ga-micro">SUBGENRES — A TO Z</p>' + kids + (n.kids.length > 6 ? '<a class="ga-more" href="' + esc(url(n)) + '#centre" data-centre="' + n.id + '"><span>VIEW ALL ' + pad(n.kids.length) + '</span><span>→</span></a>' : '') + '</div>' : '') + foot() + '</aside>';
   }
@@ -334,8 +334,7 @@
       var k = arc[j];
       html += '<a class="ga-leaf' + dim(k) + '" href="' + esc(url(k)) + '" data-go="' + k.id + '" style="left:' + f2(p[0]) + 'px;top:' + f2(p[1]) + 'px">' + glyph(k, 40) + '<span><b>' + esc(k.name) + '</b><i>' + esc(micro(k)) + (k.total ? ' · +' + pad(k.total) + ' SUB' : '') + '</i></span></a>';
     });
-    var info = '<div class="ga-mapinfo"><p class="ga-micro">MAP NODE — ' + esc(centre.name) + '</p><p class="ga-micro">LEVELS ' + pad(anc.length + 1) + ' → ' + pad(anc.length + 2) + ' · CLICK TO OPEN · CLICK AGAIN TO CENTRE</p>' +
-      (HOVER ? '<p class="ga-micro">' + (SOUND ? 'SOUND ON · POINT AT A GENRE TO HEAR IT' : 'SOUND OFF · SWITCH IT ON TO HEAR A GENRE AS YOU POINT AT IT') + '</p>' : '');
+    var info = '<div class="ga-mapinfo"><p class="ga-micro">MAP NODE — ' + esc(centre.name) + '</p><p class="ga-micro">LEVELS ' + pad(anc.length + 1) + ' → ' + pad(anc.length + 2) + ' · CLICK TO OPEN · CLICK AGAIN TO CENTRE</p>';
     if (centre.grouped) {
       info += '<p class="ga-micro">' + pad(centre.grouped) + ' SUBGENRES GROUPED INTO ' + pad(all.length) + ' — TOO WIDE TO SHOW ONE BY ONE</p>';
     }
@@ -371,13 +370,13 @@
       if (on) {
         h += '<div class="ga-msub">' + (k.d ? '<p class="ga-desc">' + esc(k.d) + '</p>' : '') + '<p class="ga-micro">' + esc([k.o, k.y, k.b ? bpmText(k) : ''].filter(Boolean).join(' · ') || 'NO DATA YET') + '</p>' +
           k.kids.map(function (g) { return '<a class="ga-mrow sub" href="' + esc(url(g)) + '" data-go="' + g.id + '">' + glyph(g, 32) + '<span><b>' + esc(g.name) + '</b><i>' + esc(micro(g)) + '</i></span>' + (g.total ? '<em>+' + pad(g.total) + '</em>' : '') + '</a>'; }).join('') +
-          (k.grp ? '' : '<a class="ga-cta" href="' + esc(url(k)) + 'about/" data-about="' + k.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') + hearButton(k, true) +
+          hearButton(k) + pageButton(k) +
           (k.kids.length ? '<a class="ga-cta ghost" href="' + esc(url(k)) + '#centre" data-centre="' + k.id + '"><span>CENTRE ON ' + esc(k.name) + '</span><span>⊕</span></a>' : '') + '</div>';
       }
       return h;
     }).join('');
     return '<main class="ga-mobile" style="--fam:' + color(centre) + '">' + mobileToggle(centre) + '<nav class="ga-trail" aria-label="Lineage">' + trail + '</nav><section class="ga-mcentre">' + glyph(centre, 112) + '<div><p class="ga-micro">' + (isTile(centre) ? 'FAMILY' : 'LEVEL ' + pad(depth(centre))) + '</p><h1>' + esc(centre.name) + '</h1><p>' + esc(micro(centre)) + '</p><p class="dim">' + pad(centre.kids.length) + ' DIRECT · ' + pad(centre.total) + ' TOTAL</p></div></section>' +
-      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad"><a class="ga-cta" href="' + esc(url(centre)) + 'about/" data-about="' + centre.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>' + hearButton(centre, true) + '</div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div>' + foot() + '</main>';
+      (centre.d ? '<p class="ga-desc pad">' + esc(centre.d) + '</p>' : '') + (centre.grp ? '' : '<div class="pad">' + hearButton(centre) + pageButton(centre) + '</div>') + '<p class="ga-micro pad">SUBGENRES — A TO Z</p><div class="ga-mtree">' + (rows || '<p class="ga-micro pad">NO SUBGENRE</p>') + '</div>' + foot() + '</main>';
   }
 
   /* ---------- sound ----------
@@ -385,13 +384,11 @@
    * rewrites, so it plays on while the map, the list or a dossier changes
    * under it. Every song plays whole, in YouTube's player, which the bar
    * drives and holds in a 200 x 200 card (YouTube asks for a visible player
-   * of that size at least): HEAR, RADIO, holding a genre on a phone, the
-   * dossier's songs, and pointing at a genre once SOUND ON is chosen. A song
-   * started by pointing gives way to the next genre pointed at; one asked for
-   * by hand, or the radio, is never cut that way.
-   * The radio of a branch plays one song of each genre of the branch, in a
-   * shuffled order, the next genre when a song ends. Like the random draw, it
-   * stops at the tiles: Rock's radio leaves Metal to its own.
+   * of that size at least): LISTEN and the songs of a genre page. Nothing
+   * plays by pointing at a genre or holding it any more.
+   * LISTEN plays the genre first, then one song of each of its subgenres, in
+   * a shuffled order, the next genre when a song ends. Like the random draw,
+   * it stops at the tiles: Rock's LISTEN leaves Metal to its own.
    * Nothing reaches YouTube before one of those choices. YouTube's
    * own player (youtube.com, not the privacy-enhanced one) is used so that
    * its Premium subscribers hear no ads: it may set its cookies, which the
@@ -399,9 +396,7 @@
    */
   function stored(k, dflt) { try { var v = localStorage.getItem(k); return v === null ? dflt : v === '1'; } catch (e) { return dflt; } }
   function store(k, on) { try { localStorage.setItem(k, on ? '1' : '0'); } catch (e) { /* private mode: for this visit only */ } }
-  var SOUND = stored('ga-sound', false);
-  var HOVER = !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);
-  var PL = { kind: '', genre: 0, track: null, list: [], at: 0, next: {}, ask: 0, radio: null, hover: false };
+  var PL = { kind: '', genre: 0, track: null, list: [], at: 0, next: {}, ask: 0, radio: null };
   var bar = document.createElement('div');
   bar.className = 'ga-bar'; bar.hidden = true; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Player');
   bar.innerHTML = '<div class="ga-bar-yt" hidden><div id="ga-yt"></div></div>';
@@ -409,11 +404,6 @@
   var card = bar.firstChild;
   var YTP = null, YTW = null, tick = 0;
   function clock(t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + pad(t % 60); }
-  function setSound(on) {
-    SOUND = on; store('ga-sound', on);
-    if (!on && PL.hover && !PL.radio) stopSound();
-    render();
-  }
   function showBar(on) {
     var was = !bar.hidden;
     bar.hidden = !on;
@@ -464,7 +454,6 @@
   // list: [{ youtube, title, artist, genre, deezer? }], played from list[at].
   function playFull(list, at) {
     var ask = PL.ask;
-    PL.hover = false;
     PL.kind = 'full'; PL.list = list; PL.at = at || 0; PL.track = list[PL.at]; PL.genre = PL.track.genre;
     card.hidden = false; video(true);
     drawBar(); showBar(true);
@@ -483,9 +472,7 @@
     if (tm) tm.textContent = clock(cur) + ' / ' + (dur ? clock(dur) : '–:––');
     if (ln) ln.style.width = (dur ? f2(Math.min(100, 100 * cur / dur)) : 0) + '%';
   }
-  // byHover: started by pointing at the genre, so the next one pointed at
-  // may take its place.
-  function hear(id, onAir, byHand, byHover) {
+  function hear(id, onAir, byHand) {
     var n = N[id];
     if (!onAir) PL.radio = null;                       // a genre asked for by hand ends the radio
     if (!n || !n.s || !CFG.soundApi) return;
@@ -493,7 +480,7 @@
     fetch(CFG.soundApi + id + '?i=' + i).then(function (r) { return r.ok ? r.json() : null; }).then(function (t) {
       if (ask !== PL.ask) return;                      // another genre was asked for meanwhile
       if (t) PL.next[id] = t.i + 1;
-      if (t && t.youtube) { playFull([{ youtube: t.youtube, title: t.title, artist: t.artist, genre: id, deezer: t.deezer, count: t.count }], 0); PL.hover = !!byHover; }
+      if (t && t.youtube) { playFull([{ youtube: t.youtube, title: t.title, artist: t.artist, genre: id, deezer: t.deezer, count: t.count }], 0); }
       else if (onAir && PL.radio) skip();
       else if (byHand) silence(id);
     }).catch(function () { if (ask !== PL.ask) return; if (onAir && PL.radio) skip(); else if (byHand) silence(id); });
@@ -514,11 +501,13 @@
     for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), x = list[i]; list[i] = list[j]; list[j] = x; }
     return list;
   }
-  function radio(id) {
-    var n = N[id], list = n ? onAirList(n) : [];
+  function tune(id) {
+    var n = N[id], list = n && !n.grp ? onAirList(n) : [];
     if (!list.length) return;
-    PL.radio = { from: id, queue: shuffle(list.map(function (k) { return k.id; })), at: 0, missed: 0 };
-    hear(PL.radio.queue[0], true);
+    var queue = shuffle(list.filter(function (k) { return k !== n; }).map(function (k) { return k.id; }));
+    if (n.s) queue.unshift(n.id);
+    PL.radio = { from: id, queue: queue, at: 0, missed: 0 };
+    hear(queue[0], true);
   }
   // The next genre of the radio; past the last one, a new shuffle. A genre
   // whose song fails is passed over, but a radio that only fails stops.
@@ -533,7 +522,7 @@
   }
   function stopSound() {
     quiet(); PL.ask++;
-    PL.kind = ''; PL.track = null; PL.list = []; PL.radio = null; PL.hover = false;
+    PL.kind = ''; PL.track = null; PL.list = []; PL.radio = null;
     info(''); showBar(false);
   }
   // The bar's text and buttons, redrawn without touching the YouTube card.
@@ -548,12 +537,12 @@
     if (!n || !t) return;
     var r = PL.radio, on = r && N[r.from], full = PL.kind === 'full', live = playing();
     var link = '<a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + esc(n.name) + '</a>';
-    var next = r ? 'Next genre on the radio' : full && PL.list.length > 1 ? 'Next song' : (t.count || 0) > 1 ? 'Another song of ' + n.name : '';
+    var next = r ? (r.queue.length > 1 ? 'Next genre' : 'Next song') : full && PL.list.length > 1 ? 'Next song' : (t.count || 0) > 1 ? 'Another song of ' + n.name : '';
     var out = t.youtube ? 'https://www.youtube.com/watch?v=' + t.youtube : '';
     var html = (full && !stored('ga-yt-ok', false) ? '<p class="ga-bar-note">FULL TRACKS PLAY IN YOUTUBE’S PLAYER: YOUTUBE MAY SET ITS COOKIES AND SHOW ITS ADS (NONE FOR ITS PREMIUM SUBSCRIBERS). ' +
         '<a href="' + esc(legalUrl()) + '#cookies">MORE</a><button type="button" data-bar="ok">OK</button></p>' : '') +
       '<div class="ga-bar-in" style="--fam:' + color(n) + '">' + glyph(n, 32) + '<div class="ga-bar-t">' +
-      '<b>' + esc(t.title) + '</b><span class="ga-micro">' + (on ? '<span class="ga-bar-radio">RADIO ' + esc(on.name.toUpperCase()) + ' ' + pad(r.at + 1) + '/' + pad(r.queue.length) + '</span> · ' : '') +
+      '<b>' + esc(t.title) + '</b><span class="ga-micro">' + (on && r.queue.length > 1 ? '<span class="ga-bar-radio">' + esc(on.name.toUpperCase()) + ' ' + pad(r.at + 1) + '/' + pad(r.queue.length) + '</span> · ' : '') +
       (t.artist ? esc(t.artist.toUpperCase()) + ' · ' : '') + link + '</span></div>' +
       '<button type="button" class="ga-bar-b" data-bar="toggle" aria-label="' + (live ? 'Pause' : 'Play') + '">' + (live ? '❚❚' : '▶') + '</button>' +
       (next ? '<button type="button" class="ga-bar-b" data-bar="next" aria-label="' + esc(next) + '">⏭</button>' : '') +
@@ -581,28 +570,17 @@
       if (YTP) { if (playing()) YTP.pauseVideo(); else YTP.playVideo(); }
     }
   });
-  // Pointing at a genre plays its song, once the pointer has rested a
-  // moment: a sweep across the map stays silent. A song asked for by hand,
-  // or the radio, is never cut by it; one started by pointing is.
-  var hoverT = {}, HEARD = '.ga-node,.ga-leaf,.ga-kid,.ga-tile,.ga-lrow a,.ga-subs a,.ga-results a';
-  root.addEventListener('mouseover', function (e) {
-    if (!SOUND || !HOVER || isMobile()) return;
-    var t = e.target.closest(HEARD), id = t ? Number(t.getAttribute('data-go') || t.getAttribute('data-centre') || t.getAttribute('data-about')) : 0;
-    if (t && id === hoverT.id) return;
-    clearTimeout(hoverT.t);
-    hoverT = { id: id, t: 0 };
-    if (!id || !N[id] || !N[id].s || (playing() && (!PL.hover || PL.radio || PL.genre === id))) return;
-    hoverT.t = setTimeout(function () { hear(id, false, false, true); }, 350);
-  });
-  function hearButton(n, ghost) {
+  // One button to listen: the genre first, then its subgenres, shuffled
+  // (tune). It leads, in the full colour; the genre page comes after it.
+  function hearButton(n) {
     var air = n.grp ? [] : onAirList(n);
-    return (n.s ? '<button type="button" class="ga-cta' + (ghost ? ' ghost' : '') + ' ga-hear" data-hear="' + n.id + '"><span>HEAR ' + esc(n.name) + '</span><span class="ga-micro">FULL TRACK</span><span aria-hidden="true">▶</span></button>' : '') +
-      (air.length > 1 ? '<button type="button" class="ga-cta ghost ga-hear" data-radio="' + n.id + '"><span>RADIO ' + esc(n.name) + '</span><span class="ga-micro">' + pad(air.length) + ' GENRES</span><span aria-hidden="true">◉</span></button>' : '');
+    return air.length ? '<button type="button" class="ga-cta ga-hear ga-listen" data-hear="' + n.id + '"><span><i aria-hidden="true">▶</i> LISTEN</span><span class="ga-micro">' +
+      (air.length > 1 ? (n.s ? 'THIS GENRE + ' + pad(air.length - 1) + ' SUBGENRE' + (air.length > 2 ? 'S' : '') : pad(air.length) + ' SUBGENRES') : 'FULL TRACKS') + '</span></button>' : '';
   }
-  function soundToggle() {
-    return HOVER && !isMobile() ? '<button type="button" class="ga-sound' + (SOUND ? ' on' : '') + '" data-sound="1" aria-pressed="' + SOUND + '" title="' + (SOUND ? 'Point at a genre to hear it' : 'Switch on to hear a genre as you point at it') + '">' +
-      '<span aria-hidden="true">' + (SOUND ? '♪' : '♪̸') + '</span>SOUND ' + (SOUND ? 'ON' : 'OFF') + '</button>' : '';
+  function pageButton(n) {
+    return n.grp ? '' : '<a class="ga-cta' + (onAirList(n).length ? ' ghost' : '') + '" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>GENRE PAGE</span><span class="ga-micro">ARTISTS · STORY</span><span aria-hidden="true">↗</span></a>';
   }
+
 
   /* ---------- my atlas: the member's account ----------
    * Favourite genres (☆), favourite songs (♥ in the player bar, played back
@@ -819,7 +797,7 @@
       }).join('') + '</ol>' : '<p class="ga-micro">' + (mine ? '♥ A SONG IN THE PLAYER TO KEEP IT HERE.' : 'NO SONG YET.') + '</p>') + '</section>';
     html += '<section class="ga-me-sec"><h2 class="ga-micro">FAVOURITE GENRES · ' + pad(favs.length) + '</h2>' + (favs.length ? '<div class="ga-me-list">' + favs.map(function (n) {
       return '<span class="ga-me-row" style="--fam:' + color(n) + '"><a href="' + esc(url(n)) + 'about/" data-about="' + n.id + '">' + glyph(n, 28) + '<b>' + esc(n.name) + '</b></a>' + (mine ? starButton(n) : '') + '</span>';
-    }).join('') + '</div>' : '<p class="ga-micro">' + (mine ? '☆ A GENRE ON THE MAP OR ITS DOSSIER TO KEEP IT HERE.' : 'NO GENRE YET.') + '</p>') + '</section>';
+    }).join('') + '</div>' : '<p class="ga-micro">' + (mine ? '☆ A GENRE ON THE MAP OR ITS PAGE TO KEEP IT HERE.' : 'NO GENRE YET.') + '</p>') + '</section>';
     if (mine) {
       heard.sort(function (a, b) { return atlas.heard[b] < atlas.heard[a] ? -1 : atlas.heard[b] > atlas.heard[a] ? 1 : 0; });
       html += '<section class="ga-me-sec"><h2 class="ga-micro">HEARD LATELY</h2>' + (heard.length ? '<div class="ga-me-list">' + heard.slice(0, 24).map(function (id) {
@@ -840,7 +818,7 @@
     var a = ACC, note = (A.msg ? '<p class="ga-anote">' + esc(A.msg) + '</p>' : '') + (A.err ? '<p class="ga-aerr" role="alert">' + esc(A.err) + '</p>' : '');
     var html = '<main class="ga-contact ga-me"><div class="ga-hero"><div><p class="ga-micro">[MY ATLAS] ' + esc(a.pseudo.toUpperCase()) + ' · SINCE ' + esc(a.since) + '</p><h1>Your atlas.</h1></div>' + atlasStats(ME) + '</div>' + note;
     if (!Object.keys(ME.heard).length && !ME.genres.length && !ME.tracks.length) {
-      html += '<section class="ga-me-empty"><p class="ga-desc">Nothing here yet. Press HEAR on a genre, or RADIO on a family: every genre you listen to for ' + HEARD_AFTER + ' seconds lights up here and on the map (◐ MY MAP). ☆ a genre and ♥ a song in the player to keep them.</p>' +
+      html += '<section class="ga-me-empty"><p class="ga-desc">Nothing here yet. Press ▶ LISTEN on a genre or a family: every genre you listen to for ' + HEARD_AFTER + ' seconds lights up here and on the map (◐ MY MAP). ☆ a genre and ♥ a song in the player to keep them.</p>' +
         '<a class="ga-cta" href="' + esc(CFG.base) + '" data-go="0"><span>OPEN THE ATLAS</span><span aria-hidden="true">→</span></a></section>';
     } else html += atlasSections(ME, true);
     var linked = ['google', 'facebook'].filter(function (p) { return a.providers[p] || (CFG.sso && CFG.sso[p]); }).map(function (p) {
@@ -906,7 +884,7 @@
    * The lineage on top (two levels, then how many more), the genre in the
    * middle, its subgenres fanned out below in two rows of four at most: the
    * same eight seats and editorial groups as the desktop ring. A tap glides a
-   * subgenre into the centre; holding a genre plays its 30 seconds. The
+   * subgenre into the centre. The
    * vertical tree stays one tap away (MAP / LIST).
    */
   function mobileToggle(n) {
@@ -930,10 +908,9 @@
     if (!n.kids.length) html += '<p class="ga-micro ga-mnone">NO SUBGENRE</p>';
     return '<main class="ga-mobile" style="--fam:' + color(n) + '">' + mobileToggle(n) +
       '<div class="ga-mmap" data-line="' + (shown.length ? lineTop : 0) + '"><svg class="ga-mlinks" aria-hidden="true"></svg>' + html + '</div>' +
-      '<p class="ga-micro ga-mhint">TAP A GENRE TO CENTRE IT · HOLD IT TO HEAR IT</p>' +
+      '<p class="ga-micro ga-mhint">TAP A GENRE TO CENTRE IT</p>' +
       '<section class="ga-mabout">' + (n.d ? '<p class="ga-desc">' + esc(n.d) + '</p>' : '') +
-      (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : '<a class="ga-cta" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>OPEN DOSSIER</span><span>↗</span></a>') +
-      hearButton(n, true) + '</section>' + foot() + '</main>';
+      hearButton(n) + (n.grp ? '<p class="ga-micro">EDITORIAL GROUP — NOT A GENRE</p>' : pageButton(n)) + '</section>' + foot() + '</main>';
   }
   // Second pass, once the centre's name is laid out: the rows go under it,
   // and so do the links, which would otherwise run across the name.
@@ -974,21 +951,6 @@
     el.style.transform = 'translate(calc(-50% + ' + f2(b.left + b.width / 2 - a.left - a.width / 2) + 'px),' + f2(b.top + b.height / 2 - a.top - a.height / 2) + 'px) scale(' + f2(b.width / a.width) + ')';
     setTimeout(function () { select(n, true); root.classList.add('ga-enter'); setTimeout(function () { root.classList.remove('ga-enter'); }, 900); }, 330);
   }
-  // Holding a genre plays it: the phone's answer to pointing with a mouse.
-  var held = { t: 0, fired: false };
-  root.addEventListener('pointerdown', function (e) {
-    var t = e.target.closest('.ga-mnd,.ga-manc,.ga-mctr .ga-glyph');
-    if (!t) return;
-    var el = t.closest('.ga-mnd,.ga-manc,.ga-mctr'), id = Number(el.getAttribute('data-centre') || el.getAttribute('data-id'));
-    held.fired = false; clearTimeout(held.t);
-    held.t = setTimeout(function () {
-      held.fired = true; el.classList.add('ga-press');
-      setTimeout(function () { el.classList.remove('ga-press'); }, 500);
-      hear(id, false, true);
-    }, 450);
-  });
-  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) { root.addEventListener(ev, function () { clearTimeout(held.t); }); });
-  root.addEventListener('contextmenu', function (e) { if (e.target.closest('.ga-mnd,.ga-manc,.ga-mctr')) e.preventDefault(); });
 
   /* ---------- dossier: a full page per genre ----------
    * Same grid for every block: a 220 px column on the left (the glyph, or the
@@ -1563,7 +1525,6 @@
   }
 
   root.addEventListener('click', function (e) {
-    if (held.fired) { held.fired = false; e.preventDefault(); return; }   // a long press played the genre
     var mv = e.target.closest('[data-mview]');
     if (mv && root.contains(mv)) { e.preventDefault(); S.mview = mv.getAttribute('data-mview'); render(); window.scrollTo(0, 0); return; }
     var gl = e.target.closest('.ga-mnd');
@@ -1617,12 +1578,10 @@
       else if (me.hasAttribute('data-signout')) api('account/logout', 'POST').then(function () { location.replace(CFG.meUrl || '/my-atlas/'); }).catch(function () { location.reload(); });
       return;
     }
-    var h = e.target.closest('[data-hear],[data-sound],[data-radio]');
+    var h = e.target.closest('[data-hear]');
     if (h && root.contains(h)) {
       e.preventDefault();
-      if (h.hasAttribute('data-sound')) setSound(!SOUND);
-      else if (h.hasAttribute('data-radio')) radio(Number(h.getAttribute('data-radio')));
-      else hear(Number(h.getAttribute('data-hear')), false, true);
+      tune(Number(h.getAttribute('data-hear')));
       return;
     }
     var mo = e.target.closest('[data-more]');

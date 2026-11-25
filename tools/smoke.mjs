@@ -208,8 +208,10 @@ try {
 		await page.goto( permalink( ring.node ), { waitUntil: 'networkidle' } );
 		await page.waitForSelector( '.ga-panel', { timeout: 10000 } );
 		const ctas = await page.locator( '.ga-panel .ga-cta' ).allInnerTexts();
-		check( 'fiche : OPEN DOSSIER passe avant CENTRE ON dans le panneau',
-			ctas.length >= 1 && /OPEN DOSSIER/.test( ctas[ 0 ] ) && ctas.slice( 1 ).every( t => ! /OPEN DOSSIER/.test( t ) ),
+		const lead = /LISTEN/.test( ctas[ 0 ] || '' ) ? 1 : 0;
+		check( 'fiche : ▶ LISTEN en tete du panneau, puis GENRE PAGE, avant CENTRE ON ; plus de HEAR, RADIO ni DOSSIER',
+			ctas.length >= 1 && /GENRE PAGE/.test( ctas[ lead ] ) && ctas.filter( t => /GENRE PAGE/.test( t ) ).length === 1
+				&& ctas.filter( t => /LISTEN/.test( t ) ).length === lead && ! ctas.some( t => /DOSSIER|\bHEAR\b|\bRADIO\b/.test( t ) ),
 			ctas.map( t => t.replace( /\s+/g, ' ' ).trim() ).join( ' | ' ) );
 		await page.locator( '.ga-panel [data-about]' ).first().click();
 		await page.waitForSelector( '.ga-dossier', { timeout: 10000 } );
@@ -669,8 +671,8 @@ try {
 	}
 
 	// 8c. Sound: every song plays whole, in YouTube's player (played here by
-	// FAKE_YT). Pointing at a genre plays it once SOUND ON is chosen, in a
-	// bar that keeps playing from page to page.
+	// FAKE_YT), asked for with LISTEN only, in a bar that keeps playing from
+	// page to page. Pointing at a genre or holding it plays nothing.
 	const videosOf = pg => pg.evaluate( () => ( window.__yt || [] ).filter( x => x[ 0 ] === 'video' || x[ 0 ] === 'list' ).length );
 	const sc = tree.nodes.find( n => {
 		const k = tree.nodes.filter( x => x.p === n.id );
@@ -679,62 +681,38 @@ try {
 	if ( sc ) {
 		const [ sk, sk2 ] = tree.nodes.filter( x => x.p === sc.id && x.s );
 		const snd = await newPage( 1440, 900 );
-		await snd.addInitScript( () => { window.__ytLen = 60; } );     // songs that last, for the hover checks
+		await snd.addInitScript( () => { window.__ytLen = 60; } );     // songs that last
 		const asked = [], toYoutube = [];
 		snd.on( 'request', r => { if ( r.url().includes( '/genre-atlas/v1/sound/' ) ) asked.push( r.url() ); if ( /youtube\.com/.test( r.url() ) ) toYoutube.push( r.url() ); } );
 		await centre( snd, sc );
 		const nodeOf = id => snd.locator( `.ga-map .ga-node[data-go="${ id }"], .ga-map .ga-node[data-centre="${ id }"]` ).first();
-		const node = nodeOf( sk.id );
-		await node.hover();
+		await nodeOf( sk.id ).hover();
 		await snd.waitForTimeout( 900 );
 		const silent = asked.length === 0 && toYoutube.length === 0 && await snd.locator( '.ga-bar' ).isHidden();
-		check( 'son : rien ne joue ni ne part chez YouTube avant SOUND ON', silent && /SOUND OFF/.test( await snd.locator( '.ga-sound' ).innerText() ), `${ asked.length } demande(s), ${ toYoutube.length } appel(s) a YouTube` );
-		await snd.locator( '.ga-sound' ).click();
-		await snd.locator( '.ga-map .ga-node.centre' ).hover();
-		await snd.waitForTimeout( 100 );
-		await node.hover();
+		check( 'son : pointer un genre ne joue rien, et l interrupteur SOUND a disparu', silent && await snd.locator( '.ga-sound,[data-sound]' ).count() === 0, `${ asked.length } demande(s), ${ toYoutube.length } appel(s) a YouTube` );
+		await snd.locator( `.ga-panel [data-hear="${ sc.id }"]` ).first().click();
 		await snd.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
 		await snd.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
-		const want = await fetch( `${ BASE }/wp-json/genre-atlas/v1/sound/${ sk.id }?i=0` ).then( r => r.json() );
+		const want = await fetch( `${ BASE }/wp-json/genre-atlas/v1/sound/${ sc.id }?i=0` ).then( r => r.json() );
 		const title = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
 		const shown = await snd.locator( '.ga-bar .ga-bar-yt' ).isVisible();
 		const noPreview = await snd.locator( '.ga-bar [data-bar="mode"]' ).count() === 0 && ! /PREVIEW/.test( await snd.locator( '.ga-bar' ).innerText() );
-		check( 'son : SOUND ON, pointer un genre joue son titre entier sur YouTube, sans extrait de 30 s', title === want.title && await videosOf( snd ) === 1 && shown && noPreview && /SOUND ON/.test( await snd.locator( '.ga-sound' ).innerText() ),
+		check( 'son : LISTEN joue d abord le genre lui-meme, en titre entier sur YouTube, sans extrait de 30 s', title === want.title && await videosOf( snd ) === 1 && shown && noPreview,
 			`« ${ title } » pour « ${ want.title } », ${ await videosOf( snd ) } titre(s)` );
 		await snd.screenshot( { path: `${ SHOTS }/14-son.png` } );
-		// A song started by pointing gives way to the next genre pointed at;
-		// one asked for by hand does not.
-		await nodeOf( sk2.id ).hover();
-		await snd.waitForFunction( id => document.querySelector( '.ga-bar [data-about]' )?.getAttribute( 'data-about' ) === String( id ), sk2.id, { timeout: 8000 } ).catch( () => {} );
-		const moved = await snd.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => '' );
-		await snd.locator( `.ga-panel [data-hear="${ sc.id }"]` ).first().click().catch( () => {} );
-		await snd.waitForTimeout( 600 );
-		const byHand = await snd.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => '' );
-		await nodeOf( byHand === String( sk.id ) ? sk2.id : sk.id ).hover();
-		await snd.waitForTimeout( 900 );
-		const kept = await snd.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => '' );
-		check( 'son : un titre lance en pointant cede au genre pointe ensuite, pas un titre lance a la main', moved === String( sk2.id ) && !! byHand && kept === byHand,
-			`pointe : ${ moved }, a la main : ${ byHand }, apres : ${ kept }` );
-		// Clicking the genre redraws the page: the bar plays on, then on the dossier too.
-		const before = await videosOf( snd ), playingTitle = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
-		await snd.locator( '.ga-sound' ).click();                          // SOUND OFF: no more pointing
-		await snd.waitForTimeout( 200 );
-		const stillOn = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
+		// Clicking a genre redraws the page: the bar plays on, then on its page too.
+		const before = await videosOf( snd ), playingTitle = title;
 		await nodeOf( sk.id ).click();
 		await snd.waitForTimeout( 300 );
 		const onMap = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
 		await snd.locator( '.ga-panel [data-about]' ).first().click();
 		await snd.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
 		const onDossier = await snd.locator( '.ga-bar .ga-bar-t b' ).innerText().catch( () => '' );
-		check( 'son : la barre continue de la carte a la fiche', stillOn === playingTitle && onMap === playingTitle && onDossier === playingTitle && await videosOf( snd ) === before, `${ await videosOf( snd ) - before } titre(s) recharge(s)` );
-		await snd.locator( '.ga-sound' ).click().catch( () => {} );
+		check( 'son : la barre continue de la carte a la page du genre', onMap === playingTitle && onDossier === playingTitle && await videosOf( snd ) === before, `${ await videosOf( snd ) - before } titre(s) recharge(s)` );
 		await snd.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 		const closed = await snd.locator( '.ga-bar' ).isHidden();
-		await snd.reload( { waitUntil: 'networkidle' } );
-		await snd.waitForSelector( '.ga-ready', { timeout: 10000 } );
-		const remembered = /SOUND ON/.test( await snd.locator( '.ga-sound' ).innerText().catch( () => '' ) );
 		const stored = ( await snd.context().cookies() ).length;
-		check( 'son : ✕ ferme la barre, SOUND ON est garde dans le navigateur, sans cookie', closed && remembered && stored === 0, `${ stored } cookie(s)` );
+		check( 'son : ✕ ferme la barre, sans cookie', closed && stored === 0, `${ stored } cookie(s)` );
 		await snd.close();
 
 		// The radio of a branch: one song per genre, shuffled, the next
@@ -749,7 +727,7 @@ try {
 			const onAir = new Set( air( rc ).map( x => x.id ) );
 			const rd = await newPage( 1440, 900 );
 			await centre( rd, rc );
-			await rd.locator( `.ga-panel [data-radio="${ rc.id }"]` ).click();
+			await rd.locator( `.ga-panel [data-hear="${ rc.id }"]` ).click();
 			await rd.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-radio', { timeout: 8000 } ).catch( () => {} );
 			const label = await rd.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
 			const genreOf = async () => Number( await rd.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => 0 ) );
@@ -761,8 +739,8 @@ try {
 			await rd.waitForFunction( () => /\b03\//.test( document.querySelector( '.ga-bar-radio' )?.textContent || '' ), null, { timeout: 8000 } ).catch( () => {} );
 			const third = await genreOf();
 			await rd.screenshot( { path: `${ SHOTS }/14c-radio.png` } );
-			check( `radio : « ${ rc.name } » enchaine ses genres, seul et avec ⏭, sans sortir de la branche`,
-				label.startsWith( `RADIO ${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
+			check( `listen : « ${ rc.name } » joue d abord le genre, puis ses sous-genres, seul et avec ⏭, sans sortir de la branche`,
+				label.startsWith( `${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && ( ! rc.s || first === rc.id ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
 				&& new Set( [ first, second, third ] ).size === 3 && await videosOf( rd ) >= 3,
 				`${ label } → ${ auto }, ${ await videosOf( rd ) } titre(s)` );
 			await rd.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
@@ -780,7 +758,7 @@ try {
 		await md.locator( `.ga-panel [data-hear="${ sv.id }"]` ).click();
 		await md.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-note', { timeout: 8000 } ).catch( () => {} );
 		await md.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
-		const fullFirst = await videosOf( md ) === 1 && /FULL TRACK/.test( label ) && await md.locator( '.ga-bar .ga-bar-yt' ).isVisible();
+		const fullFirst = await videosOf( md ) === 1 && /LISTEN/.test( label ) && await md.locator( '.ga-bar .ga-bar-yt' ).isVisible();
 		const note = await md.locator( '.ga-bar .ga-bar-note' ).innerText().catch( () => '' );
 		const noSwitch = await md.locator( '[data-bar="mode"]' ).count() === 0 && ! /30 S/.test( note + await md.locator( '.ga-bar' ).innerText() );
 		await md.screenshot( { path: `${ SHOTS }/14e-titre-entier.png` } );
@@ -797,29 +775,26 @@ try {
 		const tw = await tel.evaluate( () => Math.max( document.documentElement.scrollWidth, document.querySelector( '.ga-bar' ).scrollWidth ) );
 		await tel.screenshot( { path: `${ SHOTS }/14b-son-mobile.png` } );
 		const theardAll = () => videosOf( tel );
-		check( 'mobile : HEAR joue le titre sans interrupteur, la barre tient dans la largeur', await theardAll() === 1 && hasToggle === 0 && tw <= 390, `${ await theardAll() } titre(s), ${ tw } px` );
-		// Holding a subgenre on the upright map plays it, without moving the map.
+		check( 'mobile : LISTEN joue le titre sans interrupteur, la barre tient dans la largeur', await theardAll() === 1 && hasToggle === 0 && tw <= 390, `${ await theardAll() } titre(s), ${ tw } px` );
+		// Holding a subgenre on the upright map plays nothing any more.
 		await tel.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 		await centre( tel, sc );
 		const beforeHold = await theardAll();
-		const held = tel.locator( `.ga-mmap .ga-mnd[data-centre="${ sk.id }"]` );
-		const hb = await held.boundingBox();
+		const hb = await tel.locator( `.ga-mmap .ga-mnd[data-centre="${ sk.id }"]` ).boundingBox();
 		if ( hb ) {
 			await tel.mouse.move( hb.x + hb.width / 2, hb.y + 20 );
 			await tel.mouse.down();
 			await tel.waitForTimeout( 700 );
 			await tel.mouse.up();
 		}
-		await tel.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-t b', { timeout: 8000 } ).catch( () => {} );
-		await tel.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
-		const stay = ( await tel.locator( '.ga-mctr h1' ).innerText().catch( () => '' ) ).toLowerCase();
-		const heldOn = await tel.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => '' );
-		check( 'mobile : un appui long sur un genre de la carte le fait entendre, sans changer de centre', !! hb && Number( heldOn ) === sk.id && stay === sc.name.toLowerCase() && await theardAll() - beforeHold === 1,
-			`${ await theardAll() - beforeHold } titre(s), centre « ${ stay } »` );
+		await tel.waitForTimeout( 900 );
+		check( 'mobile : un appui long sur un genre ne joue plus rien', !! hb && await theardAll() === beforeHold && ! /HOLD/.test( await tel.locator( '.ga-mobile' ).innerText().catch( () => '' ) ),
+			`${ await theardAll() - beforeHold } titre(s)` );
 		await tel.screenshot( { path: `${ SHOTS }/14d-appui-long.png` } );
 		// A full track on a phone: the video goes into the bar, which grows,
 		// and the page makes room for it, so nothing is hidden under a card.
 		await tel.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await tel.goto( 'about:blank' );                 // the press above was a tap: it centred the genre, so load it afresh
 		await centre( tel, sv );
 		await tel.locator( `.ga-mobile [data-hear="${ sv.id }"]` ).click();
 		await tel.waitForFunction( () => ( window.__yt || [] ).some( x => x[ 0 ] === 'video' ), null, { timeout: 8000 } ).catch( () => {} );
