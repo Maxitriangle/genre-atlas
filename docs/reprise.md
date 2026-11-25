@@ -1,9 +1,15 @@
 # Reprise — état au 25/11/2026 (v0.30.0)
 
-**Où on s'est arrêté (25/11/2026, fin de journée, à la demande de Maxime : « on arrête pour aujourd'hui »)** :
-- **v0.28.0** (point 4 : menu et page `/about/`) est fusionnée (PR #43). À vérifier : Release lancée et extension mise à jour ?
-- Maxime a finalement repris le même jour : **v0.29.0, point 5, My atlas**, prête dans la PR #44 (qui porte aussi cette note de reprise). Les **cinq points des améliorations UX sont alors faits**.
-- Puis **mesurer** : objectif proposé de 1 à 2 % des visiteurs qui créent un compte (6 à 12 par mois sur environ 600 visiteurs uniques), et quelques suggestions par mois. Demander à Maxime les chiffres un mois après v0.27.0 (invitation au compte, SUGGEST en tête de fiche).
+**Où on s'est arrêté (25/11/2026, soir ; Maxime : « je dois arrêter, on reprendra ici »)** :
+- **v0.30.0 est sur la branche `claude/dazzling-shannon-x50md9`, pas encore sur `main`.** Elle contient :
+  1. le tempo retiré partout ;
+  2. la page légale complétée (conditions de YouTube, licence MusicBrainz) ;
+  3. les dons par Ko-fi.
+- Le banc de test tournait au moment de l'arrêt. **En reprenant** : lire son résultat (ou relancer `tools/test-local.sh`) ; s'il est vert, ouvrir la PR v0.30.0, puis Maxime fusionne, lance Release et met à jour l'extension. Rien à réimporter.
+- **Ensuite, côté Maxime** (« on fera ça plus tard ») :
+  - créer sa page Ko-fi et saisir son adresse dans Genres → Settings → Donations ; tant que ce champ est vide, rien sur les dons ne s'affiche ;
+  - s'inscrire gratuitement chez MetaBrainz (offre « non-profit »).
+- **Puis** : mesurer comptes, suggestions et dons environ un mois après (objectif proposé : 1 à 2 % des visiteurs créent un compte). Détails dans les sections « Dons et licences », « Dons : la mise en place » et « Tempo retiré ».
 
 **Publié** :
 - v0.25.0 (14/11/2026) : les artistes élargis couvrent les 15 familles et tuiles (24 160 artistes, 352 genres encore sans artiste). Étapes : v0.22.0 à v0.25.0.
@@ -11,7 +17,7 @@
 - v0.27.0 : page d'un genre avec LISTEN · SAVE · SUGGEST en tête, une seule section ARTISTS, invitation à créer un compte.
 - v0.28.0 : menu et page ABOUT.
 - v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), installée.
-- **v0.30.0 prête** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz) ; **dons par Ko-fi** (dormants tant que Maxime n'a pas saisi son adresse Ko-fi dans Genres → Settings). Voir « Dons et licences » et « Dons : la mise en place ».
+- **v0.30.0 sur la branche, PR à ouvrir** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz) ; **dons par Ko-fi** (dormants tant que Maxime n'a pas saisi son adresse Ko-fi dans Genres → Settings). Voir « Dons et licences » et « Dons : la mise en place ».
 - Détails dans la dernière section, « Améliorations UX ».
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`) ; rendre la page ABOUT éditable dans WordPress (« on verra plus tard », idée notée dans la section v0.28.0) ; remplacer le logo « GENRE » par « EVERY GENRE » (proposé, pas tranché).
