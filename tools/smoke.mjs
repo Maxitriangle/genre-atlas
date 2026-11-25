@@ -982,6 +982,7 @@ try {
 		const folded = foldedFirst;
 		await ac2.locator( `.ga-me-fam[data-mfam="${ fam.id }"]` ).click();
 		const famText = await ac2.locator( `#ga-mfam-${ fam.id }` ).innerText().catch( () => '' );
+		const opened = await ac2.locator( '.ga-me-famopen:visible' ).count();
 		await ac2.screenshot( { path: `${ SHOTS }/16d-famille.png`, fullPage: true } );
 		await ac2.locator( `[data-discover="${ fam.id }"]` ).click().catch( () => {} );
 		await ac2.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-radio', { timeout: 8000 } ).catch( () => {} );
@@ -990,8 +991,8 @@ try {
 		await ac2.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
 		check( 'my atlas : une famille se deplie sur ses genres ecoutes, DISCOVER joue ceux pas encore entendus ; reglages replies en bas, SIGN OUT visible',
 			famText.toLowerCase().includes( sv2.name.toLowerCase() ) && /HEARD/.test( famText ) && /DISCOVER WHAT I HAVEN'T HEARD/.test( famText )
-			&& disc.startsWith( fam.name.toUpperCase() ) && discId && discId !== sv2.id && tileOf( discId ).id === fam.id && folded,
-			`${ famText.replace( /\s+/g, ' ' ).slice( 0, 110 ) } ; ${ disc } ; genre ${ discId } (famille ${ tileOf( discId ).id }/${ fam.id }) ; replies ${ folded }` );
+			&& disc.startsWith( fam.name.toUpperCase() ) && discId && discId !== sv2.id && tileOf( discId ).id === fam.id && folded && opened === 1,
+			`${ famText.replace( /\s+/g, ' ' ).slice( 0, 110 ) } ; ${ disc } ; genre ${ discId } (famille ${ tileOf( discId ).id }/${ fam.id }) ; replies ${ folded }, ${ opened } famille(s) ouverte(s)` );
 		await ac2.locator( '[data-set="public"]' ).click();
 		await ac2.waitForSelector( '[data-set="public"].on', { timeout: 5000 } ).catch( () => {} );
 		const profile = `${ BASE }/atlas/${ pseudo }/`;
