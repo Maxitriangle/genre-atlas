@@ -160,7 +160,8 @@
   .ga-header{height:56px;padding:0 12px 0 16px;gap:12px}
   .ga-logo{font-size:17px}
   .ga-nav{gap:14px}
-  .ga-nav a:not(.ga-nav-rnd):not(.ga-nav-ct):not(.ga-nav-me){display:none}
+  .ga-nav a.ga-nav-ct{display:none}               /* CONTACT stays in the foot of every page */
+  .ga-nav-who{max-width:9ch}
   .ga-long{display:none}
   .ga-search{width:auto;flex-grow:1;max-width:240px}
   .ga-index{padding:24px 16px}
@@ -642,3 +643,14 @@ html.ga-inviting{overflow:hidden}
   .ga-invite-box{padding:28px 20px 20px}
 }
 #genre-atlas .ga-dacts + .ga-lede{margin-top:24px}
+
+/* The menu: ABOUT · RANDOM · CONTACT · SIGN IN, or the member's pseudo. */
+.ga-nav-me{gap:6px}
+.ga-nav-me>span[aria-hidden]{color:var(--fam)}
+.ga-nav-who{display:inline-block;max-width:16ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ga-foot-links{display:flex;flex-wrap:wrap;gap:6px 18px}
+/* About: the text in the legal page's grid, the glyph legend under it. */
+.ga-info .ga-info-glyphs{display:block;padding:0;margin-top:36px}
+.ga-info .ga-info-glyphs section>div{gap:16px}
+.ga-info-go{margin-top:36px}
+#genre-atlas .ga-info-go .ga-cta{display:inline-flex;min-width:280px;gap:32px}

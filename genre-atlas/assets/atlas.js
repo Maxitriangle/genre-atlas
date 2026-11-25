@@ -7,6 +7,7 @@
   // The legal page's text is written by the server, once: lifted here before
   // the first render draws the atlas over it.
   var LEGAL = Number(CFG.legal) === 1 && root.querySelector('.ga-legal-text') ? root.querySelector('.ga-legal-text').innerHTML : '';
+  var INFO = Number(CFG.info) === 1 && root.querySelector('.ga-info-text') ? root.querySelector('.ga-info-text').innerHTML : '';
 
   var RING_MAX = 8, ARC_MAX = 8, DIAL_STEP = 6, GROUP_LIMIT = 8, GROUP_SEP = '>';
   var SHAPES = ['circle', 'hex', 'pent', 'square', 'diamond', 'oct', 'tri_up', 'tri_down', 'hex_r'];
@@ -17,7 +18,7 @@
   var ROOTS = [];        // roots of the tree: genres with no parent
   var TILES = [];        // the home page entry points, in their own order
   var COUNT = 0;         // genres only: a group is a display device, not a genre
-  var S = { view: 'map', mview: 'map', me: false, prof: '', mine: false, centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false, legal: false };
+  var S = { view: 'map', mview: 'map', me: false, prof: '', mine: false, centre: 0, open: 0, dial: 0, expanded: {}, q: '', legend: false, about: 0, fromMap: false, random: false, rq: '', contact: false, legal: false, info: false };
   var R = { within: 0, sub: false, all: false }; // the random draw's filter
   var DRAWN = {};        // ids drawn this visit: not drawn again until the pool runs out
   var DOS = {};          // id -> what a dossier adds to the tree, fetched on demand
@@ -188,7 +189,7 @@
     S.legend = false;
     S.random = false;
     S.contact = false;
-    S.legal = false;
+    S.legal = false; S.info = false;
     S.me = false;
     S.about = about && n && !n.grp ? n.id : 0;
     if (!n) { S.centre = 0; S.open = 0; }
@@ -234,6 +235,7 @@
     if (st.random) { readRandom(); showRandom(false); return; }
     if (st.contact) { readContact(); showContact(false); return; }
     if (st.legal) { showLegal(); return; }
+    if (st.info) { showInfo(); return; }
     if (st.me) { showMe(false); return; }
     if (st.profile) { showProfile(st.profile, false); return; }
     select(N[st.id] || null, st.c, false, st.about);
@@ -243,10 +245,10 @@
   /* ---------- shared pieces ---------- */
   function header() {
     return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
-      '<nav class="ga-nav" aria-label="Primary"><a href="' + esc(CFG.base) + '" data-go="0"' + (!S.centre && !S.legend && !S.random && !S.contact && !S.legal && !S.me && !S.about ? ' class="on"' : '') + '>INDEX</a><a href="#legend" data-legend="1"' + (S.legend ? ' class="on"' : '') + '>LEGEND</a>' +
+      '<nav class="ga-nav" aria-label="Primary"><a class="ga-nav-info' + (S.info ? ' on' : '') + '" href="' + esc(infoUrl()) + '">ABOUT</a>' +
       '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a>' +
       '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a>' +
-      '<a class="ga-nav-me' + (S.me ? ' on' : '') + '" href="' + esc(CFG.meUrl || '/my-atlas/') + '" data-me="1"><span class="ga-long">MY&nbsp;</span>ATLAS</a></nav>' +
+      '<a class="ga-nav-me' + (S.me ? ' on' : '') + '" href="' + esc(CFG.meUrl || '/my-atlas/') + '" data-me="1"' + (signedIn() ? ' title="My atlas"><span aria-hidden="true">◉</span><span class="ga-nav-who">' + esc(String(ACC.pseudo || 'MY ATLAS').toUpperCase()) + '</span>' : '>SIGN IN') + '</a></nav>' +
       '<div class="ga-search"><label class="ga-sr" for="ga-q">Search genres</label><input id="ga-q" type="search" autocomplete="off" placeholder="SEARCH ' + pad(COUNT, 4) + ' GENRES" value="' + esc(S.q) + '"><div class="ga-results" id="ga-results"></div></div></header>';
   }
   function subbar(sel) {
@@ -736,7 +738,7 @@
     return signedIn() ? '<button type="button" class="ga-mine' + (S.mine ? ' on' : '') + '" data-mine="1" aria-pressed="' + S.mine + '" title="Dim the genres you have not heard yet">◐ MY MAP</button>' : '';
   }
   function showMe(push) {
-    S.prof = ''; S.me = true; S.contact = false; S.random = false; S.legal = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.prof = ''; S.me = true; S.contact = false; S.random = false; S.legal = false; S.info = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     document.title = (signedIn() ? 'My atlas' : 'Sign in') + ' — ' + (CFG.title || 'Genre');
     if (push !== false && history.pushState) { try { history.pushState({ me: true }, '', CFG.meUrl || '/my-atlas/'); } catch (e) { /* noop */ } }
     render(); window.scrollTo(0, 0);
@@ -900,7 +902,7 @@
   }
   function viewMe() { return S.prof ? viewProfile() : signedIn() ? viewAccount() : viewDoors(); }
   function showProfile(pseudo, push) {
-    S.prof = pseudo; S.me = true; S.contact = false; S.random = false; S.legal = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.prof = pseudo; S.me = true; S.contact = false; S.random = false; S.legal = false; S.info = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     A.profile = { pseudo: pseudo, data: null, err: '' };
     document.title = pseudo + '’s atlas — ' + (CFG.title || 'Genre');
     if (push !== false && history.pushState) { try { history.pushState({ profile: pseudo }, '', CFG.base.replace(/genre\/?$/, '') + 'atlas/' + pseudo + '/'); } catch (e) { /* noop */ } }
@@ -1299,7 +1301,7 @@
     R = { within: byPath(p.within), sub: p.sub === '1', all: p.all === '1' };
   }
   function showRandom(push) {
-    S.random = true; S.contact = false; S.legal = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
+    S.random = true; S.contact = false; S.legal = false; S.info = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = ''; S.rq = '';
     if (push !== false && window.history && history.pushState) { try { history.pushState({ random: true }, '', randomUrl()); } catch (e) { /* noop */ } }
     document.title = 'Random genre — ' + (CFG.title || 'Genre');
     render();
@@ -1379,7 +1381,7 @@
     if (p.error) C.error = p.error;
   }
   function showContact(push) {
-    S.contact = true; S.random = false; S.legal = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.contact = true; S.random = false; S.legal = false; S.info = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     if (push !== false && window.history && history.pushState) { try { history.pushState({ contact: true }, '', contactUrl(C.genre)); } catch (e) { /* noop */ } }
     document.title = 'Contact — ' + (CFG.title || 'Genre');
     render();
@@ -1481,28 +1483,46 @@
   }
 
   /* ---------- legend ---------- */
-  function viewLegend() {
+  function legendRules() {
     var r = TILES[0]; if (!r) return '';
     function rule(code, title, items) { return '<section><h2><b>' + code + '</b> ' + title + '</h2><div>' + items.map(function (it) { return '<figure>' + it[0] + '<figcaption>' + it[1] + '</figcaption></figure>'; }).join('') + '</div></section>'; }
     var base = { children: 0, depth: 0, year: 1990, bpm: null };
     function g(o, n) { var x = {}; for (var k in base) x[k] = base[k]; for (k in o) x[k] = o[k]; return glyph(n || r, 56, x); }
-    return '<main class="ga-legend"><div><p class="ga-micro">[LEGEND] GLYPH SPECIFICATION</p><h1>How to read<br>a glyph</h1><p class="ga-desc">No glyph is drawn by hand. Each one is generated from the genre\'s own data, so a subgenre always looks like its family. A missing arc or missing spokes simply mean the data has not been filled in yet.</p></div><div>' +
-      rule('A', 'FAMILY → FRAME + COLOUR', TILES.slice(0, 6).map(function (f) { return [g({}, f), esc(f.name)]; })) +
+    return rule('A', 'FAMILY → FRAME + COLOUR', TILES.slice(0, 6).map(function (f) { return [g({}, f), esc(f.name)]; })) +
       rule('B', 'TEMPO → SPOKES (ONE PER 20 BPM)', [60, 100, 140, 180].map(function (b) { return [g({ bpm: [b, b] }), b + ' BPM']; })) +
       rule('C', 'DEPTH → RINGS', [0, 1, 2, 3, 4].map(function (d) { return [g({ depth: d }), 'LEVEL ' + pad(d)]; })) +
-      rule('D', 'SUBGENRES → ORBIT NODES (MAX 12)', [0, 3, 7, 12].map(function (k) { return [g({ children: k }), pad(k) + ' SUB']; })) +
-      rule('E', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; })) + '</div>' + foot() + '</main>';
+      rule('D', 'SUBGENRES → ORBIT NODES (MAX 8)', [0, 3, 5, 8].map(function (k) { return [g({ children: k }), pad(k) + ' SUB']; })) +
+      rule('E', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; }));
   }
+
+  /* ---------- about ----------
+   * Text from the server (includes/about.php), in the atlas's own layout,
+   * with the glyph legend drawn under its last section. */
+  function infoUrl() { return CFG.infoUrl || '/about/'; }
+  function showInfo() {
+    S.info = true; S.legal = false; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    document.title = 'About — ' + (CFG.title || 'Genre');
+    render();
+  }
+  function viewInfo() {
+    var tiles = TILES.length;
+    return '<main class="ga-contact ga-legal ga-info"><div class="ga-hero"><div><p class="ga-micro">[ABOUT] THE PROJECT · HOW IT WORKS · THE GLYPHS</p><h1>Every genre,<br>every lineage.</h1></div>' +
+      '<dl class="ga-stats"><div><dt>GENRES</dt><dd>' + pad(COUNT, 4) + '</dd></div><div><dt>FAMILIES</dt><dd>' + pad(tiles) + '</dd></div></dl></div>' +
+      '<div class="ga-legal-text ga-prose ga-info-text">' + INFO + '</div>' +
+      '<div class="ga-legend ga-info-glyphs">' + legendRules() + '</div>' +
+      '<p class="ga-info-go"><a class="ga-cta" href="' + esc(CFG.base) + '" data-go="0"><span>OPEN THE ATLAS</span><span aria-hidden="true">→</span></a></p>' + foot() + '</main>';
+  }
+
 
   /* ---------- legal notice, privacy, credits ----------
    * Text from the server (includes/legal.php), in the atlas's own layout. */
   function legalUrl() { return CFG.legalUrl || '/legal/'; }
   // The foot of every page: the legal notice is never more than a scroll away.
   function foot() {
-    return '<footer class="ga-foot ga-micro"><a href="' + esc(legalUrl()) + '">LEGAL NOTICE · PRIVACY · CREDITS</a><span>NO TRACKER · NO AD OF ITS OWN</span></footer>';
+    return '<footer class="ga-foot ga-micro"><span class="ga-foot-links"><a href="' + esc(legalUrl()) + '">LEGAL NOTICE · PRIVACY · CREDITS</a><a href="' + esc(infoUrl()) + '">ABOUT</a><a href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a></span><span>NO TRACKER · NO AD OF ITS OWN</span></footer>';
   }
   function showLegal() {
-    S.legal = true; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
+    S.legal = true; S.info = false; S.contact = false; S.random = false; S.me = false; S.legend = false; S.about = 0; S.centre = 0; S.open = 0; S.q = '';
     document.title = 'Legal notice and privacy — ' + (CFG.title || 'Genre');
     render();
   }
@@ -1549,10 +1569,10 @@
   function render() {
     var focus = document.activeElement && document.activeElement.id === 'ga-q';
     var centre = N[S.centre], open = N[S.open] || null, html = header();
-    if (S.legend) html += viewLegend();
-    else if (S.random) html += viewRandom();
+    if (S.random) html += viewRandom();
     else if (S.contact) html += viewContact();
     else if (S.legal) html += viewLegal();
+    else if (S.info) html += viewInfo();
     else if (S.me) html += viewMe();
     else if (S.about && N[S.about]) html += viewDossier(N[S.about]);
     else if (!centre) html += viewIndex();
@@ -1678,7 +1698,7 @@
     var t = e.target.closest('[data-go],[data-centre],[data-view],[data-exp],[data-dial],[data-legend],[data-about],[data-close]');
     if (!t || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
-    if (t.hasAttribute('data-legend')) { S.legend = true; S.random = false; S.contact = false; S.legal = false; S.me = false; S.q = ''; S.about = 0; render(); }
+    if (t.hasAttribute('data-legend')) { location.href = infoUrl() + '#how-to-read-a-glyph'; return; }
     else if (t.hasAttribute('data-close')) { closeDossier(); }
     else if (t.hasAttribute('data-about')) { S.q = ''; openDossier(N[t.getAttribute('data-about')]); }
     else if (t.hasAttribute('data-centre')) { S.q = ''; select(N[t.getAttribute('data-centre')], true); }
@@ -1735,7 +1755,14 @@
   fetch(CFG.treeUrl).then(function (r) { return r.json(); }).then(function (tree) {
     return who.then(function (d) { useAccount(d.account || null); return tree; });
   }).then(function (tree) {
+    if (location.hash === '#legend') { location.replace(infoUrl() + '#how-to-read-a-glyph'); return; }   // the former LEGEND page
     build(tree);
+    if (Number(CFG.info) === 1) {
+      showInfo();
+      if (history.replaceState) { try { history.replaceState({ info: true }, ''); } catch (e) { /* noop */ } }
+      var to = location.hash && document.getElementById(location.hash.slice(1)); if (to) to.scrollIntoView();
+      return;
+    }
     if (Number(CFG.legal) === 1) {
       showLegal();
       if (history.replaceState) { try { history.replaceState({ legal: true }, ''); } catch (e) { /* noop */ } }

@@ -2,7 +2,7 @@
 
 **Publié et en ligne : v0.25.0** (14/11/2026), mise à jour installée et `artist-import.csv` réimporté par Maxime, vérifié sur le site. Les artistes élargis (jusqu'à 100 par genre, Wikidata confirmé par MusicBrainz, repli Wikidata sous 8) couvrent **les 15 familles et tuiles** : 24 160 artistes, 15 993 avec une chanson, 352 genres encore sans artiste (surtout Folk, Latin, Art music : rien dans Wikidata ni MusicBrainz). Étapes : v0.22.0 (Electronic, 100 par genre, SUGGEST, tout sur YouTube), v0.23.0 (Rock, Metal, Punk, Hip hop, Pop), v0.24.0 (les 9 autres familles), v0.25.0 (les trous comblés) ; détails dans les dernières sections.
 
-**En cours : les améliorations d'UX** (dernière section, « Améliorations UX »), point par point. v0.26.0 publiée (point 1, l'écoute). **v0.27.0 prête, PR ouverte** : points 2 et 3, la page d'un genre, SAVE et SUGGEST mis en avant. Reste : point 4 (menu et page ABOUT), point 5 (My atlas).
+**En cours : les améliorations d'UX** (dernière section, « Améliorations UX »), point par point. v0.26.0 (l'écoute) et v0.27.0 (page d'un genre, SAVE, SUGGEST) publiées. **v0.28.0 prête, PR ouverte** : point 4, le menu et la page ABOUT. Reste : point 5 (My atlas).
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`).
 
@@ -1201,3 +1201,17 @@ Choix de Maxime : les 8 essentiels seuls puis SHOW ALL ; LISTEN de la fiche comm
 - **☆ SAVE / ★ SAVED** porte son mot partout (carte, mobile, fiche) ; dans les listes de My atlas, l'étoile seule.
 - **Invitation** (`showInvite`) : pour un visiteur sans compte, ☆ SAVE ou ♥ ouvre une fenêtre sur la page. Elle contient « Keep X in your atlas », ce qu'apporte un atlas, CREATE MY ATLAS, I HAVE ONE · SIGN IN, NOT NOW ; Échap la ferme. Le genre demandé est gardé dans le navigateur (`ga-pending-fav`) et enregistré dans l'atlas dès la connexion (`savePending`, appelé par `useAccount`, avant même la lecture de l'arbre), puis effacé. Déclaré dans la page légale et le registre RGPD.
 - Banc : 103 vérifications (fiche : ARTISTS juste après l'en-tête, actions en tête, SHOW ALL ; propositions : bouton du haut ; comptes : invitation, Échap, genre gardé après l'inscription).
+
+### v0.28.0 : le menu et la page ABOUT (point 4)
+- **Menu** : ABOUT · RANDOM · CONTACT · SIGN IN. INDEX et LEGEND retirés, le logo ramène à l'accueil (proposé de le garder ; « EVERY GENRE » à la place de « GENRE » reste une idée non décidée). Connecté : ◉ et le pseudo au lieu de SIGN IN. Sur téléphone : ABOUT, RANDOM, SIGN IN ; CONTACT au pied de page.
+- **Pied de page** de chaque page : LEGAL NOTICE · ABOUT · CONTACT.
+- **Page ABOUT** `/about/` (`includes/about.php`, route `ga_info`, `S.info` côté script), sous « Every genre, every lineage. » :
+  - The project. Maxime a demandé « personal project », sans « non-commercial » ni la France ; la page légale garde « non-commercial », qui fonde l'anonymat de l'éditeur (LCEN) ;
+  - How it works : LISTEN, la carte, GENRE PAGE, SAVE et l'atlas, SUGGEST, RANDOM, les corrections ;
+  - Where it comes from ;
+  - How to read a glyph : les exemples dessinés de l'ancienne LEGEND, D corrigé en « MAX 8 » ;
+  - un bouton OPEN THE ATLAS.
+  - Côté serveur : titre, résumé et canonique propres ; lien depuis l'accueil sans script. Les anciens liens `#legend` renvoient à `/about/#how-to-read-a-glyph`.
+- Premier jet du texte rédigé par Claude (Maxime n'en avait pas) ; à faire relire.
+- **Mis de côté** (« on verra plus tard ») : rendre le texte éditable dans WordPress. Idée proposée : une page WordPress d'adresse `about`, publiée, remplace le texte du code (titres de niveau 2 = parties), les glyphes et le bouton restant dessous ; les chiffres y seraient figés.
+- Banc : 107 vérifications (menu, page ABOUT avec et sans script, `#legend`, mobile).

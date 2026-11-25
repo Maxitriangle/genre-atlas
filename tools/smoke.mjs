@@ -482,8 +482,8 @@ try {
 		await phone2.goto( `${ BASE }/contact/`, { waitUntil: 'networkidle' } );
 		await phone2.waitForSelector( '.ga-contact form', { timeout: 10000 } );
 		const width = await phone2.evaluate( () => document.documentElement.scrollWidth );
-		const menu = await phone2.locator( '.ga-nav [data-contact]' ).isVisible();
-		check( 'mobile : la page CONTACT tient dans la largeur, et son entree reste dans le menu', width <= 390 && menu, `${ width } px` );
+		const menu = await phone2.locator( '.ga-foot [data-contact]' ).count() > 0;
+		check( 'mobile : la page CONTACT tient dans la largeur, et reste a un toucher dans le pied de page', width <= 390 && menu, `${ width } px` );
 		await phone2.screenshot( { path: `${ SHOTS }/09c-contact-mobile.png`, fullPage: true } );
 		await phone2.close();
 	}
@@ -605,7 +605,7 @@ try {
 		lg.on( 'request', r => { const h = new URL( r.url() ).hostname; if ( h !== '127.0.0.1' && h !== 'localhost' ) outside.push( r.url() ); } );
 		await lg.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
 		await lg.waitForSelector( '.ga-ready', { timeout: 10000 } );
-		await lg.locator( '.ga-foot a' ).click();
+		await lg.locator( '.ga-foot a[href$="/legal/"]' ).click();
 		await lg.waitForURL( /\/legal\/$/, { timeout: 10000 } );
 		await lg.waitForSelector( '.ga-legal-text section', { timeout: 10000 } );
 		const heads = await lg.locator( '.ga-legal-text h2' ).allInnerTexts();
@@ -632,14 +632,46 @@ try {
 		const feet = [];
 		const fp = await newPage( 1440, 900 );
 		for ( const [ label, url, sel ] of [ [ 'fiche', lead ? `${ permalink( lead ) }about/` : `${ BASE }/`, '.ga-dossier' ], [ 'carte', lead ? permalink( lead ) : `${ BASE }/`, '.ga-panel' ],
-			[ 'hasard', `${ BASE }/genre/random/`, 'main' ], [ 'contact', `${ BASE }/contact/`, '.ga-contact' ], [ 'legende', `${ BASE }/#legend`, 'main' ] ] ) {
+			[ 'hasard', `${ BASE }/genre/random/`, 'main' ], [ 'contact', `${ BASE }/contact/`, '.ga-contact' ], [ 'about', `${ BASE }/about/`, '.ga-info' ] ] ) {
 			await fp.goto( url, { waitUntil: 'networkidle' } );
 			await fp.waitForSelector( '.ga-ready', { timeout: 10000 } );
-			if ( label === 'legende' ) { await fp.locator( '[data-legend]' ).first().click(); await fp.waitForSelector( '.ga-legend' ); }
 			if ( await fp.locator( `${ sel } .ga-foot a[href$="/legal/"]` ).count() === 0 ) feet.push( label );
 		}
 		await fp.close();
-		check( 'legal : le pied de chaque page mene a la page legale (fiche, carte, hasard, contact, legende)', feet.length === 0, feet.length ? `manque sur ${ feet.join( ', ' ) }` : '' );
+		check( 'legal : le pied de chaque page mene a la page legale (fiche, carte, hasard, contact, about)', feet.length === 0, feet.length ? `manque sur ${ feet.join( ', ' ) }` : '' );
+
+		// About: the project, how it works, the sources and the glyphs, on one
+		// page; the menu is ABOUT · RANDOM · CONTACT · SIGN IN, without INDEX
+		// or LEGEND (the logo goes home).
+		const ab = await newPage( 1440, 900 );
+		await ab.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await ab.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		const nav = ( await ab.locator( '.ga-nav' ).innerText() ).replace( /\s+/g, ' ' ).trim();
+		await ab.locator( '.ga-nav a', { hasText: 'ABOUT' } ).click();
+		await ab.waitForURL( /\/about\/$/, { timeout: 10000 } );
+		await ab.waitForSelector( '.ga-info .ga-info-glyphs section', { timeout: 10000 } );
+		const abHeads = await ab.locator( '.ga-info-text h2' ).allInnerTexts();
+		const rules = await ab.locator( '.ga-info-glyphs section' ).count();
+		const abOn = await ab.locator( '.ga-nav a.on' ).innerText().catch( () => '' );
+		const abPlain = await ( await fetch( `${ BASE }/about/` ) ).text();
+		await ab.screenshot( { path: `${ SHOTS }/17-about.png`, fullPage: true } );
+		check( 'about : menu ABOUT · RANDOM · CONTACT · SIGN IN, sans INDEX ni LEGEND',
+			/^ABOUT RANDOM CONTACT SIGN IN$/.test( nav ), nav );
+		check( 'about : la page dit le projet, son fonctionnement, ses sources et la lecture des glyphes, aussi sans script',
+			abHeads.length === 4 && /how it works/i.test( abHeads[ 1 ] ) && /glyph/i.test( abHeads[ 3 ] ) && rules === 5 && /ABOUT/.test( abOn ) && ( await ab.title() ).startsWith( 'About' )
+			&& /How it works/.test( abPlain ) && /rel="canonical" href="[^"]*\/about\/"/.test( abPlain ), `${ abHeads.join( ' · ' ) } ; ${ rules } regle(s) de glyphe` );
+		await ab.goto( `${ BASE }/#legend`, { waitUntil: 'networkidle' } );
+		await ab.waitForURL( /\/about\/#how-to-read-a-glyph$/, { timeout: 10000 } ).catch( () => {} );
+		check( 'about : l ancienne adresse #legend mene a la lecture des glyphes', /\/about\/#how-to-read-a-glyph$/.test( ab.url() ), ab.url() );
+		await ab.close();
+		const abPhone = await newPage( 390, 844 );
+		await abPhone.goto( `${ BASE }/about/`, { waitUntil: 'networkidle' } );
+		await abPhone.waitForSelector( '.ga-info', { timeout: 10000 } );
+		const abWide = await abPhone.evaluate( () => document.documentElement.scrollWidth );
+		const phoneNav = await abPhone.locator( '.ga-nav a:visible' ).allInnerTexts();
+		check( 'mobile : la page ABOUT tient dans la largeur, et le menu garde ABOUT, RANDOM et SIGN IN', abWide <= 390 && phoneNav.join( ' ' ).replace( /\s+/g, ' ' ) === 'ABOUT RANDOM SIGN IN', `${ abWide } px, ${ phoneNav.join( ' · ' ) }` );
+		await abPhone.screenshot( { path: `${ SHOTS }/17b-about-mobile.png`, fullPage: true } );
+		await abPhone.close();
 
 		// Audience measurement (Matomo, played by the bench): each page is
 		// counted once, even without a reload, and the legal page lets a
@@ -649,7 +681,6 @@ try {
 		await mt.waitForSelector( '.ga-ready', { timeout: 10000 } );
 		await mt.locator( '.ga-tile' ).first().click();
 		await mt.waitForURL( /\/genre\/[^/]+\/$/, { timeout: 10000 } );
-		await mt.locator( '[data-legend]' ).first().click();
 		const views = await mt.evaluate( () => window.__views );
 		check( 'mesure : chaque page est comptee une fois, meme sans rechargement, avec son adresse', views.length === 2 && new URL( views[ 1 ].url ).pathname.startsWith( '/genre/' ),
 			views.map( v => new URL( v.url ).pathname ).join( ' → ' ) );

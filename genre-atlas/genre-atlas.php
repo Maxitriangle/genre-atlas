@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.27.0
+ * Version: 0.28.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.27.0' );
+define( 'GENRE_ATLAS_VERSION', '0.28.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v3' );
@@ -30,6 +30,7 @@ require_once GENRE_ATLAS_DIR . 'includes/oauth.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/legal.php';
+require_once GENRE_ATLAS_DIR . 'includes/about.php';
 require_once GENRE_ATLAS_DIR . 'includes/glyph.php';
 require_once GENRE_ATLAS_DIR . 'includes/seo.php';
 require_once GENRE_ATLAS_DIR . 'includes/updater.php';
@@ -335,6 +336,8 @@ function genre_atlas_enqueue() {
 			'random'       => is_post_type_archive( 'genre' ) && get_query_var( 'ga_random' ) ? 1 : 0,
 			'contact'      => genre_atlas_is_contact() ? 1 : 0,
 			'legal'        => genre_atlas_is_legal() ? 1 : 0,
+			'info'         => genre_atlas_is_info() ? 1 : 0,
+			'infoUrl'      => home_url( '/about/' ),
 			'me'           => genre_atlas_is_me() ? 1 : 0,
 			'meUrl'        => home_url( '/my-atlas/' ),
 			'heardAfter'   => genre_atlas_heard_after(),
@@ -375,6 +378,9 @@ function genre_atlas_fallback_html() {
 	}
 	if ( genre_atlas_is_legal() ) {
 		return genre_atlas_legal_html();
+	}
+	if ( genre_atlas_is_info() ) {
+		return genre_atlas_info_html();
 	}
 	if ( genre_atlas_is_me() ) {
 		return genre_atlas_me_html();
