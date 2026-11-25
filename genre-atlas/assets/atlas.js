@@ -578,7 +578,7 @@
       (air.length > 1 ? (n.s ? 'THIS GENRE + ' + pad(air.length - 1) + ' SUBGENRE' + (air.length > 2 ? 'S' : '') : pad(air.length) + ' SUBGENRES') : 'FULL TRACKS') + '</span></button>' : '';
   }
   function pageButton(n) {
-    return n.grp ? '' : '<a class="ga-cta' + (onAirList(n).length ? ' ghost' : '') + '" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>GENRE PAGE</span><span class="ga-micro">ARTISTS · STORY · SOURCES</span><span aria-hidden="true">↗</span></a>';
+    return n.grp ? '' : '<a class="ga-cta' + (onAirList(n).length ? ' ghost' : '') + '" href="' + esc(url(n)) + 'about/" data-about="' + n.id + '"><span>GENRE PAGE</span><span class="ga-micro">ARTISTS · STORY</span><span aria-hidden="true">↗</span></a>';
   }
 
 
