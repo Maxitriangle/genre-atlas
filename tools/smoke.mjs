@@ -933,7 +933,6 @@ try {
 		const early = await fetch( `${ BASE }/wp-json/genre-atlas/v1/account/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify( { login: pseudo, password: pass } ) } ).then( r => r.json() );
 		await ac.goto( verify, { waitUntil: 'networkidle' } );
 		await ac.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
-		const foldedFirst = await ac.locator( '#ga-setbody' ).isHidden() && await ac.locator( '.ga-settings [data-signout]' ).isVisible();
 		await openSettings( ac );
 		const welcome = await ac.locator( '.ga-me .ga-hero' ).innerText().catch( () => '' );
 		await ac.screenshot( { path: `${ SHOTS }/16-compte.png`, fullPage: true } );
@@ -974,7 +973,8 @@ try {
 		await ac2.locator( `.ga-panel [data-hear="${ sv2.id }"]` ).click();
 		await ac2.waitForTimeout( 2600 );
 		await ac2.goto( me, { waitUntil: 'networkidle' } );
-		await ac2.waitForSelector( '.ga-settings', { timeout: 10000 } ).catch( () => {} );
+		await ac2.waitForSelector( '.ga-settings [data-setopen]', { timeout: 10000 } ).catch( () => {} );
+		const foldedFirst = await ac2.locator( '#ga-setbody' ).isHidden() && await ac2.locator( '.ga-settings [data-signout]' ).isVisible();
 		await openSettings( ac2 );
 		const lines = await ac2.locator( '.ga-history li' ).count();
 		const tileOf = id => { let n = byId.get( id ); while ( n.p && ! n.f && byId.get( n.p ) ) n = byId.get( n.p ); return n; };
@@ -991,7 +991,7 @@ try {
 		check( 'my atlas : une famille se deplie sur ses genres ecoutes, DISCOVER joue ceux pas encore entendus ; reglages replies en bas, SIGN OUT visible',
 			famText.toLowerCase().includes( sv2.name.toLowerCase() ) && /HEARD/.test( famText ) && /DISCOVER WHAT I HAVEN'T HEARD/.test( famText )
 			&& disc.startsWith( fam.name.toUpperCase() ) && discId && discId !== sv2.id && tileOf( discId ).id === fam.id && folded,
-			`${ famText.replace( /\s+/g, ' ' ).slice( 0, 110 ) } ; ${ disc } ; genre ${ discId }` );
+			`${ famText.replace( /\s+/g, ' ' ).slice( 0, 110 ) } ; ${ disc } ; genre ${ discId } (famille ${ tileOf( discId ).id }/${ fam.id }) ; replies ${ folded }` );
 		await ac2.locator( '[data-set="public"]' ).click();
 		await ac2.waitForSelector( '[data-set="public"].on', { timeout: 5000 } ).catch( () => {} );
 		const profile = `${ BASE }/atlas/${ pseudo }/`;
@@ -1002,7 +1002,7 @@ try {
 		const shown = await page.locator( '.ga-me' ).innerText().catch( () => '' );
 		await page.locator( `.ga-me-fam[data-mfam="${ fam.id }"]` ).click().catch( () => {} );
 		const pubFam = await page.locator( `#ga-mfam-${ fam.id }` ).innerText().catch( () => '' );
-		check( 'my atlas : le profil public deplie aussi les familles, sans bouton DISCOVER', pubFam.toLowerCase().includes( sv2.name.toLowerCase() ) && ! /DISCOVER/.test( pubFam ), pubFam.replace( /\s+/g, ' ' ).slice( 0, 90 ) );
+		check( 'my atlas : le profil public deplie aussi les familles, sans bouton DISCOVER', pubFam.toLowerCase().includes( sv2.name.toLowerCase() ) && ! /DISCOVER WHAT/.test( pubFam ), pubFam.replace( /\s+/g, ' ' ).slice( 0, 90 ) );
 		await page.screenshot( { path: `${ SHOTS }/16b-profil-public.png`, fullPage: true } );
 		await page.close();
 		const [ dl ] = await Promise.all( [ ac2.waitForEvent( 'download', { timeout: 8000 } ).catch( () => null ), ac2.locator( '[data-export]' ).click() ] );
