@@ -1,7 +1,8 @@
 <?php
 /**
  * /about/: what the atlas is, how to use it, where its data comes from and
- * how to read a glyph (the former LEGEND page). The site-level /about/ is
+ * how to read a glyph (the former LEGEND page). It says a personal project,
+ * made by one person: neither "non-commercial" nor where they live (Maxime). The site-level /about/ is
  * not a genre's /genre/…/about/ page: that one stays the genre's own.
  *
  * The text is written here, once: the server prints it in the page, and the
@@ -49,7 +50,7 @@ function genre_atlas_info_sections() {
 		'The project'        => array(
 			$site . ' is an atlas of every music genre: ' . $genres . ' of them, from ambient to zydeco, each placed in one family tree. Every genre has a single parent, so a lineage can always be followed back to its roots: thrash metal comes from heavy metal, which comes from metal, which comes from rock.',
 			'It is meant to be heard as much as read. Every genre that has songs plays them in full, and every genre page gives its key artists' . ( $artists ? ' (' . number_format( $artists ) . ' artists in all)' : '' ) . '.',
-			'It is a personal, non-commercial project, made by one person in France. There is no advertising and no tracker of its own.',
+			'It is a personal project, made by one person. There is no advertising and no tracker of its own.',
 		),
 		'How it works'       => array(
 			'<b>▶ LISTEN</b> plays a genre in full tracks, then moves on through its subgenres, one song each. Songs play in YouTube’s player, which loads only when you press play.',
