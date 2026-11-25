@@ -1213,4 +1213,5 @@ Choix de Maxime : les 8 essentiels seuls puis SHOW ALL ; LISTEN de la fiche comm
   - un bouton OPEN THE ATLAS.
   - Côté serveur : titre, résumé et canonique propres ; lien depuis l'accueil sans script. Les anciens liens `#legend` renvoient à `/about/#how-to-read-a-glyph`.
 - Premier jet du texte rédigé par Claude (Maxime n'en avait pas) ; à faire relire.
+- **Mis de côté** (« on verra plus tard ») : rendre le texte éditable dans WordPress. Idée proposée : une page WordPress d'adresse `about`, publiée, remplace le texte du code (titres de niveau 2 = parties), les glyphes et le bouton restant dessous ; les chiffres y seraient figés.
 - Banc : 107 vérifications (menu, page ABOUT avec et sans script, `#legend`, mobile).
