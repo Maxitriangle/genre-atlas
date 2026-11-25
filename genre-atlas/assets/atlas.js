@@ -672,7 +672,7 @@
     if (!PENDING || !signedIn()) return;
     var id = PENDING; PENDING = 0;
     try { localStorage.removeItem('ga-pending-fav'); } catch (x) { /* noop */ }
-    if (!N[id] || isFav(id)) return;
+    if (isFav(id)) return;                            // the tree may not be read yet: the id is enough
     ME.genres.push(id);
     api('account/fav', 'POST', { genre: id, on: true }).then(function (d) { ME = d.atlas; ACC.atlas = d.atlas; if (S.me) render(); }).catch(function () { /* the next read puts it right */ });
   }
