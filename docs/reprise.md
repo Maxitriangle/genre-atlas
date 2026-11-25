@@ -5,7 +5,7 @@
   1. le tempo retiré partout ;
   2. la page légale complétée (conditions de YouTube, licence MusicBrainz) ;
   3. les dons par Ko-fi.
-- Le banc de test tournait au moment de l'arrêt. **En reprenant** : lire son résultat (ou relancer `tools/test-local.sh`) ; s'il est vert, ouvrir la PR v0.30.0, puis Maxime fusionne, lance Release et met à jour l'extension. Rien à réimporter.
+- Banc de test **vert (112/112, aucune erreur PHP)**, fini juste après l'arrêt ; **PR v0.30.0 ouverte (#45)**. **En reprenant** : Maxime fusionne, lance Release et met à jour l'extension. Rien à réimporter.
 - **Ensuite, côté Maxime** (« on fera ça plus tard ») :
   - créer sa page Ko-fi et saisir son adresse dans Genres → Settings → Donations ; tant que ce champ est vide, rien sur les dons ne s'affiche ;
   - s'inscrire gratuitement chez MetaBrainz (offre « non-profit »).
@@ -17,7 +17,7 @@
 - v0.27.0 : page d'un genre avec LISTEN · SAVE · SUGGEST en tête, une seule section ARTISTS, invitation à créer un compte.
 - v0.28.0 : menu et page ABOUT.
 - v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), installée.
-- **v0.30.0 sur la branche, PR à ouvrir** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz) ; **dons par Ko-fi** (dormants tant que Maxime n'a pas saisi son adresse Ko-fi dans Genres → Settings). Voir « Dons et licences » et « Dons : la mise en place ».
+- **v0.30.0, PR #45 ouverte** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz) ; **dons par Ko-fi** (dormants tant que Maxime n'a pas saisi son adresse Ko-fi dans Genres → Settings). Voir « Dons et licences » et « Dons : la mise en place ».
 - Détails dans la dernière section, « Améliorations UX ».
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`) ; rendre la page ABOUT éditable dans WordPress (« on verra plus tard », idée notée dans la section v0.28.0) ; remplacer le logo « GENRE » par « EVERY GENRE » (proposé, pas tranché).
