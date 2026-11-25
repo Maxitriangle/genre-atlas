@@ -672,3 +672,6 @@ html.ga-inviting{overflow:hidden}
 /* A display rule above would win over [hidden]: these stay folded until opened. */
 .ga-me-famopen[hidden],.ga-settings .ga-setbody[hidden],.ga-more-list[hidden]{display:none}
 #genre-atlas .ga-discover{max-width:680px}
+#genre-atlas button.ga-me-fam{border:1px solid var(--line)}
+#genre-atlas button.ga-me-fam:hover,#genre-atlas button.ga-me-fam.on{border-color:var(--fam)}
+.ga-me-chev{display:inline-block;flex:0 0 auto}
