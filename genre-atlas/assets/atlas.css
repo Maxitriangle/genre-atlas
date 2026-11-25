@@ -641,3 +641,4 @@ html.ga-inviting{overflow:hidden}
   #genre-atlas .ga-dacts .ga-star,#genre-atlas .ga-dacts .ga-psugg{flex:1 1 0;min-height:52px;height:auto;justify-content:center}
   .ga-invite-box{padding:28px 20px 20px}
 }
+#genre-atlas .ga-dacts + .ga-lede{margin-top:24px}
