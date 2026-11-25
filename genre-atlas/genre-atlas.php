@@ -30,6 +30,7 @@ require_once GENRE_ATLAS_DIR . 'includes/oauth.php';
 require_once GENRE_ATLAS_DIR . 'includes/contact.php';
 require_once GENRE_ATLAS_DIR . 'includes/picks.php';
 require_once GENRE_ATLAS_DIR . 'includes/legal.php';
+require_once GENRE_ATLAS_DIR . 'includes/about.php';
 require_once GENRE_ATLAS_DIR . 'includes/glyph.php';
 require_once GENRE_ATLAS_DIR . 'includes/seo.php';
 require_once GENRE_ATLAS_DIR . 'includes/updater.php';
@@ -335,6 +336,8 @@ function genre_atlas_enqueue() {
 			'random'       => is_post_type_archive( 'genre' ) && get_query_var( 'ga_random' ) ? 1 : 0,
 			'contact'      => genre_atlas_is_contact() ? 1 : 0,
 			'legal'        => genre_atlas_is_legal() ? 1 : 0,
+			'info'         => genre_atlas_is_info() ? 1 : 0,
+			'infoUrl'      => home_url( '/about/' ),
 			'me'           => genre_atlas_is_me() ? 1 : 0,
 			'meUrl'        => home_url( '/my-atlas/' ),
 			'heardAfter'   => genre_atlas_heard_after(),
@@ -375,6 +378,9 @@ function genre_atlas_fallback_html() {
 	}
 	if ( genre_atlas_is_legal() ) {
 		return genre_atlas_legal_html();
+	}
+	if ( genre_atlas_is_info() ) {
+		return genre_atlas_info_html();
 	}
 	if ( genre_atlas_is_me() ) {
 		return genre_atlas_me_html();

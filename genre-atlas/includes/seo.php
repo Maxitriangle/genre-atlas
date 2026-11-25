@@ -355,7 +355,7 @@ function genre_atlas_home_html() {
 			$out .= '</ul>';
 		}
 	}
-	$out .= '<p><a href="' . esc_url( home_url( '/genre/random/' ) ) . '">A genre at random</a> · <a href="' . esc_url( home_url( '/contact/' ) ) . '">Contact</a> · <a href="' . esc_url( home_url( '/legal/' ) ) . '">Legal notice and privacy</a></p>';
+	$out .= '<p><a href="' . esc_url( home_url( '/about/' ) ) . '">About the atlas</a> · <a href="' . esc_url( home_url( '/genre/random/' ) ) . '">A genre at random</a> · <a href="' . esc_url( home_url( '/contact/' ) ) . '">Contact</a> · <a href="' . esc_url( home_url( '/legal/' ) ) . '">Legal notice and privacy</a></p>';
 	return $out;
 }
 
@@ -372,6 +372,9 @@ function genre_atlas_page_kind() {
 	}
 	if ( genre_atlas_is_legal() ) {
 		return 'legal';
+	}
+	if ( genre_atlas_is_info() ) {
+		return 'info';
 	}
 	if ( genre_atlas_is_me() ) {
 		return 'me';
@@ -405,6 +408,8 @@ function genre_atlas_title_parts( $parts ) {
 		$parts['title'] = 'Contact';
 	} elseif ( 'legal' === $kind ) {
 		$parts['title'] = 'Legal notice and privacy';
+	} elseif ( 'info' === $kind ) {
+		$parts['title'] = 'About: how the atlas works';
 	} elseif ( 'me' === $kind ) {
 		$parts['title'] = 'My atlas';
 	} elseif ( 'profile' === $kind ) {
@@ -454,6 +459,9 @@ function genre_atlas_page_summary() {
 	if ( 'contact' === $kind ) {
 		return 'Write to ' . get_bloginfo( 'name' ) . ': feedback, a correction, a missing genre.';
 	}
+	if ( 'info' === $kind ) {
+		return 'What ' . get_bloginfo( 'name' ) . ' is and how to use it: listen to a genre, follow its lineage on the map, save your own atlas, suggest an artist. And how to read a glyph.';
+	}
 	if ( 'legal' === $kind ) {
 		return 'Who publishes ' . get_bloginfo( 'name' ) . ', where it is hosted, what it keeps (no tracker; accounts optional) and where its data and pictures come from.';
 	}
@@ -480,6 +488,9 @@ function genre_atlas_canonical() {
 	}
 	if ( 'legal' === $kind ) {
 		return home_url( '/legal/' );
+	}
+	if ( 'info' === $kind ) {
+		return home_url( '/about/' );
 	}
 	if ( 'random' === $kind ) {
 		return home_url( '/genre/random/' );
