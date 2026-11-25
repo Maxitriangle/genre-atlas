@@ -1,16 +1,23 @@
-# Reprise — état au 25/11/2026 (v0.29.0)
+# Reprise — état au 25/11/2026 (v0.30.0)
 
-**Où on s'est arrêté (25/11/2026, fin de journée, à la demande de Maxime : « on arrête pour aujourd'hui »)** :
-- **v0.28.0** (point 4 : menu et page `/about/`) est fusionnée (PR #43). À vérifier : Release lancée et extension mise à jour ?
-- Maxime a finalement repris le même jour : **v0.29.0, point 5, My atlas**, prête dans la PR #44 (qui porte aussi cette note de reprise). Les **cinq points des améliorations UX sont alors faits**.
-- Puis **mesurer** : objectif proposé de 1 à 2 % des visiteurs qui créent un compte (6 à 12 par mois sur environ 600 visiteurs uniques), et quelques suggestions par mois. Demander à Maxime les chiffres un mois après v0.27.0 (invitation au compte, SUGGEST en tête de fiche).
+**Où on s'est arrêté (25/11/2026, soir ; Maxime : « je dois arrêter, on reprendra ici »)** :
+- **v0.30.0 est sur la branche `claude/dazzling-shannon-x50md9`, pas encore sur `main`.** Elle contient :
+  1. le tempo retiré partout ;
+  2. la page légale complétée (conditions de YouTube, licence MusicBrainz) ;
+  3. les dons par Ko-fi.
+- Banc de test **vert (112/112, aucune erreur PHP)**, fini juste après l'arrêt ; **PR v0.30.0 ouverte (#45)**. **En reprenant** : Maxime fusionne, lance Release et met à jour l'extension. Rien à réimporter.
+- **Ensuite, côté Maxime** (« on fera ça plus tard ») :
+  - créer sa page Ko-fi et saisir son adresse dans Genres → Settings → Donations ; tant que ce champ est vide, rien sur les dons ne s'affiche ;
+  - s'inscrire gratuitement chez MetaBrainz (offre « non-profit »).
+- **Puis** : mesurer comptes, suggestions et dons environ un mois après (objectif proposé : 1 à 2 % des visiteurs créent un compte). Détails dans les sections « Dons et licences », « Dons : la mise en place » et « Tempo retiré ».
 
 **Publié** :
 - v0.25.0 (14/11/2026) : les artistes élargis couvrent les 15 familles et tuiles (24 160 artistes, 352 genres encore sans artiste). Étapes : v0.22.0 à v0.25.0.
 - v0.26.0 : un seul bouton ▶ LISTEN, GENRE PAGE au lieu de « dossier », plus de lecture au survol ni à l'appui long.
 - v0.27.0 : page d'un genre avec LISTEN · SAVE · SUGGEST en tête, une seule section ARTISTS, invitation à créer un compte.
 - v0.28.0 : menu et page ABOUT.
-- v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), PR #44.
+- v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), installée.
+- **v0.30.0, PR #45 ouverte** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz) ; **dons par Ko-fi** (dormants tant que Maxime n'a pas saisi son adresse Ko-fi dans Genres → Settings). Voir « Dons et licences » et « Dons : la mise en place ».
 - Détails dans la dernière section, « Améliorations UX ».
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`) ; rendre la page ABOUT éditable dans WordPress (« on verra plus tard », idée notée dans la section v0.28.0) ; remplacer le logo « GENRE » par « EVERY GENRE » (proposé, pas tranché).
@@ -1239,3 +1246,54 @@ Choix de Maxime : familles dépliables sur place ; un bouton DISCOVER ; réglage
 - Banc : 109 vérifications (`openSettings()` ouvre les réglages avant les tests de compte).
 
 **Suite proposée** : mesurer comptes et suggestions un mois après v0.27.0 ; reprendre les idées mises de côté si Maxime le demande.
+
+
+## Dons et licences (v0.30.0, 25/11/2026)
+Question de Maxime : on lui suggère un bouton de dons, avec des paliers (fonctionnalités, curation, voire un temps plein). Faut-il une structure ? Patreon suffit-il ?
+
+**Réponse donnée** : techniquement simple (un lien vers Ko-fi ou Liberapay, sans module intégré, donc sans cookie). Pas besoin de structure pour commencer, mais des dons réguliers sont un revenu à déclarer (bénéfices non commerciaux) ; micro-entreprise si ça grossit. Deux points ont été signalés :
+- l'anonymat de l'éditeur (LCEN, « à titre non professionnel ») tombe si le site devient un revenu régulier ;
+- les licences des sources, vérifiées ci-dessous.
+Conseils : rester modeste, des paliers comme objectifs communs plutôt que des contreparties, Ko-fi ou Liberapay plutôt que Patreon.
+
+**Licences vérifiées (textes officiels lus le 25/11/2026)** :
+- Wikidata (CC0), Wikipedia (CC BY-SA 4.0), Wikimedia Commons (nos 4 036 photos : domaine public, CC BY, CC BY-SA ; aucune NC), Azeret Mono (OFL) : commercial permis, avec crédit.
+- **MusicBrainz** : données de base CC0 (genres compris) ; « tags (including genre associations) » = données complémentaires CC BY-NC-SA 3.0. Ces étiquettes servent à garder et ajouter les artistes (`artists-cross.py`). MetaBrainz : non commercial = « personal use » ; « small non-profit » invités à s'inscrire gratuitement (offre à 0 $) ; usage commercial à partir de 100 $ par mois. Rien sur les dons. API : 1 requête par seconde, User-Agent propre, gratuite en non commercial.
+- **YouTube** : ToS interdisent l'accès « by automated means (such as robots… or scrapers) » sans autorisation écrite → **nos scripts qui lisent www.youtube.com/results (`listen-tracks.py`, `genre-examples.py`) ne sont pas conformes** (problème existant, indépendant des dons). Interdit aussi : vendre de la pub ou du sponsoring sur des pages dont les vidéos sont l'attrait principal, et faire payer l'écoute. Les dons ne sont pas mentionnés. Le lecteur IFrame compte comme « YouTube API Services » : obligation de lier les conditions de YouTube et de le dire dans la politique de confidentialité (fait en v0.30.0).
+- **Deezer** : API réservée à un usage « private, personal and non-commercial ». Sans accord écrit, le site ne doit tirer « any revenue, income or other consideration… (whether through subscription, advertising or other mechanisms) » : des dons risquent d'entrer dedans. Aussi interdit : constituer une base de leurs données, métadonnées comprises (on garde titres et identifiants choisis via Deezer). Un logo Deezer visible est obligatoire (absent). **Problèmes existants.**
+
+**Plan proposé à Maxime** :
+1. Fait en v0.30.0 : page légale complétée (MusicBrainz CC BY-NC-SA avec partage à l'identique des listes d'artistes, conditions de YouTube, « uses YouTube API Services »).
+2. À faire par Maxime : s'inscrire gratuitement chez MetaBrainz (https://metabrainz.org/supporters/account-type, offre « non-profit » à 0 $).
+3. Avant tout bouton de dons : ne plus dépendre de l'API Deezer pour choisir les chansons. Garder seulement des liens de recherche Deezer, comme pour Spotify.
+4. Indépendamment des dons : trouver les vidéos YouTube autrement que par lecture des pages de recherche. Pistes : API YouTube Data (environ 100 recherches par jour au quota par défaut, quota à demander) ; liens YouTube déjà connus de Wikidata et de MusicBrainz. À creuser avant de proposer.
+5. Ensuite seulement : un bouton SUPPORT discret (pied de page, ABOUT), une section « Why support » avec des objectifs, et la page légale et le registre mis à jour.
+
+## Tempo retiré (v0.30.0)
+Demande de Maxime : « la notion de tempo ne sert à rien sur le site, j'aimerais qu'on la retire de partout ». Retiré :
+- les rayons du glyphe, côté script et côté serveur (`glyph.php`, images d'aperçu, favicon) ;
+- la règle B de la légende (sur ABOUT, les règles deviennent A Famille, B Profondeur, C Sous-genres, D Époque), et la phrase de la page ABOUT ;
+- la ligne TEMPO du panneau et de la fiche, la colonne BPM de la liste et le BPM du mobile ;
+- `b` de l'arbre REST ;
+- les champs BPM de l'édition et la colonne BPM de l'administration ;
+- la lecture de `bpm_min` et `bpm_max` par l'importeur.
+Les colonnes restent dans `genre-import.csv` et les anciennes valeurs dans la base : elles sont ignorées.
+
+## Dons : la mise en place (v0.30.0)
+Maxime : « on ne fera plus d'import de masse » (donc plus de lecture des pages de recherche YouTube ni d'appels à Deezer) et « il faudrait que le site devienne très très gros » avant un souci juridique ; il veut mettre les dons en avant pour financer de l'aide à la curation.
+- **Accord, avec deux règles** (YouTube, Deezer, MusicBrainz) : pas de publicité ni de sponsoring, rien de réservé aux donateurs ; le site reste gratuit et identique pour tous. Si le site devient gros : remplacer les liens Deezer par des liens de recherche et revoir MusicBrainz (offre payante).
+- Choix de Maxime : **Ko-fi** ; mis en avant **partout** (menu, ABOUT, pied de page, barre de lecture, genres vides) ; **objectifs communs** sans contreparties.
+- `includes/support.php` : page `/support/` (route `ga_support`, `S.support` côté script) avec :
+  - « Help map every genre. » ;
+  - le bouton ♥ SUPPORT THE ATLAS, un lien Ko-fi dans un nouvel onglet ;
+  - les objectifs avec jauge ;
+  - les textes « Why » et « No strings ».
+  - Réglages dans Genres → Settings, section « Donations (Ko-fi) » : adresse Ko-fi (https), montant mensuel reçu (saisi à la main, Ko-fi n'en donne pas de flux ; vide = pas de jauge), objectifs (une ligne par objectif, « montant | texte », en anglais). Par défaut : 30 € hébergement, 150 € un curateur quelques heures par mois, 1 000 € plus de temps pour le projet.
+  - **Tant que l'adresse Ko-fi est vide, rien ne s'affiche.**
+- **Points d'entrée** :
+  - ♥ SUPPORT dans le menu (le cœur seul sur téléphone) et au pied de chaque page ;
+  - une 5e partie « Support the atlas » sur ABOUT ;
+  - dans la barre de lecture, après 3 chansons entendues dans la visite, une fois par semaine au plus (`ga-support-seen` dans le navigateur, déclaré), une ligne « ENJOYING THE ATLAS? IT IS MADE BY ONE PERSON: HELP ITS CURATION ♥ SUPPORT » ;
+  - sur les genres sans artiste, « …or support the curation ♥ ».
+- Page légale (Ko-fi parmi les liens extérieurs, réglage local) et registre RGPD mis à jour.
+- **À faire par Maxime** : créer sa page Ko-fi, puis saisir son adresse dans Genres → Settings → Donations. Mettre à jour le montant mensuel de temps en temps.

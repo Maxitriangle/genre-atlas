@@ -661,10 +661,10 @@ try {
 		const abOn = await ab.locator( '.ga-nav a.on' ).innerText().catch( () => '' );
 		const abPlain = await ( await fetch( `${ BASE }/about/` ) ).text();
 		await ab.screenshot( { path: `${ SHOTS }/17-about.png`, fullPage: true } );
-		check( 'about : menu ABOUT · RANDOM · CONTACT · SIGN IN, sans INDEX ni LEGEND',
-			/^ABOUT RANDOM CONTACT SIGN IN$/.test( nav ), nav );
+		check( 'about : menu ABOUT · RANDOM · CONTACT · ♥ SUPPORT · SIGN IN, sans INDEX ni LEGEND',
+			/^ABOUT RANDOM CONTACT ♥ ?SUPPORT SIGN IN$/.test( nav ), nav );
 		check( 'about : la page dit le projet, son fonctionnement, ses sources et la lecture des glyphes, aussi sans script',
-			abHeads.length === 4 && /how it works/i.test( abHeads[ 1 ] ) && /glyph/i.test( abHeads[ 3 ] ) && rules === 5 && /ABOUT/.test( abOn ) && ( await ab.title() ).startsWith( 'About' )
+			abHeads.length === 5 && /how it works/i.test( abHeads[ 1 ] ) && /glyph/i.test( abHeads[ 3 ] ) && /support/i.test( abHeads[ 4 ] ) && rules === 4 && ! /TEMPO|BPM/.test( await ab.locator( '.ga-info' ).innerText() ) && /ABOUT/.test( abOn ) && ( await ab.title() ).startsWith( 'About' )
 			&& /How it works/.test( abPlain ) && /rel="canonical" href="[^"]*\/about\/"/.test( abPlain ), `${ abHeads.join( ' · ' ) } ; ${ rules } regle(s) de glyphe` );
 		await ab.goto( `${ BASE }/#legend`, { waitUntil: 'networkidle' } );
 		await ab.waitForURL( /\/about\/#how-to-read-a-glyph$/, { timeout: 10000 } ).catch( () => {} );
@@ -675,9 +675,42 @@ try {
 		await abPhone.waitForSelector( '.ga-info', { timeout: 10000 } );
 		const abWide = await abPhone.evaluate( () => document.documentElement.scrollWidth );
 		const phoneNav = await abPhone.locator( '.ga-nav a:visible' ).allInnerTexts();
-		check( 'mobile : la page ABOUT tient dans la largeur, et le menu garde ABOUT, RANDOM et SIGN IN', abWide <= 390 && phoneNav.join( ' ' ).replace( /\s+/g, ' ' ) === 'ABOUT RANDOM SIGN IN', `${ abWide } px, ${ phoneNav.join( ' · ' ) }` );
+		const pn = phoneNav.join( ' ' ).replace( /\s+/g, ' ' );
+		check( 'mobile : la page ABOUT tient dans la largeur, et le menu garde ABOUT, RANDOM, ♥ et SIGN IN', abWide <= 390 && /^ABOUT RANDOM ♥ ?(SUPPORT )?SIGN IN$/.test( pn ), `${ abWide } px, ${ pn }` );
 		await abPhone.screenshot( { path: `${ SHOTS }/17b-about-mobile.png`, fullPage: true } );
 		await abPhone.close();
+
+		// Support: ♥ SUPPORT leads to /support/: why, the goals with the amount
+		// raised, a plain link to Ko-fi (nothing asked of Ko-fi before a click).
+		const sp = await newPage( 1440, 900 );
+		const kofiCalls = [];
+		sp.on( 'request', r => /ko-fi\.com/.test( r.url() ) && kofiCalls.push( r.url() ) );
+		await sp.goto( `${ BASE }/`, { waitUntil: 'networkidle' } );
+		await sp.waitForSelector( '.ga-ready', { timeout: 10000 } );
+		await sp.locator( '.ga-nav .ga-nav-sup' ).click();
+		await sp.waitForURL( /\/support\/$/, { timeout: 10000 } );
+		await sp.waitForSelector( '.ga-support .ga-goal', { timeout: 10000 } );
+		const goals = await sp.locator( '.ga-goal' ).count();
+		const kofiA = sp.locator( '.ga-support .ga-kofi' ).first();
+		const kofiHref = await kofiA.getAttribute( 'href' ), kofiRel = await kofiA.getAttribute( 'rel' ), kofiTarget = await kofiA.getAttribute( 'target' );
+		const spText = await sp.locator( '.ga-support' ).innerText();
+		const spPlain = await ( await fetch( `${ BASE }/support/` ) ).text();
+		const footSup = await sp.locator( '.ga-foot .ga-foot-sup' ).count();
+		await sp.screenshot( { path: `${ SHOTS }/18-support.png`, fullPage: true } );
+		check( 'dons : ♥ SUPPORT mene a /support/ (raison, objectifs, jauge, lien Ko-fi dans un nouvel onglet), sans rien demander a Ko-fi avant le clic',
+			goals === 3 && kofiHref === 'https://ko-fi.com/smoke-atlas' && /noopener/.test( kofiRel || '' ) && kofiTarget === '_blank' && /€42/.test( spText ) && /NO STRINGS/i.test( spText )
+			&& ( await sp.title() ).startsWith( 'Support' ) && /rel="canonical" href="[^"]*\/support\/"/.test( spPlain ) && /What it pays for/.test( spPlain ) && footSup === 1 && kofiCalls.length === 0,
+			`${ goals } objectif(s), ${ kofiHref }, ${ kofiCalls.length } appel(s) a Ko-fi` );
+		// A genre with no artist asks for a suggestion, or for support.
+		const bare = tree.nodes.find( n => ! n.a && ! n.f && byId.get( n.p ) );
+		if ( bare ) {
+			await sp.goto( `${ permalink( bare ) }about/`, { waitUntil: 'networkidle' } );
+			await sp.waitForSelector( '.ga-dossier h1', { timeout: 10000 } );
+			await sp.waitForSelector( '#ga-d-artists', { timeout: 8000 } ).catch( () => {} );
+			const emptySup = await sp.locator( '.ga-dossier .ga-empty-sup' ).count();
+			check( 'dons : un genre sans artiste propose de suggerer, ou de soutenir la curation', emptySup === 1, bare.name );
+		}
+		await sp.close();
 
 		// Audience measurement (Matomo, played by the bench): each page is
 		// counted once, even without a reload, and the legal page lets a
@@ -777,6 +810,7 @@ try {
 			const onAir = new Set( air( rc ).map( x => x.id ) );
 			const rd = await newPage( 1440, 900 );
 			await centre( rd, rc );
+			await rd.evaluate( () => { try { localStorage.setItem( 'ga-yt-ok', '1' ); } catch ( e ) {} } );
 			await rd.locator( `.ga-panel [data-hear="${ rc.id }"]` ).click();
 			await rd.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-radio', { timeout: 8000 } ).catch( () => {} );
 			const label = await rd.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
@@ -788,6 +822,9 @@ try {
 			await rd.locator( '.ga-bar [data-bar="next"]' ).click();
 			await rd.waitForFunction( () => /\b03\//.test( document.querySelector( '.ga-bar-radio' )?.textContent || '' ), null, { timeout: 8000 } ).catch( () => {} );
 			const third = await genreOf();
+			await rd.waitForSelector( '.ga-bar .ga-bar-support', { timeout: 6000 } ).catch( () => {} );
+			const nudge = await rd.locator( '.ga-bar .ga-bar-support' ).innerText().catch( () => '' );
+			check( 'dons : apres trois chansons ecoutees, la barre de lecture invite une fois a soutenir la curation', /HELP ITS CURATION/.test( nudge ) && /SUPPORT/.test( nudge ), nudge );
 			await rd.screenshot( { path: `${ SHOTS }/14c-radio.png` } );
 			check( `listen : « ${ rc.name } » joue d abord le genre, puis ses sous-genres, seul et avec ⏭, sans sortir de la branche`,
 				label.startsWith( `${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && ( ! rc.s || first === rc.id ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )

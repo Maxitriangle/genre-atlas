@@ -20,7 +20,7 @@ Référence : pack « Micrographics Vol.1 » (fond quasi noir, monospace capital
 
 ## Grammaire des glyphes (rev. 02)
 - A · Frame : forme + couleur = famille (cercle Electronic, hexagone Rock, hexagone double Metal, etc.).
-- B · Spokes : tempo, un rayon par 20 BPM.
+- ~~B · Spokes : tempo, un rayon par 20 BPM.~~ Retiré en v0.30.0 (Maxime : le tempo « ne sert à rien sur le site ») : plus de rayons, plus de TEMPO ni de BPM nulle part.
 - C · Rings : profondeur, un anneau par niveau sous la famille.
 - D · Orbit nodes : sous-genres directs (max 8).
 - E · Outer arc : époque, balayage horaire 1850 → aujourd'hui (pointillé = traditionnel).
@@ -64,7 +64,7 @@ Conclusion : Wikidata fournit le squelette (noms, identifiants, environ 55 % des
 ## Décisions d'import (21/09/2026)
 - Périmètre : uniquement les genres Wikidata ayant un identifiant MusicBrainz (environ 2 100).
 - Multi-parents : choix **automatique, sans relecture** par Maxime. Règle : on remonte au plus proche ancêtre reconnu, on écarte les parents géographiques et les parents déjà ancêtres d'un autre candidat, puis on préfère le parent dont le nom recoupe celui de l'enfant (acid house → house music), puis le plus profond, puis le plus documenté. Petite table de corrections pour les inversions connues (jungle → breakbeat hardcore, drum and bass → jungle).
-- Données manquantes : les genres sans année ou sans tempo sont publiés quand même ; le glyphe se dessine sans arc d'époque ni rayons et s'enrichit au fil de la curation.
+- Données manquantes : les genres sans année sont publiés quand même ; le glyphe se dessine sans arc d'époque et s'enrichit au fil de la curation.
 
 ## Fichier d'import Electronic
 `claude/genre-electronic-import.csv` (script : `claude/wikidata-build-electronic.py`). 406 lignes (racine « electronic music » + 405 genres), arbre strict sans orphelin ni cycle, 7 niveaux. 368 parents uniques, 35 choisis automatiquement, 2 corrigés. Année renseignée pour 337 genres (83 %), origine pour 150 (37 %), BPM vide partout. Largeur : cadran pour electronic music (39), hardcore (19), drum and bass (17), trance (15), techno (13) ; regroupement forcé pour electronic dance music (76) et house music (48). Colonnes : wikidata_id, musicbrainz_id, name, parent_wikidata_id, parent_name, level, children_direct, descendants_total, display_rule (ring / dial / group), epoch_year, origin, bpm_min, bpm_max, parent_choice (single / auto / override), wikidata_parents_raw, wikipedia_links.

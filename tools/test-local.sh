@@ -258,6 +258,9 @@ update_option( 'genre_atlas_google_id', 'smoke-google-id' );
 update_option( 'genre_atlas_google_secret', 'smoke-google-secret' );
 update_option( 'genre_atlas_facebook_id', 'smoke-facebook-id' );
 update_option( 'genre_atlas_facebook_secret', 'smoke-facebook-secret' );
+// Donations: a Ko-fi page and an amount raised, so the bench sees ♥ SUPPORT.
+update_option( 'genre_atlas_support_url', 'https://ko-fi.com/smoke-atlas' );
+update_option( 'genre_atlas_support_raised', '42' );
 \$stats = Genre_Atlas_Importer::import( '$REPO/data/genre-import.csv' );
 if ( is_wp_error( \$stats ) ) { fwrite( STDERR, \$stats->get_error_message() . \"\n\" ); exit( 1 ); }
 foreach ( \$stats as \$k => \$v ) { echo str_pad( \$k, 20 ) . \$v . \"\n\"; }

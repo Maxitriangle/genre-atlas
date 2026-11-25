@@ -71,7 +71,6 @@ function genre_atlas_columns( $columns ) {
 	$columns['ga_parent']   = 'Parent';
 	$columns['ga_children'] = 'Subgenres';
 	$columns['ga_epoch']    = 'Epoch';
-	$columns['ga_bpm']      = 'BPM';
 	$columns['ga_status']   = 'Status';
 	if ( $date ) {
 		$columns['date'] = $date;
@@ -101,11 +100,6 @@ function genre_atlas_column( $column, $post_id ) {
 			break;
 		case 'ga_epoch':
 			echo esc_html( get_post_meta( $post_id, 'ga_epoch_year', true ) ?: '—' );
-			break;
-		case 'ga_bpm':
-			$a = get_post_meta( $post_id, 'ga_bpm_min', true );
-			$b = get_post_meta( $post_id, 'ga_bpm_max', true );
-			echo ( $a || $b ) ? esc_html( trim( $a . '–' . $b, '–' ) ) : '—';
 			break;
 		case 'ga_status':
 			echo esc_html( get_post_meta( $post_id, 'ga_status', true ) ?: '—' );
@@ -262,6 +256,7 @@ function genre_atlas_settings_page() {
 				update_option( 'genre_atlas_' . $k, trim( sanitize_text_field( wp_unslash( $_POST[ 'genre_atlas_' . $k ] ) ) ), false );
 			}
 		}
+		genre_atlas_support_settings_save();
 		delete_transient( GENRE_ATLAS_CACHE ); // the tree carries the group labels.
 		echo '<div class="notice notice-success"><p>Settings saved.</p></div>';
 	}
@@ -291,6 +286,7 @@ function genre_atlas_settings_page() {
 		echo '<tr><th scope="row"><label for="genre_atlas_' . esc_attr( $k ) . '">' . esc_html( $f[0] ) . '</label></th><td><input class="regular-text" type="' . esc_attr( $f[1] ) . '" id="genre_atlas_' . esc_attr( $k ) . '" name="genre_atlas_' . esc_attr( $k ) . '" value="' . esc_attr( get_option( 'genre_atlas_' . $k, '' ) ) . '" autocomplete="off"></td></tr>';
 	}
 	echo '</tbody></table>';
+	genre_atlas_support_settings_fields();
 	submit_button( 'Save' );
 	echo '</form></div>';
 }
