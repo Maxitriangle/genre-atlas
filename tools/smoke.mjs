@@ -794,6 +794,7 @@ try {
 		// A full track on a phone: the video goes into the bar, which grows,
 		// and the page makes room for it, so nothing is hidden under a card.
 		await tel.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
+		await tel.goto( 'about:blank' );                 // the press above was a tap: it centred the genre, so load it afresh
 		await centre( tel, sv );
 		await tel.locator( `.ga-mobile [data-hear="${ sv.id }"]` ).click();
 		await tel.waitForFunction( () => ( window.__yt || [] ).some( x => x[ 0 ] === 'video' ), null, { timeout: 8000 } ).catch( () => {} );
