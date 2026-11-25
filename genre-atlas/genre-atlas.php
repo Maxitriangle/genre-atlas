@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Genre Atlas
  * Description: Music genre atlas — "Genre" content type (strict tree), CSV import, JSON tree endpoint and the map / list front end.
- * Version: 0.29.0
+ * Version: 0.30.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Maxime
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GENRE_ATLAS_VERSION', '0.29.0' );
+define( 'GENRE_ATLAS_VERSION', '0.30.0' );
 define( 'GENRE_ATLAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GENRE_ATLAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GENRE_ATLAS_CACHE', 'genre_atlas_tree_v3' );
@@ -45,8 +45,6 @@ function genre_atlas_meta_fields() {
 	return array(
 		'ga_epoch_year'           => array( 'type' => 'integer', 'label' => 'Epoch (year)' ),
 		'ga_origin'               => array( 'type' => 'string', 'label' => 'Origin (place)' ),
-		'ga_bpm_min'              => array( 'type' => 'integer', 'label' => 'BPM min' ),
-		'ga_bpm_max'              => array( 'type' => 'integer', 'label' => 'BPM max' ),
 		'ga_featured'             => array( 'type' => 'integer', 'label' => 'Home page tile (order; blank = no tile)' ),
 		'ga_family_shape'         => array( 'type' => 'string', 'label' => 'Family shape (genres with a home page tile)' ),
 		'ga_family_hue'           => array( 'type' => 'integer', 'label' => 'Family colour hue 0–360 (genres with a home page tile)' ),
@@ -239,11 +237,6 @@ function genre_atlas_tree() {
 			if ( $group ) {
 				$node['g'] = $group;
 			}
-		}
-		$bmin = (int) get_post_meta( $p->ID, 'ga_bpm_min', true );
-		$bmax = (int) get_post_meta( $p->ID, 'ga_bpm_max', true );
-		if ( $bmin || $bmax ) {
-			$node['b'] = array( $bmin ? $bmin : $bmax, $bmax ? $bmax : $bmin );
 		}
 		// A tile on the home page and having no parent are two different things:
 		// Metal is a child of Rock and still a place a visitor enters the atlas

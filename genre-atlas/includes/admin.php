@@ -71,7 +71,6 @@ function genre_atlas_columns( $columns ) {
 	$columns['ga_parent']   = 'Parent';
 	$columns['ga_children'] = 'Subgenres';
 	$columns['ga_epoch']    = 'Epoch';
-	$columns['ga_bpm']      = 'BPM';
 	$columns['ga_status']   = 'Status';
 	if ( $date ) {
 		$columns['date'] = $date;
@@ -101,11 +100,6 @@ function genre_atlas_column( $column, $post_id ) {
 			break;
 		case 'ga_epoch':
 			echo esc_html( get_post_meta( $post_id, 'ga_epoch_year', true ) ?: '—' );
-			break;
-		case 'ga_bpm':
-			$a = get_post_meta( $post_id, 'ga_bpm_min', true );
-			$b = get_post_meta( $post_id, 'ga_bpm_max', true );
-			echo ( $a || $b ) ? esc_html( trim( $a . '–' . $b, '–' ) ) : '—';
 			break;
 		case 'ga_status':
 			echo esc_html( get_post_meta( $post_id, 'ga_status', true ) ?: '—' );

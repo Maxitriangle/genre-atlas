@@ -1,4 +1,4 @@
-# Reprise — état au 25/11/2026 (v0.29.0)
+# Reprise — état au 25/11/2026 (v0.30.0)
 
 **Où on s'est arrêté (25/11/2026, fin de journée, à la demande de Maxime : « on arrête pour aujourd'hui »)** :
 - **v0.28.0** (point 4 : menu et page `/about/`) est fusionnée (PR #43). À vérifier : Release lancée et extension mise à jour ?
@@ -10,7 +10,8 @@
 - v0.26.0 : un seul bouton ▶ LISTEN, GENRE PAGE au lieu de « dossier », plus de lecture au survol ni à l'appui long.
 - v0.27.0 : page d'un genre avec LISTEN · SAVE · SUGGEST en tête, une seule section ARTISTS, invitation à créer un compte.
 - v0.28.0 : menu et page ABOUT.
-- v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), PR #44.
+- v0.29.0 : My atlas (familles dépliables, DISCOVER, réglages repliés), installée.
+- **v0.30.0 prête** : tempo retiré partout ; page légale complétée (YouTube, licence MusicBrainz). Voir « Dons et licences ».
 - Détails dans la dernière section, « Améliorations UX ».
 
 **Mis de côté par Maxime, à ne pas relancer sans sa demande** : Genre City (le mini-jeu) ; la connexion Google et Facebook (prête, mais pas de clés, donc aucun bouton ; `docs/connexion-google-facebook.md`) ; rendre la page ABOUT éditable dans WordPress (« on verra plus tard », idée notée dans la section v0.28.0) ; remplacer le logo « GENRE » par « EVERY GENRE » (proposé, pas tranché).
@@ -1239,3 +1240,35 @@ Choix de Maxime : familles dépliables sur place ; un bouton DISCOVER ; réglage
 - Banc : 109 vérifications (`openSettings()` ouvre les réglages avant les tests de compte).
 
 **Suite proposée** : mesurer comptes et suggestions un mois après v0.27.0 ; reprendre les idées mises de côté si Maxime le demande.
+
+
+## Dons et licences (v0.30.0, 25/11/2026)
+Question de Maxime : on lui suggère un bouton de dons, avec des paliers (fonctionnalités, curation, voire un temps plein). Faut-il une structure ? Patreon suffit-il ?
+
+**Réponse donnée** : techniquement simple (un lien vers Ko-fi ou Liberapay, sans module intégré, donc sans cookie). Pas besoin de structure pour commencer, mais des dons réguliers sont un revenu à déclarer (bénéfices non commerciaux) ; micro-entreprise si ça grossit. Deux points ont été signalés :
+- l'anonymat de l'éditeur (LCEN, « à titre non professionnel ») tombe si le site devient un revenu régulier ;
+- les licences des sources, vérifiées ci-dessous.
+Conseils : rester modeste, des paliers comme objectifs communs plutôt que des contreparties, Ko-fi ou Liberapay plutôt que Patreon.
+
+**Licences vérifiées (textes officiels lus le 25/11/2026)** :
+- Wikidata (CC0), Wikipedia (CC BY-SA 4.0), Wikimedia Commons (nos 4 036 photos : domaine public, CC BY, CC BY-SA ; aucune NC), Azeret Mono (OFL) : commercial permis, avec crédit.
+- **MusicBrainz** : données de base CC0 (genres compris) ; « tags (including genre associations) » = données complémentaires CC BY-NC-SA 3.0. Ces étiquettes servent à garder et ajouter les artistes (`artists-cross.py`). MetaBrainz : non commercial = « personal use » ; « small non-profit » invités à s'inscrire gratuitement (offre à 0 $) ; usage commercial à partir de 100 $ par mois. Rien sur les dons. API : 1 requête par seconde, User-Agent propre, gratuite en non commercial.
+- **YouTube** : ToS interdisent l'accès « by automated means (such as robots… or scrapers) » sans autorisation écrite → **nos scripts qui lisent www.youtube.com/results (`listen-tracks.py`, `genre-examples.py`) ne sont pas conformes** (problème existant, indépendant des dons). Interdit aussi : vendre de la pub ou du sponsoring sur des pages dont les vidéos sont l'attrait principal, et faire payer l'écoute. Les dons ne sont pas mentionnés. Le lecteur IFrame compte comme « YouTube API Services » : obligation de lier les conditions de YouTube et de le dire dans la politique de confidentialité (fait en v0.30.0).
+- **Deezer** : API réservée à un usage « private, personal and non-commercial ». Sans accord écrit, le site ne doit tirer « any revenue, income or other consideration… (whether through subscription, advertising or other mechanisms) » : des dons risquent d'entrer dedans. Aussi interdit : constituer une base de leurs données, métadonnées comprises (on garde titres et identifiants choisis via Deezer). Un logo Deezer visible est obligatoire (absent). **Problèmes existants.**
+
+**Plan proposé à Maxime** :
+1. Fait en v0.30.0 : page légale complétée (MusicBrainz CC BY-NC-SA avec partage à l'identique des listes d'artistes, conditions de YouTube, « uses YouTube API Services »).
+2. À faire par Maxime : s'inscrire gratuitement chez MetaBrainz (https://metabrainz.org/supporters/account-type, offre « non-profit » à 0 $).
+3. Avant tout bouton de dons : ne plus dépendre de l'API Deezer pour choisir les chansons. Garder seulement des liens de recherche Deezer, comme pour Spotify.
+4. Indépendamment des dons : trouver les vidéos YouTube autrement que par lecture des pages de recherche. Pistes : API YouTube Data (environ 100 recherches par jour au quota par défaut, quota à demander) ; liens YouTube déjà connus de Wikidata et de MusicBrainz. À creuser avant de proposer.
+5. Ensuite seulement : un bouton SUPPORT discret (pied de page, ABOUT), une section « Why support » avec des objectifs, et la page légale et le registre mis à jour.
+
+## Tempo retiré (v0.30.0)
+Demande de Maxime : « la notion de tempo ne sert à rien sur le site, j'aimerais qu'on la retire de partout ». Retiré :
+- les rayons du glyphe, côté script et côté serveur (`glyph.php`, images d'aperçu, favicon) ;
+- la règle B de la légende (sur ABOUT, les règles deviennent A Famille, B Profondeur, C Sous-genres, D Époque), et la phrase de la page ABOUT ;
+- la ligne TEMPO du panneau et de la fiche, la colonne BPM de la liste et le BPM du mobile ;
+- `b` de l'arbre REST ;
+- les champs BPM de l'édition et la colonne BPM de l'administration ;
+- la lecture de `bpm_min` et `bpm_max` par l'importeur.
+Les colonnes restent dans `genre-import.csv` et les anciennes valeurs dans la base : elles sont ignorées.

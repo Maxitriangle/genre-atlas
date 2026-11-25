@@ -6,7 +6,7 @@
  *
  *   shape  family shape (circle, hex, pent…)   dbl    double frame (tiles past the ninth)
  *   kids   children on the map (dots)          depth  level below the tile (inner rings)
- *   year   epoch (the arc)                     bpm    [min, max] (spokes), or null
+ *   year   epoch (the arc)
  *   color  [r, g, b]                           group  dashed outer ring
  *
  * Plain PHP and GD: no WordPress call, so tools/ can draw the icons with it.
@@ -37,7 +37,7 @@ function genre_atlas_glyph_poly( $shape ) {
  * $weight thickens the strokes, for a small icon.
  */
 function genre_atlas_glyph_marks( $spec, $size, $weight = 1 ) {
-	$spec  = array_merge( array( 'shape' => 'circle', 'dbl' => false, 'kids' => 0, 'depth' => 0, 'year' => 0, 'bpm' => null, 'group' => false ), $spec );
+	$spec  = array_merge( array( 'shape' => 'circle', 'dbl' => false, 'kids' => 0, 'depth' => 0, 'year' => 0, 'group' => false ), $spec );
 	$c     = $size / 2;
 	$r     = $size / 2 - max( 3, $size * 0.07 );
 	$sw    = max( 1.1, $size / 44 ) * $weight;
@@ -81,18 +81,6 @@ function genre_atlas_glyph_marks( $spec, $size, $weight = 1 ) {
 	}
 	for ( $i = 0; $i < min( (int) $spec['depth'], 5 ); $i++ ) {
 		$marks[] = array( 'path' => $ring( $r * ( 0.2 + 0.08 * $i ) ), 'closed' => true, 'w' => $sw * 0.6, 'o' => 0.7 );
-	}
-	if ( $spec['bpm'] ) {
-		$ns = (int) round( ( $spec['bpm'][0] + $spec['bpm'][1] ) / 2 / 20 );
-		for ( $i = 0; $i < $ns; $i++ ) {
-			$a       = deg2rad( -90 + 360 * $i / $ns );
-			$marks[] = array(
-				'path'   => array( array( $c + $r * 0.13 * cos( $a ), $c + $r * 0.13 * sin( $a ) ), array( $c + $r * 0.44 * cos( $a ), $c + $r * 0.44 * sin( $a ) ) ),
-				'closed' => false,
-				'w'      => $sw * 0.6,
-				'o'      => 0.85,
-			);
-		}
 	}
 	$marks[] = array( 'dot' => array( $c, $c, max( 1.6, $r * 0.075 ) * $weight ), 'o' => 1 );
 	return $marks;

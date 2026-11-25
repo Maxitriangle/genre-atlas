@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const GENRE_ATLAS_LEGAL_UPDATED = '2026-11-04'; // Change it with the text.
+const GENRE_ATLAS_LEGAL_UPDATED = '2026-11-25'; // Change it with the text.
 
 add_action( 'init', 'genre_atlas_legal_route', 11 );
 function genre_atlas_legal_route() {
@@ -76,7 +76,7 @@ function genre_atlas_legal_sections() {
 		'Cookies'                   => array(
 			'This site sets no cookie on your device while you browse it, and uses no tracker, which is why it asks for no consent. It sets cookies only when you ask for them:',
 			'<b>Signing in</b> sets the sign-in cookies of WordPress (named wordpress_logged_in_… and wordpress_sec_…), which keep you signed in for 14 days, or until you sign out. They are needed for the account to work, so they need no consent.' . ( $matomo ? ' <b>Choosing not to be counted</b> sets a cookie named mtm_consent_removed, which remembers that choice.' : '' ),
-			'<b>Songs</b> play whole in YouTube’s own player (youtube.com), loaded only when you ask for a song: LISTEN, or PLAY on a song. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under Google’s privacy policy; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires.',
+			'<b>Songs</b> play whole in YouTube’s own player (youtube.com), loaded only when you ask for a song: LISTEN, or PLAY on a song. That request is your choice to use it. From then on YouTube, part of Google, may set its cookies and show its ads in the player, under <a href="https://policies.google.com/privacy">Google’s privacy policy</a>; its Premium subscribers signed in to YouTube hear no ads. The player is always shown while it plays, as YouTube requires. This site uses YouTube API Services (the embedded player): by playing a song you agree to be bound by the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>.',
 			'The links to Spotify, Deezer, Bandcamp, Wikipedia and the other platforms take you to those sites, under their own rules; nothing is asked of them before you follow a link.',
 			'The site’s font is stored on the site itself: no request goes to Google Fonts.',
 		),
@@ -90,10 +90,12 @@ function genre_atlas_legal_sections() {
 			'<b>Use the site fairly</b>: no automated sign-ups, no attempts to reach other members’ data, no use of the site against the law. An account that breaks these terms may be suspended or deleted, after a warning by e-mail unless the breach is serious.',
 			'<b>The service</b> is free, given as it is, by one person, without any guarantee that it will always be available. It may change, and it may stop: members would be warned by e-mail a month before, with time to download their atlas.',
 			'<b>Your atlas is yours</b>: you can download it or delete it whenever you like.',
+			'<b>Songs</b> play in YouTube’s player: playing one, with or without an account, means accepting the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>.',
 			'These terms are governed by French law. They may change: members are told by e-mail of any change that matters, before it applies.',
 		),
 		'Sources and credits'       => array(
-			'<b>Genres</b>, their lineage, origin and epoch come from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), checked and arranged by hand; genre identifiers also link to <a href="https://musicbrainz.org/">MusicBrainz</a>. Some key artists were found through MusicBrainz’s genre tags (<a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>).',
+			'<b>Genres</b>, their lineage, origin and epoch come from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), checked and arranged by hand; genre identifiers also link to <a href="https://musicbrainz.org/">MusicBrainz</a> (core data, CC0).',
+			'<b>Artists</b> come from Wikidata (CC0) and from <a href="https://musicbrainz.org/">MusicBrainz</a>: an artist is kept in a genre, and many were added, according to the genre tags MusicBrainz’s users give them. Those tags are MusicBrainz supplementary data, under the <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a> licence (attribution, non-commercial, share alike): the lists of artists by genre built from them are shared under the same licence.',
 			'<b>Texts</b> marked “Text from Wikipedia” are the introductions of the English <a href="https://en.wikipedia.org/">Wikipedia</a> articles, under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> licence, linked to their article on every page.',
 			'<b>Artist photos</b> come from <a href="https://commons.wikimedia.org/">Wikimedia Commons</a>, reworked as halftone pictures; each one names its author and licence beside it. <b>Songs</b> are the artists’ most played tracks on Deezer, or a track from an album MusicBrainz files under the genre, played from YouTube. <b>Listening examples</b> are YouTube videos chosen by hand for genres no key artist gives a song to.',
 			'<b>The font</b> is Azeret Mono, under the SIL Open Font License.',

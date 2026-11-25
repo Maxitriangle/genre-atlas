@@ -111,7 +111,7 @@
 
 /* list */
 .ga-list{margin:28px 40px 40px;border:1px solid var(--line);display:flex;flex-direction:column;overflow-x:auto}
-.ga-lhead,.ga-lrow{display:grid;grid-template-columns:minmax(320px,1fr) 240px 90px 110px 80px 70px;column-gap:16px;align-items:center;padding:0 16px;border-bottom:1px solid var(--line);font-size:11px}
+.ga-lhead,.ga-lrow{display:grid;grid-template-columns:minmax(320px,1fr) 240px 90px 80px 70px;column-gap:16px;align-items:center;padding:0 16px;border-bottom:1px solid var(--line);font-size:11px}
 .ga-lhead{height:36px;font-size:10px;color:var(--dim);background:var(--panel)}
 .ga-lrow{min-height:44px}
 .ga-lrow.on{background:var(--panel);box-shadow:inset 2px 0 0 #fff}

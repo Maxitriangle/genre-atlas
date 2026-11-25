@@ -46,7 +46,6 @@
   // A group has no page of its own: its link points at the genre it stands under.
   function url(n) { return n.grp ? url(N[n.p]) : CFG.base + realPath(n).map(function (x) { return x.slug; }).join('/') + '/'; }
   function years(list) { return list.map(function (k) { return k.y; }).filter(Boolean); }
-  function bpmText(n) { return n.b ? (n.b[0] === n.b[1] ? n.b[0] : n.b[0] + '–' + n.b[1]) + ' BPM' : '—'; }
   function color(n) { return 'oklch(0.80 0.105 ' + family(n).hue + ')'; }
 
   /* ---------- glyph: drawn from the genre's own data ---------- */
@@ -60,7 +59,7 @@
     o = o || {};
     var fam = family(n), col = o.color || color(n), c = size / 2, R = size / 2 - Math.max(3, size * 0.07), sw = Math.max(1.1, size / 44);
     var kids = o.children != null ? o.children : n.kids.length, d = o.depth != null ? o.depth : depth(n);
-    var year = o.year !== undefined ? o.year : n.y, bpm = o.bpm !== undefined ? o.bpm : n.b;
+    var year = o.year !== undefined ? o.year : n.y;
     var s = '<svg class="ga-glyph" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">';
     s += '<circle cx="' + c + '" cy="' + c + '" r="' + f2(R) + '" fill="none" stroke="' + col + '" stroke-opacity="0.22"' + (n.grp ? ' stroke-dasharray="3 5"' : '') + ' stroke-width="' + f2(sw * 0.8) + '"/>';
     if (year) {
@@ -73,10 +72,6 @@
     s += frame(fam.shape, F, c, col, sw);
     if (fam.dbl) s += frame(fam.shape, F * 0.78, c, col, sw * 0.7);
     for (i = 0; i < Math.min(d, 5); i++) s += '<circle cx="' + c + '" cy="' + c + '" r="' + f2(R * (0.2 + 0.08 * i)) + '" fill="none" stroke="' + col + '" stroke-opacity="0.7" stroke-width="' + f2(sw * 0.6) + '"/>';
-    if (bpm) {
-      var ns = Math.round((bpm[0] + bpm[1]) / 2 / 20);
-      for (i = 0; i < ns; i++) { a = rad(-90 + 360 * i / ns); s += '<line x1="' + f2(c + R * 0.13 * Math.cos(a)) + '" y1="' + f2(c + R * 0.13 * Math.sin(a)) + '" x2="' + f2(c + R * 0.44 * Math.cos(a)) + '" y2="' + f2(c + R * 0.44 * Math.sin(a)) + '" stroke="' + col + '" stroke-opacity="0.85" stroke-width="' + f2(sw * 0.6) + '"/>'; }
-    }
     s += '<circle cx="' + c + '" cy="' + c + '" r="' + f2(Math.max(1.6, R * 0.075)) + '" fill="' + col + '"/></svg>';
     return s;
   }
@@ -244,7 +239,7 @@
 
   /* ---------- shared pieces ---------- */
   function header() {
-    return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '') + '<span>GENRE</span></a>' +
+    return '<header class="ga-header"><a class="ga-logo" href="' + esc(CFG.base) + '" data-go="0">' + (TILES[0] ? glyph(TILES[0], 28, { children: 6, depth: 1, year: 1990 }) : '') + '<span>GENRE</span></a>' +
       '<nav class="ga-nav" aria-label="Primary"><a class="ga-nav-info' + (S.info ? ' on' : '') + '" href="' + esc(infoUrl()) + '">ABOUT</a>' +
       '<a class="ga-nav-rnd' + (S.random ? ' on' : '') + '" href="' + esc(randomUrl()) + '" data-random="1">RANDOM</a>' +
       '<a class="ga-nav-ct' + (S.contact ? ' on' : '') + '" href="' + esc(contactUrl(0)) + '" data-contact="0">CONTACT</a>' +
@@ -274,7 +269,7 @@
     var lineage = path(n).slice(0, -1).map(function (a) { return a.name; }).join(' / ');
     var rows = (n.grp
       ? [['GENRES', pad(n.kids.length) + ' DIRECT · ' + pad(n.total) + ' TOTAL'], ['EPOCH', n.y ? n.y + (n.last && n.last !== n.y ? ' → ' + n.last : '') : '—']]
-      : [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['TEMPO', bpmText(n)], ['SUBGENRES', pad(n.kids.length) + ' DIRECT · ' + pad(n.total) + ' TOTAL']])
+      : [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['SUBGENRES', pad(n.kids.length) + ' DIRECT · ' + pad(n.total) + ' TOTAL']])
       .map(function (r) { return '<div class="ga-row"><span>' + r[0] + '</span><span>' + esc(r[1]) + '</span></div>'; }).join('');
     var kids = n.kids.slice(0, 6).map(function (k) { return '<a class="ga-kid" href="' + esc(url(k)) + '" data-go="' + k.id + '">' + glyph(k, 28) + '<span>' + esc(k.name) + '</span><em>' + (k.y || '') + '</em></a>'; }).join('');
     var isCentre = S.centre === n.id;
@@ -355,10 +350,10 @@
       var open = !!S.expanded[n.id], on = n === sel;
       rows += '<div class="ga-lrow' + (on ? ' on' : '') + '" role="row"><span class="ga-lname"><span class="ga-tree" aria-hidden="true">' + pre + '</span>' +
         (n.kids.length ? '<button class="ga-exp" data-exp="' + n.id + '" aria-expanded="' + open + '" aria-label="' + (open ? 'Collapse ' : 'Expand ') + esc(n.name) + '">' + (open ? '▾' : '▸') + '</button>' : '<span class="ga-exp"></span>') +
-        '<a href="' + esc(url(n)) + '" data-go="' + n.id + '">' + glyph(n, 30) + '<b>' + esc(n.name) + '</b></a></span><span class="dim">' + esc(n.o || '—') + '</span><span>' + (n.y || '—') + '</span><span>' + esc(n.b ? bpmText(n).replace(' BPM', '') : '—') + '</span><span class="dim">L' + pad(depth(n)) + '</span><span>' + (n.kids.length ? pad(n.kids.length) : '—') + '</span></div>';
+        '<a href="' + esc(url(n)) + '" data-go="' + n.id + '">' + glyph(n, 30) + '<b>' + esc(n.name) + '</b></a></span><span class="dim">' + esc(n.o || '—') + '</span><span>' + (n.y || '—') + '</span><span class="dim">L' + pad(depth(n)) + '</span><span>' + (n.kids.length ? pad(n.kids.length) : '—') + '</span></div>';
       if (open) n.kids.forEach(function (k, j) { var last = j === n.kids.length - 1; walk(k, preKids + (last ? '└─ ' : '├─ '), preKids + (last ? '   ' : '│  ')); });
     })(fam, '', '');
-    return '<main class="ga-list" style="--fam:' + color(fam) + '"><div class="ga-lhead" role="row"><span>GENRE</span><span>ORIGIN</span><span>EPOCH</span><span>BPM</span><span>LEVEL</span><span>SUB</span></div>' + rows + foot() + '</main>';
+    return '<main class="ga-list" style="--fam:' + color(fam) + '"><div class="ga-lhead" role="row"><span>GENRE</span><span>ORIGIN</span><span>EPOCH</span><span>LEVEL</span><span>SUB</span></div>' + rows + foot() + '</main>';
   }
 
   /* ---------- mobile: one vertical tree ---------- */
@@ -370,7 +365,7 @@
     var rows = centre.kids.map(function (k) {
       var on = k === open, h = '<a class="ga-mrow' + (on ? ' on' : '') + '" href="' + esc(url(k)) + '" ' + (on ? 'data-centre="' + centre.id + '"' : 'data-go="' + k.id + '"') + ' aria-expanded="' + on + '">' + glyph(k, 40) + '<span><b>' + esc(k.name) + '</b><i>' + esc(micro(k)) + '</i></span>' + (k.total ? '<em>+' + pad(k.total) + '</em>' : '') + '</a>';
       if (on) {
-        h += '<div class="ga-msub">' + (k.d ? '<p class="ga-desc">' + esc(k.d) + '</p>' : '') + '<p class="ga-micro">' + esc([k.o, k.y, k.b ? bpmText(k) : ''].filter(Boolean).join(' · ') || 'NO DATA YET') + '</p>' +
+        h += '<div class="ga-msub">' + (k.d ? '<p class="ga-desc">' + esc(k.d) + '</p>' : '') + '<p class="ga-micro">' + esc([k.o, k.y].filter(Boolean).join(' · ') || 'NO DATA YET') + '</p>' +
           k.kids.map(function (g) { return '<a class="ga-mrow sub" href="' + esc(url(g)) + '" data-go="' + g.id + '">' + glyph(g, 32) + '<span><b>' + esc(g.name) + '</b><i>' + esc(micro(g)) + '</i></span>' + (g.total ? '<em>+' + pad(g.total) + '</em>' : '') + '</a>'; }).join('') +
           hearButton(k) + pageButton(k) +
           (k.kids.length ? '<a class="ga-cta ghost" href="' + esc(url(k)) + '#centre" data-centre="' + k.id + '"><span>CENTRE ON ' + esc(k.name) + '</span><span>⊕</span></a>' : '') + '</div>';
@@ -1138,7 +1133,7 @@
       return i === trail.length - 1 ? '<strong>' + esc(a.name) + '</strong>' : (a.grp ? '<span class="dim">' + esc(a.name) + '</span>' : '<a class="fam" href="' + esc(url(a)) + '" data-go="' + a.id + '">' + esc(a.name) + '</a>');
     }).join('<span class="sep">/</span>');
     var ids = [d.wikidata ? 'WD:' + d.wikidata : '', d.musicbrainz ? 'MB:' + d.musicbrainz.slice(0, 8) : ''].filter(Boolean).join(' · ');
-    var facts = [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['TEMPO', bpmText(n)], ['SUBGENRES', pad(subs.length)], ['DESCENDANTS', pad(n.total)]]
+    var facts = [['ORIGIN', n.o || '—'], ['EPOCH', n.y || '—'], ['SUBGENRES', pad(subs.length)], ['DESCENDANTS', pad(n.total)]]
       .map(function (f) { return '<div><dt>' + f[0] + '</dt><dd' + (f[1] === '—' ? ' class="none"' : '') + '>' + esc(f[1]) + '</dd></div>'; }).join('');
     var level = isTile(n) ? 'FAMILY' : 'GENRE · LEVEL ' + pad(depth(n));
     var wiki = d.wikipedia ? 'https://en.wikipedia.org/wiki/' + encodeURIComponent(d.wikipedia.replace(/ /g, '_')) : '';
@@ -1441,7 +1436,7 @@
     var hint = document.getElementById('ga-chint'); if (hint) hint.textContent = topicOf(C.topic)[2];
   }
   function viewContact() {
-    var g = N[C.genre], seal = g ? glyph(g, 112) : TILES[0] ? glyph(TILES[0], 112, { children: 6, depth: 1, year: 1990, bpm: [120, 120] }) : '';
+    var g = N[C.genre], seal = g ? glyph(g, 112) : TILES[0] ? glyph(TILES[0], 112, { children: 6, depth: 1, year: 1990 }) : '';
     var html = '<main class="ga-contact"' + (g ? ' style="--fam:' + color(g) + '"' : '') + '>' +
       '<div class="ga-hero"><div><p class="ga-micro">[CONTACT] WRITE TO THE ATLAS</p><h1>A gap, an error,<br>an idea?</h1></div>' +
       '<dl class="ga-stats"><div><dt>READ BY</dt><dd>01 PERSON</dd></div></dl></div>';
@@ -1509,13 +1504,12 @@
   function legendRules() {
     var r = TILES[0]; if (!r) return '';
     function rule(code, title, items) { return '<section><h2><b>' + code + '</b> ' + title + '</h2><div>' + items.map(function (it) { return '<figure>' + it[0] + '<figcaption>' + it[1] + '</figcaption></figure>'; }).join('') + '</div></section>'; }
-    var base = { children: 0, depth: 0, year: 1990, bpm: null };
+    var base = { children: 0, depth: 0, year: 1990 };
     function g(o, n) { var x = {}; for (var k in base) x[k] = base[k]; for (k in o) x[k] = o[k]; return glyph(n || r, 56, x); }
     return rule('A', 'FAMILY → FRAME + COLOUR', TILES.slice(0, 6).map(function (f) { return [g({}, f), esc(f.name)]; })) +
-      rule('B', 'TEMPO → SPOKES (ONE PER 20 BPM)', [60, 100, 140, 180].map(function (b) { return [g({ bpm: [b, b] }), b + ' BPM']; })) +
-      rule('C', 'DEPTH → RINGS', [0, 1, 2, 3, 4].map(function (d) { return [g({ depth: d }), 'LEVEL ' + pad(d)]; })) +
-      rule('D', 'SUBGENRES → ORBIT NODES (MAX 8)', [0, 3, 5, 8].map(function (k) { return [g({ children: k }), pad(k) + ' SUB']; })) +
-      rule('E', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; }));
+      rule('B', 'DEPTH → RINGS', [0, 1, 2, 3, 4].map(function (d) { return [g({ depth: d }), 'LEVEL ' + pad(d)]; })) +
+      rule('C', 'SUBGENRES → ORBIT NODES (MAX 8)', [0, 3, 5, 8].map(function (k) { return [g({ children: k }), pad(k) + ' SUB']; })) +
+      rule('D', 'EPOCH → OUTER ARC (1850 → TODAY)', [null, 1900, 1950, 1985, 2015].map(function (y) { return [g({ year: y }), y || 'UNKNOWN']; }));
   }
 
   /* ---------- about ----------

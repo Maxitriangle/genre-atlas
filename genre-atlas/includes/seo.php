@@ -202,7 +202,6 @@ function genre_atlas_glyph_spec( $id ) {
 		'kids'  => count( $node['kids'] ),
 		'depth' => $depth,
 		'year'  => isset( $node['y'] ) ? $node['y'] : 0,
-		'bpm'   => isset( $node['b'] ) ? $node['b'] : null,
 		'color' => genre_atlas_family_color( $id ),
 	);
 }

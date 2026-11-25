@@ -67,7 +67,7 @@ function genre_atlas_info_sections() {
 			'All the sources and credits are on the ' . $legal . '.',
 		),
 		'How to read a glyph' => array(
-			'No glyph is drawn by hand: each is generated from the genre’s own data, so a subgenre always looks like its family. The frame and the colour give the family, the spokes the tempo, the rings the depth in the tree, the dots around the centre the direct subgenres, and the outer arc the era.',
+			'No glyph is drawn by hand: each is generated from the genre’s own data, so a subgenre always looks like its family. The frame and the colour give the family, the rings the depth in the tree, the dots around the centre the direct subgenres, and the outer arc the era.',
 		),
 	);
 }
