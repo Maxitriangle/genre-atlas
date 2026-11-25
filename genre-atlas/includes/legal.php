@@ -61,7 +61,7 @@ function genre_atlas_legal_sections() {
 			$matomo
 				? '<b>Audience measurement</b>: the site counts its visits with Matomo, which runs on the site itself. The figures stay on the host’s servers, in France, and go to no one else. The counter sets no cookie, shortens IP addresses before storing them, and keeps its figures for 25 months at most. They only tell which pages are read, to know what to improve. You can choose not to be counted:<span id="ga-optout"><span>Turn JavaScript on to make this choice.</span></span>'
 				: 'There is no audience measurement.',
-			'<b>Your settings</b> (MY MAP, having read the note on YouTube) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
+			'<b>Your settings</b> (MY MAP, having read the note on YouTube, and a genre you asked to save before signing in, until it is saved in your atlas) are kept by your browser in its own storage (local storage, not a cookie), so they hold on your next visit. They never leave your device.',
 			'<b>Accounts</b> are optional: everything they keep is described in the next section.',
 			'There is no newsletter and no advertising.',
 		),
