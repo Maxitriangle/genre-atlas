@@ -208,8 +208,10 @@ try {
 		await page.goto( permalink( ring.node ), { waitUntil: 'networkidle' } );
 		await page.waitForSelector( '.ga-panel', { timeout: 10000 } );
 		const ctas = await page.locator( '.ga-panel .ga-cta' ).allInnerTexts();
-		check( 'fiche : OPEN DOSSIER passe avant CENTRE ON dans le panneau',
-			ctas.length >= 1 && /OPEN DOSSIER/.test( ctas[ 0 ] ) && ctas.slice( 1 ).every( t => ! /OPEN DOSSIER/.test( t ) ),
+		const lead = /LISTEN/.test( ctas[ 0 ] || '' ) ? 1 : 0;
+		check( 'fiche : ▶ LISTEN en tete du panneau, puis GENRE PAGE, avant CENTRE ON ; plus de HEAR, RADIO ni DOSSIER',
+			ctas.length >= 1 && /GENRE PAGE/.test( ctas[ lead ] ) && ctas.filter( t => /GENRE PAGE/.test( t ) ).length === 1
+				&& ctas.filter( t => /LISTEN/.test( t ) ).length === lead && ! ctas.some( t => /DOSSIER|\bHEAR\b|\bRADIO\b/.test( t ) ),
 			ctas.map( t => t.replace( /\s+/g, ' ' ).trim() ).join( ' | ' ) );
 		await page.locator( '.ga-panel [data-about]' ).first().click();
 		await page.waitForSelector( '.ga-dossier', { timeout: 10000 } );
@@ -749,7 +751,7 @@ try {
 			const onAir = new Set( air( rc ).map( x => x.id ) );
 			const rd = await newPage( 1440, 900 );
 			await centre( rd, rc );
-			await rd.locator( `.ga-panel [data-radio="${ rc.id }"]` ).click();
+			await rd.locator( `.ga-panel [data-hear="${ rc.id }"]` ).click();
 			await rd.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-radio', { timeout: 8000 } ).catch( () => {} );
 			const label = await rd.locator( '.ga-bar .ga-bar-radio' ).innerText().catch( () => '' );
 			const genreOf = async () => Number( await rd.locator( '.ga-bar [data-about]' ).getAttribute( 'data-about' ).catch( () => 0 ) );
@@ -761,8 +763,8 @@ try {
 			await rd.waitForFunction( () => /\b03\//.test( document.querySelector( '.ga-bar-radio' )?.textContent || '' ), null, { timeout: 8000 } ).catch( () => {} );
 			const third = await genreOf();
 			await rd.screenshot( { path: `${ SHOTS }/14c-radio.png` } );
-			check( `radio : « ${ rc.name } » enchaine ses genres, seul et avec ⏭, sans sortir de la branche`,
-				label.startsWith( `RADIO ${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
+			check( `listen : « ${ rc.name } » joue d abord le genre, puis ses sous-genres, seul et avec ⏭, sans sortir de la branche`,
+				label.startsWith( `${ rc.name.toUpperCase() } 01/${ String( onAir.size ).padStart( 2, '0' ) }` ) && ( ! rc.s || first === rc.id ) && /02\//.test( auto ) && [ first, second, third ].every( id => onAir.has( id ) )
 				&& new Set( [ first, second, third ] ).size === 3 && await videosOf( rd ) >= 3,
 				`${ label } → ${ auto }, ${ await videosOf( rd ) } titre(s)` );
 			await rd.locator( '.ga-bar [data-bar="close"]' ).click( { timeout: 5000 } ).catch( () => {} );
@@ -780,7 +782,7 @@ try {
 		await md.locator( `.ga-panel [data-hear="${ sv.id }"]` ).click();
 		await md.waitForSelector( '.ga-bar:not([hidden]) .ga-bar-note', { timeout: 8000 } ).catch( () => {} );
 		await md.waitForFunction( () => ( window.__yt || [] ).length > 0, null, { timeout: 8000 } ).catch( () => {} );
-		const fullFirst = await videosOf( md ) === 1 && /FULL TRACK/.test( label ) && await md.locator( '.ga-bar .ga-bar-yt' ).isVisible();
+		const fullFirst = await videosOf( md ) === 1 && /LISTEN/.test( label ) && await md.locator( '.ga-bar .ga-bar-yt' ).isVisible();
 		const note = await md.locator( '.ga-bar .ga-bar-note' ).innerText().catch( () => '' );
 		const noSwitch = await md.locator( '[data-bar="mode"]' ).count() === 0 && ! /30 S/.test( note + await md.locator( '.ga-bar' ).innerText() );
 		await md.screenshot( { path: `${ SHOTS }/14e-titre-entier.png` } );

@@ -587,3 +587,9 @@
   .ga-track.ga-mart{grid-template-columns:44px minmax(0,1fr)}
   .ga-track.ga-mart .ga-tout{grid-column:2}
 }
+/* One button to listen, leading; the genre page after it. */
+#genre-atlas .ga-listen{min-height:60px;margin-top:16px;font-size:15px}
+#genre-atlas .ga-listen i{font-style:normal;margin-right:4px}
+#genre-atlas .ga-cta[data-about]{gap:12px}
+#genre-atlas .ga-cta[data-about] .ga-micro{margin-left:auto;color:inherit;opacity:.7;white-space:nowrap}
+#genre-atlas .ga-listen + .ga-cta[data-about]{margin-top:8px}
